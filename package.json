@@ -1,0 +1,52 @@
+{
+	"name": "@infinityfx/fluid",
+	"version": "0.0.1",
+	"description": "React UI library.",
+	"main": "dist/cjs/index.js",
+	"module": "dist/esm/index.js",
+	"types": "./types/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/esm/index.js",
+			"require": "./dist/cjs/index.js"
+		}
+	},
+	"typesVersions": {},
+	"repository": "infinityfx-llc/fluid",
+	"author": "InfinityFX <contact@infinity-fx.com> (https://infinity-fx.com)",
+	"license": "GPL-3.0",
+	"bugs": "https://github.com/infinityfx-llc/fluid/issues",
+	"homepage": "https://github.com/infinityfx-llc/fluid#readme",
+	"funding": "https://ko-fi.com/infinityfx",
+	"keywords": [
+		"react",
+		"ui"
+	],
+	"scripts": {
+		"build": "rollup -c --environment NODE_ENV:production",
+		"watch": "rollup -c -w"
+	},
+	"peerDependencies": {
+		"@babel/runtime": "^7.19.0",
+		"@infinityfx/lively": "^2.1.0",
+		"react": ">=16.14.0",
+		"react-dom": ">=16.14.0"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.19.1",
+		"@babel/plugin-transform-runtime": "^7.19.1",
+		"@babel/preset-env": "^7.19.1",
+		"@babel/preset-react": "^7.18.6",
+		"@rollup/plugin-babel": "^5.3.1",
+		"@rollup/plugin-node-resolve": "^13.3.0",
+		"@rollup/plugin-alias": "^3.1.9",
+		"cssnano": "^5.1.13",
+		"postcss": "^8.4.16",
+		"postcss-preset-env": "^7.8.2",
+		"rollup": "^2.75.7",
+		"rollup-plugin-delete": "^2.0.0",
+		"rollup-plugin-postcss": "^4.0.2",
+		"rollup-plugin-terser": "^7.0.2"
+	},
+	"sideEffects": false
+}

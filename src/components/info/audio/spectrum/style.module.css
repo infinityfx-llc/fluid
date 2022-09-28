@@ -1,0 +1,11 @@
+.spectrum {
+    display: flex;
+    gap: 4px;
+}
+
+.spectrum > * {
+    height: 65px;
+    width: 6px;
+    border-radius: 6px;
+    background-color: var(--fluid-clr-primary-100);
+}
