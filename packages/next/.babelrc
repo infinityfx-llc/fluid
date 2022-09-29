@@ -1,0 +1,19 @@
+{
+    "presets": [
+        "@babel/preset-env",
+        [
+            "@babel/preset-react",
+            {
+                "runtime": "classic"
+            }
+        ]
+    ],
+    "plugins": [
+        [
+            "@babel/plugin-transform-runtime",
+            {
+                "version": "^7.19.0"
+            }
+        ]
+    ]
+}

@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;500;700;900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
+
+:root {
+    font-size: 12px;
+}
+
+* {
+    outline: none;
+}
+
+body,
+form {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+#fluid__root {
+    background-color: var(--fluid-clr-background-100);
+    font-family: var(--font-family);
+    font-size: var(--font-size-s);
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+.fld-shadow-xs {
+    box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.1);
+}
+
+@import './helper.css';
