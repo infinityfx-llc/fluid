@@ -3,10 +3,9 @@ import { is } from '@core/utils/helper';
 import { useEffect, useMemo, useRef } from 'react';
 import useStylesheet from './stylesheet';
 
-export default function useStyles(rules = {}) {
+export default function useGlobalStyles(rules = {}) {
     const stylesheet = useStylesheet();
     const id = useRef();
-    const selectors = useRef({});
 
     const [hash, ruleset] = useMemo(() => {
         const ruleset = is.function(rules) ? rules() : rules;
@@ -18,9 +17,9 @@ export default function useStyles(rules = {}) {
         return () => stylesheet.delete(id.current);
     }, []);
 
-    if (hash === id.current) return selectors.current;
-    stylesheet.delete(id.current);
-    id.current = hash;
+    if (hash === id.current) return;
 
-    return selectors.current = stylesheet.insert(hash, ruleset);
-}
+    stylesheet.delete(id.current);
+    stylesheet.insert(hash, ruleset, true);
+    id.current = hash;
+};

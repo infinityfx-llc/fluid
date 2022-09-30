@@ -1,19 +1,18 @@
 import { styleMapToRuleList } from './utils/css';
-import { tag } from './utils/helper';
-
-// do serverside rendering
+import { hash } from './utils/helper';
 
 export default class Stylesheet {
 
-    constructor() {
-        this.id = 'fluid__styles__' + tag(); // get server and client to sync this value
+    constructor(id) {
+        this.id = 'fluid__styles__' + hash(id);
+        this.ssr = false;
         this.cache = {
             fragments: {},
             size: 0
         };
     }
 
-    inject() {
+    hydrate() {
         if (this.stylesheet) return;
 
         let tag = document.getElementById(this.id);
@@ -22,19 +21,35 @@ export default class Stylesheet {
             tag = document.createElement('style');
             tag.id = this.id;
             (document.head || document.getElementsByName('head')[0]).appendChild(tag);
-        }
 
-        tag.innerText = this.toString();
+            tag.innerText = this.toString();
+        } else {
+            const header = (tag.innerText.match(/^\/\*(.+?)\*\//) || [])[0];
+            header?.split('-').forEach(val => {
+                const [key, head, length] = val.split(':');
+                this.cache.fragments[key] = { ssr: true, head, rules: { length } };
+            });
+
+            this.ssr = true;
+        }
+        
         this.stylesheet = tag.sheet;
     }
 
-    remove() {
-        document.getElementById(this.id)?.remove();
+    cleanup(ssr = false) {
+        if (this.ssr) return ssr && (this.stylesheet = null);
+
+        document.getElementById(this.id).remove();
         this.stylesheet = null;
     }
 
     toString() {
-        return Object.values(this.cache.fragments).reduce((str, { rules }) => str + rules.join(''), '');
+        if (this.stylesheet) return this.stylesheet.ownerNode.innerText;
+
+        const rules = Object.values(this.cache.fragments).reduce((str, { rules }) => str + rules.join(''), '');
+        const keys = Object.entries(this.cache.fragments).map(([key, val]) => `${key}:${val.head}:${val.rules.length}`).join('-');
+
+        return `/*${keys}*/${rules}`;
     }
 
     set(key, { rules, selectors }) {
@@ -48,40 +63,42 @@ export default class Stylesheet {
     }
 
     get(key) {
-        this.cache.fragments[key];
+        return this.cache.fragments[key];
     }
 
     delete(key) {
         const cached = this.get(key);
         if (!cached) return;
 
-        cached.references--;
-        if (cached.references > 0) return;
+        if (--cached.references > 0) return;
 
         const { head, rules } = cached;
         this.cache.size -= rules.length;
-        
+        delete this.cache.fragments[key];
+
         for (const key in this.cache.fragments) {
-            const val = this.cache.fragments[key];
+            const val = this.get(key);
             if (val.head > head) val.head -= rules.length;
         }
-
+        
         if (!this.stylesheet) return;
 
-        for (let i = head; i < head + rules.length; i++) this.stylesheet.deleteRule(i);
+        for (let i = head + rules.length - 1; i >= head; i--) this.stylesheet.deleteRule(i);
     }
 
-    insert(key, rules) {
+    insert(key, rules, global = false) {
         const cached = this.get(key);
-        if (cached) {
+        const ssr = cached && cached.ssr;
+
+        if (cached && !ssr) {
             cached.references++;
             return cached.selectors;
         }
 
-        const list = styleMapToRuleList(rules, key);
+        const list = styleMapToRuleList(rules, global ? undefined : key);
         this.set(key, list);
 
-        if (this.stylesheet) {
+        if (this.stylesheet && !ssr) {
             for (const rule of list.rules) this.stylesheet.insertRule(rule, this.stylesheet.cssRules.length);
         }
 

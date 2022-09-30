@@ -1,17 +1,16 @@
-import React, { createContext, useEffect, useInsertionEffect, useMemo } from 'react';
+import React, { createContext, useInsertionEffect, useMemo } from 'react';
 import { DEFAULT_COLOR_SCHEME, DEFAULT_THEME } from '@core/globals';
-import Stylesheet from '@core/stylesheet';
 import useColorScheme from '@hooks/color-scheme';
 import { cloneMergeDeep } from '@core/utils/helper';
-import { StyleProvider } from './style';
 import { parseVariables } from '@core/utils/css';
+import useStylesheet from '@hooks/stylesheet';
+import useGlobalStyles from '@hooks/global-styles';
 import('@styles/globals.css');
 
 export const FluidContext = createContext();
 
-const stylesheet = new Stylesheet();
-
 export function FluidProvider({ children, theme }) {
+    const stylesheet = useStylesheet();
     const [colorScheme, setColorScheme] = useColorScheme();
 
     const fluid = useMemo(() => {
@@ -23,30 +22,27 @@ export function FluidProvider({ children, theme }) {
         return fluid;
     }, [colorScheme, theme]);
 
-    useInsertionEffect(() => {
+    useGlobalStyles(() => {
         const vars = { '--fluid-font-family': fluid.font.family };
         parseVariables(fluid.colors, 'fluid-clr', vars);
         parseVariables(fluid.spacing, 'fluid-gap', vars);
         parseVariables(fluid.radii, 'fluid-radius', vars);
         parseVariables(fluid.font.sizes, 'fluid-font-size', vars);
         parseVariables(fluid.font.weights, 'fluid-font-weight', vars);
-        stylesheet.insert('global', {
-            ':root': vars
-        });
-    }, [fluid]);
+
+        return { ':root': vars };
+    });
 
     useInsertionEffect(() => {
-        stylesheet.inject();
+        stylesheet.hydrate();
 
-        return () => stylesheet.remove();
-    }, []);
+        return () => stylesheet.cleanup();
+    }, [fluid]);
 
     return <FluidContext.Provider value={fluid}>
-        <StyleProvider stylesheet={stylesheet}>
-            <div id="fluid__root">
-                {children}
-            </div>
-        </StyleProvider>
+        <div id="fluid__root">
+            {children}
+        </div>
     </FluidContext.Provider>;
 }
 
@@ -57,3 +53,4 @@ FluidProvider.defaultProps = {
 // settings:
 // themes: { themename: etc.. }
 // breakpoints
+// font preloading

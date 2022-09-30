@@ -1,15 +1,6 @@
-import { is } from './helper';
+import { hash, is } from './helper';
 
-export const hashStyleMap = (rules, hash = 0x811c9dc5) => {
-    const str = JSON.stringify(rules);
-
-    for (let i = 0; i < str.length; i += 3) {
-        hash ^= str.charCodeAt(i);
-        hash = (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
-    }
-
-    return (hash >>> 0).toString(16).padStart(8, '0');
-};
+export const hashStyleMap = (rules) => hash(JSON.stringify(rules));
 
 export const styleRuleToString = (key, val, postfix, selectors = {}) => {
     key = key.split(/((?::global\()?[.#][a-z\-_][a-z0-9\-_]*)/gi);
