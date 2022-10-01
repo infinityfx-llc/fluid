@@ -1,4 +1,4 @@
-import { hashStyleMap } from '@core/utils/css';
+import { hashObject } from '@core/utils/css';
 import { is } from '@core/utils/helper';
 import { useEffect, useMemo, useRef } from 'react';
 import useStylesheet from './stylesheet';
@@ -10,7 +10,7 @@ export default function useGlobalStyles(rules = {}) {
     const [hash, ruleset] = useMemo(() => {
         const ruleset = is.function(rules) ? rules() : rules;
 
-        return [hashStyleMap(ruleset), ruleset];
+        return [hashObject(ruleset), ruleset];
     }, [rules]);
 
     useEffect(() => {

@@ -5,7 +5,9 @@ import { cloneMergeDeep } from '@core/utils/helper';
 import { parseVariables } from '@core/utils/css';
 import useStylesheet from '@hooks/stylesheet';
 import useGlobalStyles from '@hooks/global-styles';
-import('@styles/globals.css');
+
+import globalStyles from '@styles/globals';
+import useFonts from '@hooks/fonts';
 
 export const FluidContext = createContext();
 
@@ -21,6 +23,10 @@ export function FluidProvider({ children, theme }) {
 
         return fluid;
     }, [colorScheme, theme]);
+
+    useFonts(fluid.fonts);
+
+    useGlobalStyles(globalStyles);
 
     useGlobalStyles(() => {
         const vars = { '--fluid-font-family': fluid.font.family };
@@ -40,9 +46,7 @@ export function FluidProvider({ children, theme }) {
     }, [fluid]);
 
     return <FluidContext.Provider value={fluid}>
-        <div id="fluid__root">
-            {children}
-        </div>
+        {children}
     </FluidContext.Provider>;
 }
 

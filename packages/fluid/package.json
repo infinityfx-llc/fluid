@@ -9,9 +9,17 @@
 		".": {
 			"import": "./dist/esm/index.js",
 			"require": "./dist/cjs/index.js"
+		},
+		"./utils": {
+			"import": "./dist/esm/utils.js",
+			"require": "./dist/cjs/utils.js"
 		}
 	},
-	"typesVersions": {},
+	"typesVersions": {
+		"*": {
+			"utils": ["./types/utils.d.ts"]
+		}
+	},
 	"repository": "infinityfx-llc/fluid",
 	"author": "InfinityFX <contact@infinity-fx.com> (https://infinity-fx.com)",
 	"license": "GPL-3.0",

@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === 'production') plugins.push(
 );
 
 export default {
-    input: ['src/index.js'],
+    input: ['src/index.js', 'src/utils.js'],
     external: ['react', 'react-dom', /@babel\/runtime/, /@infinityfx\/lively/],
     output: [
         {

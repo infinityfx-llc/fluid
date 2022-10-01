@@ -1,5 +1,5 @@
 import { styleMapToRuleList } from './utils/css';
-import { hash } from './utils/helper';
+import { hash, is } from './utils/helper';
 
 export default class Stylesheet {
 
@@ -7,8 +7,9 @@ export default class Stylesheet {
         this.id = 'fluid__styles__' + hash(id);
         this.ssr = false;
         this.cache = {
+            preconnect: {},
             fragments: {},
-            size: 0
+            rules: []
         };
     }
 
@@ -24,71 +25,76 @@ export default class Stylesheet {
 
             tag.innerText = this.toString();
         } else {
-            const header = (tag.innerText.match(/^\/\*(.+?)\*\//) || [])[0];
-            header?.split('-').forEach(val => {
-                const [key, head, length] = val.split(':');
-                this.cache.fragments[key] = { ssr: true, head, rules: { length } };
+            (tag.innerText.match(/^\/\*(.+?)\*\//) || [0, ''])[1].split(';').forEach(key => {
+                this.cache.fragments[key] = {
+                    references: 1
+                };
+            });
+
+            document.querySelectorAll('link[rel="preconnect"]').forEach(el => {
+                this.cache.preconnect[el.href] = true;
             });
 
             this.ssr = true;
         }
-        
+
         this.stylesheet = tag.sheet;
     }
 
     cleanup(ssr = false) {
-        if (this.ssr) return ssr && (this.stylesheet = null);
-
-        document.getElementById(this.id).remove();
-        this.stylesheet = null;
+        if (!this.ssr || ssr) this.stylesheet = null;
+        if (!this.ssr) document.getElementById(this.id).remove();
     }
 
     toString() {
         if (this.stylesheet) return this.stylesheet.ownerNode.innerText;
 
-        const rules = Object.values(this.cache.fragments).reduce((str, { rules }) => str + rules.join(''), '');
-        const keys = Object.entries(this.cache.fragments).map(([key, val]) => `${key}:${val.head}:${val.rules.length}`).join('-');
+        const rules = Object.values(this.cache.rules).reduce((str, { rule }) => str + rule.string, '');
+        const keys = Object.keys(this.cache.fragments).join(';');
 
         return `/*${keys}*/${rules}`;
-    }
-
-    set(key, { rules, selectors }) {
-        this.cache.fragments[key] = {
-            rules,
-            selectors,
-            references: 1,
-            head: this.cache.size
-        };
-        this.cache.size += rules.length;
     }
 
     get(key) {
         return this.cache.fragments[key];
     }
 
-    delete(key) {
-        const cached = this.get(key);
-        if (!cached) return;
-
-        if (--cached.references > 0) return;
-
-        const { head, rules } = cached;
-        this.cache.size -= rules.length;
-        delete this.cache.fragments[key];
-
-        for (const key in this.cache.fragments) {
-            const val = this.get(key);
-            if (val.head > head) val.head -= rules.length;
+    set(key, { rules, selectors }) {
+        for (const rule of rules) {
+            this.cache.rules[rule.top ? 'unshift' : 'push']({
+                key,
+                rule
+            });
         }
-        
-        if (!this.stylesheet) return;
 
-        for (let i = head + rules.length - 1; i >= head; i--) this.stylesheet.deleteRule(i);
+        this.cache.fragments[key] = {
+            references: 1,
+            selectors
+        };
+    }
+
+    delete(key) {
+        const frags = this.cache.fragments;
+        if (!(key in frags)) return;
+
+        if (--frags[key].references > 0) return;
+        delete frags[key];
+
+        const rules = this.cache.rules;
+        for (let i = rules.length - 1; i >= 0; i--) {
+            if (rules[i].key === key) {
+                rules.splice(i, 1);
+
+                if (this.stylesheet) {
+                    this.stylesheet.deleteRule(i);
+                }
+            }
+        }
     }
 
     insert(key, rules, global = false) {
         const cached = this.get(key);
-        const ssr = cached && cached.ssr;
+        const ssr = cached && !cached.selectors;
 
         if (cached && !ssr) {
             cached.references++;
@@ -99,10 +105,18 @@ export default class Stylesheet {
         this.set(key, list);
 
         if (this.stylesheet && !ssr) {
-            for (const rule of list.rules) this.stylesheet.insertRule(rule, this.stylesheet.cssRules.length);
+            for (const { string, top } of list.rules) this.stylesheet.insertRule(string, top ? 0 : this.stylesheet.cssRules.length);
         }
 
         return list.selectors;
+    }
+
+    preconnect(uri) {
+        this.cache.preconnect[uri] = true;
+    }
+
+    preconnects() {
+        return Object.keys(this.cache.preconnect);
     }
 
 }

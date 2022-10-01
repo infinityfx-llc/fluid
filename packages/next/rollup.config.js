@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === 'production') plugins.push(
 );
 
 export default {
-    input: ['src/index.js'],
+    input: ['src/index.js', 'src/loaders/compile-style.js', 'src/loaders/style-parser.js'],
     external: ['react', 'react-dom', /next\/head/, /@babel\/runtime/, /@infinityfx\/lively/, /@infinityfx\/fluid/],
     output: [
         {

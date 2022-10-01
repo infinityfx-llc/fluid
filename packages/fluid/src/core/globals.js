@@ -37,7 +37,7 @@ export const DEFAULT_THEME = {
         max: '9999px',
     },
     font: {
-        family: '"Poppins", sans serif',
+        family: 'Poppins',
         sizes: {
             xxs: '.8rem',
             xsm: '.9rem',
@@ -55,5 +55,8 @@ export const DEFAULT_THEME = {
             bld: 700,
             blk: 900
         }
+    },
+    fonts: {
+        Poppins: 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap'
     }
 };
