@@ -1,61 +1,54 @@
-import { matchBrackets, objectFromString, insertInString } from '../utils';
-import Cache from '../cache';
+import { matchBrackets, evaluateStyleArgument, replaceByIndex, Pointer, toAbsoluteName } from '../utils';
+import Store from '../store';
 
 export default function (source) {
     this.cacheable(false);
-    
+
     if (this.mode !== 'production' || /node_modules\\/.test(this.resourcePath)) return source;
 
-    const components = source.matchAll(/function\s*([\w\$]+)\(.*?\)\s*\{/gs);
+    if (Store.hydrated) return source;
 
-    let outerOffset = 0;
+    const components = source.matchAll(/function\s+([\w\$]+?)\(.*?\)\s*\{/gs);
+    const pointer = Pointer();
+
     for (const component of components) {
-        const name = component[1];
-        const index = component.index + component[0].length - 1 - outerOffset;
-        const body = matchBrackets(source, index);
+        pointer.update(component);
 
-        const hooks = body.matchAll(/=\s*useStyles\(/gs);
+        const body = matchBrackets(source, pointer.end);
+        const props = component[2];
 
-        let innerOffset = 0;
+        const hooks = body.matchAll(/(=\s*useStyles|useGlobalStyles)\(/gs); // parse fonts
+        const subPointer = Pointer(pointer.end);
+
         for (const hook of hooks) {
-            const subIndex = index + hook.index + hook[0].length - 1 - innerOffset;
-            const args = matchBrackets(source, subIndex, '(', ')').slice(1, -1);
+            subPointer.update(hook);
 
-            let styles;
-            if (args.charAt(0) === '{') {
-                try {
-                    styles = objectFromString(args);
-                } catch (ex) { }
-            } else {
-                let match = args.match(/(?:\(\)\s*=>\s*|^)(?:\{\s*return\s*)?mergeFallback\(styles,\s*(.+?)\)(?:;?\s*\}|$)/s);
-                if (match) {
-                    const identifier = match[1];
-                    const parts = identifier.split(/(\.|\[('|")|('|")\])/g);
-
-                    const regx = new RegExp(`(var|let|const)\\s*${parts[0]}\\s*=\\s*\\{`, 's');
-                    const subMatch = regx.exec(source);
-                    if (subMatch) {
-                        const i = subMatch.index + subMatch[0].length - 1;
-
-                        try {
-                            let obj = objectFromString(matchBrackets(source, i));
-
-                            for (let i = 1; i < parts.length; i++) obj = obj[parts[i]];
-
-                            styles = obj;
-                        } catch (ex) { }
-                    }
-                }
-            }
+            const args = matchBrackets(source, subPointer.end, '(', ')').slice(1, -1);
+            const styles = evaluateStyleArgument(args, source);
 
             if (styles) {
-                Cache[name] = styles;
+                const isGlobal = /^useGlobal/.test(hook[0]);
+                const key = toAbsoluteName(component[1], this.context);
 
-                const start = index + hook.index - innerOffset;
-                const length = args.length + hook[0].length + 1;
-                source = insertInString(source, start, start + length, '= styles');
-                innerOffset += length - 8;
-                outerOffset += length - 8;
+                Store.insertStyles(isGlobal ? null : key, styles);
+
+                let length = args.length + hook[0].length + 1;
+                if (source.charAt(subPointer.start + length + 1) === ';') length++;
+
+                // if props is not defined immediatley replace with classnames
+
+                let insert = '';
+                if (!isGlobal) {
+                    if (/^\{.*\}$/.test(props) && props.includes('styles')) {
+                        insert = '= styles;';
+                    } else {
+                        insert = `= ${props}.styles;`;
+                    }
+                }
+                source = replaceByIndex(source, subPointer.start, length, insert);
+
+                subPointer.shift(length - insert.length);
+                pointer.shift(length - insert.length);
             }
         }
     }

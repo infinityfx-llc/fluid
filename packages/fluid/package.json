@@ -17,7 +17,9 @@
 	},
 	"typesVersions": {
 		"*": {
-			"utils": ["./types/utils.d.ts"]
+			"utils": [
+				"./types/utils.d.ts"
+			]
 		}
 	},
 	"repository": "infinityfx-llc/fluid",

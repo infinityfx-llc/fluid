@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { FluidProvider, useStylesheet } from '@infinityfx/fluid';
 import Head from 'next/head';
-import withFluid from './plugin';
+import withFluid from './with-fluid';
 
 function NextFluidProvider({ children }) {
     const stylesheet = useStylesheet();

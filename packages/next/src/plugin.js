@@ -1,23 +1,29 @@
-import { is } from '@infinityfx/fluid/utils';
-import path from 'path';
+import Store from './store';
 
-export default function withFluid(nextConfig = {}) {
+export default class CompileFluidPlugin {
 
-    const webpack = nextConfig.webpack;
+    constructor() {
+        this.name = CompileFluidPlugin.name;
+        this.options = {};
+    }
 
-    nextConfig.webpack = (config, options) => {
-        config.module.rules.unshift({
-            test: /\.js$/,
-			use: [
-				path.resolve(__dirname, './compile-style.js'),
-				path.resolve(__dirname, './style-parser.js')
-			]
+    apply(compiler) {
+        const { webpack } = compiler;
+        const RawSource = webpack.sources.RawSource;
+
+        compiler.hooks.thisCompilation.tap(this.name, (compilation) => {
+
+            compilation.hooks.needAdditionalPass.tap(this.name, () => {
+                if (!Store.hydrated) {
+                    const files = Store.getCssFiles();
+                    for (const name in files) {
+                        compilation.emitAsset(`./cache/fluid/${name}.css`, new RawSource(files[name]));
+                    }
+
+                    return Store.hydrated = true;
+                }
+            });
         });
+    }
 
-        if (is.function(webpack)) return webpack(config, options);
-
-        return config;
-    };
-
-    return nextConfig;
 }
