@@ -6,7 +6,7 @@ export default {
         cursor: 'pointer',
         height: 'fit-content',
         backgroundColor: 'var(--fluid-clr-primary-100)',
-        color: 'var(--fluid-clr-text-100)',
+        color: 'var(--fluid-clr-text)',
         fontFamily: 'var(--fluid-font-family)',
         transition: 'background-color 0.15s',
         display: 'flex',

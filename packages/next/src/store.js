@@ -1,13 +1,16 @@
-import { hashObject, styleMapToRuleList } from '@infinityfx/fluid/utils';
+import { hash, hashObject, styleMapToRuleList } from '@infinityfx/fluid/utils';
+import { GLOBAL_IMPORT_PATH } from './globals';
 
 class Store {
 
     constructor() {
         this.globalStyles = {};
         this.defaultStyles = {};
-        this.rules = {};
+        this.scopes = {};
 
         this.hydrated = false;
+        this.bundled = false;
+        this.GLOBAL_SCOPE = hash(GLOBAL_IMPORT_PATH);
     }
 
     getComponentStyles(key) {
@@ -15,43 +18,40 @@ class Store {
     }
 
     insertStyles(key, styleMap) {
-        if (!key) {
-            this.globalStyles[hashObject(styleMap)] = styleMapToRuleList(styleMap).rules;
-        } else {
-            this.defaultStyles[key] = styleMap;
-        }
+        this.defaultStyles[key] = styleMap;
     }
 
-    insertRules(key, rules, page) {
-        if (key in this.rules) {
-            this.rules[key].pages.push(page);
-        } else {
-            this.rules[key] = {
-                rules,
-                pages: [page]
-            };
-        }
+    insertGlobalStyles(styleMap) {
+        const { rules } = styleMapToRuleList(styleMap);
+        this.setScopedRules(this.GLOBAL_SCOPE, hashObject(styleMap), rules);
     }
 
-    getCssFiles() {
-        const key = 'FLUID_GLOBAL_COMPILED_STYLES';
-        const files = {};
+    setScopedRules(scope, key, rules) {
+        if (!(scope in this.scopes)) this.scopes[scope] = {};
+        this.scopes[scope][key] = rules;
+    }
 
-        Object.values(this.globalStyles).forEach(rules => {
-            const str = rules.map(({ string }) => string).join('');
+    getScopedRules(scope) {
+        if (!(scope in this.scopes)) return '';
 
-            files[key] = key in files ? files[key] + str : str;
-        });
+        return Object.values(this.scopes[scope])
+            .map(arr => {
+                return arr.map(({ string }) => string).join('');
+            }).join('');
+    }
 
-        Object.values(this.rules).forEach(({ rules, pages }) => {
-            const str = rules.map(({ string }) => string).join('');
+    getScopes() {
+        const scopes = {};
 
-            pages.forEach(page => {
-                files[page] = page in files ? files[page] + str : str;
-            });
-        });
+        for (const key in this.scopes) {
+            scopes[key] = this.getScopedRules(key);
+        }
 
-        return files;
+        return scopes;
+    }
+
+    scopeIsEmpty(scope) {
+        return !(scope in this.scopes);
     }
 
 }

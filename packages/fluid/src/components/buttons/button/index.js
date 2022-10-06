@@ -3,7 +3,7 @@ import Spinner from '@components/info/progress/spinner/index';
 import { combine } from '@core/utils/css';
 import useStyles from '@hooks/styles';
 import defaultStyles from './style';
-import { mergeFallback } from '@core/utils/helper';
+import { is, mergeFallback } from '@core/utils/helper';
 
 export default function Button({ children, styles, size, disabled, loading, onClick, className, ...props }) {
     const style = useStyles(mergeFallback(styles, defaultStyles));
@@ -18,7 +18,7 @@ export default function Button({ children, styles, size, disabled, loading, onCl
             className
         )}
         onClick={e => {
-            if (!loading && !disabled && onClick) onClick(e);
+            if (!loading && !disabled && is.function(onClick)) onClick(e);
         }}>
         {loading && <Spinner className={style.test} />}
         {children}

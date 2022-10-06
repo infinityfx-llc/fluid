@@ -9,11 +9,16 @@ export default function (source) {
 
     if (!Store.hydrated) return source;
 
-    const regx = new RegExp(`^${this.rootContext.replace(/\\/g, '\\\\')}(.*)$`);
-    const file = this.resourcePath.match(regx);
-    if (!file) return source;
+    const regx = new RegExp(`^${this.rootContext.replace(/\\/g, '\\\\')}`);
+    const fileHash = hash(this.resourcePath.replace(regx, ''));
 
-    const fileHash = hash(file[0]);
+    if (Store.bundled) {
+        const base = this.rootContext.replace(/\\/g, '/') + '/.next/cache/fluid/';
+        if (!Store.scopeIsEmpty(fileHash)) return `import "${base}${fileHash}.css";\n` + source;
+
+        return source;
+    }
+
     const jsx = source.matchAll(/_jsxs?\(\s*([\w]+?)\s*,\s*\{/gs);
 
     const pointer = Pointer();
@@ -27,24 +32,25 @@ export default function (source) {
             const styleMap = {};
 
             if (stylesArgument) {
-                const componentStyles = evaluateStyleArgument(stylesArgument, source);
-                if (componentStyles) mergeFallback(styleMap, componentStyles);
+                const instanceStyles = evaluateStyleArgument(stylesArgument, source);
+                if (instanceStyles) mergeFallback(styleMap, instanceStyles);
             }
 
             const key = getAbsoluteName(component[1], source, this.context);
             mergeFallback(styleMap, Store.getComponentStyles(key) || {});
 
-            if (!Object.keys(styleMap).length) continue; // WIP MAY BREAK THINGS
+            if (!Object.keys(styleMap).length) continue;
 
             const hash = hashObject(styleMap);
             const { rules, selectors } = styleMapToRuleList(styleMap, hash);
             let insert = JSON.stringify(selectors);
 
-            Store.insertRules(hash, rules, fileHash);
+            Store.setScopedRules(fileHash, hash, rules);
 
             if (!stylesArgument) {
                 index++;
                 insert = 'styles:' + insert + ',';
+                stylesArgument = { length: 0 };
             }
 
             source = replaceByIndex(source, index, stylesArgument.length, insert);
@@ -52,10 +58,5 @@ export default function (source) {
         } catch (ex) { }
     }
 
-    const base = this.rootContext.replace(/\\/g, '/') + '/.next/cache/fluid/';
-    let styles = `import "${base}${fileHash}.css";\n`;
-    if (/_app.js$/.test(this.resourcePath)) styles += `import "${base}FLUID_GLOBAL_COMPILED_STYLES.css";\n`;
-
-    return styles + source; // DOESNT ACTUALLY WORK CURRENTLY
-    // return source;
+    return source;
 }

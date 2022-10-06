@@ -1,0 +1,1 @@
+export const GLOBAL_IMPORT_PATH = '\\pages\\_app';

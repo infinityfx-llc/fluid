@@ -20,9 +20,10 @@ export const objectFromString = (str) => {
 export const evaluateIdentifier = (str, identifier) => { // also take into account imports
     const parts = identifier.split(/(\.|\[('|")|('|")\])/g);
 
-    const regx = new RegExp(`(var|let|const)\\s*${parts[0]}\\s*=\\s*\\{`, 's');
+    const regx = new RegExp(`(var|let|const)\\s*${parts[0].replace(/\$/, '\\$')}\\s*=\\s*\\{`, 's');
     const match = regx.exec(str);
 
+    // if needing to find identifier delete original identifier definition
     if (match) {
         const i = match.index + match[0].length - 1;
 
@@ -46,13 +47,11 @@ export const evaluateStyleArgument = (args, source) => {
         if (/^\{.*\}$/s.test(args)) {
             return objectFromString(args);
         } else {
-            let match = args.match(/(?:\(\)\s*=>\s*|^)(?:\{\s*return\s*)?mergeFallback\(styles,\s*(.+?)\)(?:;?\s*\}|$)/s);
+            let match = args.match(/(?:\(\)\s*=>\s*|^)(?:\{\s*return\s*)?mergeFallback\(styles,\s*(.+?)\)(?:;?\s*\}|$)/s); // also match normal functions (not just arrow) (maybe try to eval functions??)
             if (match) return evaluateIdentifier(source, match[1]);
 
-            match = args.match(/^[\w][\w\$]*/);
+            match = args.match(/^[\w\$]+/);
             if (match) return evaluateIdentifier(source, match[0]);
-
-            // if needing to find identifier delete original identifier definition
         }
     } catch (ex) {
         return null;
@@ -123,9 +122,11 @@ export const getAbsoluteName = (name, source, context = './') => {
 
     if (!modulePath) return null;
 
-    const path = require.resolve(modulePath, { // do es module resolving as well
+    let path = require.resolve(modulePath, { // do es module resolving as well
         paths: [context]
     });
+
+    path = path.replace(/cjs/g, 'esm'); // TEMP SOLUTION
 
     return path.replace(/\\/g, '/').replace(/(\\|\/)[^\\\/]+$/, '/' + (alias || name));
 };

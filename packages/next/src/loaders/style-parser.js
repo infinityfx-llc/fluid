@@ -8,7 +8,7 @@ export default function (source) {
 
     if (Store.hydrated) return source;
 
-    const components = source.matchAll(/function\s+([\w\$]+?)\(.*?\)\s*\{/gs);
+    const components = source.matchAll(/function\s+([\w\$]+?)\((.*?)\)\s*\{/gs);
     const pointer = Pointer();
 
     for (const component of components) {
@@ -29,16 +29,16 @@ export default function (source) {
             if (styles) {
                 const isGlobal = /^useGlobal/.test(hook[0]);
                 const key = toAbsoluteName(component[1], this.context);
-
-                Store.insertStyles(isGlobal ? null : key, styles);
+                isGlobal ? Store.insertGlobalStyles(styles) : Store.insertStyles(key, styles);
 
                 let length = args.length + hook[0].length + 1;
-                if (source.charAt(subPointer.start + length + 1) === ';') length++;
-
-                // if props is not defined immediatley replace with classnames
+                if (source.charAt(subPointer.start + length) === ';') length++;
 
                 let insert = '';
                 if (!isGlobal) {
+                    if (!props.length) {
+                        insert = '= {};'; // if props is not defined immediatley replace with classnames
+                    } else
                     if (/^\{.*\}$/.test(props) && props.includes('styles')) {
                         insert = '= styles;';
                     } else {

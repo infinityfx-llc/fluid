@@ -6,14 +6,20 @@ export const COLOR_SCHEMES = {
         accent: ['#FF9625'],
         background: ['#EEEEEE'],
         foreground: ['#FFFFFF'],
-        text: ['#000000']
+        grey: ['#404040', '#808080', '#C0C0C0'],
+        highlight: ['#FFFFFF'],
+        shadow: ['#000000'],
+        text: '#000000'
     },
     dark: {
         primary: ['#16E9B1'],
         accent: ['#FF9625'],
         background: ['#000000'],
         foreground: ['#272727'],
-        text: ['#FFFFFF']
+        grey: ['#404040', '#808080', '#C0C0C0'],
+        highlight: ['#FFFFFF'],
+        shadow: ['#000000'],
+        text: '#FFFFFF'
     }
 };
 
@@ -58,5 +64,12 @@ export const DEFAULT_THEME = {
     },
     fonts: {
         Poppins: 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap'
+    },
+    screens: {
+        mob: [0, 480],
+        tab: [481, 768],
+        lap: [769, 1024],
+        dsk: [1025, 1200],
+        tlv: [1201]
     }
 };

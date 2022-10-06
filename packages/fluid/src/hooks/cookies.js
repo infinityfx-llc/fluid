@@ -22,6 +22,7 @@ export default function useCookies() {
 
     useEffect(() => {
         addEventListener('cookieupdate', parse);
+        parse(); // FIX FLASHING
 
         return () => removeEventListener('cookieupdate', parse);
     }, []);
