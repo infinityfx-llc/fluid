@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import { combine } from '@core/utils/css';
 import useStyles from '@hooks/styles';
 import defaultStyles from './style';
@@ -6,33 +6,39 @@ import { is, mergeFallback } from '@core/utils/helper';
 import { Animatable } from '@infinityfx/lively';
 import { useLink } from '@infinityfx/lively/hooks';
 
-export default function TextField({ children, styles, size, disabled, error, onChange, className, ...props }) {
+export default function TextField({ children, styles, size, icon, disabled, required, error, type, placeholder, label, onChange, ...props }) {
     const style = useStyles(mergeFallback(styles, defaultStyles));
     const [checked, setChecked] = useState(false);
+    const forId = useId();
     const [link, setLink] = useLink(0);
 
-    return <label
-        {...props}
-        className={combine(
-            style.switch,
+    const Icon = icon;
+
+    return <div
+        {...props}>
+        {label && <label htmlFor={forId} className={style.label}>{label} {required && '*'}</label>}
+        <div className={combine(
+            style.field,
             style[size],
-            checked ? style.checked : null,
             disabled ? style.disabled : null,
-            error ? style.error : null,
-            className
+            error ? style.error : null
         )}>
-        <input type="text" disabled={disabled} className={style.input} onChange={e => {
-            setLink(checked ? 0 : 1, 0.16);
-            setChecked(!checked);
-            if (is.function(onChange)) onChange(e);
-        }} />
-    </label>;
+            {Icon && <Icon className={style.icon} />}
+            <input id={forId} type={type} disabled={disabled} required={required} className={style.input} placeholder={placeholder} onChange={e => {
+                setLink(checked ? 0 : 1, 0.16);
+                setChecked(!checked);
+                if (is.function(onChange)) onChange(e);
+            }} />
+        </div>
+    </div>;
 }
 
 TextField.defaultProps = {
     styles: {},
     size: 'med',
+    type: 'text',
     disabled: false,
+    required: false,
     error: null
 };
 
@@ -49,6 +55,9 @@ TextField.defaultProps = {
 // name
 // onChange event
 // labels??
+// required
+// placeholder
+// validator
 
 // accesibility
-// role="" tabIndex=""
+// role="" tabIndex="" aria-label

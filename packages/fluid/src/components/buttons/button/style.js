@@ -30,7 +30,7 @@ export default {
         fontSize: 'var(--fluid-font-size-lrg)',
     },
 
-    '.button:not(.disabled):hover': {
+    '.button:not(.disabled, .loading):hover': {
         backgroundColor: 'var(--fluid-clr-foreground-100)'
     },
 

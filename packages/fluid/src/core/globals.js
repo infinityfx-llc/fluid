@@ -40,7 +40,7 @@ export const DEFAULT_THEME = {
         med: '.6em',
         lrg: '1em',
         xlg: '1.8em',
-        max: '9999px',
+        max: '9999px', // probably not necessary
     },
     font: {
         family: 'Poppins',
