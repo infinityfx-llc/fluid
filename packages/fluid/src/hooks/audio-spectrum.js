@@ -40,7 +40,7 @@ export default function useAudioSpectrum(audio, { bands, minFrequency, maxFreque
         }
 
         audio.current.addEventListener('play', resume);
-        source.current = context.createMediaElementSource(audio.current);
+        source.current = context.createMediaElementSource(audio.current); // allow for simultaniously same source
         source.current.connect(analyser.current);
 
         return () => audio.current?.removeEventListener('play', resume);

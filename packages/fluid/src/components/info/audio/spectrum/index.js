@@ -17,7 +17,10 @@ export default function AudioSpectrum({ source, bands, mirrored, minFrequency, m
         frame = requestAnimationFrame(update);
     };
 
-    const suspend = () => cancelAnimationFrame(frame);
+    const suspend = () => {
+        cancelAnimationFrame(frame);
+        setLink(new Array(bands).fill(0.1), 0.35);
+    };
 
     useEffect(() => {
         const audio = source.current;

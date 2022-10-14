@@ -23,3 +23,15 @@ export const removeEventListener = (event, callback) => {
 
     delete Events[event][callback.LivelyID];
 };
+
+export const onClickOutside = (element, callback) => {
+    callback.LivelyID = e => {
+        if (!e.path.includes(element)) callback(e);
+    };
+
+    addEventListener('click', callback.LivelyID);
+};
+
+export const offClickOutside = (callback) => {
+    removeEventListener('click', callback.LivelyID);
+};

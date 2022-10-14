@@ -2,10 +2,10 @@ import React, { useId, useState } from 'react';
 import { combine } from '@core/utils/css';
 import useStyles from '@hooks/styles';
 import defaultStyles from './style';
-import { mergeFallback } from '@core/utils/helper';
+import { is, mergeFallback } from '@core/utils/helper';
 import { Morph } from '@infinityfx/lively/auto';
 
-export default function Segmented({ children, styles, size, data, disabled, error, type, placeholder, label, onChange, className, ...props }) {
+export default function Segmented({ children, styles, size, data, disabled, error, onChange, className, ...props }) {
     const style = useStyles(mergeFallback(styles, defaultStyles));
     const [selection, setSelection] = useState(0);
 
@@ -13,6 +13,7 @@ export default function Segmented({ children, styles, size, data, disabled, erro
         className={combine(
             style.segmented,
             style[size],
+            error ? style.error : null,
             className
         )}
         {...props}>
@@ -24,13 +25,14 @@ export default function Segmented({ children, styles, size, data, disabled, erro
                 {val.label}
                 <input type="radio" disabled={val.disabled} value={val.value} name="test" onChange={e => {
                     setSelection(i);
+                    if (is.function(onChange)) onChange(e);
                 }} />
             </label>;
         })}
 
         <div className={style.selectors}>
             {data.map((val, i) => {
-                return <Morph noDeform active={selection === i} duration={0.4}>
+                return <Morph key={val.value} noDeform active={selection === i} duration={0.4}>
                     <span className={style.selection}>
                         {val.label}
                     </span>

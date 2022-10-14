@@ -36,6 +36,7 @@ Button.defaultProps = {
 // size prop
 // color variant
 // pass react props (event listeners and stuff)
+// focus-visible
 
 // for inputs and stuff:
 // disabled

@@ -4,7 +4,9 @@ export default {
         backgroundColor: 'var(--fluid-clr-foreground-100)',
         fontSize: 'var(--fluid-font-size-med)',
         fontWeight: 'var(--fluid-font-weight-med)',
+        color: 'var(--fluid-clr-text)',
         display: 'flex',
+        height: 'fit-content',
         borderRadius: '999px'
     },
 
@@ -34,9 +36,13 @@ export default {
     },
     
     '.selection': {
-        padding: '1em 2em',
+        padding: 'calc(1em - 0.35rem) calc(2em - 0.35rem)',
         borderRadius: '999px',
         backgroundColor: 'var(--fluid-clr-primary-100)',
         boxShadow: '0 0 4px rgba(0, 0, 0, 0.1)'
+    },
+
+    '.segmented.error': {
+        outline: 'solid 0.25rem red'
     }
 }

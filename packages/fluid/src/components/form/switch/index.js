@@ -21,7 +21,7 @@ export default function Switch({ children, styles, size, disabled, error, onChan
             error ? style.error : null,
             className
         )}>
-        <Animatable animate={{ interpolate: 'ease', translate: link(val => ({ x: `${val * 50}%` })) }}>
+        <Animatable animate={{ interpolate: 'ease', translate: link(val => ({ x: `${val * 100}%` })) }}>
             <div className={style.handle}></div>
         </Animatable>
         <input type="checkbox" disabled={disabled} checked={checked} onChange={e => {
@@ -52,6 +52,7 @@ Switch.defaultProps = {
 // name
 // onChange event
 // labels??
+// look into ref passing
 
 // accesibility
 // role="" tabIndex=""

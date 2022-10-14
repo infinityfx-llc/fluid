@@ -1,6 +1,6 @@
 export default {
     '.switch': {
-        width: '5rem',
+        width: '4.5rem',
         height: '2.5rem',
         borderRadius: '999px',
         boxSizing: 'border-box',

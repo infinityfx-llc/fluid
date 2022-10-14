@@ -3,7 +3,8 @@ export default {
         display: 'block',
         marginBottom: 'var(--fluid-gap-xsm)',
         fontSize: 'var(--fluid-font-size-sml)',
-        fontWeight: 'var(--fluid-font-weight-med)'
+        fontWeight: 'var(--fluid-font-weight-med)',
+        color: 'var(--fluid-clr-text)'
     },
 
     '.field': {
@@ -32,6 +33,7 @@ export default {
         fontFamily: 'var(--fluid-font-family)',
         border: 'none',
         backgroundColor: 'transparent',
+        color: 'var(--fluid-clr-text)',
         minWidth: 0
     },
 
