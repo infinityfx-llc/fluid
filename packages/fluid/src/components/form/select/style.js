@@ -6,7 +6,7 @@ export default {
         fontWeight: 'var(--fluid-font-weight-med)',
         color: 'var(--fluid-clr-text)'
     },
-    
+
     '.select': {
         position: 'relative',
         padding: '0.8em 1em',
@@ -40,6 +40,7 @@ export default {
 
     '.input': {
         backgroundColor: 'transparent',
+        color: 'var(--fluid-clr-text)',
         border: 'none',
         minWidth: 0,
         flexGrow: 1
@@ -73,14 +74,20 @@ export default {
         width: '100%',
         border: 'none',
         backgroundColor: 'transparent',
+        color: 'var(--fluid-clr-text)',
         padding: '0.8em 1em',
         borderRadius: 'var(--fluid-radius-sml)',
         transition: 'background-color .1s',
         cursor: 'pointer'
     },
 
-    '.option:hover, .option:focus-visible': {
-        backgroundColor: 'var(--fluid-clr-primary-100)'
+    '.option:not(.disabled):hover, .option:not(.disabled):focus-visible': {
+        backgroundColor: 'rgb(var(--fluid-rgb-primary-100), 0.15)'
+    },
+
+    '.option.disabled': {
+        color: 'var(--fluid-clr-grey-200)',
+        cursor: 'default'
     },
 
     '.select:focus-within': {

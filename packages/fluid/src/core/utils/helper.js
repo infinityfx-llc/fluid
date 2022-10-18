@@ -42,3 +42,34 @@ export const mergeFallback = (a, b) => {
 
     return a;
 };
+
+export const hexToRgba = hex => {
+    const [_, r, g, b] = hex.match(/^#([\da-f]{1,2})([\da-f]{1,2})([\da-f]{1,2})([\da-f]{2})?/i);
+    const t = val => is.null(val) ? 127 : parseInt(val.padStart(2, val), 16);
+
+    return { r: t(r), g: t(g), b: t(b) };
+};
+
+export const strToRgba = str => {
+    const [_, r, g, b] = str.match(/^rgba?\((\d+)\D+(\d+)\D+(\d+)\D*(\d+)?\)/i);
+    const t = val => is.null(val) ? 127 : parseInt(val);
+
+    return { r: t(r), g: t(g), b: t(b) };
+};
+
+export const strToColor = str => {
+    if (/^rgba?\(.*\)$/i.test(str)) return strToRgba(str);
+    if (/^#[0-9a-f]{3,8}$/i.test(str)) return hexToRgba(str);
+
+    return { r: 127, g: 127, b: 127 };
+};
+
+export const colorToRgb = clr => {
+    return `${clr.r}, ${clr.g}, ${clr.b}`;
+};
+
+export const colorToHex = clr => {
+    const t = val => val.toString(16).padStart(2, '0');
+
+    return `#${t(clr.r)}${t(clr.g)}${t(clr.b)}`
+};

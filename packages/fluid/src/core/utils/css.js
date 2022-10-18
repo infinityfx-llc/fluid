@@ -1,4 +1,4 @@
-import { hash, is } from './helper';
+import { colorToHex, colorToRgb, hash, is, strToColor } from './helper';
 
 export const hashObject = (rules) => hash(JSON.stringify(rules));
 
@@ -41,7 +41,7 @@ export const styleMapToRuleList = (rules, postfix = '') => {
     return { rules, selectors };
 };
 
-export const parseVariables = (map, prefix = 'fluid', vars = {}) => {
+export const parseVariables = (map, prefix = 'fluid', vars = {}) => { // OPTIMIZE
     for (const key in map) {
         if (is.array(map[key])) {
             for (let i = 0; i < map[key].length; i++) {
@@ -49,6 +49,28 @@ export const parseVariables = (map, prefix = 'fluid', vars = {}) => {
             }
         } else {
             vars[`--${prefix}-${key}`] = map[key];
+        }
+    }
+
+    return vars;
+};
+
+export const parseColorVariables = (map, prefix = 'fluid', vars = {}) => {
+    for (const key in map) {
+        const rgbPrefix = `--${prefix}-rgb-${key}`;
+        const clrPrefix = `--${prefix}-clr-${key}`;
+
+        if (is.array(map[key])) {
+            for (let i = 0; i < map[key].length; i++) {
+                const clr = strToColor(map[key][i]);
+
+                vars[`${rgbPrefix}-${(i + 1) * 100}`] = colorToRgb(clr);
+                vars[`${clrPrefix}-${(i + 1) * 100}`] = colorToHex(clr);
+            }
+        } else {
+            const clr = strToColor(map[key]);
+            vars[rgbPrefix] = colorToRgb(clr);
+            vars[clrPrefix] = colorToHex(clr);
         }
     }
 

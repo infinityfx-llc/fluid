@@ -2,7 +2,7 @@ import React, { createContext, useInsertionEffect, useMemo } from 'react';
 import { DEFAULT_COLOR_SCHEME, DEFAULT_THEME } from '@core/globals';
 import useColorScheme from '@hooks/color-scheme';
 import { cloneMergeDeep } from '@core/utils/helper';
-import { parseVariables } from '@core/utils/css';
+import { parseColorVariables, parseVariables } from '@core/utils/css';
 import useStylesheet from '@hooks/stylesheet';
 import useGlobalStyles from '@hooks/global-styles';
 
@@ -30,7 +30,7 @@ export function FluidProvider({ children, theme }) {
 
     useGlobalStyles(() => {
         const vars = { '--fluid-font-family': fluid.font.family };
-        parseVariables(fluid.colors, 'fluid-clr', vars);
+        parseColorVariables(fluid.colors, 'fluid', vars);
         parseVariables(fluid.spacing, 'fluid-gap', vars);
         parseVariables(fluid.radii, 'fluid-radius', vars);
         parseVariables(fluid.font.sizes, 'fluid-font-size', vars);

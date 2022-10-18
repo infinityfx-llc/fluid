@@ -1,6 +1,12 @@
 export default {
-    '.container': {
-        overflow: 'hidden !important'
+    '@media not (pointer: coarse)': {
+        '.container': {
+            overflow: 'hidden !important'
+        },
+        
+        '.container:not(.hidden)': {
+            paddingRight: '0.6rem !important'
+        }
     },
 
     '.scrollbar': {
@@ -8,16 +14,28 @@ export default {
         width: '0.6rem',
         height: '100%',
         right: 0,
-        top: 0
+        top: 0,
+        zIndex: 999
+    },
+
+    '.hidden .scrollbar': {
+        display: 'none'
+    },
+
+    '@media (pointer: coarse)': {
+        '.scrollbar': {
+            display: 'none'
+        }
     },
 
     '.handle': {
+        userSelect: 'none',
         width: 'inherit',
-        height: '50%',
+        height: '0%',
         background: 'var(--fluid-clr-grey-200)',
         borderRadius: '999px',
         opacity: 0.35,
-        cursor: 'pointer',
+        cursor: 'default',
         transition: 'opacity .15s'
     },
 

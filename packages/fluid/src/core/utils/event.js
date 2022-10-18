@@ -26,7 +26,7 @@ export const removeEventListener = (event, callback) => {
 
 export const onClickOutside = (element, callback) => {
     callback.LivelyID = e => {
-        if (!e.path.includes(element)) callback(e);
+        if (!e.composedPath().includes(element)) callback(e);
     };
 
     addEventListener('click', callback.LivelyID);

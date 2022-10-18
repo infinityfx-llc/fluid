@@ -50,7 +50,7 @@ export default function Select({ children, styles, size, disabled, error, data, 
             )}
             onClick={open}>
             <input className={style.input} type="text" placeholder="Test" value={selectionLabel} required={required} onChange={e => {
-                setLabel(e.target.value);
+                setSelectionLabel(e.target.value);
                 setSelected(null);
             }} />
             <ChevronDown className={style.icon} />
@@ -62,7 +62,7 @@ export default function Select({ children, styles, size, disabled, error, data, 
                             if (!selected && !option.label.includes(selectionLabel)) return null;
 
                             return <Animatable onMount key={option.value + option.label} lazy={false} animate={{ opacity: [0, 1], duration: .15 }}>
-                                <button className={style.option} onClick={e => select(e, option)}>
+                                <button className={combine(style.option, option.disabled ? style.disabled : null)} disabled={option.disabled} onClick={e => select(e, option)}>
                                     {option.label}
                                 </button>
                             </Animatable>;
@@ -81,3 +81,5 @@ Select.defaultProps = {
     error: null,
     data: []
 };
+
+// check if above or below has more space

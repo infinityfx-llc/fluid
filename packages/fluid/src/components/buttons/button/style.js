@@ -14,7 +14,7 @@ export default {
         justifyContent: 'center',
         padding: 'var(--fluid-gap-sml) var(--fluid-gap-med)',
         fontWeight: 'var(--fluid-font-weight-med)',
-        borderRadius: 'var(--fluid-radius-max)',
+        borderRadius: '999px',
         gap: 'var(--fluid-gap-sml)'
     },
 

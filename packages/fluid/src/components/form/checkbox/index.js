@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Spinner from '@components/info/progress/spinner/index';
 import { combine } from '@core/utils/css';
 import useStyles from '@hooks/styles';
 import defaultStyles from './style';

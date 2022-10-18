@@ -2,7 +2,7 @@ export const DEFAULT_COLOR_SCHEME = 'light';
 
 export const COLOR_SCHEMES = {
     light: {
-        primary: ['#16E9B1'],
+        primary: ['#16E9B1', '#c3e8de'],
         accent: ['#FF9625'],
         background: ['#EEEEEE'],
         foreground: ['#FFFFFF'],
@@ -12,7 +12,7 @@ export const COLOR_SCHEMES = {
         text: '#000000'
     },
     dark: {
-        primary: ['#16E9B1'],
+        primary: ['#16E9B1', '#04291f'],
         accent: ['#FF9625'],
         background: ['#000000'],
         foreground: ['#272727'],
@@ -39,8 +39,7 @@ export const DEFAULT_THEME = {
         sml: '.3em',
         med: '.6em',
         lrg: '1em',
-        xlg: '1.8em',
-        max: '9999px', // probably not necessary
+        xlg: '1.8em'
     },
     font: {
         family: 'Poppins',
