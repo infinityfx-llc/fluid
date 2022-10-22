@@ -73,3 +73,12 @@ export const colorToHex = clr => {
 
     return `#${t(clr.r)}${t(clr.g)}${t(clr.b)}`
 };
+
+export const mergeRefs = (...args) => {
+    return el => {
+        for (const ref of args) {
+            if (!ref) continue;
+            'current' in ref ? ref.current = el : ref?.(el);
+        }
+    };
+};

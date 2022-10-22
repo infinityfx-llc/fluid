@@ -4,6 +4,7 @@ import Switch from './switch';
 import TextField from './text-field';
 import Segmented from './segmented';
 import Select from './select';
+import Slider from './slider';
 
 export {
     Checkbox,
@@ -11,5 +12,6 @@ export {
     Switch,
     TextField,
     Segmented,
-    Select
+    Select,
+    Slider
 };

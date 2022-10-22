@@ -41,7 +41,7 @@ export default function AudioSpectrum({ source, bands, mirrored, minFrequency, m
 
     return <div {...props} className={style.spectrum}>
         {new Array(bands).fill(0).map((_, i) => {
-            return <Animatable key={i} noDeform lazy={false} animate={{ scale: link(val => ({ y: val[i] })) }}>
+            return <Animatable key={i} noDeform lazy={false} animate={{ scale: link(val => ({ y: val[i] })) }} initial={{ origin: { y: mirrored ? 0.5 : 1 }}}>
                 <div className={style.band}></div>
             </Animatable>;
         })}

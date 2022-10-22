@@ -3,7 +3,20 @@ export default {
     '.container': {
         position: 'relative',
         width: 'fit-content',
-        height: 'fit-content'
+        height: 'fit-content',
+        cursor: 'pointer'
+    },
+
+    '.container.sml': {
+        padding: '0.6rem'
+    },
+
+    '.container.med': {
+        padding: '0.8rem'
+    },
+
+    '.container.lrg': {
+        padding: '1rem'
     },
 
     '.container *:first-child': {
@@ -13,8 +26,8 @@ export default {
     '.focus': {
         position: 'absolute',
         overflow: 'hidden',
-        inset: 'calc(-1 * var(--fluid-gap-med))',
-        backgroundColor: 'var(--fluid-clr-primary-100)',
+        inset: 0,
+        backgroundColor: 'rgb(var(--fluid-rgb-primary-100), .66)',
         borderRadius: 'var(--fluid-radius-sml)',
         opacity: 0,
         transition: 'opacity .1s',
@@ -25,7 +38,7 @@ export default {
     },
 
     '.container:hover .focus, .container *:first-child:focus-visible + .focus': {
-        opacity: 0.15
+        opacity: 0.2
     },
 
     '.circle': {

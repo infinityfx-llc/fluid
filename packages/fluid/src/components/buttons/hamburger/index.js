@@ -1,11 +1,11 @@
-import React, { useRef, useState } from 'react';
+import React, { forwardRef, useRef, useState } from 'react';
 import { combine } from '@core/utils/css';
 import useStyles from '@hooks/styles';
 import defaultStyles from './style';
 import { is, mergeFallback } from '@core/utils/helper';
 import { Animatable } from '@infinityfx/lively';
 
-export default function Hamburger({ children, styles, size, disabled, onClick, className, ...props }) {
+const Hamburger = forwardRef(({ children, styles, size, disabled, onClick, className, ...props }, ref) => {
     const style = useStyles(mergeFallback(styles, defaultStyles));
     const layersRef = useRef();
     const crossRef = useRef();
@@ -13,6 +13,7 @@ export default function Hamburger({ children, styles, size, disabled, onClick, c
 
     return <button
         {...props}
+        ref={ref}
         className={combine(
             style.hamburger,
             style[size],
@@ -60,12 +61,14 @@ export default function Hamburger({ children, styles, size, disabled, onClick, c
             </div>
         </Animatable>
     </button >;
-}
+});
 
 Hamburger.defaultProps = {
     styles: {},
     size: 'med',
     disabled: false
 };
+
+export default Hamburger;
 
 // Lively BUG: -90 deg rotate (probably to do with skew and rotate calc in decompose)
