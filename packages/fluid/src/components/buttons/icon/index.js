@@ -1,4 +1,4 @@
-import React, { cloneElement } from 'react';
+import React from 'react';
 import { combine } from '@core/utils/css';
 import useStyles from '@hooks/styles';
 import defaultStyles from './style';
@@ -20,8 +20,8 @@ export default function IconButton({ children, styles, size, round, disabled, on
         onClick={e => {
             if (!disabled && is.function(onClick)) onClick(e);
         }}>
-        <Focus size={size}>
-            {cloneElement(children, { className: combine(style.icon, children.props?.className) })}
+        <Focus size="fil" className={style.icon}>
+            {children}
         </Focus>
     </button>;
 }

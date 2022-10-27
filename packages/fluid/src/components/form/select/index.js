@@ -4,7 +4,7 @@ import useStyles from '@hooks/styles';
 import defaultStyles from './style';
 import { is, mergeFallback } from '@core/utils/helper';
 import { Animatable } from '@infinityfx/lively';
-import { ChevronDown } from '@components/icons';
+import { ChevronDownIcon } from '@components/icons';
 import { offClickOutside, onClickOutside } from '@core/utils';
 import { Scrollbar } from '@components/navigation';
 
@@ -53,7 +53,7 @@ export default function Select({ children, styles, size, disabled, error, data, 
                 setSelectionLabel(e.target.value);
                 setSelected(null);
             }} />
-            <ChevronDown className={style.icon} />
+            <ChevronDownIcon className={style.icon} />
 
             <Animatable ref={options} lazy={false} animate={{ opacity: [0, 1], display: [{ start: 'none', set: 'block' }, 'block'], duration: .15 }}>
                 <Scrollbar>
@@ -83,3 +83,5 @@ Select.defaultProps = {
 };
 
 // check if above or below has more space
+// open list on keyboard input
+// make arrow a toggle button

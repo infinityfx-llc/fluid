@@ -1,7 +1,8 @@
 import Focus from './focus';
 
-export * from './audio/index';
-export * from './progress/index';
+export * from './audio';
+export * from './progress';
+export * from './static';
 
 export {
     Focus

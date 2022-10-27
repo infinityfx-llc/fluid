@@ -18,7 +18,12 @@ export default function Slider({ children, styles, vertical, handles, min, max, 
 
     const change = (e, index = 0) => {
         const { x, width, y, height } = ref.current.getBoundingClientRect();
-        let val = vertical ? (e.pageY - y) / height : (e.pageX - x) / width;
+        set(vertical ? (e.pageY - y) / height : (e.pageX - x) / width, index);
+    };
+
+    const set = (val, index) => {
+        if (disabled) return;
+
         val = Math.min(Math.max(val, 0), 1);
         if (index > 0) val = Math.max(val, values.current[index - 1] + step);
         if (index < handles - 1) val = Math.min(val, values.current[index + 1] - step);
@@ -52,12 +57,14 @@ export default function Slider({ children, styles, vertical, handles, min, max, 
 
     useEffect(() => {
         addEventListener('mousemove', move);
+        // addEventListener('touchmove', move);
         addEventListener('mouseup', mouseup);
 
         for (let i = 0; i < handles; i++) update(i);
 
         return () => {
             removeEventListener('mousemove', move);
+            // removeEventListener('touchmove', move);
             removeEventListener('mouseup', mouseup);
         }
     }, []);
@@ -77,19 +84,49 @@ export default function Slider({ children, styles, vertical, handles, min, max, 
         <div className={style.track}>
             <div className={style.progress} ref={progressRef} />
         </div>
-        {/* <Focus> */}
         {new Array(handles).fill(0).map((_, i) => {
-            return <div
+            return <Focus
+                round
                 key={i}
-                className={style.handle}
+                className={style.handle_wrapper}
                 ref={el => handleRefs.current[i] = el}
-                tabIndex={0}
-                onMouseUp={mouseup}
-                onMouseDown={() => {
-                    dragging.current = i + 1;
-                }} />;
+            >
+                <div
+                    className={style.handle}
+                    tabIndex={0}
+                    role="slider"
+                    aria-disabled={disabled}
+                    onMouseUp={mouseup}
+                    // onTouchEnd={mouseup}
+                    onMouseDown={() => {
+                        dragging.current = i + 1;
+                    }}
+                    // onTouchStart={() => {
+                    //     dragging.current = i + 1;
+                    // }}
+                    onKeyDown={e => {
+                        switch (e.key) {
+                            case 'ArrowUp':
+                                set(values.current[i] + (vertical ? -step : step), i);
+                                break;
+                            case 'ArrowRight':
+                                set(values.current[i] + step, i);
+                                break;
+                            case 'ArrowDown':
+                                set(values.current[i] - (vertical ? -step : step), i);
+                                break;
+                            case 'ArrowLeft':
+                                set(values.current[i] - step, i);
+                                break;
+                            case 'Home':
+                                set(min, i);
+                                break;
+                            case 'End':
+                                set(max, i);
+                        }
+                    }} />
+            </Focus>;
         })}
-        {/* </Focus> */}
     </div>;
 }
 
@@ -105,7 +142,8 @@ Slider.defaultProps = {
     error: null
 };
 
-// add keyboard control
-// add aria props
 // implement look for closest handle on click
 // tool tip on hover
+// have work with forms
+// add proper boundingbox (handles currently outside container)
+// have work with touch

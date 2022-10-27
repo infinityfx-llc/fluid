@@ -15,7 +15,7 @@ export default {
     },
 
     '.track': {
-        width: 'calc(100% - 10px)',
+        width: '100%',
         height: '6px',
         backgroundColor: 'var(--fluid-clr-grey-300)',
         borderRadius: '999px',
@@ -23,7 +23,7 @@ export default {
     },
 
     '.vertical .track': {
-        height: 'calc(100% - 10px)',
+        height: '100%',
         width: '6px'
     },
 
@@ -34,18 +34,35 @@ export default {
         transformOrigin: 'top left'
     },
 
-    '.handle': {
-        userSelect: 'none',
+    '.handle_wrapper': {
         position: 'absolute',
         height: '100%',
-        aspectRatio: 1,
+        aspectRatio: 1
+    },
+
+    '.handle': {
+        height: '100%',
+        width: '100%',
+        userSelect: 'none',
         borderRadius: '999px',
         backgroundColor: 'var(--fluid-clr-foreground-100)',
         boxShadow: '0 0 6px rgb(0, 0, 0, 0.1)'
     },
 
-    '.vertical .handle': {
+    '.vertical .handle_wrapper': {
         height: 'auto',
         width: '100%'
+    },
+
+    '.slider.disabled': {
+        cursor: 'default'
+    },
+
+    '.disabled .progress': {
+        backgroundColor: 'var(--fluid-clr-grey-200)'
+    },
+
+    '.disabled .handle': {
+        backgroundColor: 'var(--fluid-clr-grey-300)'
     }
 }

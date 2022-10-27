@@ -18,7 +18,9 @@ export default {
         padding: '1em 2em',
         borderRadius: '999px',
         cursor: 'pointer',
-        zIndex: 1
+        zIndex: 1,
+        display: 'flex',
+        alignItems: 'center'
     },
 
     '.segment.disabled': {

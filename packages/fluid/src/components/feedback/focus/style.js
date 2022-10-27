@@ -1,32 +1,36 @@
 export default {
 
-    '.container': {
+    '.interact': {
         position: 'relative',
         width: 'fit-content',
         height: 'fit-content',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        zIndex: 0
     },
 
-    '.container.sml': {
-        padding: '0.6rem'
+    '.interact.sml .focus': {
+        inset: 'calc(-1 * var(--fluid-gap-xsm))',
     },
 
-    '.container.med': {
-        padding: '0.8rem'
+    '.interact.med .focus': {
+        inset: 'calc(-1 * var(--fluid-gap-sml))',
     },
 
-    '.container.lrg': {
-        padding: '1rem'
+    '.interact.lrg .focus': {
+        inset: 'calc(-1 * var(--fluid-gap-med))',
     },
 
-    '.container *:first-child': {
-        zIndex: 1
+    '.interact.fil .focus': {
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%'
     },
 
     '.focus': {
         position: 'absolute',
         overflow: 'hidden',
-        inset: 0,
+        inset: 'calc(-1 * var(--fluid-gap-sml))',
         backgroundColor: 'rgb(var(--fluid-rgb-primary-100), .66)',
         borderRadius: 'var(--fluid-radius-sml)',
         opacity: 0,
@@ -34,14 +38,19 @@ export default {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        pointerEvents: 'none'
+        pointerEvents: 'none',
+        zIndex: -1
     },
 
-    '.container:hover .focus, .container *:first-child:focus-visible + .focus': {
+    '.focus.round': {
+        borderRadius: '999px'
+    },
+
+    '.interact *:first-child:hover + .focus, .interact *:first-child:focus-visible + .focus, .interact.fil:hover .focus': {
         opacity: 0.2
     },
 
-    '.circle': {
+    '.tap': {
         minWidth: '141%',
         aspectRatio: 1,
         borderRadius: '999px',

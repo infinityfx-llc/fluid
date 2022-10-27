@@ -20,8 +20,12 @@ export default function Spinner({ className }) {
     });
 
     return <svg viewBox="0 0 100 100" className={combine(style.container, className)}>
-        <Animatable onMount animate={{ rotate: [0, 720], length: [0.75, 0.25, 0.75], interpolate: 'linear', repeat: Infinity, duration: 2 }}>
+        <Animatable onMount animate={{ rotate: [0, 720], length: [0.75, 0.25, 0.75], interpolate: 'linear', repeat: Infinity, duration: 2 }} initial={{ origin: { x: 0.5, y: 0.5 }}}>
             <circle className={style.spinner} />
         </Animatable>
     </svg>;
 }
+
+// FIX Animatable issues:
+// check default origin (not 0.5???)
+// fix weird scale flickering when parsing transform (-1 counts as non-default scale???)

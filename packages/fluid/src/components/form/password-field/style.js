@@ -36,7 +36,9 @@ export default {
         border: 'none',
         backgroundColor: 'transparent',
         color: 'var(--fluid-clr-text)',
-        minWidth: 0
+        minWidth: 0,
+        flexGrow: 1,
+        flexShrink: 1
     },
 
     '.icon': {

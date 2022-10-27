@@ -2,8 +2,8 @@ export default {
     '.button': {
         border: 'none',
         padding: 0,
-        // backgroundColor: 'transparent',
-        backgroundColor: 'var(--fluid-clr-primary-100)',
+        backgroundColor: 'transparent',
+        // backgroundColor: 'var(--fluid-clr-primary-100)',
         height: 'fit-content',
         cursor: 'pointer',
         overflow: 'hidden',
@@ -20,18 +20,21 @@ export default {
     },
 
     '.sml .icon': {
+        padding: '0.6rem',
         width: '2rem',
         height: '2rem'
     },
 
     '.med .icon': {
-        width: '2.4rem',
-        height: '2.4rem'
+        padding: '0.8rem',
+        width: '2.6rem',
+        height: '2.6rem'
     },
 
     '.lrg .icon': {
-        width: '3rem',
-        height: '3rem'
+        padding: '1.2rem',
+        width: '3.4rem',
+        height: '3.4rem'
     },
 
     '.button.round': {
