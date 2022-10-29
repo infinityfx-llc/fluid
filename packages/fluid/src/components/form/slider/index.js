@@ -147,3 +147,4 @@ Slider.defaultProps = {
 // have work with forms
 // add proper boundingbox (handles currently outside container)
 // have work with touch
+// replace things like size and round with data- attributes (NOT CLASSES)

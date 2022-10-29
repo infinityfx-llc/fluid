@@ -33,3 +33,5 @@ Focus.defaultProps = {
 }
 
 export default Focus;
+
+// use :active more

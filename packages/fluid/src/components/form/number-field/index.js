@@ -6,7 +6,7 @@ import { is, mergeFallback } from '@core/utils/helper';
 import { MinusIcon, PlusIcon } from '@components/icons';
 import { Focus } from '@components/feedback';
 
-export default function NumberField({ children, styles, size, disabled, required, error, label, onChange, ...props }) {
+export default function NumberField({ children, styles, size, step, disabled, required, error, label, onChange, ...props }) {
     const style = useStyles(mergeFallback(styles, defaultStyles));
     const [value, setValue] = useState('');
     const forId = useId();
@@ -21,7 +21,7 @@ export default function NumberField({ children, styles, size, disabled, required
             error ? style.error : null
         )}>
             <button disabled={disabled} className={combine(style.button, style.left)} onClick={() => {
-                setValue((parseFloat(value) || 0) - 1);
+                setValue((parseFloat(value) || 0) - step);
             }}>
                 <Focus size="fil" className={style.interactable}>
                     <MinusIcon />
@@ -32,7 +32,7 @@ export default function NumberField({ children, styles, size, disabled, required
                 setValue(e.target.value);
             }} />
             <button disabled={disabled} className={combine(style.button, style.right)} onClick={() => {
-                setValue((parseFloat(value) || 0) + 1);
+                setValue((parseFloat(value) || 0) + step);
             }}>
                 <Focus size="fil" className={style.interactable}>
                     <PlusIcon />
@@ -45,7 +45,7 @@ export default function NumberField({ children, styles, size, disabled, required
 NumberField.defaultProps = {
     styles: {},
     size: 'med',
-    type: 'text',
+    step: 1,
     disabled: false,
     required: false,
     error: null

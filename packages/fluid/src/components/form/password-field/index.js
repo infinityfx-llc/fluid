@@ -41,6 +41,8 @@ PasswordField.defaultProps = {
     error: null
 };
 
+// add password strength indicator at bottom
+
 // custom styling prop
 // size prop
 // color variant
