@@ -5,7 +5,7 @@ import defaultStyles from './style';
 import { is, mergeFallback } from '@core/utils/helper';
 import { Morph } from '@infinityfx/lively/auto';
 
-export default function Segmented({ children, styles, size, data, disabled, error, onChange, className, ...props }) {
+export default function Segmented({ children, styles, size, round, data, disabled, error, onChange, className, ...props }) {
     const style = useStyles(mergeFallback(styles, defaultStyles));
     const [selection, setSelection] = useState(0);
 
@@ -13,6 +13,7 @@ export default function Segmented({ children, styles, size, data, disabled, erro
         className={combine(
             style.segmented,
             style[size],
+            round ? style.round : null,
             error ? style.error : null,
             className
         )}
@@ -32,7 +33,7 @@ export default function Segmented({ children, styles, size, data, disabled, erro
 
         <div className={style.selectors}>
             {data.map((val, i) => {
-                return <Morph key={val.value} noDeform active={selection === i} duration={0.4}>
+                return <Morph key={val.value} noDeform active={selection === i} duration={0.35}>
                     <span className={style.selection}>
                         {val.label}
                     </span>
@@ -45,6 +46,7 @@ export default function Segmented({ children, styles, size, data, disabled, erro
 Segmented.defaultProps = {
     styles: {},
     size: 'med',
+    round: true,
     disabled: false,
     error: null,
     data: []

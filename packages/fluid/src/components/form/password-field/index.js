@@ -6,12 +6,24 @@ import { is, mergeFallback } from '@core/utils/helper';
 import { IconButton } from '@components/buttons';
 import { EyeClosedIcon, EyeIcon } from '@components/icons';
 
-export default function PasswordField({ children, styles, size, icon, disabled, required, error, placeholder, label, onChange, ...props }) {
+export default function PasswordField({ children, styles, size, strengthIndicator, icon, disabled, required, error, placeholder, label, onChange, ...props }) {
     const style = useStyles(mergeFallback(styles, defaultStyles));
     const forId = useId();
     const [hidden, setHidden] = useState(true);
+    const [strength, setStrength] = useState(0);
 
     const Icon = icon;
+
+    const change = e => {
+        if (is.function(onChange)) onChange(e);
+
+        let val = e.target.value, strength = 0;
+        for (const regx of [/[a-z]/, /[A-Z]/, /\d/, /\W|_/, /.{10,}/]) {
+            if (regx.test(val)) strength++;
+        }
+
+        setStrength(strength);
+    };
 
     return <div
         {...props}>
@@ -23,25 +35,28 @@ export default function PasswordField({ children, styles, size, icon, disabled, 
             error ? style.error : null
         )}>
             {Icon && <Icon className={style.icon} />}
-            <input id={forId} type={hidden ? 'password' : 'text'} disabled={disabled} required={required} className={style.input} placeholder={placeholder} onChange={e => {
-                if (is.function(onChange)) onChange(e);
-            }} />
+            <input id={forId} type={hidden ? 'password' : 'text'} disabled={disabled} required={required} className={style.input} placeholder={placeholder} onChange={change} />
             <IconButton size="sml" onClick={() => setHidden(!hidden)}>
                 {hidden ? <EyeIcon /> : <EyeClosedIcon />}
             </IconButton>
         </div>
+        {strengthIndicator && <div className={style.strength_indicator} data-strength={strength}>
+            {new Array(5).fill(0).map((_, i) => <div key={i} data-active={i < strength} className={style.bar} />)}
+        </div>}
     </div>;
 }
 
 PasswordField.defaultProps = {
     styles: {},
     size: 'med',
+    strengthIndicator: false,
     disabled: false,
     required: false,
     error: null
 };
 
 // add password strength indicator at bottom
+// pass autocomplete value to input
 
 // custom styling prop
 // size prop

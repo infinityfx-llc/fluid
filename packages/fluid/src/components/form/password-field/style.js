@@ -63,5 +63,40 @@ export default {
 
     '.field.error .icon': {
         color: 'red'
+    },
+
+    '.strength_indicator': {
+        width: '100%',
+        display: 'flex',
+        gap: 'var(--fluid-gap-xxs)',
+        marginTop: 'var(--fluid-gap-xsm)'
+    },
+
+    '.strength_indicator .bar': {
+        flexGrow: 1,
+        height: '4px',
+        borderRadius: '999px',
+        backgroundColor: 'var(--fluid-clr-grey-300)',
+        transition: 'background-color .15s'
+    },
+
+    '.strength_indicator[data-strength="1"] .bar[data-active="true"]': {
+        backgroundColor: '#ff0000'
+    },
+
+    '.strength_indicator[data-strength="2"] .bar[data-active="true"]': {
+        backgroundColor: '#ff5900'
+    },
+
+    '.strength_indicator[data-strength="3"] .bar[data-active="true"]': {
+        backgroundColor: '#ffae00'
+    },
+
+    '.strength_indicator[data-strength="4"] .bar[data-active="true"]': {
+        backgroundColor: '#bbff00'
+    },
+
+    '.strength_indicator[data-strength="5"] .bar[data-active="true"]': {
+        backgroundColor: '#00ff44'
     }
 }

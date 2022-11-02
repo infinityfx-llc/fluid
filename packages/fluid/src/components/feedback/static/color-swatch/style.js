@@ -24,5 +24,10 @@ export default {
         backgroundSize: '2rem 2rem',
         backgroundRepeat: 'repeat',
         zIndex: -1
+    },
+
+    '.swatch[data-selected="true"]': {
+        outline: 'solid 1px var(--fluid-clr-foreground-100)',
+        borderColor: 'var(--fluid-clr-foreground-100)'
     }
 }

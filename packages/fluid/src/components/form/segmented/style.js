@@ -7,6 +7,10 @@ export default {
         color: 'var(--fluid-clr-text)',
         display: 'flex',
         height: 'fit-content',
+        borderRadius: 'var(--fluid-radius-sml)'
+    },
+
+    '.segmented.round': {
         borderRadius: '999px'
     },
 
@@ -16,7 +20,6 @@ export default {
 
     '.segment': {
         padding: '1em 2em',
-        borderRadius: '999px',
         cursor: 'pointer',
         zIndex: 1,
         display: 'flex',
@@ -39,12 +42,16 @@ export default {
     
     '.selection': {
         padding: 'calc(1em - 0.35rem) calc(2em - 0.35rem)',
-        borderRadius: '999px',
+        borderRadius: 'var(--fluid-radius-sml)',
         backgroundColor: 'var(--fluid-clr-primary-100)',
         boxShadow: '0 0 4px rgba(0, 0, 0, 0.1)'
     },
 
+    '.round .selection': {
+        borderRadius: '999px'
+    },
+
     '.segmented.error': {
-        outline: 'solid 0.25rem red'
+        outline: 'solid 2px red'
     }
 }

@@ -12,7 +12,7 @@ export default {
     },
 
     '.button:hover': {
-        backgroundColor: 'var(--fluid-clr-foreground-100)',
+        // backgroundColor: 'var(--fluid-clr-foreground-100)',
     },
 
     '.icon': {

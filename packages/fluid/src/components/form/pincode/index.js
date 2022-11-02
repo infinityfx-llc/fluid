@@ -55,3 +55,4 @@ Pincode.defaultProps = {
 };
 
 // add dash in middle optional
+// allow for pasting code
