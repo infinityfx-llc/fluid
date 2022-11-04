@@ -57,10 +57,10 @@ export default {
 
     '.bullet': {
         position: 'relative',
-        width: 'calc(2rem - 4px)',
-        height: 'calc(2rem - 4px)',
+        width: 'calc(1.8rem - 3px)',
+        height: 'calc(1.8rem - 3px)',
         backgroundColor: 'var(--fluid-clr-background-100)',
-        border: 'solid 4px var(--fluid-clr-grey-300)',
+        border: 'solid 3px var(--fluid-clr-grey-300)',
         borderRadius: '999px',
         zIndex: 1
     },

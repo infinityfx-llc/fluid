@@ -4,7 +4,7 @@ import useStyles from '@hooks/styles';
 import defaultStyles from './style';
 import { is, mergeFallback } from '@core/utils/helper';
 import { addEventListener, removeEventListener } from '@core/utils';
-import { Focus } from '@components/feedback';
+import { Focus, Tooltip } from '@components/feedback';
 
 export default function Slider({ children, styles, vertical, handles, min, max, step, size, disabled, error, onChange, className, ...props }) {
     const style = useStyles(mergeFallback(styles, defaultStyles));
@@ -91,40 +91,42 @@ export default function Slider({ children, styles, vertical, handles, min, max, 
                 className={style.handle_wrapper}
                 ref={el => handleRefs.current[i] = el}
             >
-                <div
-                    className={style.handle}
-                    tabIndex={0}
-                    role="slider"
-                    aria-disabled={disabled}
-                    onMouseUp={mouseup}
-                    // onTouchEnd={mouseup}
-                    onMouseDown={() => {
-                        dragging.current = i + 1;
-                    }}
-                    // onTouchStart={() => {
-                    //     dragging.current = i + 1;
-                    // }}
-                    onKeyDown={e => {
-                        switch (e.key) {
-                            case 'ArrowUp':
-                                set(values.current[i] + (vertical ? -step : step), i);
-                                break;
-                            case 'ArrowRight':
-                                set(values.current[i] + step, i);
-                                break;
-                            case 'ArrowDown':
-                                set(values.current[i] - (vertical ? -step : step), i);
-                                break;
-                            case 'ArrowLeft':
-                                set(values.current[i] - step, i);
-                                break;
-                            case 'Home':
-                                set(min, i);
-                                break;
-                            case 'End':
-                                set(max, i);
-                        }
-                    }} />
+                <Tooltip value={values.current[i].toFixed(1)}> 
+                    <div
+                        className={style.handle}
+                        tabIndex={0}
+                        role="slider"
+                        aria-disabled={disabled}
+                        onMouseUp={mouseup}
+                        // onTouchEnd={mouseup}
+                        onMouseDown={() => {
+                            dragging.current = i + 1;
+                        }}
+                        // onTouchStart={() => {
+                        //     dragging.current = i + 1;
+                        // }}
+                        onKeyDown={e => {
+                            switch (e.key) {
+                                case 'ArrowUp':
+                                    set(values.current[i] + (vertical ? -step : step), i);
+                                    break;
+                                case 'ArrowRight':
+                                    set(values.current[i] + step, i);
+                                    break;
+                                case 'ArrowDown':
+                                    set(values.current[i] - (vertical ? -step : step), i);
+                                    break;
+                                case 'ArrowLeft':
+                                    set(values.current[i] - step, i);
+                                    break;
+                                case 'Home':
+                                    set(min, i);
+                                    break;
+                                case 'End':
+                                    set(max, i);
+                            }
+                        }} />
+                </Tooltip>
             </Focus>;
         })}
     </div>;

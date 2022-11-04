@@ -22,6 +22,8 @@ export const is = {
     function: val => val instanceof Function
 };
 
+export const argmax = arr => arr.reduce((idx, val, i) => val > arr[idx] ? i : idx, 0);
+
 export const cloneMergeDeep = (a = {}, b = {}) => {
     const result = {};
 

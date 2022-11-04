@@ -22,7 +22,7 @@ export default function Timeline({ children, styles, uniform, horizontal, progre
 
 Timeline.defaultProps = {
     styles: {},
-    uniform: false,
+    uniform: true,
     horizontal: false,
     progress: 0
 };
