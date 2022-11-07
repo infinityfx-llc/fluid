@@ -12,15 +12,15 @@ export default function Pincode({ children, styles, size, length, disabled, requ
 
     const change = (e, i) => {
         const val = e.target.value.replace(/[^0-9]/g, '');
-        const num = val.charAt(val.length - 1);
 
-        const code = value.length <= i ? value + num : value.slice(0, i) + num + value.slice(i + 1);
+        let code = value.length <= i ? value + val : value.slice(0, i) + val.slice(1) + value.slice(i + (val.length ? val.length - 1 : 1));
+        code = code.slice(0, length);
         if (is.function(onChange)) onChange(e); //set correct value here
 
         setValue(code);
 
         if (val.length) {
-            inputRefs.current[Math.min(code.length, i + 1)]?.focus();
+            inputRefs.current[Math.min(code.length, length - 1)]?.focus();
         } else
         if (value.length >= i) {
             inputRefs.current[i - 1]?.focus();
@@ -55,4 +55,3 @@ Pincode.defaultProps = {
 };
 
 // add dash in middle optional
-// allow for pasting code

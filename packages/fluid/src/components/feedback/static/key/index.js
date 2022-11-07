@@ -3,7 +3,7 @@ import { mergeFallback } from '@core/utils';
 import useStyles from '@hooks/styles';
 import defaultStyles from './style';
 
-export default function Key({ children, styles }) {
+export default function Key({ children, styles, size }) {
     const style = useStyles(mergeFallback(styles, defaultStyles));
 
     return <div className={style.key}>
@@ -12,5 +12,6 @@ export default function Key({ children, styles }) {
 }
 
 Key.defaultProps = {
-    styles: {}
+    styles: {},
+    size: 'med'
 };

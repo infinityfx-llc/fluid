@@ -46,7 +46,8 @@ export default {
         userSelect: 'none',
         borderRadius: '999px',
         backgroundColor: 'var(--fluid-clr-foreground-100)',
-        boxShadow: '0 0 6px rgb(0, 0, 0, 0.1)'
+        boxShadow: '0 0 6px rgb(0, 0, 0, 0.1)',
+        touchAction: 'none'
     },
 
     '.vertical .handle_wrapper': {

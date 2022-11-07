@@ -8,6 +8,7 @@ export default {
         pointerEvents: 'none',
         fontSize: 'var(--fluid-font-size-sml)',
         fontFamily: 'var(--fluid-font-family)',
+        color: 'var(--fluid-clr-text)',
         backgroundColor: 'var(--fluid-clr-foreground-100)',
         borderRadius: 'var(--fluid-radius-sml)',
         padding: '.4em .6em',

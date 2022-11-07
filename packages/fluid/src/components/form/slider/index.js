@@ -18,7 +18,7 @@ export default function Slider({ children, styles, vertical, handles, min, max, 
 
     const change = (e, index = 0) => {
         const { x, width, y, height } = ref.current.getBoundingClientRect();
-        set(vertical ? (e.pageY - y) / height : (e.pageX - x) / width, index);
+        set(vertical ? (e.clientY - y) / height : (e.clientX - x) / width, index);
     };
 
     const set = (val, index) => {
@@ -47,7 +47,7 @@ export default function Slider({ children, styles, vertical, handles, min, max, 
     };
 
     const move = (e) => {
-        if (dragging.current) change(e, dragging.current - 1);
+        if (dragging.current) change(e.touches ? e.touches[0] : e, dragging.current - 1);
     };
 
     const mouseup = (e) => {
@@ -57,14 +57,14 @@ export default function Slider({ children, styles, vertical, handles, min, max, 
 
     useEffect(() => {
         addEventListener('mousemove', move);
-        // addEventListener('touchmove', move);
+        addEventListener('touchmove', move);
         addEventListener('mouseup', mouseup);
 
         for (let i = 0; i < handles; i++) update(i);
 
         return () => {
             removeEventListener('mousemove', move);
-            // removeEventListener('touchmove', move);
+            removeEventListener('touchmove', move);
             removeEventListener('mouseup', mouseup);
         }
     }, []);
@@ -80,7 +80,7 @@ export default function Slider({ children, styles, vertical, handles, min, max, 
             error ? style.error : null,
             className
         )}
-        onMouseUp={change}>
+        onClick={change}>
         <div className={style.track}>
             <div className={style.progress} ref={progressRef} />
         </div>
@@ -91,20 +91,20 @@ export default function Slider({ children, styles, vertical, handles, min, max, 
                 className={style.handle_wrapper}
                 ref={el => handleRefs.current[i] = el}
             >
-                <Tooltip value={values.current[i].toFixed(1)}> 
+                <Tooltip value={values.current[i].toFixed(Math.ceil(Math.log10(1 / step)))}> 
                     <div
                         className={style.handle}
                         tabIndex={0}
                         role="slider"
                         aria-disabled={disabled}
                         onMouseUp={mouseup}
-                        // onTouchEnd={mouseup}
+                        onTouchEnd={mouseup}
                         onMouseDown={() => {
                             dragging.current = i + 1;
                         }}
-                        // onTouchStart={() => {
-                        //     dragging.current = i + 1;
-                        // }}
+                        onTouchStart={() => {
+                            dragging.current = i + 1;
+                        }}
                         onKeyDown={e => {
                             switch (e.key) {
                                 case 'ArrowUp':
@@ -145,8 +145,6 @@ Slider.defaultProps = {
 };
 
 // implement look for closest handle on click
-// tool tip on hover
 // have work with forms
 // add proper boundingbox (handles currently outside container)
-// have work with touch
 // replace things like size and round with data- attributes (NOT CLASSES)

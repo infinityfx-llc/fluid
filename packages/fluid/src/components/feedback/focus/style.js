@@ -4,7 +4,6 @@ export default {
         position: 'relative',
         width: 'fit-content',
         height: 'fit-content',
-        cursor: 'pointer',
         zIndex: 0
     },
 
