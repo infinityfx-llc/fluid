@@ -80,7 +80,8 @@ export default function Slider({ children, styles, vertical, handles, min, max, 
             error ? style.error : null,
             className
         )}
-        onClick={change}>
+        onMouseUp={change}
+        onTouchEnd={change}>
         <div className={style.track}>
             <div className={style.progress} ref={progressRef} />
         </div>

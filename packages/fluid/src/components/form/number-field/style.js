@@ -51,6 +51,10 @@ export default {
         flexShrink: 0
     },
 
+    '.field:not(.disabled) .button': {
+        cursor: 'pointer'
+    },
+
     '.interactable': {
         display: 'flex',
         alignItems: 'center',

@@ -14,8 +14,12 @@ export default {
         justifyContent: 'center',
         padding: 'var(--fluid-gap-sml) var(--fluid-gap-med)',
         fontWeight: 'var(--fluid-font-weight-med)',
-        borderRadius: '999px',
+        borderRadius: 'var(--fluid-radius-sml)',
         gap: 'var(--fluid-gap-sml)'
+    },
+
+    '.button[data-round="true"]': {
+        borderRadius: '999px'
     },
 
     '.button.sml': {

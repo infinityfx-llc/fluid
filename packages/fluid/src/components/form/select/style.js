@@ -19,7 +19,7 @@ export default {
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
-        transition: 'background-color .15s'
+        transition: 'border-color .15s'
     },
 
     '.select.sml': {
@@ -51,7 +51,7 @@ export default {
         aspectRatio: 1,
         marginLeft: '0.4em',
         color: 'var(--fluid-clr-grey-300)',
-        transition: 'border-color .15s'
+        transition: 'color .15s'
     },
 
     '.options': {
