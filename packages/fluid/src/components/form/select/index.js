@@ -79,7 +79,7 @@ Select.defaultProps = {
     size: 'med',
     disabled: false,
     error: null,
-    data: []
+    data: [] // rename to options
 };
 
 // check if above or below has more space
