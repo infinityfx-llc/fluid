@@ -48,24 +48,18 @@ export default {
         border: 'none',
         padding: 0,
         backgroundColor: 'transparent',
-        flexShrink: 0
+        flexShrink: 0,
+        padding: '0 .6em',
+        height: 'inherit',
+        color: 'var(--fluid-clr-text)'
+    },
+
+    '.button > *': {
+        width: '1.2em'
     },
 
     '.field:not(.disabled) .button': {
         cursor: 'pointer'
-    },
-
-    '.interactable': {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '0 .6em',
-        height: '100%'
-    },
-
-    '.interactable *': {
-        width: '1.2em',
-        color: 'var(--fluid-clr-text)'
     },
 
     '.button.left': {

@@ -55,8 +55,8 @@ PasswordField.defaultProps = {
     error: null
 };
 
-// add password strength indicator at bottom
 // pass autocomplete value to input
+// onEnter submit form
 
 // custom styling prop
 // size prop

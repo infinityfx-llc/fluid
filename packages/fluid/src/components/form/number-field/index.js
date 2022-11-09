@@ -20,24 +20,20 @@ export default function NumberField({ children, styles, size, step, disabled, re
             disabled ? style.disabled : null,
             error ? style.error : null
         )}>
-            <button disabled={disabled} className={combine(style.button, style.left)} onClick={() => {
+            <Focus element="button" size="fil" disabled={disabled} className={combine(style.button, style.left)} onClick={() => {
                 setValue((parseFloat(value) || 0) - step);
             }}>
-                <Focus size="fil" className={style.interactable}>
-                    <MinusIcon />
-                </Focus>
-            </button>
+                <MinusIcon />
+            </Focus>
             <input id={forId} type="number" disabled={disabled} required={required} className={style.input} value={value} onChange={e => {
                 if (is.function(onChange)) onChange(e);
                 setValue(e.target.value);
             }} />
-            <button disabled={disabled} className={combine(style.button, style.right)} onClick={() => {
+            <Focus element="button" size="fil" disabled={disabled} className={combine(style.button, style.right)} onClick={() => {
                 setValue((parseFloat(value) || 0) + step);
             }}>
-                <Focus size="fil" className={style.interactable}>
-                    <PlusIcon />
-                </Focus>
-            </button>
+                <PlusIcon />
+            </Focus>
         </div>
     </div>;
 }
