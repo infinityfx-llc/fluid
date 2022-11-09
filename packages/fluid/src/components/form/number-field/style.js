@@ -30,7 +30,7 @@ export default {
     },
 
     '.input': {
-        padding: '0.8em 1em',
+        padding: '1em',
         appearance: 'textfield',
         border: 'none',
         backgroundColor: 'transparent',

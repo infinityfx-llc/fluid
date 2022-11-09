@@ -20,16 +20,12 @@ export default {
     },
 
     '.interact.fil .focus': {
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%'
+        inset: 0
     },
 
     '.focus': {
         position: 'absolute',
         overflow: 'hidden',
-        inset: 'calc(-1 * var(--fluid-gap-sml))',
         backgroundColor: 'rgb(var(--fluid-rgb-primary-100), .66)',
         borderRadius: 'var(--fluid-radius-sml)',
         opacity: 0,
@@ -45,11 +41,23 @@ export default {
         borderRadius: '999px'
     },
 
-    '.interact *:first-child:hover + .focus, .interact *:first-child:focus-visible + .focus, .interact.fil:hover .focus': {
+    '.interact *:first-child:focus-visible + .focus': {
         opacity: 0.2
     },
 
-    '.tap': {
+    '@media (hover: hover)': {
+        '.interact:hover .focus': {
+            opacity: 0.2
+        }
+    },
+
+    '@media (hover: none)': {
+        '.interact:active .focus': {
+            opacity: 0.2
+        }
+    },
+
+    '.circle': {
         minWidth: '141%',
         aspectRatio: 1,
         borderRadius: '999px',

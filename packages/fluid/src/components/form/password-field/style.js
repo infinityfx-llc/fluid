@@ -8,7 +8,7 @@ export default {
     },
 
     '.field': {
-        padding: '0.8em 1em',
+        padding: '0.4em',
         boxSizing: 'border-box',
         width: 'clamp(0rem, 20rem, 100vw)',
         backgroundColor: 'var(--fluid-clr-foreground-100)',
@@ -32,6 +32,7 @@ export default {
     },
 
     '.input': {
+        padding: '0.6em',
         fontFamily: 'var(--fluid-font-family)',
         border: 'none',
         backgroundColor: 'transparent',
@@ -47,6 +48,13 @@ export default {
         marginRight: 'var(--fluid-gap-xsm)',
         color: 'var(--fluid-clr-grey-300)',
         transition: 'color .15s'
+    },
+
+    '.toggle_icon': {
+        height: 'inherit !important',
+        width: 'auto !important',
+        aspectRatio: 1,
+        flexGrow: 1
     },
 
     '.field:focus-within': {

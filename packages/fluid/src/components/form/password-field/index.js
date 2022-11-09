@@ -36,7 +36,7 @@ export default function PasswordField({ children, styles, size, strengthIndicato
         )}>
             {Icon && <Icon className={style.icon} />}
             <input id={forId} type={hidden ? 'password' : 'text'} disabled={disabled} required={required} className={style.input} placeholder={placeholder} onChange={change} />
-            <IconButton size="sml" onClick={() => setHidden(!hidden)}>
+            <IconButton size="sml" className={style.toggle_icon} onClick={() => setHidden(!hidden)}>
                 {hidden ? <EyeIcon /> : <EyeClosedIcon />}
             </IconButton>
         </div>

@@ -8,7 +8,7 @@ export default {
     },
 
     '.field': {
-        padding: '0.8em 1em',
+        padding: '1em',
         boxSizing: 'border-box',
         width: 'clamp(0rem, 20rem, 100vw)',
         backgroundColor: 'var(--fluid-clr-foreground-100)',

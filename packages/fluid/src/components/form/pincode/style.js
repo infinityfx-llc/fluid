@@ -28,7 +28,7 @@ export default {
         backgroundColor: 'var(--fluid-clr-foreground-100)',
         border: 'solid 1px var(--fluid-clr-grey-300)',
         borderRadius: 'var(--fluid-radius-med)',
-        padding: '0.8em 1em',
+        padding: '1em',
         appearance: 'textfield',
         fontFamily: 'var(--fluid-font-family)',
         textAlign: 'center',

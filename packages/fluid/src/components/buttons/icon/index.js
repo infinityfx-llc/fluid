@@ -8,22 +8,20 @@ import { Focus } from '@components/feedback';
 export default function IconButton({ children, styles, size, round, disabled, onClick, className, ...props }) {
     const style = useStyles(mergeFallback(styles, defaultStyles));
 
-    return <button
+    return <Focus element="button" size="fil"
         {...props}
         className={combine(
             style.button,
             style[size],
-            disabled ? style.disabled : null,
-            round ? style.round : null,
             className
         )}
+        data-disabled={disabled}
+        data-round={round}
         onClick={e => {
             if (!disabled && is.function(onClick)) onClick(e);
         }}>
-        <Focus size="fil" className={style.icon}>
-            {children}
-        </Focus>
-    </button>;
+        {children}
+    </Focus>;
 }
 
 IconButton.defaultProps = {
