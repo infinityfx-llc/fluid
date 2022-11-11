@@ -17,7 +17,7 @@ export default {
     '.track': {
         width: '100%',
         height: '6px',
-        backgroundColor: 'var(--fluid-clr-grey-300)',
+        backgroundColor: 'var(--fluid-clr-grey-800)',
         borderRadius: '999px',
         overflow: 'hidden'
     },
@@ -60,10 +60,10 @@ export default {
     },
 
     '.disabled .progress': {
-        backgroundColor: 'var(--fluid-clr-grey-200)'
+        backgroundColor: 'var(--fluid-clr-grey-800)'
     },
 
     '.disabled .handle': {
-        backgroundColor: 'var(--fluid-clr-grey-300)'
+        backgroundColor: 'var(--fluid-clr-grey-700)'
     }
 }

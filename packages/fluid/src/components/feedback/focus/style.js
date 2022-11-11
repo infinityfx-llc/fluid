@@ -43,7 +43,7 @@ export default {
         borderRadius: '999px'
     },
 
-    '.interact *:first-child:focus-visible + .focus': {
+    '.interact *:first-child:focus-visible + .focus, .interact:focus-visible .focus': {
         opacity: 0.2
     },
 
@@ -63,7 +63,7 @@ export default {
         minWidth: '141%',
         aspectRatio: 1,
         borderRadius: '999px',
-        backgroundColor: 'var(--fluid-clr-grey-200)'
+        backgroundColor: 'var(--fluid-clr-grey-500)'
     }
 
 }

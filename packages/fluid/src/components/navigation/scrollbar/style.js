@@ -32,7 +32,7 @@ export default {
         userSelect: 'none',
         width: 'inherit',
         height: '0%',
-        background: 'var(--fluid-clr-grey-200)',
+        background: 'var(--fluid-clr-grey-500)',
         borderRadius: '999px',
         opacity: 0.35,
         cursor: 'default',

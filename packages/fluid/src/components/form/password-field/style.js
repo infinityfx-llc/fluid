@@ -12,7 +12,7 @@ export default {
         boxSizing: 'border-box',
         width: 'clamp(0rem, 20rem, 100vw)',
         backgroundColor: 'var(--fluid-clr-foreground-100)',
-        border: 'solid 1px var(--fluid-clr-grey-300)',
+        border: 'solid 1px var(--fluid-clr-grey-700)',
         borderRadius: 'var(--fluid-radius-sml)',
         display: 'flex',
         alignItems: 'center',
@@ -46,7 +46,7 @@ export default {
         width: '1.5rem',
         aspectRatio: 1,
         marginRight: 'var(--fluid-gap-xsm)',
-        color: 'var(--fluid-clr-grey-300)',
+        color: 'var(--fluid-clr-grey-700)',
         transition: 'color .15s'
     },
 
@@ -84,7 +84,7 @@ export default {
         flexGrow: 1,
         height: '4px',
         borderRadius: '999px',
-        backgroundColor: 'var(--fluid-clr-grey-300)',
+        backgroundColor: 'var(--fluid-clr-grey-800)',
         transition: 'background-color .15s'
     },
 

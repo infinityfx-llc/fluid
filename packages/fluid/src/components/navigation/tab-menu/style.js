@@ -15,7 +15,9 @@ export default {
         fontFamily: 'var(--fluid-font-family)',
         fontSize: 'var(--fluid-font-size-sml)',
         fontWeight: 'var(--fluid-font-weight-reg)',
-        cursor: 'pointer'
+        color: 'var(--fluid-clr-text)',
+        cursor: 'pointer',
+        transition: 'color .35s'
     },
 
     '.line': {
@@ -26,5 +28,9 @@ export default {
         width: '100%',
         backgroundColor: 'var(--fluid-clr-primary-100)',
         borderRadius: '999px'
+    },
+
+    '.button[data-active="true"]': {
+        color: 'var(--fluid-clr-primary-100)'
     }
 }

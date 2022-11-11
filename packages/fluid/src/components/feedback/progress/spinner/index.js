@@ -11,7 +11,7 @@ export default function Spinner({ className }) {
         },
         '.spinner': {
             fill: 'transparent',
-            stroke: 'var(--fluid-clr-highlight-100)',
+            stroke: 'var(--fluid-clr-light-100)',
             strokeWidth: '10%',
             cx: '50%',
             cy: '50%',

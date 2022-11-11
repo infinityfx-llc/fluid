@@ -22,7 +22,7 @@ export default {
         height: '100%',
         strokeWidth: '.25rem',
         fill: 'transparent',
-        stroke: 'var(--fluid-clr-highlight-100)'
+        stroke: 'var(--fluid-clr-light-100)'
     },
 
     '.checkbox.checked': {
@@ -31,8 +31,8 @@ export default {
 
     '.checkbox.disabled': {
         cursor: 'default',
-        borderColor: 'var(--fluid-clr-grey-300)',
-        backgroundColor: 'var(--fluid-clr-grey-200)'
+        borderColor: 'var(--fluid-clr-grey-800)',
+        backgroundColor: 'var(--fluid-clr-grey-900)'
     },
 
     '.checkbox.error': {

@@ -45,7 +45,7 @@ export default {
         width: '4px',
         height: '100%',
         top: '1rem',
-        backgroundColor: 'var(--fluid-clr-grey-300)'
+        backgroundColor: 'var(--fluid-clr-grey-800)'
     },
 
     '.timeline[data-horizontal="true"] .segment': {
@@ -60,7 +60,7 @@ export default {
         width: 'calc(1.8rem - 3px)',
         height: 'calc(1.8rem - 3px)',
         backgroundColor: 'var(--fluid-clr-background-100)',
-        border: 'solid 3px var(--fluid-clr-grey-300)',
+        border: 'solid 3px var(--fluid-clr-grey-800)',
         borderRadius: '999px',
         zIndex: 1
     },

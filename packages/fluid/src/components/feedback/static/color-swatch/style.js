@@ -3,7 +3,7 @@ export default {
         position: 'relative',
         overflow: 'hidden',
         borderRadius: 'var(--fluid-radius-sml)',
-        border: 'solid 1px var(--fluid-clr-grey-300)',
+        border: 'solid 1px var(--fluid-clr-grey-800)',
     },
 
     '.swatch.med': {

@@ -26,7 +26,7 @@ export default {
 
     '.input': {
         backgroundColor: 'var(--fluid-clr-foreground-100)',
-        border: 'solid 1px var(--fluid-clr-grey-300)',
+        border: 'solid 1px var(--fluid-clr-grey-700)',
         borderRadius: 'var(--fluid-radius-med)',
         padding: '1em',
         appearance: 'textfield',
@@ -47,5 +47,9 @@ export default {
 
     '.pincode.error .input': {
         borderColor: 'red'
+    },
+
+    '.pincode.disabled input': {
+        backgroundColor: 'var(--fluid-clr-grey-900)'
     }
 }

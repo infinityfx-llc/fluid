@@ -11,7 +11,7 @@ export default {
         overflow: 'hidden',
         width: 'clamp(0rem, 20rem, 100vw)',
         backgroundColor: 'var(--fluid-clr-foreground-100)',
-        border: 'solid 1px var(--fluid-clr-grey-300)',
+        border: 'solid 1px var(--fluid-clr-grey-700)',
         borderRadius: 'var(--fluid-radius-sml)',
         display: 'flex',
         transition: 'border-color .15s'
@@ -63,11 +63,11 @@ export default {
     },
 
     '.button.left': {
-        borderRight: 'solid 1px var(--fluid-clr-grey-300)'
+        borderRight: 'solid 1px var(--fluid-clr-grey-700)'
     },
 
     '.button.right': {
-        borderLeft: 'solid 1px var(--fluid-clr-grey-300)'
+        borderLeft: 'solid 1px var(--fluid-clr-grey-700)'
     },
 
     '.field:focus-within': {

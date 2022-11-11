@@ -15,7 +15,7 @@ export default {
         fontFamily: 'var(--fluid-font-family)',
         backgroundColor: 'var(--fluid-clr-foreground-100)',
         borderRadius: 'var(--fluid-radius-sml)',
-        border: 'solid 1px var(--fluid-clr-grey-300)',
+        border: 'solid 1px var(--fluid-clr-grey-700)',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
@@ -62,7 +62,7 @@ export default {
         width: 'inherit',
         backgroundColor: 'var(--fluid-clr-foreground-100)',
         borderRadius: 'var(--fluid-radius-sml)',
-        border: 'solid 1px var(--fluid-clr-grey-300)',
+        border: 'solid 1px var(--fluid-clr-grey-700)',
         padding: '0.4em',
         maxHeight: 'calc(3.08em * 4 + 0.8em + 2px)',
         overflowY: 'auto'
@@ -86,7 +86,7 @@ export default {
     },
 
     '.option.disabled': {
-        color: 'var(--fluid-clr-grey-200)',
+        color: 'var(--fluid-clr-grey-600)',
         cursor: 'default'
     },
 

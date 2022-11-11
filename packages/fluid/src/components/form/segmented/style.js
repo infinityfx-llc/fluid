@@ -28,7 +28,7 @@ export default {
 
     '.segment.disabled': {
         cursor: 'default',
-        color: 'var(--fluid-clr-grey-200)'
+        color: 'var(--fluid-clr-grey-600)'
     },
 
     '.selectors': {

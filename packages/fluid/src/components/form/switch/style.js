@@ -6,7 +6,7 @@ export default {
         boxSizing: 'border-box',
         padding: '0.25rem',
         display: 'flex',
-        backgroundColor: 'var(--fluid-clr-grey-300)',
+        backgroundColor: 'var(--fluid-clr-grey-800)',
         cursor: 'pointer',
         transition: 'background-color .16s'
     },

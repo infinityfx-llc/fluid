@@ -2,23 +2,23 @@ export const DEFAULT_COLOR_SCHEME = 'light';
 
 export const COLOR_SCHEMES = {
     light: {
-        primary: ['#16E9B1', '#c3e8de'],
+        primary: ['#16E9B1'],
         accent: ['#FF9625'],
         background: ['#EEEEEE'],
         foreground: ['#FFFFFF'],
-        grey: ['#404040', '#808080', '#C0C0C0'],
-        highlight: ['#FFFFFF'],
-        shadow: ['#000000'],
+        grey: ['#1a1a1a', '#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#b3b3b3', '#cccccc', '#e6e6e6'],
+        light: ['#ffffff', '#f2ece6', '#e6e0da'],
+        dark: ['#000000', '#1c1f1e', '#383d3c'],
         text: '#000000'
     },
     dark: {
-        primary: ['#16E9B1', '#04291f'],
+        primary: ['#16E9B1'],
         accent: ['#FF9625'],
         background: ['#000000'],
         foreground: ['#272727'],
-        grey: ['#404040', '#808080', '#C0C0C0'],
-        highlight: ['#FFFFFF'],
-        shadow: ['#000000'],
+        grey: ['#1a1a1a', '#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#b3b3b3', '#cccccc', '#e6e6e6'],
+        light: ['#ffffff', '#f2ece6', '#e6e0da'],
+        dark: ['#000000', '#1c1f1e', '#383d3c'],
         text: '#FFFFFF'
     }
 };
