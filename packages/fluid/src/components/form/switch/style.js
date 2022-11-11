@@ -18,7 +18,7 @@ export default {
     '.handle': {
         aspectRatio: 1,
         borderRadius: '999px',
-        backgroundColor: 'var(--fluid-clr-foreground-100)',
+        backgroundColor: 'var(--fluid-clr-light-100)',
         boxShadow: '0 0 8px rgba(0, 0, 0, 0.1)'
     },
 

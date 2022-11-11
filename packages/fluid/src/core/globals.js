@@ -16,7 +16,7 @@ export const COLOR_SCHEMES = {
         accent: ['#FF9625'],
         background: ['#000000'],
         foreground: ['#272727'],
-        grey: ['#1a1a1a', '#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#b3b3b3', '#cccccc', '#e6e6e6'],
+        grey: ['#e6e6e6', '#cccccc', '#b3b3b3', '#999999', '#808080', '#666666', '#4d4d4d', '#333333', '#1a1a1a'],
         light: ['#ffffff', '#f2ece6', '#e6e0da'],
         dark: ['#000000', '#1c1f1e', '#383d3c'],
         text: '#FFFFFF'
