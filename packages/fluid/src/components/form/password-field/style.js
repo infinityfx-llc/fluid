@@ -106,5 +106,9 @@ export default {
 
     '.strength_indicator[data-strength="5"] .bar[data-active="true"]': {
         backgroundColor: '#00ff44'
+    },
+
+    '.badge': {
+        marginTop: 'var(--fluid-gap-sml)'
     }
 }

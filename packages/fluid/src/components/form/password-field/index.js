@@ -5,12 +5,14 @@ import defaultStyles from './style';
 import { is, mergeFallback } from '@core/utils/helper';
 import { IconButton } from '@components/buttons';
 import { EyeClosedIcon, EyeIcon } from '@components/icons';
+import Badge from '@components/feedback/static/badge';
 
 export default function PasswordField({ children, styles, size, strengthIndicator, icon, disabled, required, error, placeholder, label, onChange, ...props }) {
     const style = useStyles(mergeFallback(styles, defaultStyles));
     const forId = useId();
     const [hidden, setHidden] = useState(true);
     const [strength, setStrength] = useState(0);
+    const [capsLocked, setCapsLocked] = useState(false);
 
     const Icon = icon;
 
@@ -35,7 +37,11 @@ export default function PasswordField({ children, styles, size, strengthIndicato
             error ? style.error : null
         )}>
             {Icon && <Icon className={style.icon} />}
-            <input id={forId} type={hidden ? 'password' : 'text'} disabled={disabled} required={required} className={style.input} placeholder={placeholder} onChange={change} />
+            <input id={forId} type={hidden ? 'password' : 'text'} disabled={disabled} required={required} className={style.input} placeholder={placeholder} onChange={change} onKeyDown={e => {
+                if (e.code === 'CapsLock') {
+                    setCapsLocked(e.getModifierState('CapsLock'));
+                }
+            }} />
             <IconButton size="sml" className={style.toggle_icon} onClick={() => setHidden(!hidden)}>
                 {hidden ? <EyeIcon /> : <EyeClosedIcon />}
             </IconButton>
@@ -43,6 +49,10 @@ export default function PasswordField({ children, styles, size, strengthIndicato
         {strengthIndicator && <div className={style.strength_indicator} data-strength={strength}>
             {new Array(5).fill(0).map((_, i) => <div key={i} data-active={i < strength} className={style.bar} />)}
         </div>}
+
+        {capsLocked && <Badge className={style.badge} size="sml">
+            CAPS LOCK
+        </Badge>}
     </div>;
 }
 

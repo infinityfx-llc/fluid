@@ -26,3 +26,5 @@ export default function CircularProgress({ value, color }) {
 CircularProgress.defaultProps = {
     value: 0.5
 }
+
+// implement formatter

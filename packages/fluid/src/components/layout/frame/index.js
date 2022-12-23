@@ -1,7 +1,7 @@
 import React, { Children, cloneElement, isValidElement, useEffect, useRef, useState } from 'react';
 import useStyles from '@hooks/styles';
 import defaultStyles from './style';
-import { mergeRefs } from '@core/utils';
+import { is, mergeRefs } from '@core/utils';
 
 export default function Frame({ children, size, footnote, loader, aspect }) {
     const style = useStyles(defaultStyles);
@@ -20,11 +20,11 @@ export default function Frame({ children, size, footnote, loader, aspect }) {
             {isLoadable ? cloneElement(children, {
                 ref: mergeRefs(children.props.ref, ref),
                 onLoad: e => {
-                    children.props.onLoad?.(e);
+                    if (is.function(children.props.onLoad)) children.props.onLoad(e);
                     load();
                 },
                 onCanPlayThrough: e => {
-                    children.props.onCanPlayThrough?.(e);
+                    if (is.function(children.props.onCanPlayThrough)) children.props.onCanPlayThrough(e);
                     load();
                 }
             }) : children}
@@ -47,3 +47,4 @@ Frame.defaultProps = {
 // optional bottom text (citing)
 // different aspect ratios
 // change loader to Animatable element
+// rename footnote to caption
