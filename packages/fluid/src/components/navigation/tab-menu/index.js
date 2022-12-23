@@ -24,11 +24,10 @@ import FluidComponent from '@core/component';
 //     </nav>;
 // }
 
-const TabMenu = FluidComponent((props, restProps, ref) => {
-    const style = useStyles(mergeFallback(props.styles, defaultStyles));
+const TabMenu = FluidComponent((props, { style, domProps, ref }) => {
     const [active, setActive] = useState(0);
 
-    return <nav {...restProps} className={style.menu} ref={ref}>
+    return <nav {...domProps} className={style.menu} ref={ref}>
         {props.options.map((name, i) => {
             return <div key={i} className={style.option}>
                 <Focus element="button" size="fil" className={style.button} data-active={active == i} onClick={() => setActive(i)}>
@@ -40,12 +39,13 @@ const TabMenu = FluidComponent((props, restProps, ref) => {
             </div>;
         })}
     </nav>;
-});
-
-TabMenu.defaultProps ={
-    styles: {},
-    size: 'med',
-    options: []
-};
+},
+    defaultStyles,
+    {
+        styles: {},
+        size: 'med',
+        options: []
+    }
+);
 
 export default TabMenu;

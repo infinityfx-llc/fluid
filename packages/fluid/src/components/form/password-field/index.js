@@ -57,6 +57,7 @@ PasswordField.defaultProps = {
 
 // pass autocomplete value to input
 // onEnter submit form
+// indicator for when caps lock is on
 
 // custom styling prop
 // size prop

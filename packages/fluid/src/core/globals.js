@@ -17,8 +17,8 @@ export const COLOR_SCHEMES = {
         background: ['#000000'],
         foreground: ['#272727'],
         grey: ['#e6e6e6', '#cccccc', '#b3b3b3', '#999999', '#808080', '#666666', '#4d4d4d', '#333333', '#1a1a1a'],
-        light: ['#ffffff', '#f2ece6', '#e6e0da'],
-        dark: ['#000000', '#1c1f1e', '#383d3c'],
+        light: ['#ffffff', '#f2ece6', '#e6e0da'], // maybe reverse in dark scheme
+        dark: ['#000000', '#1c1f1e', '#383d3c'], // myabe reverse in dark scheme
         text: '#FFFFFF'
     }
 };

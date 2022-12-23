@@ -50,7 +50,7 @@ export default {
         height: '1.6em',
         aspectRatio: 1,
         marginLeft: '0.4em',
-        color: 'var(--fluid-clr-grey-300)',
+        color: 'var(--fluid-clr-grey-700)',
         transition: 'color .15s'
     },
 
@@ -65,7 +65,8 @@ export default {
         border: 'solid 1px var(--fluid-clr-grey-700)',
         padding: '0.4em',
         maxHeight: 'calc(3.08em * 4 + 0.8em + 2px)',
-        overflowY: 'auto'
+        overflowY: 'auto',
+        zIndex: 1
     },
 
     '.option': {

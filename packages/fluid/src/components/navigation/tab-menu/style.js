@@ -1,6 +1,7 @@
 export default {
     '.menu': {
-        display: 'flex'
+        display: 'flex',
+        height: 'fit-content'
     },
     
     '.option': {
