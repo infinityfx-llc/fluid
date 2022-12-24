@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { mergeFallback } from '@core/utils';
+import { combine, mergeFallback } from '@core/utils';
 import useStyles from '@hooks/styles';
 import defaultStyles from './style';
 import { Focus } from '@components/feedback';
@@ -24,28 +24,28 @@ import FluidComponent from '@core/component';
 //     </nav>;
 // }
 
-const TabMenu = FluidComponent((props, { style, domProps, ref }) => {
+const TabMenu = FluidComponent((props, ref) => {
+    const { styles, domProps } = props;
     const [active, setActive] = useState(0);
 
-    return <nav {...domProps} className={style.menu} ref={ref}>
+    return <nav {...domProps} className={combine(props.className, styles.menu)} ref={ref} data-size={props.size}>
         {props.options.map((name, i) => {
-            return <div key={i} className={style.option}>
-                <Focus element="button" size="fil" className={style.button} data-active={active == i} onClick={() => setActive(i)}>
+            return <div key={i} className={styles.option}>
+                <Focus element="button" size="fil" className={styles.button} data-active={active == i} onClick={() => setActive(i)}>
                     {name}
                 </Focus>
                 <Morph noDeform duration={0.35} active={active == i}>
-                    <div className={style.line} />
+                    <div className={styles.line} />
                 </Morph>
             </div>;
         })}
     </nav>;
 },
-    defaultStyles,
-    {
-        styles: {},
-        size: 'med',
-        options: []
-    }
+    defaultStyles
 );
+
+TabMenu.defaultProps = {
+    options: []
+};
 
 export default TabMenu;

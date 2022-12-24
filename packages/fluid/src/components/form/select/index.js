@@ -7,6 +7,7 @@ import { Animatable } from '@infinityfx/lively';
 import { ChevronDownIcon } from '@components/icons';
 import { offClickOutside, onClickOutside } from '@core/utils';
 import { Scrollbar } from '@components/navigation';
+import { IconButton } from '@components/buttons';
 
 export default function Select({ children, styles, size, disabled, error, data, label, required, onChange, className, ...props }) {
     const style = useStyles(mergeFallback(styles, defaultStyles));
@@ -53,7 +54,12 @@ export default function Select({ children, styles, size, disabled, error, data, 
                 setSelectionLabel(e.target.value);
                 setSelected(null);
             }} />
-            <ChevronDownIcon className={style.icon} />
+            <IconButton size="sml" className={style.icon} onClick={e => {
+                e.stopPropagation();
+                isOpen.current ? close() : open();
+            }}>
+                <ChevronDownIcon />
+            </IconButton>
 
             <Animatable ref={options} lazy={false} animate={{ opacity: [0, 1], display: [{ start: 'none', set: 'block' }, 'block'], duration: .15 }}>
                 <Scrollbar>

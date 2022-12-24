@@ -1,16 +1,12 @@
-import React, { useId, useState } from 'react';
+import React, { useId } from 'react';
 import { combine } from '@core/utils/css';
 import useStyles from '@hooks/styles';
 import defaultStyles from './style';
 import { is, mergeFallback } from '@core/utils/helper';
-import { Animatable } from '@infinityfx/lively';
-import { useLink } from '@infinityfx/lively/hooks';
 
 export default function TextField({ children, styles, size, icon, disabled, required, error, type, placeholder, label, onChange, ...props }) {
     const style = useStyles(mergeFallback(styles, defaultStyles));
-    const [checked, setChecked] = useState(false);
     const forId = useId();
-    const [link, setLink] = useLink(0);
 
     const Icon = icon;
 
@@ -25,8 +21,6 @@ export default function TextField({ children, styles, size, icon, disabled, requ
         )}>
             {Icon && <Icon className={style.icon} />}
             <input id={forId} type={type} disabled={disabled} required={required} className={style.input} placeholder={placeholder} onChange={e => {
-                setLink(checked ? 0 : 1, 0.16);
-                setChecked(!checked);
                 if (is.function(onChange)) onChange(e);
             }} />
         </div>

@@ -4,3 +4,4 @@ export * from './icons/index';
 export * from './feedback/index';
 export * from './navigation/index';
 export * from './layout/index';
+export * from './display/index';

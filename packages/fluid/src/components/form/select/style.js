@@ -9,7 +9,7 @@ export default {
 
     '.select': {
         position: 'relative',
-        padding: '0.8em 1em',
+        padding: '0.4em',
         boxSizing: 'border-box',
         width: 'clamp(0rem, 20rem, 100vw)',
         fontFamily: 'var(--fluid-font-family)',
@@ -43,15 +43,28 @@ export default {
         color: 'var(--fluid-clr-text)',
         border: 'none',
         minWidth: 0,
-        flexGrow: 1
+        flexGrow: 1,
+        flexShrink: 1,
+        padding: '0.6em'
     },
 
     '.icon': {
-        height: '1.6em',
+        width: 'auto !important',
         aspectRatio: 1,
         marginLeft: '0.4em',
-        color: 'var(--fluid-clr-grey-700)',
-        transition: 'color .15s'
+        color: 'var(--fluid-clr-grey-700) !important'
+    },
+
+    '.select.sml .icon': {
+        height: '2.4rem !important'
+    },
+
+    '.select.med .icon': {
+        height: '2.98rem !important'
+    },
+
+    '.select.lrg .icon': {
+        height: '3.5rem !important'
     },
 
     '.options': {
@@ -96,6 +109,6 @@ export default {
     },
 
     '.select:focus-within .icon': {
-        color: 'var(--fluid-clr-primary-100)'
+        color: 'var(--fluid-clr-primary-100) !important'
     }
 }

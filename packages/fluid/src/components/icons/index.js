@@ -4,6 +4,7 @@ import PlusIcon from './plus';
 import MinusIcon from './minus';
 import EyeIcon from './eye';
 import EyeClosedIcon from './eye-closed';
+import CopyIcon from './copy';
 
 export {
     MailIcon,
@@ -11,5 +12,6 @@ export {
     PlusIcon,
     MinusIcon,
     EyeIcon,
-    EyeClosedIcon
+    EyeClosedIcon,
+    CopyIcon
 }

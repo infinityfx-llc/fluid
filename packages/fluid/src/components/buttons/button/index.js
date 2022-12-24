@@ -5,7 +5,7 @@ import useStyles from '@hooks/styles';
 import defaultStyles from './style';
 import { is, mergeFallback } from '@core/utils/helper';
 
-export default function Button({ children, styles, size, round, disabled, loading, onClick, className, ...props }) {
+export default function Button({ children, styles, size, variant, round, disabled, loading, onClick, className, ...props }) {
     const style = useStyles(mergeFallback(styles, defaultStyles));
 
     return <button
@@ -20,6 +20,7 @@ export default function Button({ children, styles, size, round, disabled, loadin
         onClick={e => {
             if (!loading && !disabled && is.function(onClick)) onClick(e);
         }}
+        data-variant={variant}
         data-round={round}>
         {loading && <Spinner className={style.test} />}
         {children}
@@ -29,6 +30,7 @@ export default function Button({ children, styles, size, round, disabled, loadin
 Button.defaultProps = {
     styles: {},
     size: 'med',
+    variant: 'default',
     round: true,
     disabled: false,
     loading: false

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { combine } from '@core/utils/css';
 import useStyles from '@hooks/styles';
 import defaultStyles from './style';
@@ -15,6 +15,7 @@ export default function Slider({ children, styles, vertical, handles, min, max, 
     const values = useRef(new Array(handles).fill(1).map((_, i) => {
         return i / Math.max(handles - 1, 1);
     }));
+    const [value, setValue] = useState(values.current); // CHECK FOR OPTIMIZATION
 
     const change = (e, index = 0) => {
         const { x, width, y, height } = ref.current.getBoundingClientRect();
@@ -34,6 +35,7 @@ export default function Slider({ children, styles, vertical, handles, min, max, 
         }));
 
         update(index);
+        setValue(values.current.slice());
     };
 
     const update = (index) => {
@@ -92,7 +94,7 @@ export default function Slider({ children, styles, vertical, handles, min, max, 
                 className={style.handle_wrapper}
                 ref={el => handleRefs.current[i] = el}
             >
-                <Tooltip value={values.current[i].toFixed(Math.ceil(Math.log10(1 / step)))}> 
+                <Tooltip value={value[i].toFixed(Math.ceil(Math.log10(1 / step)))}> 
                     <div
                         className={style.handle}
                         tabIndex={0}

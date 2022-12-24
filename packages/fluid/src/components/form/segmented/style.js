@@ -52,6 +52,6 @@ export default {
     },
 
     '.segmented.error': {
-        outline: 'solid 2px red'
+        outline: 'solid 1px red'
     }
 }

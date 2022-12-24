@@ -51,10 +51,20 @@ export default {
     },
 
     '.toggle_icon': {
-        height: 'inherit !important',
         width: 'auto !important',
-        aspectRatio: 1,
-        flexGrow: 1
+        aspectRatio: 1
+    },
+
+    '.field.sml .toggle_icon': {
+        height: '2.4rem !important'
+    },
+
+    '.field.med .toggle_icon': {
+        height: '2.98rem !important'
+    },
+
+    '.field.lrg .toggle_icon': {
+        height: '3.5rem !important'
     },
 
     '.field:focus-within': {

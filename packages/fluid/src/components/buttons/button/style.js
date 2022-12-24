@@ -18,6 +18,21 @@ export default {
         gap: 'var(--fluid-gap-sml)'
     },
 
+    '.button[data-variant="light"]': { // WIP
+        backgroundColor: 'rgb(var(--fluid-rgb-primary-100), 0.2)',
+        color: 'var(--fluid-clr-text)'
+    },
+
+    '.button[data-variant="subtle"]': { // WIP
+        backgroundColor: 'transparent',
+        color: 'var(--fluid-clr-primary-100)'
+    },
+
+    '.button[data-variant="inverted"]': { // WIP
+        backgroundColor: 'var(--fluid-clr-foreground-100)',
+        color: 'var(--fluid-clr-primary-100)'
+    },
+
     '.button[data-round="true"]': {
         borderRadius: '999px'
     },
