@@ -91,3 +91,5 @@ Select.defaultProps = {
 // check if above or below has more space
 // open list on keyboard input
 // make arrow a toggle button
+
+// LIVELY: add stagger limit option to avoid large list items loading forever
