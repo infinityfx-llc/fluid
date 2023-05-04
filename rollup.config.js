@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 export default {
-    input: ['src/index.ts'],
+    input: ['src/index.ts', 'src/server.ts'],
     external: ['react', 'react-dom', 'react/jsx-runtime', /@infinityfx\/lively/],
     output: {
         dir: 'dist',

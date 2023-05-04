@@ -9,9 +9,18 @@
 	"exports": {
 		".": {
 			"import": "./dist/index.js"
+		},
+		"./server": {
+			"import": "./dist/server.js"
 		}
 	},
-	"typesVersions": {},
+	"typesVersions": {
+		"*": {
+			"server": [
+				"./dist/types/server.d.ts"
+			]
+		}
+	},
 	"repository": "infinityfx-llc/fluid",
 	"author": "InfinityFX <contact@infinity-fx.com> (https://infinity-fx.com)",
 	"license": "GPL-3.0",
