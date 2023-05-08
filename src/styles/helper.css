@@ -1,7 +1,0 @@
-.fld-gap-xs {
-    gap: var(--fluid-gap-xs);
-}
-
-.fld-shadow-xs {
-    box-shadow: 0 0 8px #000;
-}

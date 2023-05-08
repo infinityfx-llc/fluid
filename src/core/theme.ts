@@ -43,10 +43,10 @@ export type FluidTheme = {
 export const DEFAULT_THEME: FluidTheme = {
     palettes: {
         light: {
-            primary: ['#fff'],
-            accent: ['#fff'],
-            grey: ['#fff'],
-            text: ['#fff'],
+            primary: ['#22e39f', '#45e6ad', '#60f0bd', '#8cf5d0', '#baf7e2', '#dcfcf1'],
+            accent: ['#1dddf2'],
+            grey: ['#e6e6e6', '#cccccc', '#b3b3b3', '#999999', '#808080', '#666666', '#4d4d4d', '#333333', '#191919'],
+            text: ['#000', '#fff'],
             bg: ['#fff'],
             fg: ['#fff']
         },

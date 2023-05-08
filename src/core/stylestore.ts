@@ -1,10 +1,5 @@
-import { mergeRecursive } from "./utils";
-
-type RuleSet = {
-    [key: string]: React.CSSProperties;
-}
-
-type Selectors = { [key: string]: string };
+import { FluidStyles, Selectors } from "../types";
+import { mergeRecursive, ruleToString } from "./utils";
 
 class StyleStore {
 
@@ -23,28 +18,12 @@ class StyleStore {
         return key in this.rules;
     }
 
-    insert(key: string, ruleset: RuleSet, global = false) {
+    insert(key: string, ruleset: FluidStyles, global = false) {
         const selectors: Selectors = {};
         let rules = '';
 
         for (const selector in ruleset) {
-            const prefixed = global ? selector :
-                selector.split(/((?::global\()?[.#][\w\-_][\w\d\-_]*)/gi)
-                    .reduce((prefixed, seg) => {
-                        if (/^[.#]/.test(seg)) {
-                            const name = seg.slice(1);
-                            selectors[name] = `${name}__${key}`;
-                            seg = `${seg}__${key}`;
-                        }
-
-                        return prefixed + seg;
-                    }, '');
-
-            const subset = Object.entries(ruleset[selector]).reduce((str, [attr, value]) => {
-                return str + `${attr.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()}:${value};`;
-            }, '');
-
-            rules += `${prefixed}{${subset}}`;
+            rules += ruleToString(selector, ruleset[selector], selectors, global ? undefined : key);
         }
 
         this.rules[key] = {
@@ -55,8 +34,8 @@ class StyleStore {
         return selectors;
     }
 
-    merge(...styles: RuleSet[]) {
-        const merged: RuleSet = {};
+    merge(...styles: FluidStyles[]) {
+        const merged: FluidStyles = {};
 
         for (const ruleset of styles) {
             for (const selector in ruleset) {
@@ -68,7 +47,7 @@ class StyleStore {
         return merged;
     }
 
-    hash(...styles: RuleSet[]) {
+    hash(...styles: FluidStyles[]) {
         const str = JSON.stringify(styles);
 
         let l = 0xdeadbeef, r = 0x41c6ce57;
@@ -84,6 +63,17 @@ class StyleStore {
 
         l = 4294967296 * (2097151 & r) + (l >>> 0);
         return l.toString(16).slice(-8).padStart(8, '0');
+    }
+
+    update() {
+        if (typeof window === 'undefined') return;
+
+        const tag = document.getElementById('fluid__styles') || document.createElement('style');
+        if (!tag.isConnected) {
+            (document.head || document.getElementsByName('head')[0]).appendChild(tag);
+        }
+
+        tag.innerText = this.serialize();
     }
 
     serialize() {
