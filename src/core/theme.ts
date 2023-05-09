@@ -48,7 +48,7 @@ export const DEFAULT_THEME: FluidTheme = {
             grey: ['#e6e6e6', '#cccccc', '#b3b3b3', '#999999', '#808080', '#666666', '#4d4d4d', '#333333', '#191919'],
             text: ['#000', '#fff'],
             bg: ['#fff'],
-            fg: ['#fff']
+            fg: ['#f0f7f7']
         },
         dark: {
             primary: ['#000'],
