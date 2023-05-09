@@ -41,6 +41,11 @@ const Button = forwardRef(({ children, styles = {}, size = 'med', variant = 'def
             backgroundColor: 'var(--f-clr-primary-500)'
         },
 
+        '.button[data-loading="false"]:disabled': {
+            color: 'var(--f-clr-grey-400)',
+            backgroundColor: 'var(--f-clr-grey-100)'
+        },
+
         '.button[data-variant="minimal"]': {
             backgroundColor: 'transparent'
         },

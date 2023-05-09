@@ -9,3 +9,5 @@ export type Selectors<T extends string = any> = {
 };
 
 export type FluidSize = 'sml' | 'med' | 'lrg';
+
+export type FluidError = null | boolean | string;

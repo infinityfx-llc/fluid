@@ -1,9 +1,9 @@
 import { classes } from '@/src/core/utils';
 import useStyles from '@/src/hooks/use-styles';
-import { FluidStyles } from '@/src/types';
+import { FluidError, FluidStyles } from '@/src/types';
 import { forwardRef } from 'react';
 
-const Switch = forwardRef(({ styles = {}, round = false, className, style, ...props }: { styles?: FluidStyles; round?: boolean; disabled?: boolean; checked?: boolean; } & React.InputHTMLAttributes<HTMLInputElement>, ref: React.ForwardedRef<HTMLLabelElement>) => {
+const Switch = forwardRef(({ styles = {}, error, round = false, className, style, ...props }: { styles?: FluidStyles; error?: FluidError; round?: boolean; disabled?: boolean; checked?: boolean; } & React.InputHTMLAttributes<HTMLInputElement>, ref: React.ForwardedRef<HTMLLabelElement>) => {
     const _style = useStyles(styles, {
         '.input': {
             position: 'absolute',
@@ -41,20 +41,28 @@ const Switch = forwardRef(({ styles = {}, round = false, className, style, ...pr
             cursor: 'pointer'
         },
 
-        '.input:disabled + .switch .handle': {
-            backgroundColor: 'var(--f-clr-grey-100)'
-        },
-
         '.wrapper[data-round="true"] .switch': {
             borderRadius: '999px'
         },
 
         '.wrapper[data-round="true"] .handle': {
             borderRadius: '999px'
+        },
+
+        '.wrapper[data-error="true"] .input:enabled + .switch': {
+            backgroundColor: 'var(--f-clr-error-400)'
+        },
+
+        '.wrapper[data-error="true"] .input:checked:enabled + .switch': {
+            backgroundColor: 'var(--f-clr-error-200)'
+        },
+
+        '.input:disabled + .switch .handle': {
+            backgroundColor: 'var(--f-clr-grey-200)'
         }
     });
 
-    return <label ref={ref} className={classes(_style.wrapper, className)} style={style} data-round={round}>
+    return <label ref={ref} className={classes(_style.wrapper, className)} style={style} data-round={round} data-error={!!error}>
         <input {...props} type="checkbox" className={_style.input} />
 
         <div className={_style.switch}>

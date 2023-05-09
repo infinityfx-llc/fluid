@@ -7,6 +7,7 @@ export type FluidTheme = {
             text: string[];
             bg: string[];
             fg: string[];
+            error: string[];
         }
     },
     spacing: {
@@ -48,7 +49,8 @@ export const DEFAULT_THEME: FluidTheme = {
             grey: ['#e6e6e6', '#cccccc', '#b3b3b3', '#999999', '#808080', '#666666', '#4d4d4d', '#333333', '#191919'],
             text: ['#000', '#fff'],
             bg: ['#fff'],
-            fg: ['#f0f7f7']
+            fg: ['#f0f7f7'],
+            error: ['#ff1f1f', '#ff5454', '#ff8c8c', '#ffbdbd']
         },
         dark: {
             primary: ['#000'],
@@ -56,7 +58,8 @@ export const DEFAULT_THEME: FluidTheme = {
             grey: ['#000'],
             text: ['#000'],
             bg: ['#000'],
-            fg: ['#000']
+            fg: ['#000'],
+            error: ['red']
         }
     },
     spacing: {
