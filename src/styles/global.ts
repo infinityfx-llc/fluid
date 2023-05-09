@@ -1,3 +1,5 @@
+import { FluidStyles } from "../types";
+
 export default {
     '*': {
         boxSizing: 'border-box',
@@ -12,7 +14,8 @@ export default {
     },
 
     body: {
-        fontFamily: 'var(--f-font-family)'
+        fontFamily: 'var(--f-font-family)',
+        backgroundColor: 'var(--f-clr-bg-100)'
     },
 
     a: {
@@ -23,6 +26,4 @@ export default {
     'input, button, textarea, select': {
         font: 'inherit'
     }
-} as {
-    [key: string]: React.CSSProperties;
-};
+} as FluidStyles;

@@ -1,3 +1,5 @@
+import { FluidStyles } from "../types";
+
 export type FluidTheme = {
     palettes: {
         [key: string]: {
@@ -10,6 +12,7 @@ export type FluidTheme = {
             error: string[];
         }
     },
+    defaultColorScheme: string;
     spacing: {
         xxs: string;
         xsm: string;
@@ -53,15 +56,16 @@ export const DEFAULT_THEME: FluidTheme = {
             error: ['#ff1f1f', '#ff5454', '#ff8c8c', '#ffbdbd']
         },
         dark: {
-            primary: ['#000'],
-            accent: ['#000'],
-            grey: ['#000'],
-            text: ['#000'],
+            primary: ['#1dddf2', '#1ac4d6', '#1bb2c2', '#1298a6', '#10707a', '#0d545c'],
+            accent: ['#22e39f'],
+            grey: ['#191919','#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#b3b3b3', '#cccccc', '#e6e6e6'],
+            text: ['#fff', '#fff'],
             bg: ['#000'],
-            fg: ['#000'],
-            error: ['red']
+            fg: ['#161717'],
+            error: ['#ff1f1f', '#b32727', '#822f2f', '#632c2c']
         }
     },
+    defaultColorScheme: 'light',
     spacing: {
         xxs: '.2rem',
         xsm: '.4rem',
@@ -117,9 +121,7 @@ export function parseCSSVariables(theme: FluidTheme) {
 }
 
 export function parseColorPalettes(theme: FluidTheme) {
-    const ruleset: {
-        [key: string]: React.CSSProperties;
-    } = {};
+    const ruleset: FluidStyles = {};
 
     for (const name in theme.palettes) {
         const vars = {};
@@ -128,9 +130,13 @@ export function parseColorPalettes(theme: FluidTheme) {
         }
 
         ruleset[`body.scheme-${name}`] = vars;
-    }
 
-    // prefers-color-scheme @media
+        if (name === 'light' || name === 'dark') {
+            ruleset[`@media(prefers-color-scheme: ${name})`] = {
+                'body.testing': vars // testing === whether colorScheme is manual or auto
+            };
+        }
+    }
 
     return ruleset;
 }

@@ -31,7 +31,7 @@ export default function FluidProvider({ children, theme = {} }: { children: Reac
 
     return <FluidContext.Provider value={{}}>
         {cloneElement(children, {
-            className: `scheme-${colorScheme}`
+            className: `scheme-${colorScheme} testing`
         })}
     </FluidContext.Provider>
 }
