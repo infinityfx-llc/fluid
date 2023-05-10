@@ -4,12 +4,17 @@ import { FluidError, FluidStyles } from "@/src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { forwardRef } from "react";
+import Halo from "../feedback/halo";
 
 const Checkbox = forwardRef(({ styles = {}, error, className, style, ...props }: { styles?: FluidStyles; error?: FluidError; } & React.InputHTMLAttributes<HTMLInputElement>, ref: React.ForwardedRef<HTMLLabelElement>) => {
     const _style = useStyles(styles, {
+        '.wrapper': {
+            position: 'relative'
+        },
+        
         '.input': {
             position: 'absolute',
-            visibility: 'hidden'
+            opacity: 0
         },
 
         '.checkbox': {
@@ -55,24 +60,31 @@ const Checkbox = forwardRef(({ styles = {}, error, className, style, ...props }:
 
         '.wrapper[data-error="true"] .input:checked:enabled + .checkbox': {
             backgroundColor: 'var(--f-clr-error-200)'
+        },
+
+        '.halo': {
+            borderRadius: 'var(--f-radius-sml)',
+            inset: '-.5em'
         }
     });
     const [link, setLink] = useLink(props.defaultChecked ? 1 : 0);
 
-    return <label ref={ref} className={classes(_style.wrapper, className)} style={style} data-error={!!error}>
-        <input {...props} type="checkbox" className={_style.input} onChange={e => {
-            setLink(e.target.checked ? 1 : 0, .25);
-            props.onChange?.(e);
-        }} />
+    return <Halo className={_style.halo} hover={false}>
+        <label ref={ref} className={classes(_style.wrapper, className)} style={style} data-error={!!error}>
+            <input {...props} type="checkbox" className={_style.input} onChange={e => {
+                setLink(e.target.checked ? 1 : 0, .25);
+                props.onChange?.(e);
+            }} />
 
-        <div className={_style.checkbox}>
-            <svg viewBox="0 0 18 18" className={_style.checkmark}>
-                <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: 1 }}>
-                    <path d="M 3 9 L 8 13 L 15 5" fill="none" />
-                </Animatable>
-            </svg>
-        </div>
-    </label>
+            <div className={_style.checkbox}>
+                <svg viewBox="0 0 18 18" className={_style.checkmark}>
+                    <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: 1 }}>
+                        <path d="M 3 9 L 8 13 L 15 5" fill="none" />
+                    </Animatable>
+                </svg>
+            </div>
+        </label>
+    </Halo>;
 });
 
 Checkbox.displayName = 'Checkbox';

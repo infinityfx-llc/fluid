@@ -22,15 +22,15 @@ const Button = forwardRef(({ children, styles = {}, size = 'med', variant = 'def
         },
 
         '.button[data-size="sml"]': {
-            fontSize: '.85rem'
+            fontSize: 'var(--f-font-size-xsm)'
         },
 
         '.button[data-size="med"]': {
-            fontSize: '1rem'
+            fontSize: 'var(--f-font-size-sml)'
         },
 
         '.button[data-size="lrg"]': {
-            fontSize: '1.25rem'
+            fontSize: 'var(--f-font-size-med)'
         },
 
         '.button[data-variant="default"]': {
@@ -54,13 +54,13 @@ const Button = forwardRef(({ children, styles = {}, size = 'med', variant = 'def
             cursor: 'pointer'
         },
 
-        '.layout': {
+        '.content': {
             display: 'flex',
             alignItems: 'center',
-            gap: 'var(--f-spacing-xsm)',
+            gap: 'var(--f-spacing-xsm)'
         },
 
-        '.button[data-loading="true"] .layout': {
+        '.button[data-loading="true"] .content': {
             opacity: 0
         },
 
@@ -75,7 +75,7 @@ const Button = forwardRef(({ children, styles = {}, size = 'med', variant = 'def
 
     return <Halo disabled={props.disabled || loading}>
         <button ref={ref} {...props} type={props.type || 'button'} disabled={props.disabled || loading} className={classes(style.button, props.className)} data-size={size} data-variant={variant} data-loading={loading}>
-            <span className={style.layout}>{children}</span>
+            <span className={style.content}>{children}</span>
 
             {loading && <Spinner className={style.loader} />}
         </button>

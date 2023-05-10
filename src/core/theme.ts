@@ -115,7 +115,7 @@ export function parseCSSVariables(theme: FluidTheme) {
     insertVariables('spacing', theme.spacing, vars);
     insertVariables('radius', theme.radius, vars);
     insertVariables('font-size', theme.font.size, vars);
-    insertVariables('breakpoint', theme.breakpoints, vars);
+    // insertVariables('breakpoint', theme.breakpoints, vars);
 
     return vars;
 }

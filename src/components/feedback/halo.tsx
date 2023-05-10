@@ -4,7 +4,7 @@ import { Animatable } from "@infinityfx/lively";
 import { useTrigger } from "@infinityfx/lively/hooks";
 import { Children, cloneElement } from "react";
 
-export default function Halo({ children, color = 'var(--f-clr-grey-500)', disabled = false }: { children: React.ReactElement; color?: string; disabled?: boolean; }) {
+export default function Halo({ children, color = 'var(--f-clr-grey-500)', hover = true, disabled = false, ...props }: { children: React.ReactElement; color?: string; hover?: boolean; disabled?: boolean; } & React.HTMLAttributes<HTMLDivElement>) {
     const style = useStyles({
         '.container': {
             zIndex: 0
@@ -20,11 +20,12 @@ export default function Halo({ children, color = 'var(--f-clr-grey-500)', disabl
             transition: 'opacity .25s, scale .25s',
             display: disabled ? 'none' : 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            pointerEvents: 'none'
         },
 
         '@media (pointer: fine)': {
-            '.container:hover .halo': {
+            '.container:hover .halo[data-hover="true"]': {
                 opacity: .25
             }
         },
@@ -35,8 +36,14 @@ export default function Halo({ children, color = 'var(--f-clr-grey-500)', disabl
             }
         },
 
-        '.container:focus-visible .halo': {
+        '.container:focus-visible .halo, .container:has(:focus-visible) .halo': {
             opacity: .25
+        },
+
+        '@supports not selector(:focus-visible)': {
+            '.container:focus-within .halo': {
+                opacity: .25
+            }
         },
 
         '.circle': {
@@ -52,7 +59,7 @@ export default function Halo({ children, color = 'var(--f-clr-grey-500)', disabl
     const click = useTrigger();
 
     const arr = Children.toArray(children.props.children);
-    arr.unshift(<div key="halo" className={style.halo}>
+    arr.unshift(<div key="halo" {...props} className={classes(style.halo, props.className)} data-hover={hover}>
         <Animatable key="halo" animate={{ opacity: [0, 1], scale: [0, 1], duration: .4 }} initial={{ opacity: 1, scale: 1 }} triggers={[{ on: click, immediate: true }]}>
             <div className={style.circle} />
         </Animatable>

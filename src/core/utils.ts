@@ -14,7 +14,16 @@ export function mergeRecursive(a: any, b: any) {
 
 export function classes(...args: any[]) {
     return args.filter(val => typeof val === 'string').join(' ');
-};
+}
+
+export function combineRefs(...refs: React.Ref<any>[]) {
+    return (el: any) => {
+        refs.forEach(ref => {
+            if (ref && 'current' in ref) (ref as React.MutableRefObject<any>).current = el;
+            if (ref instanceof Function) ref(el);
+        });
+    };
+}
 
 export function ruleToString(selector: string, rules: React.CSSProperties | { [key: string]: React.CSSProperties }, selectors: Selectors, postfix?: string): string {
     const prefixed = postfix ?
