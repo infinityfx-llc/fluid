@@ -60,7 +60,7 @@ export default function Halo({ children, color = 'var(--f-clr-grey-500)', hover 
 
     const arr = Children.toArray(children.props.children);
     arr.unshift(<div key="halo" {...props} className={classes(style.halo, props.className)} data-hover={hover}>
-        <Animatable key="halo" animate={{ opacity: [0, 1], scale: [0, 1], duration: .4 }} initial={{ opacity: 1, scale: 1 }} triggers={[{ on: click, immediate: true }]}>
+        <Animatable key="halo" animate={{ opacity: [0, 1], scale: [0, 1], duration: .4, easing: 'linear' }} initial={{ opacity: 1, scale: 1 }} triggers={[{ on: click, immediate: true }]}>
             <div className={style.circle} />
         </Animatable>
     </div>);

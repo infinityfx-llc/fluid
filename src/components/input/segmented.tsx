@@ -82,7 +82,7 @@ const Segmented = forwardRef(({ styles = {}, round = false, options, name, value
         }
     });
 
-    const [state, setState] = value ? [value] : useState(defaultValue || options[0]?.value);
+    const [state, setState] = value !== undefined ? [value] : useState(defaultValue || options[0]?.value);
     const id = useId();
 
     return <div ref={ref} {...props} role="radiogroup" className={classes(style.segmented, props.className)} data-round={round} data-error={!!error}>

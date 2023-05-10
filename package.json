@@ -36,7 +36,7 @@
 		"watch": "rollup -c -w"
 	},
 	"peerDependencies": {
-		"@infinityfx/lively": "^3.1.6",
+		"@infinityfx/lively": "^3.1.7",
 		"react-icons": "^4.8.0",
 		"react": ">=16.0.0",
 		"react-dom": ">=16.0.0"
@@ -46,7 +46,7 @@
 		"@rollup/plugin-typescript": "^11.1.0",
 		"@types/react": "^18.2.6",
 		"@types/react-dom": "^18.2.4",
-		"@infinityfx/lively": "^3.1.6",
+		"@infinityfx/lively": "^3.1.7",
 		"react-icons": "^4.8.0",
 		"react": "^18.2.0",
 		"rollup": "^3.20.2",

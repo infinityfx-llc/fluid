@@ -5,7 +5,7 @@ import { forwardRef } from 'react';
 import Halo from '../feedback/halo';
 import useInputProps from '@/src/hooks/use-input-props';
 
-const Switch = forwardRef(({ styles = {}, error, round = false, ...props }: { styles?: FluidStyles; error?: FluidError; round?: boolean; disabled?: boolean; checked?: boolean; } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>, ref: React.ForwardedRef<HTMLLabelElement>) => {
+const Switch = forwardRef(({ styles = {}, error, round = true, ...props }: { styles?: FluidStyles; error?: FluidError; round?: boolean; disabled?: boolean; checked?: boolean; } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>, ref: React.ForwardedRef<HTMLLabelElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             position: 'relative'

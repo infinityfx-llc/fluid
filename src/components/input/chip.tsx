@@ -15,7 +15,7 @@ const Chip = forwardRef(({ children, styles = {}, round = false, ...props }: { c
             backgroundColor: 'var(--f-clr-fg-100)',
             fontSize: 'var(--f-font-size-xsm)',
             fontWeight: 600,
-            padding: '.5em .7em',
+            padding: '.5em .8em',
             borderRadius: 'var(--f-radius-sml)',
             userSelect: 'none',
             transition: 'background-color .15s'
