@@ -71,6 +71,7 @@ class StyleStore {
         const tag = document.getElementById('fluid__styles') || document.createElement('style');
         if (!tag.isConnected) {
             (document.head || document.getElementsByName('head')[0]).appendChild(tag);
+            tag.id = 'fluid__styles';
         }
 
         tag.innerText = this.serialize();

@@ -5,9 +5,10 @@ import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { forwardRef } from "react";
 import Halo from "../feedback/halo";
+import useInputProps from "@/src/hooks/use-input-props";
 
-const Checkbox = forwardRef(({ styles = {}, error, className, style, ...props }: { styles?: FluidStyles; error?: FluidError; } & React.InputHTMLAttributes<HTMLInputElement>, ref: React.ForwardedRef<HTMLLabelElement>) => {
-    const _style = useStyles(styles, {
+const Checkbox = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidStyles; error?: FluidError; } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>, ref: React.ForwardedRef<HTMLLabelElement>) => {
+    const style = useStyles(styles, {
         '.wrapper': {
             position: 'relative'
         },
@@ -69,15 +70,17 @@ const Checkbox = forwardRef(({ styles = {}, error, className, style, ...props }:
     });
     const [link, setLink] = useLink(props.defaultChecked ? 1 : 0);
 
-    return <Halo className={_style.halo} hover={false}>
-        <label ref={ref} className={classes(_style.wrapper, className)} style={style} data-error={!!error}>
-            <input {...props} type="checkbox" className={_style.input} onChange={e => {
+    const [split, rest] = useInputProps(props);
+
+    return <Halo className={style.halo} hover={false}>
+        <label ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-error={!!error}>
+            <input {...split} type="checkbox" className={style.input} onChange={e => {
                 setLink(e.target.checked ? 1 : 0, .25);
                 props.onChange?.(e);
             }} />
 
-            <div className={_style.checkbox}>
-                <svg viewBox="0 0 18 18" className={_style.checkmark}>
+            <div className={style.checkbox}>
+                <svg viewBox="0 0 18 18" className={style.checkmark}>
                     <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: 1 }}>
                         <path d="M 3 9 L 8 13 L 15 5" fill="none" />
                     </Animatable>

@@ -3,9 +3,10 @@ import useStyles from "@/src/hooks/use-styles";
 import { FluidError, FluidStyles } from "@/src/types";
 import { forwardRef } from "react";
 import Halo from "../feedback/halo";
+import useInputProps from "@/src/hooks/use-input-props";
 
-const Radio = forwardRef(({ styles = {}, error, className, style, ...props }: { styles?: FluidStyles; error?: FluidError; } & React.InputHTMLAttributes<HTMLInputElement>, ref: React.ForwardedRef<HTMLLabelElement>) => {
-    const _style = useStyles(styles, {
+const Radio = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidStyles; error?: FluidError; } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>, ref: React.ForwardedRef<HTMLLabelElement>) => {
+    const style = useStyles(styles, {
         '.wrapper': {
             position: 'relative'
         },
@@ -76,15 +77,17 @@ const Radio = forwardRef(({ styles = {}, error, className, style, ...props }: { 
         }
     });
 
-    return <Halo className={_style.halo} hover={false}>
-        <label ref={ref} className={classes(_style.wrapper, className)} style={style} data-error={!!error}>
-            <input {...props} type="radio" className={_style.input} />
+    const [split, rest] = useInputProps(props);
 
-            <div className={_style.radio}>
-                <div className={_style.selection} />
+    return <Halo className={style.halo} hover={false}>
+        <label ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-error={!!error}>
+            <input {...split} type="radio" className={style.input} />
+
+            <div className={style.radio}>
+                <div className={style.selection} />
             </div>
         </label>
-    </Halo>
+    </Halo>;
 });
 
 Radio.displayName = 'Radio';

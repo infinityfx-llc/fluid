@@ -3,9 +3,10 @@ import useStyles from '@/src/hooks/use-styles';
 import { FluidError, FluidStyles } from '@/src/types';
 import { forwardRef } from 'react';
 import Halo from '../feedback/halo';
+import useInputProps from '@/src/hooks/use-input-props';
 
-const Switch = forwardRef(({ styles = {}, error, round = false, className, style, ...props }: { styles?: FluidStyles; error?: FluidError; round?: boolean; disabled?: boolean; checked?: boolean; } & React.InputHTMLAttributes<HTMLInputElement>, ref: React.ForwardedRef<HTMLLabelElement>) => {
-    const _style = useStyles(styles, {
+const Switch = forwardRef(({ styles = {}, error, round = false, ...props }: { styles?: FluidStyles; error?: FluidError; round?: boolean; disabled?: boolean; checked?: boolean; } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>, ref: React.ForwardedRef<HTMLLabelElement>) => {
+    const style = useStyles(styles, {
         '.wrapper': {
             position: 'relative'
         },
@@ -76,12 +77,14 @@ const Switch = forwardRef(({ styles = {}, error, round = false, className, style
         }
     });
 
-    return <Halo className={_style.halo} hover={false}>
-        <label ref={ref} className={classes(_style.wrapper, className)} style={style} data-round={round} data-error={!!error}>
-            <input {...props} type="checkbox" className={_style.input} />
+    const [split, rest] = useInputProps(props);
 
-            <div className={_style.switch}>
-                <div className={_style.handle} />
+    return <Halo className={style.halo} hover={false}>
+        <label ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-round={round} data-error={!!error}>
+            <input {...split} type="checkbox" className={style.input} />
+
+            <div className={style.switch}>
+                <div className={style.handle} />
             </div>
         </label>
     </Halo>;
