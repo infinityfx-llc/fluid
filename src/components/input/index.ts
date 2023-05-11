@@ -6,6 +6,7 @@ import Chip from "./chip";
 import Toggle from "./toggle";
 import Radio from "./radio";
 import Segmented from "./segmented";
+import Field from "./field";
 
 export {
     Button,
@@ -15,5 +16,6 @@ export {
     Chip,
     Toggle,
     Radio,
-    Segmented
+    Segmented,
+    Field
 }

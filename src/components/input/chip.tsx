@@ -14,6 +14,7 @@ const Chip = forwardRef(({ children, styles = {}, round = false, ...props }: { c
         '.chip': {
             backgroundColor: 'var(--f-clr-fg-100)',
             fontSize: 'var(--f-font-size-xsm)',
+            color: 'var(--f-clr-text-100)',
             fontWeight: 600,
             padding: '.5em .8em',
             borderRadius: 'var(--f-radius-sml)',
