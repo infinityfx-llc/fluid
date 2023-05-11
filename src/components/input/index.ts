@@ -7,6 +7,8 @@ import Toggle from "./toggle";
 import Radio from "./radio";
 import Segmented from "./segmented";
 import Field from "./field";
+import NumberField from "./number-field";
+import PasswordField from "./password-field";
 
 export {
     Button,
@@ -17,5 +19,7 @@ export {
     Toggle,
     Radio,
     Segmented,
-    Field
+    Field,
+    NumberField,
+    PasswordField
 }

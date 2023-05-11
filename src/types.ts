@@ -10,6 +10,6 @@ export type Selectors<T extends string = any> = {
 
 export type FluidSize = 'sml' | 'med' | 'lrg';
 
-export type FluidInputvalue = string | number | string[] | undefined;
+export type FluidInputvalue = string | number | readonly string[] | undefined;
 
 export type FluidError = null | boolean | string;

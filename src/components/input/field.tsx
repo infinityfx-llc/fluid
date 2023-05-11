@@ -3,18 +3,19 @@ import useStyles from '@/src/hooks/use-styles';
 import { FluidError, FluidInputvalue, FluidSize, FluidStyles } from '@/src/types';
 import { forwardRef, useId } from 'react';
 
-const Field = forwardRef(({ children, styles = {}, round = false, size = 'med', error, icon, label, left, right, ...props }:
-    {
-        children?: FluidInputvalue;
-        styles?: FluidStyles;
-        round?: boolean;
-        size?: FluidSize;
-        error?: FluidError; 
-        icon?: React.ReactNode; 
-        label?: string;
-        left?: React.ReactNode;
-        right?: React.ReactNode;
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+export type FieldProps = {
+    children?: FluidInputvalue;
+    styles?: FluidStyles;
+    round?: boolean;
+    size?: FluidSize;
+    error?: FluidError; 
+    icon?: React.ReactNode; 
+    label?: string;
+    left?: React.ReactNode;
+    right?: React.ReactNode;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>;
+
+const Field = forwardRef(({ children, styles = {}, round = false, size = 'med', error, icon, label, left, right, ...props }: FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             display: 'flex',
@@ -43,7 +44,8 @@ const Field = forwardRef(({ children, styles = {}, round = false, size = 'med', 
             color: 'var(--f-clr-grey-200)',
             transition: 'border-color .2s, color .2s',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            overflow: 'hidden'
         },
 
         '.content': {
@@ -109,17 +111,17 @@ const Field = forwardRef(({ children, styles = {}, round = false, size = 'med', 
     return <div ref={ref} {...rest} className={style.wrapper} data-size={size}>
         {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
 
-        <label className={style.field} data-error={error} data-disabled={props.disabled} data-round={round}>
+        <div className={style.field} data-error={error} data-disabled={props.disabled} data-round={round}>
             {left}
 
-            <div className={style.content}>
+            <label className={style.content}>
                 {icon}
 
                 <input {...split} aria-labelledby={label ? id : undefined} defaultValue={children} className={style.input} />
-            </div>
+            </label>
 
             {right}
-        </label>
+        </div>
     </div>;
 });
 

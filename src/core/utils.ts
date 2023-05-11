@@ -1,5 +1,7 @@
 import { Selectors } from "../types";
 
+export const round = (val: number, n = 2) => Math.round(val * Math.pow(10, n)) / Math.pow(10, n);
+
 export function mergeRecursive(a: any, b: any) {
     if (a === undefined) return b;
     if (typeof a !== 'object') return a;
@@ -41,6 +43,6 @@ export function ruleToString(selector: string, rules: React.CSSProperties | { [k
     return `${prefixed}{${Object.entries(rules).reduce((str, [attr, value]) => {
         if (typeof value === 'object') return str + ruleToString(attr, value, selectors, postfix);
 
-        return str + `${attr.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()}:${value};`;
+        return str + `${attr.replace(/(.?)([A-Z])/g, '$1-$2').toLowerCase()}:${value};`;
     }, '')}}`;
 }

@@ -7,12 +7,8 @@ import { useTrigger } from "@infinityfx/lively/hooks";
 import { Animatable } from "@infinityfx/lively";
 import useUpdate from "@/src/hooks/use-update";
 
-const Toggle = forwardRef(({ children, styles = {}, alternate, ...props }: { children: React.ReactNode; styles?: FluidStyles; alternate?: React.ReactNode; } & React.InputHTMLAttributes<HTMLInputElement>, ref: React.ForwardedRef<HTMLLabelElement>) => {
+const Toggle = forwardRef(({ children, styles = {}, round = false, variant = 'default', alternate, ...props }: { children: React.ReactNode; styles?: FluidStyles; round?: boolean; variant?: 'default' | 'minimal'; alternate?: React.ReactNode; } & React.InputHTMLAttributes<HTMLInputElement>, ref: React.ForwardedRef<HTMLLabelElement>) => {
     const style = useStyles(styles, {
-        '.wrapper': {
-
-        },
-
         '.input': {
             position: 'absolute',
             opacity: 0
@@ -26,6 +22,10 @@ const Toggle = forwardRef(({ children, styles = {}, alternate, ...props }: { chi
             borderRadius: 'var(--f-radius-sml)',
             fontSize: 'var(--f-font-size-sml)',
             transition: 'background-color .25s, color .25s'
+        },
+
+        '.toggle[data-variant="minimal"]': {
+            backgroundColor: 'transparent'
         },
 
         '.toggle[data-disabled="false"]': {
@@ -53,6 +53,10 @@ const Toggle = forwardRef(({ children, styles = {}, alternate, ...props }: { chi
         '.toggle[data-checked="true"][data-disabled="true"]': {
             backgroundColor: 'var(--f-clr-grey-300)',
             color: 'var(--f-clr-grey-100)'
+        },
+
+        '.toggle[data-round="true"]': {
+            borderRadius: '999px'
         }
     });
 
@@ -65,7 +69,7 @@ const Toggle = forwardRef(({ children, styles = {}, alternate, ...props }: { chi
     useUpdate(() => state ? check() : uncheck(), [state]);
 
     return <Halo disabled={props.disabled}>
-        <label ref={ref} {...rest} className={style.toggle} data-checked={state} data-disabled={!!props.disabled}>
+        <label ref={ref} {...rest} className={style.toggle} data-checked={state} data-disabled={!!props.disabled} data-round={round} data-variant={variant}>
             <input {...split} type="checkbox" className={style.input} onChange={e => {
                 setState?.(e.target.checked);
                 split.onChange?.(e);
