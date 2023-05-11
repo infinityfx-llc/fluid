@@ -46,6 +46,10 @@ const Toggle = forwardRef(({ children, styles = {}, round = false, variant = 'de
             color: 'var(--f-clr-text-200)'
         },
 
+        '.toggle[data-variant="minimal"][data-checked="true"]': {
+            backgroundColor: 'var(--f-clr-primary-300)'
+        },
+
         '.toggle[data-checked="false"][data-disabled="true"]': {
             color: 'var(--f-clr-grey-500)'
         },
