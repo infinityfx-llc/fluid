@@ -51,7 +51,8 @@ const Pincode = forwardRef(({ children, styles = {}, length = 4, size = 'med', r
             outline: 'none',
             width: '1em',
             background: 'none',
-            textAlign: 'center'
+            textAlign: 'center',
+            color: 'var(--f-clr-text-100)'
         },
 
         '.wrapper[data-size="sml"]': {

@@ -20,16 +20,17 @@ const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, alwaysS
     const style = useStyles(styles, {
         '.wrapper': {
             display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--f-spacing-xsm)'
+            flexDirection: 'column'
         },
 
         '.wrapper[data-vertical="false"]': {
-            width: 'clamp(0px, 12em, 100vw)'
+            width: 'clamp(0px, 12em, 100vw)',
+            gap: 'var(--f-spacing-xsm)'
         },
 
         '.wrapper[data-vertical="true"]': {
-            height: 'clamp(0px, 12em, 100vw)'
+            height: 'clamp(0px, 12em, 100vw)',
+            gap: 'var(--f-spacing-med)'
         },
 
         '.label': {

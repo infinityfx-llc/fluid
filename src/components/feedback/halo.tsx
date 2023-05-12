@@ -2,9 +2,9 @@ import { classes, combineRefs } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
 import { Animatable } from "@infinityfx/lively";
 import { useTrigger } from "@infinityfx/lively/hooks";
-import { Children, cloneElement, forwardRef } from "react";
+import { Children, cloneElement, forwardRef, isValidElement } from "react";
 
-const Halo = forwardRef(<T extends React.ReactElement>({ children, color, hover = true, disabled = false, className, style, ...props }: { children: T; color?: string; hover?: boolean; disabled?: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<T>) => {
+const Halo = forwardRef(<T extends React.ReactElement>({ children, color, hover = true, disabled = false, className, style, ...props }: { children: T; color?: string; hover?: boolean; disabled?: boolean; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<T>) => {
     const _style = useStyles({
         '.container': {
             zIndex: 0
@@ -57,6 +57,9 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, color, hover 
     });
 
     const click = useTrigger();
+
+    children = Array.isArray(children) ? children[0] : children;
+    if (!isValidElement(children)) return children;
 
     const arr = Children.toArray(children.props.children);
     arr.unshift(<div key="halo" className={classes(_style.halo, className)} style={style} data-hover={hover}>

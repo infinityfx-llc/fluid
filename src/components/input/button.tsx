@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import Halo from "../feedback/halo";
 import { classes } from "@/src/core/utils";
 import { FluidSize, FluidStyles } from "@/src/types";
-import Spinner from "../feedback/progress/spinner";
+import Spinner from "../feedback/spinner";
 
 const Button = forwardRef(({ children, styles = {}, round = false, size = 'med', variant = 'default', loading = false, ...props }: { children: React.ReactNode; styles?: FluidStyles; round?: boolean; size?: FluidSize; variant?: 'default' | 'alternate' | 'minimal'; loading?: boolean; } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
     const style = useStyles(styles, {

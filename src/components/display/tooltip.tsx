@@ -1,7 +1,7 @@
 import { classes, combineRefs } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
-import { forwardRef, cloneElement, useState, useRef, useLayoutEffect } from "react";
+import { forwardRef, cloneElement, useState, useRef, useLayoutEffect, isValidElement } from "react";
 import { createPortal } from "react-dom";
 
 const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto', alwaysVisible = false, ...props }: { children: React.ReactElement; content?: React.ReactNode; styles?: FluidStyles; position?: 'auto' | 'top' | 'left' | 'bottom' | 'right'; alwaysVisible?: boolean; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>, ref: React.ForwardedRef<HTMLDivElement>) => {
@@ -100,8 +100,11 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
         return () => cancelAnimationFrame(frame);
     }, [alwaysVisible]);
 
+    children = Array.isArray(children) ? children[0] : children;
+    if (!isValidElement(children)) return children;
+
     return <>
-        {cloneElement(children, {
+        {cloneElement(children as React.ReactElement, {
             ref: combineRefs(element, (children as any).ref),
             onMouseEnter: (e: React.MouseEvent) => {
                 children.props.onMouseEnter?.(e);
