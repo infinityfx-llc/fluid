@@ -111,7 +111,7 @@ const Field = forwardRef(({ children, styles = {}, round = false, size = 'med', 
     return <div ref={ref} {...rest} className={style.wrapper} data-size={size}>
         {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
 
-        <div className={style.field} data-error={error} data-disabled={props.disabled} data-round={round}>
+        <div className={style.field} data-error={!!error} data-disabled={props.disabled} data-round={round}>
             {left}
 
             <label className={style.content}>

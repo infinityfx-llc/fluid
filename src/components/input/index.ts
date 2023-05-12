@@ -9,6 +9,8 @@ import Segmented from "./segmented";
 import Field from "./field";
 import NumberField from "./number-field";
 import PasswordField from "./password-field";
+import Pincode from "./pincode";
+import Slider from "./slider";
 
 export {
     Button,
@@ -21,5 +23,7 @@ export {
     Segmented,
     Field,
     NumberField,
-    PasswordField
+    PasswordField,
+    Pincode,
+    Slider
 }

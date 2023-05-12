@@ -1,11 +1,11 @@
-import { classes } from "@/src/core/utils";
+import { classes, combineRefs } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
 import { Animatable } from "@infinityfx/lively";
 import { useTrigger } from "@infinityfx/lively/hooks";
-import { Children, cloneElement } from "react";
+import { Children, cloneElement, forwardRef } from "react";
 
-export default function Halo({ children, color = 'var(--f-clr-grey-500)', hover = true, disabled = false, ...props }: { children: React.ReactElement; color?: string; hover?: boolean; disabled?: boolean; } & React.HTMLAttributes<HTMLDivElement>) {
-    const style = useStyles({
+const Halo = forwardRef(<T extends React.ReactElement>({ children, color, hover = true, disabled = false, className, style, ...props }: { children: T; color?: string; hover?: boolean; disabled?: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<T>) => {
+    const _style = useStyles({
         '.container': {
             zIndex: 0
         },
@@ -50,7 +50,7 @@ export default function Halo({ children, color = 'var(--f-clr-grey-500)', hover 
             minWidth: '141%',
             minHeight: '141%',
             aspectRatio: 1,
-            backgroundColor: color,
+            backgroundColor: 'var(--f-clr-grey-500)',
             borderRadius: '999px',
             zIndex: -1
         }
@@ -59,17 +59,24 @@ export default function Halo({ children, color = 'var(--f-clr-grey-500)', hover 
     const click = useTrigger();
 
     const arr = Children.toArray(children.props.children);
-    arr.unshift(<div key="halo" {...props} className={classes(style.halo, props.className)} data-hover={hover}>
-        <Animatable key="halo" animate={{ opacity: [0, 1], scale: [0, 1], duration: .4, easing: 'linear' }} initial={{ opacity: 1, scale: 1 }} triggers={[{ on: click, immediate: true }]}>
-            <div className={style.circle} />
+    arr.unshift(<div key="halo" className={classes(_style.halo, className)} style={style} data-hover={hover}>
+        <Animatable animate={{ opacity: [0, 1], scale: [0, 1], duration: .4, easing: 'linear' }} initial={{ opacity: 1, scale: 1 }} triggers={[{ on: click, immediate: true }]}>
+            <div className={_style.circle} style={{ backgroundColor: color }} />
         </Animatable>
     </div>);
 
     return cloneElement(children, {
-        className: classes(children.props.className, style.container),
+        ...props,
+        ref: combineRefs(ref, (children as any).ref),
+        className: classes(children.props.className, _style.container),
         onClick: (e: any) => {
             children.props.onClick?.(e);
+            props.onClick?.(e);
             click();
         }
     }, arr);
-}
+});
+
+Halo.displayName = 'Halo';
+
+export default Halo;

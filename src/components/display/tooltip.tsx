@@ -1,61 +1,104 @@
 import { classes, combineRefs } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
-import { forwardRef, cloneElement, useState, useRef } from "react";
+import { forwardRef, cloneElement, useState, useRef, useLayoutEffect } from "react";
+import { createPortal } from "react-dom";
 
-const Tooltip = forwardRef(({ children, content, styles = {}, ...props }: { children: React.ReactElement; content?: React.ReactNode; styles?: FluidStyles; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto', alwaysVisible = false, ...props }: { children: React.ReactElement; content?: React.ReactNode; styles?: FluidStyles; position?: 'auto' | 'top' | 'left' | 'bottom' | 'right'; alwaysVisible?: boolean; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
+        '.anchor': {
+            position: 'absolute',
+            pointerEvents: 'none'
+        },
+
+        '.anchor[data-position="top"]': {
+            bottom: 'calc(100% + var(--f-spacing-sml))',
+            left: '50%'
+        },
+
+        '.anchor[data-position="left"]': {
+            right: 'calc(100% + var(--f-spacing-sml))',
+            top: '50%'
+        },
+
+        '.anchor[data-position="right"]': {
+            left: 'calc(100% + var(--f-spacing-sml))',
+            top: '50%'
+        },
+
+        '.anchor[data-position="bottom"]': {
+            top: 'calc(100% + var(--f-spacing-sml))',
+            left: '50%'
+        },
+
         '.tooltip': {
             position: 'fixed',
+            left: 0,
+            top: 0,
+            zIndex: 999,
             backgroundColor: 'var(--f-clr-grey-800)',
             color: 'var(--f-clr-text-200)',
             fontSize: 'var(--f-font-size-xsm)',
             padding: '.2em .3em',
             borderRadius: 'var(--f-radius-sml)',
-            pointerEvents: 'none',
-            zIndex: 999,
-            opacity: 0,
-            translate: '0px .2em',
-            transition: 'translate .2s, opacity .2s, visibility .2s'
+            pointerEvents: 'none'
         },
 
-        '.tooltip[data-visible="true"]': {
-            opacity: 1,
-            translate: '0px 0px'
+        '.tooltip[data-position="top"]': {
+            translate: '-50% -100%'
+        },
+
+        '.tooltip[data-position="left"]': {
+            translate: '-100% -50%'
+        },
+
+        '.tooltip[data-position="right"]': {
+            translate: '0% -50%'
+        },
+
+        '.tooltip[data-position="bottom"]': {
+            translate: '-50% 0%'
         }
     });
 
-    const element = useRef<HTMLElement | null>(null);
+    const anchor = useRef<HTMLDivElement | null>(null);
     const tooltip = useRef<HTMLDivElement | null>(null);
-    const [position, setPosition] = useState<{ left: string; top: string; visibility: 'hidden' | 'visible'; }>({ left: '0px', top: '0px', visibility: 'hidden' });
+    const element = useRef<HTMLElement | null>(null);
+    const [visible, setVisible] = useState(false);
+    const [computed, setComputed] = useState<string>(position);
 
     function show(value: boolean) {
-        if (!value || !element.current || !tooltip.current) return setPosition({ ...position, visibility: 'hidden' });
+        if (!element.current || !value) return setVisible(alwaysVisible);
 
-        let { left: l, top: t, right, bottom, width, height } = element.current.getBoundingClientRect();
-        const r = window.innerWidth - right;
-        const b = window.innerHeight - bottom;
+        if (position === 'auto') {
+            let { left, top, right, bottom } = element.current.getBoundingClientRect();
+            right = window.innerWidth - right;
+            bottom = window.innerHeight - bottom;
 
-        const max = Math.max(l, t, r, b);
-        const { width: w, height: h } = tooltip.current.getBoundingClientRect();
-        let left = l + (width - w) / 2 + 'px', top = t + (height - h) / 2 + 'px';
+            const max = [[left, 'left'], [top, 'top'], [right, 'right'], [bottom, 'bottom']].sort((a: any, b: any) => b[0] - a[0])[0];
 
-        switch (max) {
-            case l:
-                left = `calc(${l - w}px - var(--f-spacing-sml))`;
-                break;
-            case t:
-                top = `calc(${t - h}px - var(--f-spacing-sml))`;
-                break;
-            case r:
-                left = `calc(${right}px + var(--f-spacing-sml))`;
-                break;
-            case b:
-                top = `calc(${bottom}px + var(--f-spacing-sml))`;
+            setComputed(max[1] as string);
         }
 
-        setPosition({ left, top, visibility: 'visible' });
+        setVisible(true);
     }
+
+    let frame: number;
+    function update() {
+        if (anchor.current && tooltip.current) {
+            const { x, y } = anchor.current.getBoundingClientRect();
+            tooltip.current.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        frame = requestAnimationFrame(update);
+    }
+
+    useLayoutEffect(() => {
+        show(alwaysVisible);
+        frame = requestAnimationFrame(update);
+
+        return () => cancelAnimationFrame(frame);
+    }, [alwaysVisible]);
 
     return <>
         {cloneElement(children, {
@@ -67,12 +110,22 @@ const Tooltip = forwardRef(({ children, content, styles = {}, ...props }: { chil
             onMouseLeave: (e: React.MouseEvent) => {
                 children.props.onMouseLeave?.(e);
                 show(false);
+            },
+            onFocus: (e: React.FocusEvent) => {
+                children.props.onFocus?.(e);
+                show(true);
+            },
+            onBlur: (e: React.FocusEvent) => {
+                children.props.onBlur?.(e);
+                show(false);
             }
         })}
 
-        <div ref={combineRefs(ref, tooltip)} {...props} className={classes(style.tooltip, props.className)} style={position} data-visible={position.visibility === 'visible'}>
+        {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={computed} />, element.current)}
+
+        {visible && element.current && createPortal(<div ref={combineRefs(ref, tooltip)} {...props} className={classes(style.tooltip, props.className)} data-position={computed}>
             {content}
-        </div>
+        </div>, document.body)}
     </>;
 });
 

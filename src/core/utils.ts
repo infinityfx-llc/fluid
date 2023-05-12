@@ -2,6 +2,11 @@ import { Selectors } from "../types";
 
 export const round = (val: number, n = 2) => Math.round(val * Math.pow(10, n)) / Math.pow(10, n);
 
+export const toNumber = (val: any, fallback: number): number => {
+    val = typeof val === 'string' ? parseFloat(val) : val;
+    return val === undefined || isNaN(val) ? fallback : val;
+}
+
 export function mergeRecursive(a: any, b: any) {
     if (a === undefined) return b;
     if (typeof a !== 'object') return a;

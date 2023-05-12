@@ -2,20 +2,15 @@ import { useCallback, useState, forwardRef } from 'react';
 import Field, { FieldProps } from "./field";
 import { MdAdd, MdRemove } from 'react-icons/md';
 import Button from './button';
-import { round } from '@/src/core/utils';
+import { round, toNumber } from '@/src/core/utils';
 import { FluidInputvalue } from '@/src/types';
-
-function toNum(val: any, fallback: number) {
-    val = typeof val === 'string' ? parseFloat(val) : val;
-    return val === undefined || isNaN(val) ? fallback : val;
-}
 
 const NumberField = forwardRef(({ children, styles = {}, precision = 3, controls = true, ...props }: { precision?: number; controls?: boolean; } & FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
     const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(children || '');
 
-    const step = toNum(props.step, 1);
-    const min = toNum(props.min, -Number.MAX_VALUE);
-    const max = toNum(props.max, Number.MAX_VALUE);
+    const step = toNumber(props.step, 1);
+    const min = toNumber(props.min, -Number.MAX_VALUE);
+    const max = toNumber(props.max, Number.MAX_VALUE);
 
     const format = useCallback((value: FluidInputvalue, increment?: number) => {
         let num = value ? parseFloat(value.toString()) : undefined;
