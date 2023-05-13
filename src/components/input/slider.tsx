@@ -96,7 +96,7 @@ const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, alwaysS
             height: '100%',
             borderRadius: '99px',
             backgroundColor: 'var(--f-clr-text-200)',
-            boxShadow: '0 0 8px rgb(0, 0, 0, 0.15)',
+            boxShadow: '0 0 8px rgb(0, 0, 0, 0.12)',
         },
 
         '.slider[data-disabled="false"] .track': {

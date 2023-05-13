@@ -20,7 +20,7 @@ const Tabs = forwardRef(({ options, styles = {}, value, defaultValue, onChange, 
         '.tabs': {
             display: 'flex',
             gap: 'var(--f-spacing-sml)',
-            padding: '0 var(--f-spacing-sml)',
+            padding: '0 .6em',
             backgroundColor: 'var(--f-clr-fg-100)',
             borderRadius: 'var(--f-radius-sml)'
         },
