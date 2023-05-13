@@ -7,7 +7,7 @@ import { useTrigger } from "@infinityfx/lively/hooks";
 import { Animatable } from "@infinityfx/lively";
 import useUpdate from "@/src/hooks/use-update";
 
-const Toggle = forwardRef(({ children, styles = {}, round = false, variant = 'default', alternate, ...props }: { children: React.ReactNode; styles?: FluidStyles; round?: boolean; variant?: 'default' | 'minimal'; alternate?: React.ReactNode; } & React.InputHTMLAttributes<HTMLInputElement>, ref: React.ForwardedRef<HTMLLabelElement>) => {
+const Toggle = forwardRef(({ children, styles = {}, round = false, variant = 'default', checkedContent, ...props }: { children: React.ReactNode; styles?: FluidStyles; round?: boolean; variant?: 'default' | 'minimal'; checkedContent?: React.ReactNode; } & React.InputHTMLAttributes<HTMLInputElement>, ref: React.ForwardedRef<HTMLLabelElement>) => {
     const style = useStyles(styles, {
         '.input': {
             position: 'absolute',
@@ -80,18 +80,18 @@ const Toggle = forwardRef(({ children, styles = {}, round = false, variant = 'de
             }} />
 
             <span className={style.content}>
-                {alternate ? <Animatable
+                {checkedContent ? <Animatable
                     animate={{ translate: ['0 0', '0 105%'], duration: .4 }}
                     initial={{ translate: state ? '0 105%' : '0 0' }}
                     triggers={triggers}>
                     <span className={style.content}>{children}</span>
                 </Animatable> : children}
 
-                {alternate ? <Animatable
+                {checkedContent ? <Animatable
                     animate={{ translate: ['0 -105%', '0 0'], duration: .4 }}
                     initial={{ translate: state ? '0 0' : '0 -105%' }}
                     triggers={triggers}>
-                    <span className={style.content} style={{ position: 'absolute' }}>{alternate}</span>
+                    <span className={style.content} style={{ position: 'absolute' }}>{checkedContent}</span>
                 </Animatable> : null}
             </span>
         </label>

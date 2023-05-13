@@ -6,7 +6,7 @@ import { Move, Pop } from '@infinityfx/lively/animations';
 import { LayoutGroup } from '@infinityfx/lively/layout';
 import { forwardRef, cloneElement, useState, useRef, useEffect } from 'react';
 import { Halo } from '../feedback';
-import useClickOutside from '@/src/hooks/click-outside';
+import useClickOutside from '@/src/hooks/use-click-outside';
 
 const ActionMenu = forwardRef(({ children, styles = {}, options }: {
     children: React.ReactElement;

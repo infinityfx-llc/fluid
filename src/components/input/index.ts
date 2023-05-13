@@ -11,6 +11,7 @@ import NumberField from "./number-field";
 import PasswordField from "./password-field";
 import Pincode from "./pincode";
 import Slider from "./slider";
+import ThemeToggle from "./theme-toggle";
 
 export {
     Button,
@@ -25,5 +26,6 @@ export {
     NumberField,
     PasswordField,
     Pincode,
-    Slider
+    Slider,
+    ThemeToggle
 }

@@ -5,7 +5,12 @@ import global from "@/src/styles/global";
 import { mergeRecursive } from "@/src/core/utils";
 import useColorScheme from "@/src/hooks/use-color-scheme";
 
-export const FluidContext = createContext({});
+type FluidContext = FluidTheme & {
+    colorScheme: string;
+    setColorScheme: (scheme: string) => void;
+}
+
+export const FluidContext = createContext<FluidContext | null>(null);
 
 export default function FluidProvider({ children, theme = {} }: { children: React.ReactElement<HTMLBodyElement>, theme?: Partial<FluidTheme> }) {
     const [styles, fluid] = useMemo(() => {
@@ -21,7 +26,7 @@ export default function FluidProvider({ children, theme = {} }: { children: Reac
     useGlobalStyles(styles);
     useGlobalStyles(global);
 
-    return <FluidContext.Provider value={fluid}>
+    return <FluidContext.Provider value={{ ...fluid, colorScheme, setColorScheme }}>
         {cloneElement(children, {
             className: `scheme-${colorScheme} testing`
         })}
