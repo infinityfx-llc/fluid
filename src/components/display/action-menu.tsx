@@ -111,7 +111,7 @@ const ActionMenu = forwardRef(({ children, styles = {}, options }: {
             }
         })}
 
-        <LayoutGroup>
+        <LayoutGroup adaptive={false}>
             {state && <Animate animations={[Move.unique({ duration: .2 }), Pop.unique({ duration: .2 })]} unmount triggers={[{ on: 'mount' }]} levels={2} stagger={.06}>
                 <div ref={combineRefs(menu, ref)} role="menu" className={style.menu} style={state}>
                     {options.map((option, i) => {
