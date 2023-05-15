@@ -4,6 +4,7 @@ import { forwardRef } from "react";
 import Halo from "../feedback/halo";
 import { Animatable } from "@infinityfx/lively";
 import { useTrigger } from "@infinityfx/lively/hooks";
+import { classes } from "@/src/core/utils";
 
 const Hamburger = forwardRef(({ styles = {}, ...props }: { styles?: FluidStyles; } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
     const style = useStyles(styles, {
@@ -62,8 +63,9 @@ const Hamburger = forwardRef(({ styles = {}, ...props }: { styles?: FluidStyles;
     const close = useTrigger();
 
     return <Halo disabled={props.disabled}>
-        <button ref={ref} {...props} className={style.hamburger} onClick={() => {
+        <button ref={ref} {...props} className={classes(style.hamburger, props.className)} onClick={e => {
             open.value > close.value ? close() : open();
+            props.onClick?.(e);
         }}>
             <Animatable animate={{ scale: ['1 1', '0 1', '0 1'], duration: .6 }} deform={false} triggers={[
                 { on: open, immediate: true },

@@ -16,7 +16,7 @@ const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, alwaysS
         value?: number[];
         defaultValue?: number[];
         onChange?: (values: number[]) => void;
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<any>) => {
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<any>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             display: 'flex',

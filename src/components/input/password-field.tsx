@@ -7,7 +7,7 @@ import { ProgressBar } from '../feedback';
 
 const colors = ['#eb2a1c', '#eb2a1c', '#e8831e', '#f0d030', '#fff952', '#5aff54'];
 
-const PasswordField = forwardRef(({ children, styles = {}, strengthBar = false, ...props }: { strengthBar?: boolean; } & FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+const PasswordField = forwardRef(({ children, styles = {}, strengthBar = false, ...props }: { strengthBar?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(children || '');
     const [visible, setVisible] = useState(false);
 
@@ -21,8 +21,8 @@ const PasswordField = forwardRef(({ children, styles = {}, strengthBar = false, 
         return strength;
     }, [value, props.minLength]);
 
-    return <div>
-        <Field ref={ref} {...props} type={visible ? 'text' : 'password'} value={value} onChange={e => {
+    return <div ref={ref}>
+        <Field {...props} type={visible ? 'text' : 'password'} value={value} onChange={e => {
             setValue?.(e.target.value);
             props.onChange?.(e);
         }}

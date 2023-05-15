@@ -14,7 +14,7 @@ const Segmented = forwardRef(({ styles = {}, round = false, options, name, value
         defaultValue?: FluidInputvalue;
         onChange?: (value: FluidInputvalue) => void;
         error?: FluidError;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.segmented': {
             padding: '.3em',

@@ -3,7 +3,7 @@ import useStyles from "@/src/hooks/use-styles";
 import { FluidSize, FluidStyles } from "@/src/types";
 import { forwardRef } from "react";
 
-const Swatch = forwardRef(({ styles = {}, size = 'med', round = false, color, ...props }: { styles?: FluidStyles; size?: FluidSize; round?: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Swatch = forwardRef(({ styles = {}, size = 'med', round = false, color, ...props }: { styles?: FluidStyles; size?: FluidSize; round?: boolean; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.swatch': {
             position: 'relative',
@@ -42,7 +42,7 @@ const Swatch = forwardRef(({ styles = {}, size = 'med', round = false, color, ..
         }
     });
 
-    return <div ref={ref} {...props} className={classes(style.swatch, props.className)} style={{ backgroundColor: color }} data-size={size} data-round={round} />;
+    return <div ref={ref} {...props} className={classes(style.swatch, props.className)} style={{ ...props.style, backgroundColor: color }} data-size={size} data-round={round} />;
 });
 
 Swatch.displayName = 'Swatch';

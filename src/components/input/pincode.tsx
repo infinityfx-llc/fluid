@@ -16,7 +16,7 @@ const Pincode = forwardRef(({ children, styles = {}, length = 4, masked, size = 
         value?: string;
         error?: FluidError;
         onChange?: (value: string) => void;
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'size' | 'value' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'size' | 'value' | 'onChange' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             display: 'flex',

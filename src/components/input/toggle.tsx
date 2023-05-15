@@ -7,7 +7,14 @@ import { useTrigger } from "@infinityfx/lively/hooks";
 import { Animatable } from "@infinityfx/lively";
 import useUpdate from "@/src/hooks/use-update";
 
-const Toggle = forwardRef(({ children, styles = {}, round = false, variant = 'default', checkedContent, ...props }: { children: React.ReactNode; styles?: FluidStyles; round?: boolean; variant?: 'default' | 'minimal'; checkedContent?: React.ReactNode; } & React.InputHTMLAttributes<HTMLInputElement>, ref: React.ForwardedRef<HTMLLabelElement>) => {
+export type ToggleProps = {
+    styles?: FluidStyles;
+    round?: boolean;
+    variant?: 'default' | 'minimal';
+    checkedContent?: React.ReactNode;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>;
+
+const Toggle = forwardRef(({ children, styles = {}, round = false, variant = 'default', checkedContent, ...props }: ToggleProps, ref: React.ForwardedRef<HTMLLabelElement>) => {
     const style = useStyles(styles, {
         '.input': {
             position: 'absolute',

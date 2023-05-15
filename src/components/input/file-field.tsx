@@ -15,7 +15,7 @@ const FileField = forwardRef(({ styles = {}, size, round, icon, label, error, lo
         loading?: boolean;
         icon?: React.ReactNode;
         label?: string;
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>, ref: any) => {
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             display: 'flex',

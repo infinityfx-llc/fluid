@@ -1,12 +1,15 @@
 import { forwardRef } from "react";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
-import Toggle from "./toggle";
+import Toggle, { ToggleProps } from "./toggle";
 import useFluid from "@/src/hooks/use-fluid";
 
-const ThemeToggle = forwardRef(() => {
+const ThemeToggle = forwardRef((props: Omit<ToggleProps, 'checkedContent' | 'checked'>, ref: React.ForwardedRef<HTMLLabelElement>) => {
     const { colorScheme, setColorScheme } = useFluid();
 
-    return <Toggle checked={colorScheme === 'dark'} onChange={e => setColorScheme(e.target.checked ? 'dark' : 'light')} checkedContent={<MdDarkMode />}>
+    return <Toggle ref={ref} {...props} checked={colorScheme === 'dark'} onChange={e => {
+        setColorScheme(e.target.checked ? 'dark' : 'light');
+        props.onChange?.(e);
+    }} checkedContent={<MdDarkMode />}>
         <MdLightMode />
     </Toggle>
 });

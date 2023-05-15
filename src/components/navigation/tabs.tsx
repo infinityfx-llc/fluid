@@ -3,6 +3,7 @@ import { forwardRef, useId, useState } from "react";
 import { Halo } from "../feedback";
 import useStyles from "@/src/hooks/use-styles";
 import { Morph } from "@infinityfx/lively/layout";
+import { classes } from "@/src/core/utils";
 
 const Tabs = forwardRef(({ options, styles = {}, value, defaultValue, onChange, ...props }:
     {
@@ -15,7 +16,7 @@ const Tabs = forwardRef(({ options, styles = {}, value, defaultValue, onChange, 
         value?: FluidInputvalue;
         defaultValue?: FluidInputvalue;
         onChange?: (value: FluidInputvalue) => void;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.tabs': {
             display: 'flex',
@@ -63,7 +64,7 @@ const Tabs = forwardRef(({ options, styles = {}, value, defaultValue, onChange, 
     const id = useId();
     const [state, setState] = value !== undefined ? [value] : useState<FluidInputvalue>(defaultValue || options[0]?.value);
 
-    return <div ref={ref} {...props} className={style.tabs}>
+    return <div ref={ref} {...props} className={classes(style.tabs, props.className)}>
         {options.map(({ label, value, disabled }, i) => {
             return <div key={i} className={style.option}>
                 <Halo disabled={disabled} color="var(--f-clr-primary-200)">

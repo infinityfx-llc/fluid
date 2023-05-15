@@ -5,7 +5,7 @@ import Button from './button';
 import { round, toNumber } from '@/src/core/utils';
 import { FluidInputvalue } from '@/src/types';
 
-const NumberField = forwardRef(({ children, styles = {}, precision = 3, controls = true, ...props }: { precision?: number; controls?: boolean; } & FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+const NumberField = forwardRef(({ children, styles = {}, precision = 3, controls = true, ...props }: { precision?: number; controls?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(children || '');
 
     const step = toNumber(props.step, 1);

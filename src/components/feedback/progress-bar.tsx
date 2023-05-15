@@ -5,7 +5,7 @@ import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { forwardRef, useEffect } from "react";
 
-const ProgressBar = forwardRef(({ styles = {}, size = 'med', value, defaultValue, color, ...props }: { styles?: FluidStyles; size?: FluidSize; value?: number; defaultValue?: number; color?: string; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const ProgressBar = forwardRef(({ styles = {}, size = 'med', value, defaultValue, color, ...props }: { styles?: FluidStyles; size?: FluidSize; value?: number; defaultValue?: number; color?: string; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.track': {
             height: '.4em',

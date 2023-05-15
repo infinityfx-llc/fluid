@@ -20,7 +20,7 @@ const Badge = forwardRef(({ children, styles = {}, round = false, color, ...prop
         }
     });
 
-    return <div ref={ref} {...props} className={classes(style.badge, props.className)} style={{ backgroundColor: color }} data-round={round}>
+    return <div ref={ref} {...props} className={classes(style.badge, props.className)} style={{ ...props.style, backgroundColor: color }} data-round={round}>
         {children}
     </div>;
 });

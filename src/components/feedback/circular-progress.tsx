@@ -5,7 +5,7 @@ import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { forwardRef, useEffect } from "react";
 
-const CircularProgress = forwardRef(({ styles = {}, size = 'med', slice = 0, value, defaultValue, color, ...props }: { styles?: FluidStyles; size?: FluidSize; slice?: number; value?: number; defaultValue?: number; color?: string; } & React.HTMLAttributes<SVGSVGElement>, ref: React.ForwardedRef<SVGSVGElement>) => {
+const CircularProgress = forwardRef(({ styles = {}, size = 'med', slice = 0, value, defaultValue, color, ...props }: { styles?: FluidStyles; size?: FluidSize; slice?: number; value?: number; defaultValue?: number; color?: string; } & Omit<React.HTMLAttributes<SVGSVGElement>, 'children' | 'defaultValue'>, ref: React.ForwardedRef<SVGSVGElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             width: '3.2em'

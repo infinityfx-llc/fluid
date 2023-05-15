@@ -3,7 +3,7 @@ import useStyles from "@/src/hooks/use-styles";
 import { Animatable } from "@infinityfx/lively";
 import { forwardRef } from "react";
 
-const Spinner = forwardRef(({ color = 'var(--f-clr-text-100)', ...props }: React.HTMLAttributes<SVGSVGElement>, ref: React.ForwardedRef<SVGSVGElement>) => {
+const Spinner = forwardRef(({ color = 'var(--f-clr-text-100)', ...props }: Omit<React.HTMLAttributes<SVGSVGElement>, 'children'>, ref: React.ForwardedRef<SVGSVGElement>) => {
     const style = useStyles({
         '.spinner': {
             stroke: color
