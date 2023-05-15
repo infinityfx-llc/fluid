@@ -81,7 +81,7 @@ const Switch = forwardRef(({ styles = {}, error, round = true, ...props }: { sty
 
     return <Halo className={style.halo} hover={false}>
         <label ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-round={round} data-error={!!error}>
-            <input {...split} type="checkbox" className={style.input} />
+            <input {...split} type="checkbox" className={style.input} aria-invalid={!!error} />
 
             <div className={style.switch}>
                 <div className={style.handle} />

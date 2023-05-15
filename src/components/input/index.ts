@@ -9,6 +9,7 @@ import Segmented from "./segmented";
 import Field from "./field";
 import NumberField from "./number-field";
 import PasswordField from "./password-field";
+import FileField from "./file-field";
 import Pincode from "./pincode";
 import Slider from "./slider";
 import ThemeToggle from "./theme-toggle";
@@ -25,6 +26,7 @@ export {
     Field,
     NumberField,
     PasswordField,
+    FileField,
     Pincode,
     Slider,
     ThemeToggle

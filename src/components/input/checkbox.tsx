@@ -74,7 +74,7 @@ const Checkbox = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidS
 
     return <Halo className={style.halo} hover={false}>
         <label ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-error={!!error}>
-            <input {...split} type="checkbox" className={style.input} onChange={e => {
+            <input {...split} type="checkbox" className={style.input} aria-invalid={!!error} onChange={e => {
                 setLink(e.target.checked ? 1 : 0, .25);
                 props.onChange?.(e);
             }} />

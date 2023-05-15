@@ -4,11 +4,12 @@ import useStyles from "@/src/hooks/use-styles";
 import { FluidError, FluidInputvalue, FluidSize, FluidStyles } from "@/src/types";
 import { forwardRef, useId, useRef, useState } from "react";
 
-const Pincode = forwardRef(({ children, styles = {}, length = 4, size = 'med', round = false, label, value, error, onChange, ...props }:
+const Pincode = forwardRef(({ children, styles = {}, length = 4, masked, size = 'med', round = false, label, value, error, onChange, ...props }:
     {
         children?: FluidInputvalue;
         styles?: FluidStyles;
         length?: number;
+        masked?: boolean;
         size?: FluidSize;
         round?: boolean;
         label?: string;
@@ -146,7 +147,7 @@ const Pincode = forwardRef(({ children, styles = {}, length = 4, size = 'med', r
         <div className={style.pincode} data-error={!!error} data-disabled={props.disabled} data-round={round}>
             {new Array(length).fill(0).map((_, i) => {
                 return <div key={i} className={style.field}>
-                    <input ref={el => refs.current[i] = el} disabled={props.disabled} className={style.input} inputMode="numeric" value={state.charAt(i)} onChange={handleChange} onKeyDown={e => handleKey(e, i)} />
+                    <input ref={el => refs.current[i] = el} disabled={props.disabled} className={style.input} aria-invalid={!!error} inputMode="numeric" type={masked ? 'password' : 'text'} value={state.charAt(i)} onChange={handleChange} onKeyDown={e => handleKey(e, i)} />
                 </div>;
             })}
         </div>

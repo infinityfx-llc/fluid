@@ -1,22 +1,21 @@
-import { classes } from '@/src/core/utils';
-import useInputProps from '@/src/hooks/use-input-props';
+import { forwardRef, useId, useRef, useState } from 'react';
+import Button from './button';
+import { MdUpload } from 'react-icons/md';
 import useStyles from '@/src/hooks/use-styles';
-import { FluidError, FluidInputvalue, FluidSize, FluidStyles } from '@/src/types';
-import { forwardRef, useId } from 'react';
+import useInputProps from '@/src/hooks/use-input-props';
+import { FluidError, FluidSize, FluidStyles } from '@/src/types';
+import { classes } from '@/src/core/utils';
 
-export type FieldProps = {
-    children?: FluidInputvalue;
-    styles?: FluidStyles;
-    round?: boolean;
-    size?: FluidSize;
-    error?: FluidError; 
-    icon?: React.ReactNode; 
-    label?: string;
-    left?: React.ReactNode;
-    right?: React.ReactNode;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>;
-
-const Field = forwardRef(({ children, styles = {}, round = false, size = 'med', error, icon, label, left, right, ...props }: FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+const FileField = forwardRef(({ styles = {}, size, round, icon, label, error, loading = false, ...props }:
+    {
+        styles?: FluidStyles;
+        round?: boolean;
+        size?: FluidSize;
+        error?: FluidError;
+        loading?: boolean;
+        icon?: React.ReactNode;
+        label?: string;
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>, ref: any) => {
     const style = useStyles(styles, {
         '.wrapper': {
             display: 'flex',
@@ -26,16 +25,17 @@ const Field = forwardRef(({ children, styles = {}, round = false, size = 'med', 
         },
 
         '.input': {
-            border: 'none',
-            background: 'none',
-            outline: 'none',
-            color: 'var(--f-clr-text-100)',
-            width: 0,
-            flexGrow: 1
+            position: 'absolute',
+            opacity: 0
         },
 
-        '.input::placeholder': {
-            color: 'var(--f-clr-grey-300)'
+        '.placeholder': {
+            color: 'var(--f-clr-text-100)',
+            userSelect: 'none',
+            flexGrow: 1,
+            background: 'none',
+            border: 'none',
+            width: 0
         },
 
         '.field': {
@@ -76,7 +76,7 @@ const Field = forwardRef(({ children, styles = {}, round = false, size = 'med', 
             color: 'var(--f-clr-error-200)'
         },
 
-        '.field[data-error="true"] .input': {
+        '.field[data-error="true"] .placeholder': {
             color: 'var(--f-clr-error-200)'
         },
 
@@ -85,7 +85,7 @@ const Field = forwardRef(({ children, styles = {}, round = false, size = 'med', 
             borderColor: 'var(--f-clr-grey-200)'
         },
 
-        '.field[data-disabled="true"] .input': {
+        '.field[data-disabled="true"] .placeholder': {
             color: 'var(--f-clr-grey-500)'
         },
 
@@ -106,26 +106,36 @@ const Field = forwardRef(({ children, styles = {}, round = false, size = 'med', 
         }
     });
 
+    const [files, setFiles] = useState<File[]>([]);
+
     const id = useId();
+    const input = useRef<HTMLInputElement | null>(null);
     const [split, rest] = useInputProps(props);
 
     return <div ref={ref} {...rest} className={classes(style.wrapper, props.className)} data-size={size}>
         {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
 
-        <div className={style.field} data-error={!!error} data-disabled={props.disabled} data-round={round}>
-            {left}
+        <label className={style.field} data-error={!!error} data-disabled={props.disabled} data-round={round}>
 
-            <label className={style.content}>
+            <div className={style.content}>
                 {icon}
 
-                <input {...split} aria-labelledby={label ? id : undefined} aria-invalid={!!error} defaultValue={children} className={style.input} />
-            </label>
+                <input ref={input} {...split} disabled={props.disabled || loading} type="file" aria-labelledby={label ? id : undefined} aria-invalid={!!error} className={style.input} onChange={e => {
+                    setFiles?.(Array.from(e.target.files || []));
+                    props.onChange?.(e);
+                }} />
+                <input className={style.placeholder} tabIndex={-1} role="none" value={files.map(file => file.name)} readOnly />
+            </div>
 
-            {right}
-        </div>
+            <Button disabled={props.disabled} round={round} loading={loading} style={{
+                marginRight: '.3em'
+            }} onClick={() => input.current?.click()}>
+                <MdUpload />
+            </Button>
+        </label>
     </div>;
 });
 
-Field.displayName = 'Field';
+FileField.displayName = 'FileField';
 
-export default Field;
+export default FileField;

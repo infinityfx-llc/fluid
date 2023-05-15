@@ -81,7 +81,7 @@ const Radio = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidStyl
 
     return <Halo className={style.halo} hover={false}>
         <label ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-error={!!error}>
-            <input {...split} type="radio" className={style.input} />
+            <input {...split} type="radio" className={style.input} aria-invalid={!!error} />
 
             <div className={style.radio}>
                 <div className={style.selection} />
