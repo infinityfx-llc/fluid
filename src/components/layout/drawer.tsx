@@ -1,4 +1,4 @@
-import { forwardRef, useId } from 'react';
+import { forwardRef, useId, useRef } from 'react';
 import Overlay from './overlay';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
@@ -6,6 +6,7 @@ import { Button } from '../input';
 import { MdClose } from 'react-icons/md';
 import { classes } from '@/src/core/utils';
 import { Animatable } from '@infinityfx/lively';
+import Scrollarea from './scrollarea';
 
 const Drawer = forwardRef(({ children, styles = {}, show, onClose, position = 'right', ...props }: { children: React.ReactNode; styles?: FluidStyles; show: boolean; onClose: () => void; position?: 'left' | 'right'; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
@@ -44,16 +45,29 @@ const Drawer = forwardRef(({ children, styles = {}, show, onClose, position = 'r
         }
     });
 
+    const prev = useRef({ clientX: 0, clientY: 0 });
+
+    function touch(e: React.TouchEvent) {
+        if (e.type == 'touchstart') return prev.current = e.changedTouches[0];
+
+        const dx = e.changedTouches[0].clientX - prev.current.clientX;
+        const dy = Math.abs(e.changedTouches[0].clientY - prev.current.clientY);
+
+        if ((position === 'right' ? dx > 85 : dx < -85) && Math.abs(dx) * 0.6 > dy) onClose();
+    }
+
     return <Overlay show={show} onClose={onClose}>
         <Animatable animate={{ translate: [`${position === 'right' ? 100 : -100}% 0%`, '0% 0%'], duration: .25 }} unmount triggers={[{ on: 'mount' }]}>
-            <div ref={ref} {...props} className={classes(style.drawer, props.className)} role="dialog" aria-modal data-position={position}>
+            <div ref={ref} {...props} className={classes(style.drawer, props.className)} role="dialog" aria-modal data-position={position} onTouchStart={touch} onTouchMove={touch}>
                 <div className={style.header}>
                     <Button variant="minimal" onClick={onClose}>
                         <MdClose />
                     </Button>
                 </div>
 
-                {children}
+                <Scrollarea>
+                    {children}
+                </Scrollarea>
             </div>
         </Animatable>
     </Overlay>;
