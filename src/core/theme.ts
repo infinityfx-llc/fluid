@@ -1,15 +1,59 @@
 import { FluidStyles } from "../types";
 
+export type PartialFluidTheme = {
+    palettes?: {
+        [key: string]: {
+            primary?: string[];
+            accent?: string[];
+            grey?: string[];
+            text?: string[];
+            bg?: string[];
+            fg?: string[];
+            error?: string[];
+        }
+    },
+    defaultColorScheme?: string;
+    spacing?: {
+        xxs?: string;
+        xsm?: string;
+        sml?: string;
+        med?: string;
+        lrg?: string;
+        xlg?: string;
+        xxl?: string;
+    },
+    radius?: {
+        xsm?: string;
+        sml?: string;
+        med?: string;
+        lrg?: string;
+        xlg?: string;
+    },
+    font?: {
+        family?: string,
+        size?: {
+            xxs?: string;
+            xsm?: string;
+            sml?: string;
+            med?: string;
+            lrg?: string;
+            xlg?: string;
+            xxl?: string;
+        }
+    },
+    breakpoints?: number[]
+};
+
 export type FluidTheme = {
     palettes: {
         [key: string]: {
-            primary: string[];
-            accent: string[];
-            grey: string[];
-            text: string[];
-            bg: string[];
-            fg: string[];
-            error: string[];
+            primary?: string[];
+            accent?: string[];
+            grey?: string[];
+            text?: string[];
+            bg?: string[];
+            fg?: string[];
+            error?: string[];
         }
     },
     defaultColorScheme: string;
@@ -44,7 +88,7 @@ export type FluidTheme = {
     breakpoints: number[]
 }
 
-export const DEFAULT_THEME: FluidTheme = {
+export const DEFAULT_THEME = {
     palettes: {
         light: {
             primary: ['#22e39f', '#45e6ad', '#60f0bd', '#8cf5d0', '#baf7e2', '#dcfcf1'],
@@ -59,7 +103,7 @@ export const DEFAULT_THEME: FluidTheme = {
             primary: ['#1dddf2', '#1ac4d6', '#1bb2c2', '#1298a6', '#10707a', '#0d545c'],
             accent: ['#22e39f'],
             grey: ['#191919','#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#b3b3b3', '#cccccc', '#e6e6e6'],
-            text: ['#fff', '#fff'],
+            text: ['#fff', '#000'],
             bg: ['#000'],
             fg: ['#161717'],
             error: ['#ff1f1f', '#b32727', '#822f2f', '#632c2c']
@@ -107,7 +151,7 @@ function insertVariables(prefix: string, map: { [key: string]: any } | any[], va
     }
 }
 
-export function parseCSSVariables(theme: FluidTheme) {
+export function parseCSSVariables<T extends FluidTheme>(theme: T) {
     const vars: { [key: string]: string } = {
         '--f-font-family': theme.font.family
     };
@@ -119,7 +163,7 @@ export function parseCSSVariables(theme: FluidTheme) {
     return vars;
 }
 
-export function parseColorPalettes(theme: FluidTheme) {
+export function parseColorPalettes<T extends FluidTheme>(theme: T) {
     const ruleset: FluidStyles = {};
 
     for (const name in theme.palettes) {
@@ -132,10 +176,12 @@ export function parseColorPalettes(theme: FluidTheme) {
 
         if (name === 'light' || name === 'dark') {
             ruleset[`@media(prefers-color-scheme: ${name})`] = {
-                'body.testing': vars // testing === whether colorScheme is manual or auto
+                'body.automatic': vars
             };
         }
     }
 
     return ruleset;
 }
+
+export const COLOR_SCHEME_COOKIE = 'FLUID_PREF_COLOR_SCHEME';

@@ -142,7 +142,7 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
         handle.current.style[horizontal ? 'width' : 'height'] = size * 100 + '%';
         setScrollable(size < 1);
 
-        scroll(-9999); // TEMP
+        scroll(-Number.MAX_VALUE); // TEMP
     }
 
     useLayoutEffect(() => {

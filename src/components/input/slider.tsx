@@ -95,7 +95,7 @@ const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, alwaysS
             width: '100%',
             height: '100%',
             borderRadius: '99px',
-            backgroundColor: 'var(--f-clr-text-200)',
+            backgroundColor: 'white',
             boxShadow: '0 0 8px rgb(0, 0, 0, 0.12)',
         },
 
