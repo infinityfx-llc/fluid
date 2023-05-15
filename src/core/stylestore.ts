@@ -9,6 +9,7 @@ class StyleStore {
             rules: string;
         }
     } = {};
+    version: number = 0;
 
     get(key: string) {
         return key in this.rules ? this.rules[key].selectors : null;
@@ -30,6 +31,9 @@ class StyleStore {
             selectors,
             rules
         };
+        this.version++;
+
+        this.update();
 
         return selectors;
     }
@@ -65,16 +69,20 @@ class StyleStore {
         return l.toString(16).slice(-8).padStart(8, '0');
     }
 
-    update() {
-        if (typeof window === 'undefined') return;
-
-        const tag = document.getElementById('fluid__styles') || document.createElement('style');
-        if (!tag.isConnected) {
+    update(inject = false) {
+        let tag = typeof window !== 'undefined' && document.querySelector('[data-href*="fluid__styles"]') as HTMLStyleElement;
+        if (!tag) {
+            if (!inject) return;
+            
+            tag = document.createElement('style');
             (document.head || document.getElementsByName('head')[0]).appendChild(tag);
-            tag.id = 'fluid__styles';
         }
 
-        tag.innerText = this.serialize();
+        const version = parseInt(tag.dataset.href?.split('__')[2] || '0');
+        if (version < this.version) {
+            tag.innerText = this.serialize();
+            tag.dataset.href = `fluid__styles__${this.version}`;
+        }
     }
 
     serialize() {

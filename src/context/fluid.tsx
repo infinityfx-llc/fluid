@@ -1,9 +1,10 @@
 import useGlobalStyles from "@/src/hooks/use-global-styles";
-import { cloneElement, createContext, useMemo } from "react";
+import { cloneElement, createContext, useInsertionEffect, useMemo } from "react";
 import { DEFAULT_THEME, FluidTheme, parseCSSVariables, parseColorPalettes } from "@/src/core/theme";
 import global from "@/src/styles/global";
 import { mergeRecursive } from "@/src/core/utils";
 import useColorScheme from "@/src/hooks/use-color-scheme";
+import FluidStyleStore from "../core/stylestore";
 
 type FluidContext = FluidTheme & {
     colorScheme: string;
@@ -25,6 +26,8 @@ export default function FluidProvider({ children, theme = {} }: { children: Reac
 
     useGlobalStyles(styles);
     useGlobalStyles(global);
+
+    useInsertionEffect(() => FluidStyleStore.update(true), []);
 
     return <FluidContext.Provider value={{ ...fluid, colorScheme, setColorScheme }}>
         {cloneElement(children, {

@@ -21,15 +21,15 @@ const Drawer = forwardRef(({ children, styles = {}, show, onClose, position = 'r
         },
 
         '.drawer[data-position="right"]': {
-            borderTopLeftRadius: 'var(--f-radius-sml)',
-            borderBottomLeftRadius: 'var(--f-radius-sml)',
+            borderTopLeftRadius: 'var(--f-radius-med)',
+            borderBottomLeftRadius: 'var(--f-radius-med)',
             borderRight: 'none',
             right: 0
         },
 
         '.drawer[data-position="left"]': {
-            borderTopRightRadius: 'var(--f-radius-sml)',
-            borderBottomRightRadius: 'var(--f-radius-sml)',
+            borderTopRightRadius: 'var(--f-radius-med)',
+            borderBottomRightRadius: 'var(--f-radius-med)',
             borderLeft: 'none',
             left: 0
         },

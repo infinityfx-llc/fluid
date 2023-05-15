@@ -38,6 +38,7 @@ const Modal = forwardRef(({ children, styles = {}, show, onClose, title, ...prop
                 width: '100vw',
                 bottom: 0,
                 marginBottom: 0,
+                borderRadius: 'var(--f-radius-lrg)',
                 borderBottomRightRadius: 0,
                 borderBottomLeftRadius: 0
             }

@@ -12,7 +12,7 @@ const Button = forwardRef(({ children, styles = {}, round = false, size = 'med',
             border: 'none',
             outline: 'none',
             borderRadius: 'var(--f-radius-sml)',
-            padding: '.5em .5em',
+            padding: '.5em .5em', // TESTING
             backgroundColor: 'var(--f-clr-primary-100)',
             color: 'var(--f-clr-text-100)',
             fontWeight: 600,

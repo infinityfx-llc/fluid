@@ -1,4 +1,4 @@
-import { combineRefs } from '@/src/core/utils';
+import { classes, combineRefs } from '@/src/core/utils';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
 import { Animate } from '@infinityfx/lively';
@@ -8,7 +8,7 @@ import { forwardRef, cloneElement, useState, useRef, useEffect } from 'react';
 import { Halo } from '../feedback';
 import useClickOutside from '@/src/hooks/use-click-outside';
 
-const ActionMenu = forwardRef(({ children, styles = {}, options }: {
+const ActionMenu = forwardRef(({ children, styles = {}, options, ...props }: {
     children: React.ReactElement;
     styles?: FluidStyles;
     options: ({
@@ -17,7 +17,7 @@ const ActionMenu = forwardRef(({ children, styles = {}, options }: {
         disabled?: boolean;
         shouldClose?: boolean;
     } | string)[];
-}, ref: React.ForwardedRef<HTMLDivElement>) => {
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.menu': {
             position: 'fixed',
@@ -113,7 +113,7 @@ const ActionMenu = forwardRef(({ children, styles = {}, options }: {
 
         <LayoutGroup adaptive={false}>
             {state && <Animate animations={[Move.unique({ duration: .2 }), Pop.unique({ duration: .2 })]} unmount triggers={[{ on: 'mount' }]} levels={2} stagger={.06}>
-                <div ref={combineRefs(menu, ref)} role="menu" className={style.menu} style={state}>
+                <div ref={combineRefs(menu, ref)} {...props} role="menu" className={classes(style.menu, props.className)} style={state}>
                     {options.map((option, i) => {
                         if (typeof option === 'string') return <div key={i} className={style.title}>{option}</div>;
 
