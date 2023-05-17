@@ -4,10 +4,11 @@ import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
 import { FluidInputvalue } from '@/src/types';
 import Toggle from './toggle';
 import { ProgressBar } from '../feedback';
+import useInputProps from '@/src/hooks/use-input-props';
 
 const colors = ['#eb2a1c', '#eb2a1c', '#e8831e', '#f0d030', '#fff952', '#5aff54'];
 
-const PasswordField = forwardRef(({ children, styles = {}, strengthBar = false, ...props }: { strengthBar?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const PasswordField = forwardRef(({ children, styles = {}, strengthBar = false, size, round, error, icon, label, left, right, ...props }: { strengthBar?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(children || '');
     const [visible, setVisible] = useState(false);
 
@@ -21,12 +22,14 @@ const PasswordField = forwardRef(({ children, styles = {}, strengthBar = false, 
         return strength;
     }, [value, props.minLength]);
 
-    return <div ref={ref}>
-        <Field {...props} type={visible ? 'text' : 'password'} value={value} onChange={e => {
+    const [split, rest] = useInputProps(props);
+
+    return <div ref={ref} {...rest}>
+        <Field {...split} type={visible ? 'text' : 'password'} round={round} size={size} error={error} icon={icon} label={label} left={left} value={value} onChange={e => {
             setValue?.(e.target.value);
             props.onChange?.(e);
         }}
-            right={<Toggle round={props.round} variant="minimal" disabled={props.disabled} checkedContent={<MdVisibilityOff />} checked={visible} onChange={e => setVisible(e.target.checked)} style={{
+            right={<Toggle round={round} variant="minimal" disabled={props.disabled} checkedContent={<MdVisibilityOff />} checked={visible} onChange={e => setVisible(e.target.checked)} style={{
                 marginRight: '.3em'
             }}>
                 <MdVisibility />

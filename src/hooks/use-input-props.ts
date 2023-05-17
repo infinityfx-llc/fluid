@@ -25,14 +25,14 @@ const InputProps = {
     inputMode: 21
 };
 
-export default function useInputProps<T = any>(props: React.InputHTMLAttributes<T>): [React.InputHTMLAttributes<T>, React.HTMLAttributes<any>] {
+export default function useInputProps<T = any>(props: React.InputHTMLAttributes<T>): [Pick<React.InputHTMLAttributes<T>, keyof typeof InputProps>, React.HTMLAttributes<any>] {
     return useMemo(() => {
-        const split: React.InputHTMLAttributes<T> = {};
+        const split: Pick<React.InputHTMLAttributes<T>, keyof typeof InputProps> = {};
         const rest: React.HTMLAttributes<any> = {};
 
         for (const prop in props) {
             if (prop in InputProps) {
-                split[prop as keyof React.HTMLAttributes<any>] = props[prop as keyof React.HTMLAttributes<any>];
+                split[prop as keyof typeof InputProps] = props[prop as keyof React.HTMLAttributes<any>];
             } else {
                 rest[prop as keyof React.HTMLAttributes<any>] = props[prop as keyof React.HTMLAttributes<any>];
             }

@@ -1,7 +1,7 @@
 import { classes, combineRefs } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
-import { forwardRef, useLayoutEffect, useRef, useState } from "react";
+import { forwardRef, useLayoutEffect, useRef, useState, useId } from "react";
 
 const speed = 100;
 
@@ -131,6 +131,7 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
 
         const offset = updated / max * (el[key] - handle.current[key]);
         handle.current.style.translate = horizontal ? `${offset}px 0px` : `0px ${offset}px`;
+        handle.current.setAttribute('aria-valuenow', (updated / max * 100).toString());
         track.current.style.translate = horizontal ? `${updated}px 0px` : `0px ${updated}px`;
     }
 
@@ -161,11 +162,13 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
         }
     }, []);
 
-    return <div ref={combineRefs(ref, area)} {...props} className={classes(style.area, props.className)} onWheel={wheel} data-horizontal={horizontal} data-variant={variant} data-scrollable={scrollable} data-disabled={disabled}>
+    const id = useId();
+
+    return <div ref={combineRefs(ref, area)} {...props} id={id} className={classes(style.area, props.className)} onWheel={wheel} data-horizontal={horizontal} data-variant={variant} data-scrollable={scrollable} data-disabled={disabled}>
         {children}
 
         <div ref={track} className={style.track}>
-            <div ref={handle} className={style.handle} onMouseDown={e => drag(e.nativeEvent)} />
+            <div ref={handle} className={style.handle} onMouseDown={e => drag(e.nativeEvent)} role="scrollbar" aria-valuenow={0} aria-controls={id} />
         </div>
     </div>;
 });

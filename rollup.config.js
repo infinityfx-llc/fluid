@@ -3,15 +3,17 @@ import { terser } from 'rollup-plugin-terser';
 import del from 'rollup-plugin-delete';
 import typescript from '@rollup/plugin-typescript';
 import banner2 from 'rollup-plugin-banner2';
+import preserveDirectives from 'rollup-plugin-preserve-directives';
 
 const plugins = [
     resolve(),
     typescript({ tsconfig: './tsconfig.json' }),
-    banner2(() => "'use client';")
+    // banner2(() => "'use client';")
+    preserveDirectives.default()
 ];
 
 if (process.env.NODE_ENV === 'production') {
-    plugins.splice(2, 0, terser());
+    plugins.splice(2, 0, terser({ compress: { directives: false } }));
     plugins.unshift(del({
         targets: 'dist/**'
     }));
@@ -23,7 +25,8 @@ export default {
     output: {
         dir: 'dist',
         format: 'es',
-        sourcemap: true
+        sourcemap: true,
+        preserveModules: true
     },
     plugins
 }

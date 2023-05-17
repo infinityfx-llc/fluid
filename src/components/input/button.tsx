@@ -5,7 +5,7 @@ import { classes } from "@/src/core/utils";
 import { FluidSize, FluidStyles } from "@/src/types";
 import Spinner from "../feedback/spinner";
 
-const Button = forwardRef(({ children, styles = {}, round = false, size = 'med', variant = 'default', loading = false, ...props }: { children: React.ReactNode; styles?: FluidStyles; round?: boolean; size?: FluidSize; variant?: 'default' | 'alternate' | 'minimal'; loading?: boolean; } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
+const Button = forwardRef(({ children, styles = {}, round = false, size = 'med', variant = 'default', loading = false, ...props }: { children: React.ReactNode; styles?: FluidStyles; round?: boolean; size?: FluidSize; variant?: 'default' | 'light' | 'minimal'; loading?: boolean; } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
     const style = useStyles(styles, {
         '.button': {
             position: 'relative',
@@ -41,7 +41,7 @@ const Button = forwardRef(({ children, styles = {}, round = false, size = 'med',
             color: 'var(--f-clr-text-200)'
         },
 
-        '.button[data-variant="alternate"]': {
+        '.button[data-variant="light"]': {
             backgroundColor: 'var(--f-clr-primary-500)'
         },
 

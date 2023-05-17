@@ -40,7 +40,7 @@ const Checkbox = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidS
 
         '.checkmark': {
             width: '1.2em',
-            stroke: 'var(--f-clr-text-200)',
+            stroke: 'white',
             strokeWidth: 3,
             strokeLinecap: 'round',
             strokeLinejoin: 'round'
@@ -48,6 +48,10 @@ const Checkbox = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidS
 
         '.input:disabled + .checkbox': {
             backgroundColor: 'var(--f-clr-grey-100)'
+        },
+
+        '.input:disabled + .checkbox .checkmark': {
+            stroke: 'var(--f-clr-grey-500)'
         },
 
         '.input:disabled:checked + .checkbox': {

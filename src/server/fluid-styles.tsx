@@ -1,3 +1,5 @@
+'use client'; // CHECK WHY THIS IS NECESSARY!!!
+
 import FluidStyleStore from "../core/stylestore"
 
 export default function FluidStyles() {

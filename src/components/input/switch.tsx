@@ -31,7 +31,7 @@ const Switch = forwardRef(({ styles = {}, error, round = true, ...props }: { sty
             borderRadius: 'var(--f-radius-sml)',
             height: '100%',
             aspectRatio: 1,
-            backgroundColor: 'var(--f-clr-text-200)',
+            backgroundColor: 'white',
             transition: 'translate .25s'
         },
 
