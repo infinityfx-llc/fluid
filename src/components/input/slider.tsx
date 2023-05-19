@@ -6,12 +6,13 @@ import { classes, round, toNumber } from "@/src/core/utils";
 import { Tooltip } from "../display";
 import useInputProps from "@/src/hooks/use-input-props";
 
-const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, alwaysShowTooltips, label, value, defaultValue, onChange, ...props }:
+const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, alwaysShowTooltips, formatTooltip, label, value, defaultValue, onChange, ...props }:
     {
         styles?: FluidStyles;
         handles?: number;
         vertical?: boolean;
         alwaysShowTooltips?: boolean;
+        formatTooltip?: (value: number) => string;
         label?: string;
         value?: number[];
         defaultValue?: number[];
@@ -226,7 +227,7 @@ const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, alwaysS
             {new Array(handles).fill(0).map((_, i) => {
                 const val = values[i];
 
-                return <Tooltip key={i} content={round(val, 2)} alwaysVisible={alwaysShowTooltips} position={vertical ? 'right' : 'bottom'}>
+                return <Tooltip key={i} content={formatTooltip ? formatTooltip(round(val, 2)) : round(val, 2)} alwaysVisible={alwaysShowTooltips} position={vertical ? 'right' : 'bottom'}>
                     <Halo className={style.halo} disabled={props.disabled}>
                         <div className={style.handle} role="slider" tabIndex={props.disabled ? -1 : 0} aria-disabled={!!props.disabled}
                             onMouseDown={e => {

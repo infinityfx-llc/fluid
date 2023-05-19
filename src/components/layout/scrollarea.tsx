@@ -168,7 +168,7 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
         {children}
 
         <div ref={track} className={style.track}>
-            <div ref={handle} className={style.handle} onMouseDown={e => drag(e.nativeEvent)} role="scrollbar" aria-valuenow={0} aria-controls={id} />
+            <div ref={handle} className={style.handle} onMouseDown={e => drag(e.nativeEvent)} role="scrollbar" aria-controls={id} />
         </div>
     </div>;
 });

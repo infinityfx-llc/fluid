@@ -13,6 +13,7 @@ import FileField from "./file-field";
 import Pincode from "./pincode";
 import Slider from "./slider";
 import ThemeToggle from "./theme-toggle";
+import Select from "./select";
 
 export {
     Button,
@@ -29,5 +30,6 @@ export {
     FileField,
     Pincode,
     Slider,
-    ThemeToggle
+    ThemeToggle,
+    Select
 }

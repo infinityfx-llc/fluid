@@ -5,7 +5,15 @@ import { Button } from "../input";
 import { MdArrowBack, MdArrowForward, MdFirstPage, MdLastPage } from "react-icons/md";
 import { classes } from "@/src/core/utils";
 
-const Pagination = forwardRef(({ styles = {}, pages, compact, skipable, round, variant, ...props }: { styles?: FluidStyles; pages: number; compact?: boolean; skipable?: boolean; round?: boolean; variant?: 'default' | 'light'; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Pagination = forwardRef(({ styles = {}, pages, compact, skipable, round, variant, ...props }:
+    {
+        styles?: FluidStyles;
+        pages: number;
+        compact?: boolean;
+        skipable?: boolean;
+        round?: boolean;
+        variant?: 'default' | 'light';
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.pagination': {
             display: 'flex',

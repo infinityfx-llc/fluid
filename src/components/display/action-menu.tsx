@@ -1,12 +1,11 @@
-import { classes, combineRefs } from '@/src/core/utils';
+import { classes } from '@/src/core/utils';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
 import { Animate } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
-import { LayoutGroup } from '@infinityfx/lively/layout';
-import { forwardRef, cloneElement, useState, useRef, useEffect } from 'react';
+import { forwardRef } from 'react';
 import { Halo } from '../feedback';
-import useClickOutside from '@/src/hooks/use-click-outside';
+import Popover from '../layout/popover';
 
 const ActionMenu = forwardRef(({ children, styles = {}, options, ...props }: {
     children: React.ReactElement;
@@ -20,15 +19,13 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, ...props }: {
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.menu': {
-            position: 'fixed',
             padding: '.3em',
             background: 'var(--f-clr-bg-100)',
             border: 'solid 1px var(--f-clr-grey-100)',
             borderRadius: 'var(--f-radius-sml)',
             boxShadow: '0 0 8px rgb(0, 0, 0, 0.06)',
             fontSize: 'var(--f-font-size-sml)',
-            width: 'clamp(0px, 10em, 100vw)',
-            zIndex: 999
+            width: 'clamp(0px, 10em, 100vw)'
         },
 
         '.option': {
@@ -68,71 +65,27 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, ...props }: {
         }
     });
 
-    const element = useRef<HTMLElement | null>(null);
-    const [state, setState] = useState<{ left: string; top?: string; bottom?: string; } | null>(null);
+    return <Popover role="menu" content={close => <Animate key="menu" animations={[Move.unique({ duration: .2 }), Pop.unique({ duration: .2 })]} unmount triggers={[{ on: 'mount' }]} levels={2} stagger={.06}>
+        <div ref={ref} {...props} className={classes(style.menu, props.className)}>
+            {options.map((option, i) => {
+                if (typeof option === 'string') return <div key={i} className={style.title}>{option}</div>;
 
-    function toggle(value: boolean) {
-        if (value && element.current) {
-            const { x, y, width, height } = element.current.getBoundingClientRect();
-            const bottom = window.innerHeight - height - y;
-
-            if (y > bottom) {
-                return setState({
-                    left: x + 'px',
-                    bottom: `calc(${bottom + height}px + var(--f-spacing-xsm))`
-                });
-            } else {
-                return setState({
-                    left: x + 'px',
-                    top: `calc(${y + height}px + var(--f-spacing-xsm))`
-                });
-            }
-        } else setState(null);
-    }
-
-    useEffect(() => {
-        const resize = () => toggle(!!state);
-        window.addEventListener('resize', resize);
-
-        return () => window.removeEventListener('resize', resize);
-    }, [state]);
-
-    const menu = useClickOutside(() => {
-        if (state) setState(null);
-    }, [state]);
-
-    return <>
-        {cloneElement(children, {
-            ref: combineRefs(element, (children as any).ref),
-            onClick: (e: React.MouseEvent) => {
-                e.stopPropagation();
-                children.props.onClick?.(e);
-                toggle(!state);
-            }
-        })}
-
-        <LayoutGroup adaptive={false}>
-            {state && <Animate animations={[Move.unique({ duration: .2 }), Pop.unique({ duration: .2 })]} unmount triggers={[{ on: 'mount' }]} levels={2} stagger={.06}>
-                <div ref={combineRefs(menu, ref)} {...props} role="menu" className={classes(style.menu, props.className)} style={state}>
-                    {options.map((option, i) => {
-                        if (typeof option === 'string') return <div key={i} className={style.title}>{option}</div>;
-
-                        const { label, onClick, disabled = false, shouldClose = true } = option;
-                        return <div key={i}>
-                            <Halo disabled={disabled}>
-                                <button role="menuitem" className={style.option} disabled={disabled} onClick={() => {
-                                    if (shouldClose) setState(null);
-                                    onClick?.();
-                                }}>
-                                    {label}
-                                </button>
-                            </Halo>
-                        </div>;
-                    })}
-                </div>
-            </Animate>}
-        </LayoutGroup>
-    </>;
+                const { label, onClick, disabled = false, shouldClose = true } = option;
+                return <div key={i}>
+                    <Halo disabled={disabled}>
+                        <button role="menuitem" className={style.option} disabled={disabled} onClick={() => {
+                            if (shouldClose) close();
+                            onClick?.();
+                        }}>
+                            {label}
+                        </button>
+                    </Halo>
+                </div>;
+            })}
+        </div>
+    </Animate>}>
+        {children}
+    </Popover>;
 });
 
 ActionMenu.displayName = 'ActionMenu';

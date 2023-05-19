@@ -64,25 +64,33 @@ const Timeline = forwardRef(({ children, styles = {}, active, horizontal = false
             width: '1.5em',
             borderRadius: '999px',
             border: 'solid .25em var(--f-clr-grey-200)',
-            zIndex: 1
+            zIndex: 1,
+            transition: 'border-color .25s'
         },
 
         '.bullet[data-active="true"]': {
             borderColor: 'var(--f-clr-primary-100)'
         },
 
-        '.bullet[data-active="true"]::after': {
+        '.bullet::after': {
             content: '""',
             position: 'absolute',
             inset: '3px',
             borderRadius: '999px',
-            backgroundColor: 'var(--f-clr-primary-100)'
+            backgroundColor: 'var(--f-clr-primary-100)',
+            opacity: 0,
+            transition: 'opacity .25s'
+        },
+
+        '.bullet[data-active="true"]::after': {
+            opacity: 1
         },
 
         '.progress': {
             position: 'absolute',
             flexGrow: 1,
-            backgroundColor: 'var(--f-clr-grey-200)'
+            backgroundColor: 'var(--f-clr-grey-200)',
+            transition: 'background-color .25s'
         },
 
         '.timeline[data-horizontal="false"] .progress': {

@@ -1,15 +1,15 @@
 import { useRef, useEffect } from 'react';
 
-export default function useClickOutside(cb: () => void, dependencies: React.DependencyList = []) {
-    const ref = useRef<HTMLElement | null>(null);
+export default function useClickOutside<T extends HTMLElement>(cb: (e: MouseEvent) => void, dependencies: React.DependencyList = []) {
+    const ref = useRef<T | null>(null);
 
     useEffect(() => {
         function click(e: MouseEvent) {
-            if (ref.current?.contains(e.target as HTMLElement)) {
+            if (ref.current?.contains(e.target as T)) {
                 e.preventDefault();
                 e.stopPropagation();
             } else {
-                cb();
+                cb(e);
             }
         }
 
