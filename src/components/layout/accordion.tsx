@@ -7,7 +7,7 @@ import Collapsible from "./collapsible";
 import { Animatable } from "@infinityfx/lively";
 import { classes } from "@/src/core/utils";
 
-const Accordion = forwardRef(({ styles = {}, items, multiple, ...props }:
+const Accordion = forwardRef(({ styles = {}, items, multiple, variant = 'default', ...props }:
     {
         styles?: FluidStyles;
         items: {
@@ -16,11 +16,18 @@ const Accordion = forwardRef(({ styles = {}, items, multiple, ...props }:
             disabled?: boolean;
         }[];
         multiple?: boolean;
+        variant?: 'default' | 'minimal';
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.accordion': {
             display: 'flex',
             flexDirection: 'column'
+        },
+
+        '.accordion[data-variant="default"]': {
+            backgroundColor: 'var(--f-clr-fg-100)',
+            borderRadius: 'var(--f-radius-sml)',
+            padding: '.4em'
         },
 
         '.button': {
@@ -69,7 +76,7 @@ const Accordion = forwardRef(({ styles = {}, items, multiple, ...props }:
     const [open, setOpen] = useState<number[]>([]);
     const id = useId();
 
-    return <div ref={ref} {...props} className={classes(style.accordion, props.className)}>
+    return <div ref={ref} {...props} className={classes(style.accordion, props.className)} data-variant={variant}>
         {items.map(({ label, content, disabled }, i) => {
             const isOpen = open[multiple ? i : 0] === i;
 

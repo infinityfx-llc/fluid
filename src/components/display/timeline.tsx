@@ -58,7 +58,7 @@ const Timeline = forwardRef(({ children, styles = {}, active, horizontal = false
             height: '1.5em',
             width: '1.5em',
             borderRadius: '999px',
-            border: 'solid .25em var(--f-clr-grey-200)',
+            border: 'solid 3px var(--f-clr-grey-200)',
             zIndex: 1,
             transition: 'border-color .25s'
         },
@@ -89,15 +89,15 @@ const Timeline = forwardRef(({ children, styles = {}, active, horizontal = false
         },
 
         '.timeline[data-horizontal="false"] .progress': {
-            height: 'calc(100% - 1.25em)',
-            width: '.25em',
-            bottom: '-.125em'
+            height: 'calc(100% - 1.5em + 2px)',
+            width: '3px',
+            bottom: '-2px'
         },
 
         '.timeline[data-horizontal="true"] .progress': {
-            width: 'calc(100% - 1.25em)',
-            height: '.25em',
-            right: '-.125em'
+            width: 'calc(100% - 1.5em + 2px)',
+            height: '3px',
+            right: '-2px'
         },
 
         '.progress[data-active="true"]': {

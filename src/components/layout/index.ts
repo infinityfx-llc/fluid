@@ -4,6 +4,9 @@ import Drawer from "./drawer";
 import Scrollarea from "./scrollarea";
 import Collapsible from "./collapsible";
 import Accordion from "./accordion";
+import Frame from "./frame";
+import Grid from "./grid";
+import Sidebar from "./sidebar";
 
 export {
     Overlay,
@@ -11,5 +14,8 @@ export {
     Drawer,
     Scrollarea,
     Collapsible,
-    Accordion
+    Accordion,
+    Frame,
+    Grid,
+    Sidebar
 }

@@ -2,11 +2,11 @@ import { classes } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
 import { Animatable } from "@infinityfx/lively";
-import { forwardRef } from "react";
+import { forwardRef, useId } from "react";
 import { MdCheck } from "react-icons/md";
-import { Halo } from "../feedback";
+import { Halo, ProgressBar } from "../feedback";
 
-const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navigation = 'backwards', vertical = false, ...props }:
+const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navigation = 'backwards', vertical = false, variant = 'default', ...props }:
     {
         styles?: FluidStyles;
         steps: {
@@ -19,14 +19,25 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
         setCompleted: (value: number) => void;
         navigation?: 'none' | 'forwards' | 'backwards' | 'both';
         vertical?: boolean;
+        variant?: 'default' | 'compact';
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
+        '.wrapper': {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--f-spacing-sml)'
+        },
+
+        '.progressbar': {
+            width: '100%'
+        },
+
         '.stepper': {
             display: 'flex',
             fontSize: 'var(--f-font-size-sml)'
         },
 
-        '.stepper[data-vertical="true"]': {
+        '.wrapper[data-vertical="true"] .stepper': {
             flexDirection: 'column'
         },
 
@@ -38,15 +49,19 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
             flexGrow: 1
         },
 
-        '.stepper[data-vertical="true"] .step': {
+        '.wrapper[data-variant="compact"] .step': {
+            alignItems: 'center'
+        },
+
+        '.wrapper[data-vertical="true"] .step': {
             flexDirection: 'row'
         },
 
-        '.stepper[data-vertical="false"] .step:not(:last-child)': {
+        '.wrapper[data-vertical="false"] .step:not(:last-child)': {
             paddingRight: 'var(--f-spacing-sml)'
         },
 
-        '.stepper[data-vertical="true"] .step:not(:last-child)': {
+        '.wrapper[data-vertical="true"] .step:not(:last-child)': {
             paddingBottom: 'var(--f-spacing-sml)'
         },
 
@@ -56,7 +71,7 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
             alignItems: 'center'
         },
 
-        '.stepper[data-vertical="true"] .header': {
+        '.wrapper[data-vertical="true"] .header': {
             flexDirection: 'column'
         },
 
@@ -124,10 +139,11 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
             height: '3px',
             flexGrow: 1,
             backgroundColor: 'var(--f-clr-grey-100)',
-            transition: 'background-color .25s'
+            transition: 'background-color .25s',
+            borderRadius: 'var(--f-radius-xsm)'
         },
 
-        '.stepper[data-vertical="true"] .progress': {
+        '.wrapper[data-vertical="true"] .progress': {
             width: '3px',
             minHeight: '1em'
         },
@@ -161,52 +177,54 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
             display: 'flex',
             flexDirection: 'column',
             gap: 'var(--f-spacing-xxs)'
-        },
-
-        '.stepper[data-vertical="false"] .title .label': {
-            display: 'none'
-        },
-
-        '.stepper[data-vertical="true"] .header .label': {
-            display: 'none'
         }
     });
 
-    return <div ref={ref} {...props} className={classes(style.stepper, props.className)} data-vertical={vertical}>
-        {steps.map(({ title, label, icon, error }, i) => {
-            const navigatable = navigation === 'forwards' ? i >= completed :
-                navigation === 'backwards' ? i < completed :
-                    navigation === 'both' ? true : false;
+    const id = useId();
+    const stepsArray = variant === 'compact' ? steps.slice(Math.min(completed, steps.length - 1), completed + 1) : steps;
+    vertical = variant === 'compact' || vertical;
 
-            return <div key={i} className={style.step} data-completed={i < completed} data-current={i === completed} data-error={error}>
-                <div className={style.header}>
-                    <Halo className={style.halo} disabled={!navigatable}>
-                        <button type="button" className={style.button} disabled={!navigatable} onClick={() => setCompleted(i)}>
-                            <div className={style.bullet}>
-                                <div className={style.icon}>
-                                    <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} triggers={[{ on: i < completed }, { on: !(i < completed), reverse: true }]}>
-                                        <div className={style.icons}>
-                                            <div className={style.icon}>{icon}</div>
-                                            <MdCheck />
-                                        </div>
-                                    </Animatable>
+    return <div ref={ref} {...props} className={classes(style.wrapper, props.className)} data-vertical={vertical} data-variant={variant}>
+        <div className={style.stepper}>
+            {stepsArray.map(({ title, label, icon, error }, i) => {
+                const navigatable = (navigation === 'forwards' ? i >= completed :
+                    navigation === 'backwards' ? i < completed :
+                        navigation === 'both' ? true : false) && variant !== 'compact';
+                const stepId = `${id}__${i}`;
+                const isCompleted = variant === 'compact' ? completed === steps.length : i < completed;
+
+                return <div key={i} className={style.step} data-completed={isCompleted} data-current={variant === 'compact' ? !isCompleted : i === completed} data-error={error}>
+                    <div className={style.header}>
+                        <Halo className={style.halo} disabled={!navigatable}>
+                            <button type="button" className={style.button} disabled={!navigatable} onClick={() => setCompleted(i)} aria-labelledby={label ? stepId : undefined}>
+                                <div className={style.bullet}>
+                                    <div className={style.icon}>
+                                        <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} triggers={[{ on: isCompleted }, { on: !isCompleted, reverse: true }]}>
+                                            <div className={style.icons}>
+                                                <div className={style.icon}>{icon}</div>
+                                                <MdCheck />
+                                            </div>
+                                        </Animatable>
+                                    </div>
                                 </div>
-                            </div>
-                        </button>
-                    </Halo>
+                            </button>
+                        </Halo>
 
-                    {label && <span className={style.label}>{label}</span>}
+                        {label && !vertical && <span className={style.label} id={stepId}>{label}</span>}
 
-                    {i < steps.length - 1 && <div className={style.progress} />}
-                </div>
+                        {i < steps.length - 1 && variant !== 'compact' && <div className={style.progress} />}
+                    </div>
 
-                <div className={style.title}>
-                    {label && <span className={style.label}>{label}</span>}
+                    <div className={style.title}>
+                        {label && vertical && <span className={style.label} id={stepId}>{label}</span>}
 
-                    {title}
-                </div>
-            </div>;
-        })}
+                        {title}
+                    </div>
+                </div>;
+            })}
+        </div>
+
+        {variant === 'compact' && <ProgressBar value={completed / steps.length} className={style.progressbar} />}
     </div>;
 });
 

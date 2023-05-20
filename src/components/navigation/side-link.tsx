@@ -3,9 +3,8 @@ import { Halo } from '../feedback';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
 import { Animatable } from '@infinityfx/lively';
-import { useTrigger } from '@infinityfx/lively/hooks';
-import useUpdate from '@/src/hooks/use-update';
 import { LayoutGroup } from '@infinityfx/lively/layout';
+import { classes } from '@/src/core/utils';
 
 const SideLink = forwardRef(({ styles = {}, label, icon, right, active = false, collapsed = false, round = false, variant = 'default', disabled = false, ...props }:
     {
@@ -19,15 +18,20 @@ const SideLink = forwardRef(({ styles = {}, label, icon, right, active = false, 
         round?: boolean;
     } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
     const style = useStyles(styles, {
-        '.link': {
-            position: 'relative',
-            fontSize: 'var(--f-font-size-sml)',
-            fontWeight: 600,
+        '.wrapper': {
             outline: 'none',
             border: 'none',
             background: 'none',
             borderRadius: 'var(--f-radius-sml)',
             color: 'var(--f-clr-text-100)',
+            transition: 'background-color .25s, color .25s'
+        },
+
+        '.link': {
+            position: 'relative',
+            fontSize: 'var(--f-font-size-sml)',
+            fontWeight: 600,
+            borderRadius: 'inherit',
             display: 'flex',
             gap: 'var(--f-spacing-sml)',
             alignItems: 'center',
@@ -39,25 +43,25 @@ const SideLink = forwardRef(({ styles = {}, label, icon, right, active = false, 
             flexShrink: 0
         },
 
-        '.link:enabled': {
+        '.wrapper:enabled': {
             cursor: 'pointer'
         },
 
-        '.link[data-round="true"]': {
+        '.wrapper[data-round="true"]': {
             borderRadius: '999px'
         },
 
-        '.link[data-active="true"]': {
+        '.wrapper[data-active="true"]': {
             backgroundColor: 'var(--f-clr-primary-100)',
             color: 'var(--f-clr-text-200)'
         },
 
-        '.link[data-active="true"][data-variant="light"]': {
+        '.wrapper[data-active="true"][data-variant="light"]': {
             backgroundColor: 'var(--f-clr-primary-600)',
             color: 'var(--f-clr-primary-100)'
         },
 
-        '.link:disabled': {
+        '.wrapper:disabled': {
             color: 'var(--f-clr-grey-500)'
         },
 
@@ -75,26 +79,26 @@ const SideLink = forwardRef(({ styles = {}, label, icon, right, active = false, 
         }
     });
 
-    // const expand = useTrigger();
-    // useUpdate(() => { !collapsed && expand() }, [collapsed]);
-
     return <LayoutGroup transition={{ duration: .25 }}>
         <Animatable cachable={['width']}>
-            {/* <Halo color="var(--f-clr-primary-200)" disabled={disabled}> */}
-                <button ref={ref} {...props} className={style.link} type="button" data-variant={variant} data-round={round} data-active={active} disabled={disabled}>
-                    {icon}
 
-                    {!collapsed && <Animatable key="1" noInherit animate={{ opacity: [0, 1], duration: .25 }} initial={{ opacity: collapsed ? 0 : 1 }} unmount triggers={[{ on: collapsed }]}>
-                        <span className={style.content}>{label}</span>
-                    </Animatable>}
+            <button ref={ref} {...props} className={classes(style.wrapper, props.className)} type="button" disabled={disabled} data-variant={variant} data-round={round} data-active={active}>
+                <Halo color="var(--f-clr-primary-200)" disabled={disabled}>
+                    <div className={style.link}>
+                        {icon}
 
-                    {!collapsed && right && <Animatable key="2" noInherit animate={{ opacity: [0, 1], duration: .25 }} initial={{ opacity: collapsed ? 0 : 1 }} unmount triggers={[{ on: collapsed }]}>
-                        <span className={style.right}>
-                            {right}
-                        </span>
-                    </Animatable>}
-                </button>
-            {/* </Halo> */}
+                        {!collapsed && <Animatable key="1" cachable={[]} noInherit animate={{ opacity: [0, 1], duration: .25 }} initial={{ opacity: collapsed ? 0 : 1 }} unmount triggers={[{ on: collapsed }]}>
+                            <span className={style.content}>{label}</span>
+                        </Animatable>}
+
+                        {!collapsed && right && <Animatable key="2" cachable={[]} noInherit animate={{ opacity: [0, 1], duration: .25 }} initial={{ opacity: collapsed ? 0 : 1 }} unmount triggers={[{ on: collapsed }]}>
+                            <span className={style.right}>
+                                {right}
+                            </span>
+                        </Animatable>}
+                    </div>
+                </Halo>
+            </button>
         </Animatable>
     </LayoutGroup>;
 });
