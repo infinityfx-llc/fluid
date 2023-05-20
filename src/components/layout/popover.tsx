@@ -47,6 +47,7 @@ const Popover = forwardRef(({ children, content, longpress, disabled, ...props }
         {cloneElement(children, {
             'aria-expanded': !!state,
             'aria-controls': id,
+            'aria-disabled': disabled,
             ref: combineRefs(element, (children as any).ref),
             onMouseUp: (e: React.MouseEvent) => {
                 children.props.onMouseUp?.(e);
@@ -71,3 +72,4 @@ Popover.displayName = 'Popover';
 export default Popover;
 
 // longpress
+// right align

@@ -7,7 +7,7 @@ import { useTrigger } from '@infinityfx/lively/hooks';
 import useUpdate from '@/src/hooks/use-update';
 import { LayoutGroup } from '@infinityfx/lively/layout';
 
-const SideLink = forwardRef(({ styles = {}, label, icon, right, active = false, collapsed, round = false, variant = 'default', disabled = false, ...props }:
+const SideLink = forwardRef(({ styles = {}, label, icon, right, active = false, collapsed = false, round = false, variant = 'default', disabled = false, ...props }:
     {
         styles?: FluidStyles;
         label: string;
@@ -35,14 +35,6 @@ const SideLink = forwardRef(({ styles = {}, label, icon, right, active = false, 
             height: '3em'
         },
 
-        '.selection': {
-            position: 'absolute',
-            borderRadius: 'inherit',
-            inset: 0,
-            zIndex: -1,
-            transition: 'background-color .2s'
-        },
-
         '.link > *': {
             flexShrink: 0
         },
@@ -55,19 +47,13 @@ const SideLink = forwardRef(({ styles = {}, label, icon, right, active = false, 
             borderRadius: '999px'
         },
 
-        '.link[data-active="true"] .selection': {
-            backgroundColor: 'var(--f-clr-primary-100)'
-        },
-
         '.link[data-active="true"]': {
+            backgroundColor: 'var(--f-clr-primary-100)',
             color: 'var(--f-clr-text-200)'
         },
 
-        '.link[data-active="true"][data-variant="light"] .selection': {
-            backgroundColor: 'var(--f-clr-primary-600)'
-        },
-
         '.link[data-active="true"][data-variant="light"]': {
+            backgroundColor: 'var(--f-clr-primary-600)',
             color: 'var(--f-clr-primary-100)'
         },
 
@@ -89,29 +75,27 @@ const SideLink = forwardRef(({ styles = {}, label, icon, right, active = false, 
         }
     });
 
-    const expand = useTrigger();
-    useUpdate(() => { !collapsed && expand() }, [collapsed]);
+    // const expand = useTrigger();
+    // useUpdate(() => { !collapsed && expand() }, [collapsed]);
 
     return <LayoutGroup transition={{ duration: .25 }}>
-        <Halo color="var(--f-clr-primary-200)" disabled={disabled}>
-            <button ref={ref} {...props} className={style.link} type="button" data-variant={variant} data-round={round} data-active={active} disabled={disabled}>
-                {icon}
+        <Animatable cachable={['width']}>
+            {/* <Halo color="var(--f-clr-primary-200)" disabled={disabled}> */}
+                <button ref={ref} {...props} className={style.link} type="button" data-variant={variant} data-round={round} data-active={active} disabled={disabled}>
+                    {icon}
 
-                {!collapsed && <Animatable key="1" noInherit animate={{ opacity: [0, 1], duration: .25 }} initial={{ opacity: collapsed ? 0 : 1 }} unmount triggers={[{ on: expand }]}>
-                    <span className={style.content}>{label}</span>
-                </Animatable>}
+                    {!collapsed && <Animatable key="1" noInherit animate={{ opacity: [0, 1], duration: .25 }} initial={{ opacity: collapsed ? 0 : 1 }} unmount triggers={[{ on: collapsed }]}>
+                        <span className={style.content}>{label}</span>
+                    </Animatable>}
 
-                {!collapsed && right && <Animatable key="2" noInherit animate={{ opacity: [0, 1], duration: .25 }} initial={{ opacity: collapsed ? 0 : 1 }} unmount triggers={[{ on: expand }]}>
-                    <span className={style.right}>
-                        {right}
-                    </span>
-                </Animatable>}
-
-                <Animatable cachable={['scale', 'translate']} deform={false}>
-                    <div className={style.selection} />
-                </Animatable>
-            </button>
-        </Halo>
+                    {!collapsed && right && <Animatable key="2" noInherit animate={{ opacity: [0, 1], duration: .25 }} initial={{ opacity: collapsed ? 0 : 1 }} unmount triggers={[{ on: collapsed }]}>
+                        <span className={style.right}>
+                            {right}
+                        </span>
+                    </Animatable>}
+                </button>
+            {/* </Halo> */}
+        </Animatable>
     </LayoutGroup>;
 });
 

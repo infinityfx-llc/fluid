@@ -7,11 +7,6 @@ const Timeline = forwardRef(({ children, styles = {}, active, horizontal = false
     const len = Children.count(children);
 
     const style = useStyles(styles, {
-        '.wrapper': {
-            containerType: 'inline-size',
-            width: 'max-content'
-        },
-
         '.timeline': {
             display: 'grid',
             color: 'var(--f-clr-text-100)',
@@ -108,51 +103,20 @@ const Timeline = forwardRef(({ children, styles = {}, active, horizontal = false
         '.progress[data-active="true"]': {
             backgroundColor: 'var(--f-clr-primary-100)'
         },
-
-
-        [`@container (max-width: ${len * 5}em)`]: {
-            '.timeline': {
-                gridAutoFlow: 'row !important'
-            },
-
-            '.event': {
-                flexDirection: 'row !important' as any
-            },
-
-            '.event:not(:last-child)': {
-                paddingBottom: 'var(--f-spacing-med) !important',
-                paddingRight: '0 !important'
-            },
-
-            '.segment': {
-                width: '1.5em !important',
-                justifyContent: 'center !important',
-                alignItems: 'unset !important'
-            },
-
-            '.progress': {
-                height: 'calc(100% - 1.25em) !important',
-                width: '.25em !important',
-                bottom: '-.125em !important',
-                right: 'unset !important'
-            }
-        }
     });
 
-    return <div ref={ref} {...props} className={classes(style.wrapper, props.className)}>
-        <div className={style.timeline} data-uniform={uniform} data-horizontal={horizontal}>
-            {Children.map(children, (child, i) => {
-                return <div className={style.event}>
-                    <div className={style.segment}>
-                        <div className={style.bullet} data-active={(reverse ? len - 1 - i : i) < active} />
+    return <div ref={ref} {...props} className={classes(style.timeline, props.className)} data-uniform={uniform} data-horizontal={horizontal}>
+        {Children.map(children, (child, i) => {
+            return <div className={style.event}>
+                <div className={style.segment}>
+                    <div className={style.bullet} data-active={(reverse ? len - 1 - i : i) < active} />
 
-                        {i < len - 1 && <div className={style.progress} data-active={reverse ? len - 1 - i < active : i < active - 1} />}
-                    </div>
+                    {i < len - 1 && <div className={style.progress} data-active={reverse ? len - 1 - i < active : i < active - 1} />}
+                </div>
 
-                    {child}
-                </div>;
-            })}
-        </div>
+                {child}
+            </div>;
+        })}
     </div>;
 });
 

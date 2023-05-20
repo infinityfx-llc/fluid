@@ -135,7 +135,7 @@ const Select = forwardRef(({ styles = {}, options, multiple = false, searchable,
                 setSearch(e.target.value);
             }}
             onBlur={() => setSearch(null)}
-            right={<Button round={props.round} disabled={props.disabled} variant="light" style={{ marginRight: '.3em' }}>
+            right={<Button round={props.round} disabled={props.disabled || readOnly} variant="light" style={{ marginRight: '.3em' }}>
                 <MdArrowDownward />
             </Button>} />
     </Popover>

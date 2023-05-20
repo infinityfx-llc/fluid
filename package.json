@@ -7,12 +7,8 @@
 	"module": "dist/src/index.js",
 	"types": "dist/types/index.d.ts",
 	"exports": {
-		".": {
-			"import": "./dist/src/index.js"
-		},
-		"./server": {
-			"import": "./dist/src/server.js"
-		}
+		".": "./dist/src/index.js",
+		"./server": "./dist/src/server.js"
 	},
 	"typesVersions": {
 		"*": {
@@ -36,13 +32,13 @@
 		"watch": "rollup -c -w"
 	},
 	"peerDependencies": {
-		"@infinityfx/lively": "^3.1.7",
+		"@infinityfx/lively": "^3.1.9",
 		"react": ">=16.0.0",
 		"react-dom": ">=16.0.0",
 		"react-icons": "^4.8.0"
 	},
 	"devDependencies": {
-		"@infinityfx/lively": "^3.1.7",
+		"@infinityfx/lively": "^3.1.9",
 		"@rollup/plugin-node-resolve": "^15.0.2",
 		"@rollup/plugin-typescript": "^11.1.0",
 		"@types/react": "^18.2.6",

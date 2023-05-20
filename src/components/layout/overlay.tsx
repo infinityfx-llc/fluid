@@ -27,7 +27,17 @@ export default function Overlay({ children, show, onClose }: { children?: React.
     });
     const [mounted, setMounted] = useState(false);
 
-    useEffect(() => setMounted(true));
+    useEffect(() => {
+        setMounted(true);
+
+        function keypress(e: KeyboardEvent) {
+            if (show && e.key === 'Escape') onClose();
+        }
+
+        window.addEventListener('keydown', keypress);
+
+        return () => window.removeEventListener('keydown', keypress);
+    }, [show]);
 
     return mounted ? createPortal(<LayoutGroup adaptive={false}>
         {show && <div className={style.overlay}>

@@ -5,8 +5,18 @@ import { Halo } from "../feedback";
 import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
 import Collapsible from "./collapsible";
 import { Animatable } from "@infinityfx/lively";
+import { classes } from "@/src/core/utils";
 
-const Accordion = forwardRef(({ styles = {}, items, multiple }: { styles?: FluidStyles; items: { label: React.ReactNode; content: React.ReactNode; disabled?: boolean; }[]; multiple?: boolean; }, ref: any) => {
+const Accordion = forwardRef(({ styles = {}, items, multiple, ...props }:
+    {
+        styles?: FluidStyles;
+        items: {
+            label: React.ReactNode;
+            content: React.ReactNode;
+            disabled?: boolean;
+        }[];
+        multiple?: boolean;
+    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.accordion': {
             display: 'flex',
@@ -59,11 +69,13 @@ const Accordion = forwardRef(({ styles = {}, items, multiple }: { styles?: Fluid
     const [open, setOpen] = useState<number[]>([]);
     const id = useId();
 
-    return <div className={style.accordion}>
+    return <div ref={ref} {...props} className={classes(style.accordion, props.className)}>
         {items.map(({ label, content, disabled }, i) => {
+            const isOpen = open[multiple ? i : 0] === i;
+
             return <Fragment key={i}>
                 <Halo disabled={disabled}>
-                    <button disabled={disabled} className={style.button} type="button" aria-expanded={open[multiple ? i : 0] === i} aria-controls={id} onClick={() => {
+                    <button disabled={disabled} className={style.button} type="button" aria-expanded={isOpen} aria-controls={id} onClick={() => {
                         const arr = open.slice();
                         arr[multiple ? i : 0] = arr[multiple ? i : 0] === i ? -1 : i;
 
@@ -72,7 +84,7 @@ const Accordion = forwardRef(({ styles = {}, items, multiple }: { styles?: Fluid
                         {label}
 
                         <div className={style.icon}>
-                            <Animatable animate={{ translate: ['0% 0%', '0% -50%'] }}>
+                            <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} triggers={[{ on: isOpen }, { on: !isOpen, reverse: true }]}>
                                 <div className={style.arrows}>
                                     <MdArrowDownward />
                                     <MdArrowUpward />
@@ -82,8 +94,10 @@ const Accordion = forwardRef(({ styles = {}, items, multiple }: { styles?: Fluid
                     </button>
                 </Halo>
 
-                <Collapsible shown={open[multiple ? i : 0] === i} id={id} className={style.content}>
-                    {content}
+                <Collapsible shown={isOpen} id={id}>
+                    <div className={style.content}>
+                        {content}
+                    </div>
                 </Collapsible>
 
                 {i < items.length - 1 && <div className={style.divider} />}

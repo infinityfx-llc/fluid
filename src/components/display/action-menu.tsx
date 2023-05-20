@@ -7,7 +7,7 @@ import { forwardRef } from 'react';
 import { Halo } from '../feedback';
 import Popover from '../layout/popover';
 
-const ActionMenu = forwardRef(({ children, styles = {}, options, ...props }: {
+const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, ...props }: {
     children: React.ReactElement;
     styles?: FluidStyles;
     options: ({
@@ -16,6 +16,7 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, ...props }: {
         disabled?: boolean;
         shouldClose?: boolean;
     } | string)[];
+    disabled?: boolean;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.menu': {
@@ -65,7 +66,7 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, ...props }: {
         }
     });
 
-    return <Popover role="menu" content={close => <Animate key="menu" animations={[Move.unique({ duration: .2 }), Pop.unique({ duration: .2 })]} unmount triggers={[{ on: 'mount' }]} levels={2} stagger={.06}>
+    return <Popover role="menu" disabled={disabled} content={close => <Animate key="menu" animations={[Move.unique({ duration: .2 }), Pop.unique({ duration: .2 })]} unmount triggers={[{ on: 'mount' }]} levels={2} stagger={.06}>
         <div ref={ref} {...props} className={classes(style.menu, props.className)}>
             {options.map((option, i) => {
                 if (typeof option === 'string') return <div key={i} className={style.title}>{option}</div>;
