@@ -4,11 +4,11 @@
 	"type": "module",
 	"description": "React UI library.",
 	"main": "dist/index.js",
-	"module": "dist/src/index.js",
+	"module": "dist/index.js",
 	"types": "dist/types/index.d.ts",
 	"exports": {
-		".": "./dist/src/index.js",
-		"./server": "./dist/src/server.js"
+		".": "./dist/index.js",
+		"./server": "./dist/server.js"
 	},
 	"typesVersions": {
 		"*": {
