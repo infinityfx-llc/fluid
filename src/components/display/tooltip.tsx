@@ -4,7 +4,15 @@ import { FluidStyles } from "@/src/types";
 import { forwardRef, cloneElement, useState, useRef, useLayoutEffect, isValidElement } from "react";
 import { createPortal } from "react-dom";
 
-const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto', alwaysVisible = false, ...props }: { children: React.ReactElement; content?: React.ReactNode; styles?: FluidStyles; position?: 'auto' | 'top' | 'left' | 'bottom' | 'right'; alwaysVisible?: boolean; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto', alwaysVisible = false, delay = .3, ...props }:
+    {
+        children: React.ReactElement;
+        content?: React.ReactNode;
+        styles?: FluidStyles;
+        position?: 'auto' | 'top' | 'left' | 'bottom' | 'right';
+        alwaysVisible?: boolean;
+        delay?: number;
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.anchor': {
             position: 'absolute',
@@ -67,7 +75,8 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
     const [visible, setVisible] = useState(false);
     const [computed, setComputed] = useState<string>(position);
 
-    function show(value: boolean) {
+    let timeout: any;
+    function show(value: boolean, delay = 0) {
         if (!element.current || !value) return setVisible(alwaysVisible);
 
         if (position === 'auto') {
@@ -80,7 +89,10 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
             setComputed(max[1] as string);
         }
 
-        setVisible(true);
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            setVisible(true);
+        }, delay * 1000);
     }
 
     let frame: number;
@@ -108,7 +120,7 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
             ref: combineRefs(element, (children as any).ref),
             onMouseEnter: (e: React.MouseEvent) => {
                 children.props.onMouseEnter?.(e);
-                show(true);
+                show(true, delay);
             },
             onMouseLeave: (e: React.MouseEvent) => {
                 children.props.onMouseLeave?.(e);
@@ -116,7 +128,7 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
             },
             onFocus: (e: React.FocusEvent) => {
                 children.props.onFocus?.(e);
-                show(true);
+                show(true, delay);
             },
             onBlur: (e: React.FocusEvent) => {
                 children.props.onBlur?.(e);

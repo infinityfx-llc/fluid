@@ -49,13 +49,13 @@ const NumberField = forwardRef(({ children, styles = {}, precision = 3, controls
                 margin: 0
             }
         }}
-        left={controls ? <Button variant="minimal" size="sml" disabled={props.disabled} styles={buttonStyles} onClick={() => {
+        left={controls ? <Button variant="minimal" size={props.size} disabled={props.disabled} styles={buttonStyles} onClick={() => {
             setValue?.(format(value, -step));
             // call onChange event!!
         }}>
             <MdRemove />
         </Button> : null}
-        right={controls ? <Button variant="minimal" size="sml" disabled={props.disabled} styles={buttonStyles} onClick={() => {
+        right={controls ? <Button variant="minimal" size={props.size} disabled={props.disabled} styles={buttonStyles} onClick={() => {
             setValue?.(format(value, step));
         }}>
             <MdAdd />

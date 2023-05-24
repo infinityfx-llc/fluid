@@ -4,6 +4,7 @@ import Tooltip from "./tooltip";
 import Swatch from "./swatch";
 import ActionMenu from "./action-menu";
 import Timeline from './timeline';
+import Code from "./code";
 
 export {
     Key,
@@ -11,5 +12,6 @@ export {
     Tooltip,
     Swatch,
     ActionMenu,
-    Timeline
+    Timeline,
+    Code
 }

@@ -6,6 +6,7 @@ import useInputProps from "@/src/hooks/use-input-props";
 import { useTrigger } from "@infinityfx/lively/hooks";
 import { Animatable } from "@infinityfx/lively";
 import useUpdate from "@/src/hooks/use-update";
+import { classes } from "@/src/core/utils";
 
 export type ToggleProps = {
     styles?: FluidStyles;
@@ -80,7 +81,7 @@ const Toggle = forwardRef(({ children, styles = {}, round = false, variant = 'de
     useUpdate(() => state ? check() : uncheck(), [state]);
 
     return <Halo disabled={props.disabled}>
-        <label ref={ref} {...rest} className={style.toggle} data-checked={state} data-disabled={!!props.disabled} data-round={round} data-variant={variant}>
+        <label ref={ref} {...rest} className={classes(style.toggle, props.className)} data-checked={state} data-disabled={!!props.disabled} data-round={round} data-variant={variant}>
             <input {...split} type="checkbox" className={style.input} onChange={e => {
                 setState?.(e.target.checked);
                 split.onChange?.(e);
