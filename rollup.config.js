@@ -2,13 +2,11 @@ import resolve from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 import del from 'rollup-plugin-delete';
 import typescript from '@rollup/plugin-typescript';
-import banner2 from 'rollup-plugin-banner2';
 import preserveDirectives from 'rollup-plugin-preserve-directives';
 
 const plugins = [
     resolve(),
     typescript({ tsconfig: './tsconfig.json' }),
-    // banner2(() => "'use client';")
     preserveDirectives.default()
 ];
 
