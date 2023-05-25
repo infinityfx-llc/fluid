@@ -7,10 +7,10 @@ import { MdArrowBack } from 'react-icons/md';
 import Heading from './heading';
 import { LayoutGroup } from '@infinityfx/lively/layout';
 import User from './user';
+import Scrollarea from '../scrollarea';
 
 type SidebarProps = {
     styles?: FluidStyles;
-    collapsed?: boolean;
 } & React.HTMLAttributes<HTMLElement>;
 
 const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
@@ -50,7 +50,7 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
             flexDirection: 'column',
             gap: 'var(--f-spacing-xsm)',
             padding: '0 1em',
-            flexGrow: 1,
+            minHeight: '100%',
             overflow: 'hidden'
         }
     });
@@ -65,9 +65,11 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
                 </Button>
             </div>
 
-            <div className={style.content}>
-                {children}
-            </div>
+            <Scrollarea style={{ flexGrow: 1 }}>
+                <div className={style.content}>
+                    {children}
+                </div>
+            </Scrollarea>
         </aside>
     </LayoutGroup>;
 }) as any;

@@ -3,8 +3,9 @@ import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
 import { classes } from '@/src/core/utils';
 import { Halo, Indicator } from '../../feedback';
+import { MdMoreVert } from 'react-icons/md';
 
-const User = forwardRef(({ styles = {}, avatar, name, status, indicator, round = false, ...props }:
+const User = forwardRef(({ styles = {}, avatar, name, status, indicator, round = false, icon = <MdMoreVert />, ...props }:
     {
         styles?: FluidStyles;
         name: string;
@@ -12,6 +13,7 @@ const User = forwardRef(({ styles = {}, avatar, name, status, indicator, round =
         status?: string;
         indicator?: string | number | boolean;
         round?: boolean;
+        icon?: React.ReactNode;
     } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'>, ref: React.ForwardedRef<HTMLButtonElement>) => {
     const style = useStyles(styles, {
         '.user': {
@@ -26,6 +28,7 @@ const User = forwardRef(({ styles = {}, avatar, name, status, indicator, round =
             textAlign: 'left',
             color: 'var(--f-clr-text-100)',
             height: '3em',
+            paddingRight: '.5em',
             fontSize: 'var(--f-font-size-sml)'
         },
 
@@ -57,19 +60,40 @@ const User = forwardRef(({ styles = {}, avatar, name, status, indicator, round =
         },
 
         '.name': {
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
             fontWeight: 600
         },
 
         '.status': {
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
             fontSize: '.8em',
             color: 'var(--f-clr-grey-500)'
         },
 
         '.content': {
+            transition: 'opacity .3s',
+            flexShrink: 1,
+            flexGrow: 1,
+            width: 0
+        },
+
+        '.icon': {
+            fontSize: '1.1em',
+            display: 'flex',
+            alignItems: 'center',
+            marginLeft: 'auto',
             transition: 'opacity .3s'
         },
 
         'aside[data-collapsed="true"] .content': {
+            opacity: 0
+        },
+
+        'aside[data-collapsed="true"] .icon': {
             opacity: 0
         }
     });
@@ -85,6 +109,10 @@ const User = forwardRef(({ styles = {}, avatar, name, status, indicator, round =
                 <div className={style.name}>{name}</div>
                 <div className={style.status}>{status}</div>
             </div>
+
+            {icon && <div className={style.icon}>
+                {icon}
+            </div>}
         </button>
     </Halo>;
 });

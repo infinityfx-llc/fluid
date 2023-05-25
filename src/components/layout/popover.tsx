@@ -1,10 +1,10 @@
 import { combineRefs } from '@/src/core/utils';
 import useClickOutside from '@/src/hooks/use-click-outside';
 import { LayoutGroup } from '@infinityfx/lively/layout';
-import { forwardRef, cloneElement, useRef, useState, useEffect, useId } from 'react';
+import { forwardRef, cloneElement, useRef, useState, useEffect, useId, isValidElement } from 'react';
 import { createPortal } from 'react-dom';
 
-const Popover = forwardRef(({ children, content, longpress, disabled, ...props }: { children: React.ReactElement; content: (close: () => void) => React.ReactElement; longpress?: boolean; disabled?: boolean; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Popover = forwardRef(<T extends React.ReactElement>({ children, content, longpress, disabled, ...props }: { children: T; content: (close: () => void) => React.ReactElement; longpress?: boolean; disabled?: boolean; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const element = useRef<HTMLElement | null>(null);
     const [mounted, setMounted] = useState(false);
     const [state, setState] = useState<{ left: string; top?: string; bottom?: string; } | null>(null);
@@ -43,6 +43,9 @@ const Popover = forwardRef(({ children, content, longpress, disabled, ...props }
 
     const id = useId();
 
+    children = Array.isArray(children) ? children[0] : children;
+    if (!isValidElement(children)) return children;
+
     return <>
         {cloneElement(children, {
             'aria-expanded': !!state,
@@ -54,6 +57,7 @@ const Popover = forwardRef(({ children, content, longpress, disabled, ...props }
                 if (!disabled) toggle(!state);
             },
             onTouchEnd: (e: React.TouchEvent) => {
+                e.preventDefault(); // TESTING NEEDED, TEMP HACK
                 children.props.onTouchEnd?.(e);
                 if (!disabled) toggle(!state);
             }
