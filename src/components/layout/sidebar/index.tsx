@@ -32,7 +32,7 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
             display: 'flex',
             flexDirection: 'column',
             padding: '1em 0',
-            width: '16rem',
+            width: '18rem',
             transition: 'width .3s'
         },
 
@@ -43,6 +43,10 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
         '.button': {
             translate: '50% 0%',
             marginLeft: 'auto'
+        },
+
+        '.header': {
+            marginBottom: 'var(--f-spacing-sml)'
         },
 
         '.content': {

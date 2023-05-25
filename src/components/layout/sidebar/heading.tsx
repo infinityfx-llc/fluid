@@ -9,7 +9,7 @@ const Heading = forwardRef(({ children, styles = {}, ...props }:
     } & React.ButtonHTMLAttributes<HTMLHeadingElement>, ref: React.ForwardedRef<HTMLHeadingElement>) => {
     const style = useStyles(styles, {
         '.heading': {
-            color: 'var(--f-clr-grey-700)',
+            color: 'var(--f-clr-grey-500)',
             fontSize: 'var(--f-font-size-xsm)',
             width: 'max-content',
             transition: 'opacity .3s',

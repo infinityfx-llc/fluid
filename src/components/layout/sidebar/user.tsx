@@ -5,7 +5,7 @@ import { classes } from '@/src/core/utils';
 import { Halo, Indicator } from '../../feedback';
 import { MdMoreVert } from 'react-icons/md';
 
-const User = forwardRef(({ styles = {}, avatar, name, status, indicator, round = false, icon = <MdMoreVert />, ...props }:
+const User = forwardRef(({ styles = {}, avatar, name, status, indicator = false, round = false, icon = <MdMoreVert />, ...props }:
     {
         styles?: FluidStyles;
         name: string;

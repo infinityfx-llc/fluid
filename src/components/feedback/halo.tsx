@@ -101,23 +101,23 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, color, hover 
         },
 
         '@media (pointer: fine)': {
-            '.container:hover .halo[data-hover="true"]': {
+            '.container:hover > .halo[data-hover="true"]': {
                 opacity: .25
             }
         },
 
         '@media (pointer: coarse)': {
-            '.container:active .halo': {
+            '.container:active > .halo': {
                 opacity: .25
             }
         },
 
-        '.container:focus-visible .halo, .container:has(:focus-visible) .halo': {
+        '.container:focus-visible > .halo, .container:has(:focus-visible) > .halo': {
             opacity: .25
         },
 
         '@supports not selector(:focus-visible)': {
-            '.container:focus-within .halo': {
+            '.container:focus-within > .halo': {
                 opacity: .25
             }
         },

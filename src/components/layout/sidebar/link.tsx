@@ -1,10 +1,13 @@
-import { forwardRef } from 'react';
+import { Children, forwardRef, useState } from 'react';
 import { Halo } from '../../feedback';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
 import { classes } from '@/src/core/utils';
+import { Button } from '../../input';
+import { MdArrowDownward } from 'react-icons/md';
+import Collapsible from '../collapsible';
 
-const Link = forwardRef(({ styles = {}, label, icon, right, active = false, round = false, variant = 'default', disabled = false, ...props }:
+const Link = forwardRef(({ children, styles = {}, label, icon, right, active = false, round = false, variant = 'default', disabled = false, ...props }:
     {
         styles?: FluidStyles;
         label: string;
@@ -13,52 +16,48 @@ const Link = forwardRef(({ styles = {}, label, icon, right, active = false, roun
         active?: boolean;
         variant?: 'default' | 'light',
         round?: boolean;
-    } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
+    } & React.ButtonHTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
-        '.wrapper': {
+        '.link': {
+            position: 'relative',
             outline: 'none',
             border: 'none',
             background: 'none',
-            borderRadius: 'var(--f-radius-sml)',
-            color: 'var(--f-clr-text-100)',
-            transition: 'background-color .25s, color .25s'
-        },
-
-        '.link': {
-            position: 'relative',
             fontSize: 'var(--f-font-size-sml)',
             fontWeight: 600,
-            borderRadius: 'inherit',
+            borderRadius: 'var(--f-radius-sml)',
+            color: 'var(--f-clr-text-100)',
             display: 'flex',
             gap: 'var(--f-spacing-sml)',
             alignItems: 'center',
             paddingInline: '1em',
-            height: '3em'
+            height: '3em',
+            transition: 'background-color .25s, color .25s'
         },
 
         '.link > *': {
             flexShrink: 0
         },
 
-        '.wrapper:enabled': {
+        '.link[data-disabled="false"]': {
             cursor: 'pointer'
         },
 
-        '.wrapper[data-round="true"]': {
+        '.link[data-round="true"]': {
             borderRadius: '999px'
         },
 
-        '.wrapper[data-active="true"]': {
+        '.link[data-active="true"]': {
             backgroundColor: 'var(--f-clr-primary-100)',
             color: 'var(--f-clr-text-200)'
         },
 
-        '.wrapper[data-active="true"][data-variant="light"]': {
+        '.link[data-active="true"][data-variant="light"]': {
             backgroundColor: 'var(--f-clr-primary-600)',
             color: 'var(--f-clr-primary-100)'
         },
 
-        '.wrapper:disabled': {
+        '.link[data-disabled="true"]': {
             color: 'var(--f-clr-grey-500)'
         },
 
@@ -67,27 +66,47 @@ const Link = forwardRef(({ styles = {}, label, icon, right, active = false, roun
             alignItems: 'center',
             gap: 'var(--f-spacing-sml)',
             justifyContent: 'space-between',
-            transition: 'opacity .3s'
+            transition: 'opacity .3s',
+            flexGrow: 1
         },
 
         'aside[data-collapsed="true"] .content': {
             opacity: 0
+        },
+
+        '.sublinks': {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--f-spacing-xsm)'
+        },
+
+        '.sublinks > *': {
+            flexShrink: 0
         }
     });
 
-    return <button ref={ref} {...props} className={classes(style.wrapper, props.className)} type="button" disabled={disabled} data-variant={variant} data-round={round} data-active={active}>
+    const [open, setOpen] = useState(false);
+    const count = Children.count(children);
+
+    return <>
         <Halo color="var(--f-clr-primary-200)" disabled={disabled}>
-            <div className={style.link}>
+            <div ref={ref} {...props} className={classes(style.link, props.className)} data-disabled={disabled} data-variant={variant} data-round={round} data-active={active}>
                 {icon}
 
                 <span className={style.content}>
                     {label}
 
-                    {right}
+                    {count ? <Button variant="light" onClick={() => setOpen(!open)}>
+                        <MdArrowDownward />
+                    </Button> : right}
                 </span>
             </div>
         </Halo>
-    </button>;
+
+        {count ? <Collapsible shown={open} className={style.sublinks}>
+            {children}
+        </Collapsible> : null}
+    </>;
 });
 
 Link.displayName = 'Sidebar.Link';
