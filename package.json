@@ -1,6 +1,6 @@
 {
 	"name": "@infinityfx/fluid",
-	"version": "0.0.1",
+	"version": "0.0.1-beta.0",
 	"type": "module",
 	"description": "React UI library.",
 	"main": "dist/index.js",

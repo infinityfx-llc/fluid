@@ -39,7 +39,7 @@ export function combineRefs(...refs: React.Ref<any>[]) {
 }
 
 export function ruleToString(selector: string, rules: React.CSSProperties | { [key: string]: React.CSSProperties }, selectors: Selectors, postfix?: string): string {
-    const prefixed = postfix ?
+    const prefixed = (postfix ?
         selector.split(/((?::global\()?[.#][\w\-_][\w\d\-_]*)/gi)
             .reduce((prefixed, seg) => {
                 if (/^[.#]/.test(seg)) {
@@ -49,7 +49,8 @@ export function ruleToString(selector: string, rules: React.CSSProperties | { [k
                 }
 
                 return prefixed + seg;
-            }, '') : selector;
+            }, '') : selector)
+        .replace(/:global\((.+?)\)/g, '$1');
 
     return `${prefixed}{${Object.entries(rules).reduce((str, [attr, value]) => {
         if (typeof value === 'object') return str + ruleToString(attr, value, selectors, postfix);

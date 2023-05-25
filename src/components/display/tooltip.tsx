@@ -77,6 +77,7 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
 
     let timeout: any;
     function show(value: boolean, delay = 0) {
+        clearTimeout(timeout);
         if (!element.current || !value) return setVisible(alwaysVisible);
 
         if (position === 'auto') {
@@ -89,7 +90,6 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
             setComputed(max[1] as string);
         }
 
-        clearTimeout(timeout);
         timeout = setTimeout(() => {
             setVisible(true);
         }, delay * 1000);
