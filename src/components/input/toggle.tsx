@@ -24,6 +24,7 @@ const Toggle = forwardRef(({ children, styles = {}, round = false, variant = 'de
 
         '.toggle': {
             position: 'relative',
+            display: 'block',
             backgroundColor: 'var(--f-clr-fg-100)',
             color: 'var(--f-clr-text-100)',
             padding: '.5em',

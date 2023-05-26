@@ -120,3 +120,5 @@ const User = forwardRef(({ styles = {}, avatar, name, status, indicator = false,
 User.displayName = 'Sidebar.User';
 
 export default User;
+
+// support for images

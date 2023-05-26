@@ -7,6 +7,7 @@ import Accordion from "./accordion";
 import Frame from "./frame";
 import Grid from "./grid";
 import Sidebar from "./sidebar";
+import Header from "./header";
 
 export {
     Overlay,
@@ -17,5 +18,6 @@ export {
     Accordion,
     Frame,
     Grid,
-    Sidebar
+    Sidebar,
+    Header
 }
