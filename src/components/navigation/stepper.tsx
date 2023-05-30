@@ -199,7 +199,7 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
                             <button type="button" className={style.button} disabled={!navigatable} onClick={() => setCompleted(i)} aria-labelledby={label ? stepId : undefined}>
                                 <div className={style.bullet}>
                                     <div className={style.icon}>
-                                        <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} triggers={[{ on: isCompleted }, { on: !isCompleted, reverse: true }]}>
+                                        <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} initial={{ translate: isCompleted ? '0% -50%' : '0% 0%' }} triggers={[{ on: isCompleted }, { on: !isCompleted, reverse: true }]}>
                                             <div className={style.icons}>
                                                 <div className={style.icon}>{icon}</div>
                                                 <MdCheck />

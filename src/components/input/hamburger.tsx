@@ -1,12 +1,11 @@
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 import Halo from "../feedback/halo";
 import { Animatable } from "@infinityfx/lively";
-import { useTrigger } from "@infinityfx/lively/hooks";
 import { classes } from "@/src/core/utils";
 
-const Hamburger = forwardRef(({ styles = {}, ...props }: { styles?: FluidStyles; } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
+const Hamburger = forwardRef(({ styles = {}, open, ...props }: { styles?: FluidStyles; open?: boolean; } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
     const style = useStyles(styles, {
         '.hamburger': {
             position: 'relative',
@@ -59,17 +58,17 @@ const Hamburger = forwardRef(({ styles = {}, ...props }: { styles?: FluidStyles;
             width: '3px'
         }
     });
-    const open = useTrigger();
-    const close = useTrigger();
+
+    const [state, setState] = open !== undefined ? [open] : useState(false);
 
     return <Halo disabled={props.disabled}>
         <button ref={ref} {...props} className={classes(style.hamburger, props.className)} onClick={e => {
-            open.value > close.value ? close() : open();
+            setState?.(!state);
             props.onClick?.(e);
         }}>
             <Animatable animate={{ scale: ['1 1', '0 1', '0 1'], duration: .6 }} deform={false} triggers={[
-                { on: open, immediate: true },
-                { on: close, reverse: true, immediate: true }
+                { on: state, immediate: true },
+                { on: !state, reverse: true, immediate: true }
             ]}>
                 {new Array(3).fill(0).map((_, i) => {
                     return <div key={i} className={style.line} />
@@ -78,14 +77,14 @@ const Hamburger = forwardRef(({ styles = {}, ...props }: { styles?: FluidStyles;
 
             <div className={style.cross}>
                 <Animatable animate={{ scale: ['0 1', '0 1', '1 1'], duration: .6 }} deform={false} triggers={[
-                    { on: open, immediate: true },
-                    { on: close, reverse: true, immediate: true }
+                    { on: state, immediate: true },
+                    { on: !state, reverse: true, immediate: true }
                 ]}>
                     <div className={style.line} />
                 </Animatable>
                 <Animatable animate={{ scale: ['1 0', '1 0', '1 1'], duration: .6, delay: .2 }} deform={false} triggers={[
-                    { on: open, immediate: true },
-                    { on: close, reverse: true, immediate: true }
+                    { on: state, immediate: true },
+                    { on: !state, reverse: true, immediate: true }
                 ]}>
                     <div className={style.line} />
                 </Animatable>

@@ -19,7 +19,8 @@ const ProgressBar = forwardRef(({ styles = {}, size = 'med', value, defaultValue
             height: '100%',
             backgroundColor: 'var(--f-clr-primary-100)',
             transformOrigin: 'left',
-            transition: 'background-color .3s'
+            transition: 'background-color .3s',
+            borderRadius: '999px'
         },
 
         '.track[data-size="sml"]': {
@@ -42,7 +43,7 @@ const ProgressBar = forwardRef(({ styles = {}, size = 'med', value, defaultValue
     }, [value]);
 
     return <div ref={ref} {...props} className={classes(style.track, props.className)} data-size={size}>
-        <Animatable animate={{ scale: link(val => `${val} 1`) }} initial={{ scale: `${link()} 1` }}>
+        <Animatable animate={{ scale: link(val => `${val} 1`) }} initial={{ scale: `${link()} 1` }} deform={false}>
             <div className={style.progress} style={{ backgroundColor: color }} />
         </Animatable>
     </div>;
