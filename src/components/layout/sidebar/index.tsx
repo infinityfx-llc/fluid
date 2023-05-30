@@ -33,7 +33,7 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
             display: 'flex',
             flexDirection: 'column',
             padding: '1em 0',
-            width: '18rem',
+            width: 'var(--f-sidebar)',
             transition: 'width .3s'
         },
 

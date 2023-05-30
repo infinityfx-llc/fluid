@@ -5,6 +5,7 @@ import { Animatable } from '@infinityfx/lively';
 import { Morph } from '@infinityfx/lively/layout';
 import { Halo } from '../../feedback';
 import { classes } from '@/src/core/utils';
+import useFluid from '@/src/hooks/use-fluid';
 
 const Navigation = forwardRef(({ children, styles = {}, links, ...props }: {
     styles?: FluidStyles;
@@ -17,13 +18,19 @@ const Navigation = forwardRef(({ children, styles = {}, links, ...props }: {
         }[];
     }[];
 } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
+    const fluid = useFluid();
     const style = useStyles(styles, {
         '.navigation': {
             display: 'flex',
             alignItems: 'center',
             gap: 'var(--f-spacing-sml)',
-            marginLeft: 'var(--f-spacing-lrg)',
             height: '100%'
+        },
+
+        [`@media (max-width: ${fluid.breakpoints[1]}px)`]: {
+            '.navigation': {
+                display: 'none !important'
+            }
         },
 
         '.link': {

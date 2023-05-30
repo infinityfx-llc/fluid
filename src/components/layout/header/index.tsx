@@ -1,5 +1,5 @@
 import useStyles from '@/src/hooks/use-styles';
-import { FluidStyles } from '@/src/types';
+import { FluidSize, FluidStyles } from '@/src/types';
 import { forwardRef, useEffect, useRef } from 'react';
 import Menu from './menu';
 import { classes } from '@/src/core/utils';
@@ -7,25 +7,28 @@ import Navigation from './navigation';
 import { Animatable } from '@infinityfx/lively';
 import { useLink, useScroll } from '@infinityfx/lively/hooks';
 
-type HeaderProps = {
+export type HeaderProps = {
     styles?: FluidStyles;
     variant?: 'default' | 'transparent';
+    size?: FluidSize;
+    width?: FluidSize;
     collapsible?: boolean;
 } & React.HTMLAttributes<HTMLElement>;
 
 const Header: React.ForwardRefExoticComponent<HeaderProps> & {
     Navigation: typeof Navigation;
     Menu: typeof Menu;
-} = forwardRef(({ children, styles = {}, variant = 'default', collapsible, ...props }: HeaderProps, ref: React.ForwardedRef<HTMLElement>) => {
+} = forwardRef(({ children, styles = {}, variant = 'default', size = 'med', width = 'med', collapsible, ...props }: HeaderProps, ref: React.ForwardedRef<HTMLElement>) => {
     const style = useStyles(styles, {
         '.header': {
             position: 'fixed',
             top: 0,
             left: 0,
             width: '100vw',
-            height: '5rem',
-            paddingInline: '18rem',
+            height: `var(--f-header-${size})`,
+            paddingInline: `var(--f-page-${width})`,
             display: 'flex',
+            gap: 'var(--f-spacing-sml)',
             alignItems: 'center',
             zIndex: 250
         },
@@ -76,3 +79,6 @@ Header.Menu = Menu;
 Header.displayName = 'Header';
 
 export default Header;
+
+// add logo component
+// add header height infer

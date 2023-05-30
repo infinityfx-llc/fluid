@@ -6,11 +6,19 @@ import { LayoutGroup } from "@infinityfx/lively/layout";
 import { Animatable } from "@infinityfx/lively";
 import { Pop } from "@infinityfx/lively/animations";
 import Scrollarea from "../scrollarea";
+import useFluid from "@/src/hooks/use-fluid";
 
 const Menu = forwardRef(({ styles = {}, children, ...props }: { styles?: FluidStyles; } & React.HTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
+    const fluid = useFluid();
     const style = useStyles(styles, {
         '.hamburger': {
             zIndex: 1
+        },
+
+        [`@media (min-width: ${fluid.breakpoints[1] + 1}px)`]: {
+            '.hamburger': {
+                display: 'none !important'
+            }
         },
 
         '.menu': {
@@ -21,7 +29,7 @@ const Menu = forwardRef(({ styles = {}, children, ...props }: { styles?: FluidSt
             height: '100vh',
             backgroundColor: 'var(--f-clr-fg-100)',
             transformOrigin: 'right',
-            paddingInline: '18rem',
+            paddingInline: 'var(--f-page-padding)',
             paddingTop: '5rem',
             display: 'flex'
         },
@@ -53,3 +61,5 @@ const Menu = forwardRef(({ styles = {}, children, ...props }: { styles?: FluidSt
 Menu.displayName = 'Header.Menu';
 
 export default Menu;
+
+// close menu on media query change
