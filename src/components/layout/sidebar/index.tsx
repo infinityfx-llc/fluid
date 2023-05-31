@@ -9,15 +9,17 @@ import { LayoutGroup } from '@infinityfx/lively/layout';
 import User from './user';
 import Scrollarea from '../scrollarea';
 
-type SidebarProps = {
+export type SidebarProps = {
     styles?: FluidStyles;
+    collapsed?: boolean;
+    onCollapse?: (value: boolean) => void;
 } & React.HTMLAttributes<HTMLElement>;
 
 const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
     Link: typeof Link;
     Heading: typeof Heading;
     User: typeof User;
-} = forwardRef(({ children, styles = {}, ...props }: SidebarProps, ref: React.ForwardedRef<HTMLElement>) => {
+} = forwardRef(({ children, styles = {}, collapsed, onCollapse, ...props }: SidebarProps, ref: React.ForwardedRef<HTMLElement>) => {
     const style = useStyles(styles, {
         '.sidebar': {
             position: 'fixed',
@@ -60,12 +62,15 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
         }
     });
 
-    const [collapsed, setCollapsed] = useState(false);
+    const [isCollapsed, setCollapsed] = collapsed !== undefined ? [collapsed] : useState(false);
 
     return <LayoutGroup>
-        <aside ref={ref} {...props} className={style.sidebar} data-collapsed={collapsed}>
+        <aside ref={ref} {...props} className={style.sidebar} data-collapsed={isCollapsed}>
             <div className={style.header}>
-                <Button variant="light" onClick={() => setCollapsed(!collapsed)} className={style.button}>
+                <Button variant="light" onClick={() => {
+                    setCollapsed?.(!isCollapsed);
+                    onCollapse?.(!isCollapsed);
+                }} className={style.button}>
                     <MdArrowBack />
                 </Button>
             </div>

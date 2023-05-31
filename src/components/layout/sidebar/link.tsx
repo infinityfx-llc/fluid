@@ -77,7 +77,25 @@ const Link = forwardRef(({ children, styles = {}, label, icon, right, active = f
         '.sublinks': {
             display: 'flex',
             flexDirection: 'column',
-            gap: 'var(--f-spacing-xsm)'
+            gap: 'var(--f-spacing-xsm)',
+            transition: 'padding-left .3s, opacity .35s'
+        },
+
+        'aside[data-collapsed="false"] .sublinks': {
+            paddingLeft: '3em'
+        },
+
+        '.line': {
+            position: 'absolute',
+            left: 'calc(1.5em - 1px)',
+            height: '100%',
+            width: '2px',
+            backgroundColor: 'var(--f-clr-grey-100)',
+            transition: 'opacity .3s'
+        },
+
+        'aside[data-collapsed="true"] .line': {
+            opacity: 0
         },
 
         '.sublinks > *': {
@@ -108,6 +126,8 @@ const Link = forwardRef(({ children, styles = {}, label, icon, right, active = f
         </Halo>
 
         {count ? <Collapsible shown={open} className={style.sublinks}>
+            <div className={style.line} />
+
             {children}
         </Collapsible> : null}
     </>;

@@ -1,8 +1,8 @@
 import useStyles from '@/src/hooks/use-styles';
 import { FluidSize, FluidStyles } from '@/src/types';
-import { Children, cloneElement, isValidElement } from 'react';
+import { Children, cloneElement, isValidElement, useState } from 'react';
 import Header, { HeaderProps } from './header';
-import Sidebar from './sidebar';
+import Sidebar, { SidebarProps } from './sidebar';
 
 export default function Page({ styles = {}, children, width = 'med' }: { styles?: FluidStyles; width?: FluidSize; } & React.HTMLAttributes<any>) {
     let header: FluidSize | null = null, hasSidebar = false;
@@ -15,20 +15,24 @@ export default function Page({ styles = {}, children, width = 'med' }: { styles?
 
     const style = useStyles(styles, {
         '.content': {
-            paddingLeft: hasSidebar ? `calc(var(--f-sidebar) + var(--f-spacing-lrg))` : `var(--f-page-${width})`,
             paddingRight: `var(--f-page-${width})`,
             paddingTop: header ? `var(--f-header-${header})` : undefined,
             display: 'flex',
             flexDirection: 'column',
-            minHeight: '100dvh'
+            minHeight: '100dvh',
+            transition: 'padding-left .3s'
         }
     });
 
-    return <main className={style.content}>
+    const [collapsed, setCollapsed] = useState(false);
+    const sidebar = hasSidebar && !collapsed;
+
+    return <main className={style.content} style={{ paddingLeft: sidebar ? `calc(var(--f-sidebar) + var(--f-spacing-lrg))` : `var(--f-page-${width})` }}>
         {Children.map(children, child => {
             if (!isValidElement(child)) return child;
 
-            if (child.type === Header) return cloneElement(child as React.ReactElement<HeaderProps>, { width });
+            if (child.type === Header) return cloneElement(child as React.ReactElement<HeaderProps>, { width, sidebar });
+            if (child.type === Sidebar) return cloneElement(child as React.ReactElement<SidebarProps>, { collapsed, onCollapse: setCollapsed });
 
             return child;
         })}

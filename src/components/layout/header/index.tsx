@@ -12,13 +12,14 @@ export type HeaderProps = {
     variant?: 'default' | 'transparent';
     size?: FluidSize;
     width?: FluidSize;
+    sidebar?: boolean;
     collapsible?: boolean;
 } & React.HTMLAttributes<HTMLElement>;
 
 const Header: React.ForwardRefExoticComponent<HeaderProps> & {
     Navigation: typeof Navigation;
     Menu: typeof Menu;
-} = forwardRef(({ children, styles = {}, variant = 'default', size = 'med', width = 'med', collapsible, ...props }: HeaderProps, ref: React.ForwardedRef<HTMLElement>) => {
+} = forwardRef(({ children, styles = {}, variant = 'default', size = 'med', width = 'med', sidebar, collapsible, ...props }: HeaderProps, ref: React.ForwardedRef<HTMLElement>) => {
     const style = useStyles(styles, {
         '.header': {
             position: 'fixed',
@@ -26,11 +27,12 @@ const Header: React.ForwardRefExoticComponent<HeaderProps> & {
             left: 0,
             width: '100vw',
             height: `var(--f-header-${size})`,
-            paddingInline: `var(--f-page-${width})`,
+            paddingRight: `var(--f-page-${width})`,
             display: 'flex',
             gap: 'var(--f-spacing-sml)',
             alignItems: 'center',
-            zIndex: 250
+            zIndex: 250,
+            transition: 'padding-left .3s'
         },
 
         '.background': {
@@ -64,7 +66,7 @@ const Header: React.ForwardRefExoticComponent<HeaderProps> & {
     }, []);
 
     return <Animatable animate={{ translate: hidden(val => val ? '0% -100%' : '0% 0%') }}>
-        <header ref={ref} {...props} className={classes(style.header, props.className)} data-variant={variant}>
+        <header ref={ref} {...props} className={classes(style.header, props.className)} style={{ ...props.style, paddingLeft: sidebar ? `calc(var(--f-sidebar) + var(--f-spacing-lrg))` : `var(--f-page-${width})` }} data-variant={variant}>
             <Animatable noInherit animate={{ opacity: variant === 'transparent' ? scroll(val => Math.min(val / window.innerHeight * 2, 1)) : undefined }}>
                 <div className={style.background} />
             </Animatable>
@@ -80,5 +82,4 @@ Header.displayName = 'Header';
 
 export default Header;
 
-// add logo component
 // add header height infer
