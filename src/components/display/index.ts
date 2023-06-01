@@ -5,6 +5,7 @@ import Swatch from "./swatch";
 import ActionMenu from "./action-menu";
 import Timeline from './timeline';
 import Code from "./code";
+import Toast from "./toast";
 
 export {
     Key,
@@ -13,5 +14,6 @@ export {
     Swatch,
     ActionMenu,
     Timeline,
-    Code
+    Code,
+    Toast
 }

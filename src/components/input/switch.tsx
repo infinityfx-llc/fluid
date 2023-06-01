@@ -5,7 +5,7 @@ import { forwardRef } from 'react';
 import Halo from '../feedback/halo';
 import useInputProps from '@/src/hooks/use-input-props';
 
-const Switch = forwardRef(({ styles = {}, error, round = true, ...props }: { styles?: FluidStyles; error?: FluidError; round?: boolean; } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>, ref: React.ForwardedRef<HTMLLabelElement>) => {
+const Switch = forwardRef(({ styles = {}, error, round = true, ...props }: { styles?: FluidStyles; error?: FluidError; round?: boolean; } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             position: 'relative'
@@ -13,7 +13,13 @@ const Switch = forwardRef(({ styles = {}, error, round = true, ...props }: { sty
         
         '.input': {
             position: 'absolute',
-            opacity: 0
+            opacity: 0,
+            inset: 0,
+            zIndex: 1
+        },
+
+        '.input:enabled': {
+            cursor: 'pointer'
         },
 
         '.switch': {
@@ -41,10 +47,6 @@ const Switch = forwardRef(({ styles = {}, error, round = true, ...props }: { sty
 
         '.input:checked + .switch .handle': {
             translate: '100% 0%'
-        },
-
-        '.input:enabled + .switch': {
-            cursor: 'pointer'
         },
 
         '.wrapper[data-round="true"] .switch': {
@@ -80,13 +82,13 @@ const Switch = forwardRef(({ styles = {}, error, round = true, ...props }: { sty
     const [split, rest] = useInputProps(props);
 
     return <Halo className={style.halo} hover={false}>
-        <label ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-round={round} data-error={!!error}>
+        <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-round={round} data-error={!!error}>
             <input {...split} type="checkbox" className={style.input} aria-invalid={!!error} />
 
             <div className={style.switch}>
                 <div className={style.handle} />
             </div>
-        </label>
+        </div>
     </Halo>;
 });
 

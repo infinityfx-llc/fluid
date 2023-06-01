@@ -29,7 +29,7 @@ const Header: React.ForwardRefExoticComponent<HeaderProps> & {
             height: `var(--f-header-${size})`,
             paddingRight: `var(--f-page-${width})`,
             display: 'flex',
-            gap: 'var(--f-spacing-sml)',
+            gap: 'var(--f-spacing-med)',
             alignItems: 'center',
             zIndex: 250,
             transition: 'padding-left .3s'
@@ -82,4 +82,4 @@ Header.displayName = 'Header';
 
 export default Header;
 
-// add header height infer
+// add right/left sections

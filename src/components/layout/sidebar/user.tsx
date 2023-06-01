@@ -5,16 +5,15 @@ import { classes } from '@/src/core/utils';
 import { Halo, Indicator } from '../../feedback';
 import { MdMoreVert } from 'react-icons/md';
 
-const User = forwardRef(({ styles = {}, avatar, name, status, indicator = false, round = false, icon = <MdMoreVert />, ...props }:
+const User = forwardRef(({ children, styles = {}, name, status, indicator = false, round = false, icon = <MdMoreVert />, ...props }:
     {
         styles?: FluidStyles;
         name: string;
-        avatar?: any;
         status?: string;
         indicator?: string | number | boolean;
         round?: boolean;
         icon?: React.ReactNode;
-    } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'>, ref: React.ForwardedRef<HTMLButtonElement>) => {
+    } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
     const style = useStyles(styles, {
         '.user': {
             position: 'relative',
@@ -45,17 +44,23 @@ const User = forwardRef(({ styles = {}, avatar, name, status, indicator = false,
             width: '2.5em',
             height: '2.5em',
             backgroundColor: 'var(--f-clr-primary-400)',
-            borderRadius: 'var(--f-radius-sml)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontWeight: 700,
             textTransform: 'uppercase',
             fontSize: '1.2em',
-            flexShrink: 0
+            flexShrink: 0,
         },
 
-        '.user[data-round="true"] .avatar': {
+        '.frame': {
+            position: 'absolute',
+            inset: 0,
+            borderRadius: 'var(--f-radius-sml)',
+            overflow: 'hidden'
+        },
+
+        '.user[data-round="true"] .frame': {
             borderRadius: '999px'
         },
 
@@ -102,7 +107,9 @@ const User = forwardRef(({ styles = {}, avatar, name, status, indicator = false,
         <button ref={ref} {...props} type="button" className={classes(style.user, props.className)} data-round={round}>
             <Indicator outline="var(--f-clr-bg-100)" content={indicator} round={round}>
                 <div className={style.avatar}>
-                    {avatar ? avatar : name.slice(0, 2)}
+                    <div className={style.frame}>
+                        {children ? children : name.slice(0, 2)}
+                    </div>
                 </div>
             </Indicator>
             <div className={style.content}>
@@ -120,5 +127,3 @@ const User = forwardRef(({ styles = {}, avatar, name, status, indicator = false,
 User.displayName = 'Sidebar.User';
 
 export default User;
-
-// support for images

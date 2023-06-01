@@ -1,5 +1,5 @@
 import useStyles from '@/src/hooks/use-styles';
-import { FluidStyles } from '@/src/types';
+import { FluidSize, FluidStyles } from '@/src/types';
 import { forwardRef, useState } from 'react';
 import Link from './link';
 import { Button } from '../../input';
@@ -13,13 +13,14 @@ export type SidebarProps = {
     styles?: FluidStyles;
     collapsed?: boolean;
     onCollapse?: (value: boolean) => void;
+    header?: FluidSize;
 } & React.HTMLAttributes<HTMLElement>;
 
 const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
     Link: typeof Link;
     Heading: typeof Heading;
     User: typeof User;
-} = forwardRef(({ children, styles = {}, collapsed, onCollapse, ...props }: SidebarProps, ref: React.ForwardedRef<HTMLElement>) => {
+} = forwardRef(({ children, styles = {}, collapsed, onCollapse, header = 'med', ...props }: SidebarProps, ref: React.ForwardedRef<HTMLElement>) => {
     const style = useStyles(styles, {
         '.sidebar': {
             position: 'fixed',
@@ -34,7 +35,7 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
             borderRight: 'solid 1px var(--f-clr-grey-100)',
             display: 'flex',
             flexDirection: 'column',
-            padding: '1em 0',
+            paddingBottom: '1em',
             width: 'var(--f-sidebar)',
             transition: 'width .3s'
         },
@@ -49,7 +50,9 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
         },
 
         '.header': {
-            marginBottom: 'var(--f-spacing-sml)'
+            height: `var(--f-header-${header})`,
+            display: 'flex',
+            alignItems: 'center'
         },
 
         '.content': {
@@ -90,3 +93,5 @@ Sidebar.User = User;
 Sidebar.displayName = 'Sidebar';
 
 export default Sidebar;
+
+// hide on mobile

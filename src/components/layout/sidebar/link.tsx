@@ -88,7 +88,7 @@ const Link = forwardRef(({ children, styles = {}, label, icon, right, active = f
         '.line': {
             position: 'absolute',
             left: 'calc(1.5em - 1px)',
-            height: '100%',
+            height: 'calc(100% - 1.5em)',
             width: '2px',
             backgroundColor: 'var(--f-clr-grey-100)',
             transition: 'opacity .3s'
@@ -136,3 +136,5 @@ const Link = forwardRef(({ children, styles = {}, label, icon, right, active = f
 Link.displayName = 'Sidebar.Link';
 
 export default Link;
+
+// different sizes

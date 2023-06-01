@@ -7,7 +7,7 @@ import { forwardRef } from "react";
 import Halo from "../feedback/halo";
 import useInputProps from "@/src/hooks/use-input-props";
 
-const Checkbox = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidStyles; error?: FluidError; } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>, ref: React.ForwardedRef<HTMLLabelElement>) => {
+const Checkbox = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidStyles; error?: FluidError; } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             position: 'relative'
@@ -15,7 +15,9 @@ const Checkbox = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidS
         
         '.input': {
             position: 'absolute',
-            opacity: 0
+            opacity: 0,
+            inset: 0,
+            zIndex: 1
         },
 
         '.checkbox': {
@@ -29,7 +31,7 @@ const Checkbox = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidS
             justifyContent: 'center'
         },
 
-        '.input:enabled + .checkbox': {
+        '.input:enabled': {
             cursor: 'pointer'
         },
 
@@ -77,7 +79,7 @@ const Checkbox = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidS
     const [split, rest] = useInputProps(props);
 
     return <Halo className={style.halo} hover={false}>
-        <label ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-error={!!error}>
+        <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-error={!!error}>
             <input {...split} type="checkbox" className={style.input} aria-invalid={!!error} onChange={e => {
                 setLink(e.target.checked ? 1 : 0, .25);
                 props.onChange?.(e);
@@ -85,12 +87,12 @@ const Checkbox = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidS
 
             <div className={style.checkbox}>
                 <svg viewBox="0 0 18 18" className={style.checkmark}>
-                    <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: 1 }}>
+                    <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: split.defaultChecked ? 0 : 1 }}>
                         <path d="M 3 9 L 8 13 L 15 5" fill="none" />
                     </Animatable>
                 </svg>
             </div>
-        </label>
+        </div>
     </Halo>;
 });
 

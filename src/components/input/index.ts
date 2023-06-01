@@ -14,6 +14,7 @@ import Pincode from "./pincode";
 import Slider from "./slider";
 import ThemeToggle from "./theme-toggle";
 import Select from "./select";
+import Calendar from "./calendar";
 
 export {
     Button,
@@ -31,5 +32,6 @@ export {
     Pincode,
     Slider,
     ThemeToggle,
-    Select
+    Select,
+    Calendar
 }

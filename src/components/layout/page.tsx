@@ -5,7 +5,7 @@ import Header, { HeaderProps } from './header';
 import Sidebar, { SidebarProps } from './sidebar';
 
 export default function Page({ styles = {}, children, width = 'med' }: { styles?: FluidStyles; width?: FluidSize; } & React.HTMLAttributes<any>) {
-    let header: FluidSize | null = null, hasSidebar = false;
+    let header: FluidSize = 'med', hasSidebar = false;
     Children.forEach(children, child => {
         if (!isValidElement(child)) return;
 
@@ -32,9 +32,11 @@ export default function Page({ styles = {}, children, width = 'med' }: { styles?
             if (!isValidElement(child)) return child;
 
             if (child.type === Header) return cloneElement(child as React.ReactElement<HeaderProps>, { width, sidebar });
-            if (child.type === Sidebar) return cloneElement(child as React.ReactElement<SidebarProps>, { collapsed, onCollapse: setCollapsed });
+            if (child.type === Sidebar) return cloneElement(child as React.ReactElement<SidebarProps>, { header, collapsed, onCollapse: setCollapsed });
 
             return child;
         })}
     </main>;
 }
+
+// add section component (with margins, to allow for full page images and such)
