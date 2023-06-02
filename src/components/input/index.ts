@@ -15,6 +15,7 @@ import Slider from "./slider";
 import ThemeToggle from "./theme-toggle";
 import Select from "./select";
 import Calendar from "./calendar";
+import DateField from "./date-field";
 
 export {
     Button,
@@ -33,5 +34,6 @@ export {
     Slider,
     ThemeToggle,
     Select,
-    Calendar
+    Calendar,
+    DateField
 }
