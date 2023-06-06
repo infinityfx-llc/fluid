@@ -28,6 +28,10 @@ export default function Overlay({ children, show, onClose }: { children?: React.
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        if (mounted && show) {
+            document.body.style.overflow = 'hidden';
+        } else
+            if (!show) document.body.style.overflow = '';
         setMounted(true);
 
         function keypress(e: KeyboardEvent) {
@@ -43,7 +47,7 @@ export default function Overlay({ children, show, onClose }: { children?: React.
         {show && <div className={style.overlay}>
             {children}
 
-            <Animatable animate={{ opacity: [0, 1], duration: .25 }} unmount triggers={[{ on: 'mount' }]}>
+            <Animatable key="overlay" animate={{ opacity: [0, 1], duration: .25 }} unmount triggers={[{ on: 'mount' }]}>
                 <div className={style.tint} onClick={onClose} />
             </Animatable>
         </div>}

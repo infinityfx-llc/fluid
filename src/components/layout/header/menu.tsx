@@ -6,19 +6,11 @@ import { LayoutGroup } from "@infinityfx/lively/layout";
 import { Animatable } from "@infinityfx/lively";
 import { Pop } from "@infinityfx/lively/animations";
 import Scrollarea from "../scrollarea";
-import useFluid from "@/src/hooks/use-fluid";
 
 const Menu = forwardRef(({ styles = {}, children, ...props }: { styles?: FluidStyles; } & React.HTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
-    const fluid = useFluid();
     const style = useStyles(styles, {
         '.hamburger': {
             zIndex: 1
-        },
-
-        [`@media (min-width: ${fluid.breakpoints[1] + 1}px)`]: {
-            '.hamburger': {
-                display: 'none !important'
-            }
         },
 
         '.menu': {
@@ -45,7 +37,7 @@ const Menu = forwardRef(({ styles = {}, children, ...props }: { styles?: FluidSt
         <Hamburger ref={ref} {...props} open={open} onClick={() => setOpen(!open)} className={style.hamburger} />
 
         <LayoutGroup adaptive={false}>
-            {open && <Animatable animate={{ scale: ['0% 100%', '100% 100%'], duration: .6 }} unmount triggers={[{ on: 'mount' }]}>
+            {open && <Animatable key="header-menu" animate={{ scale: ['0% 100%', '100% 100%'], duration: .6 }} unmount triggers={[{ on: 'mount' }]}>
                 <div className={style.menu}>
                     <Scrollarea className={style.content}>
                         <Animatable animate={Pop}>

@@ -1,5 +1,5 @@
 import useStyles from "@/src/hooks/use-styles";
-import { FluidStyles } from "@/src/types";
+import { FluidSize, FluidStyles } from "@/src/types";
 import { forwardRef, useState } from "react";
 import Halo from "../feedback/halo";
 import useInputProps from "@/src/hooks/use-input-props";
@@ -10,12 +10,13 @@ import { classes } from "@/src/core/utils";
 
 export type ToggleProps = {
     styles?: FluidStyles;
+    size?: FluidSize;
     round?: boolean;
     variant?: 'default' | 'minimal';
     checkedContent?: React.ReactNode;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>;
 
-const Toggle = forwardRef(({ children, styles = {}, round = false, variant = 'default', checkedContent, ...props }: ToggleProps, ref: React.ForwardedRef<HTMLLabelElement>) => {
+const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false, variant = 'default', checkedContent, ...props }: ToggleProps, ref: React.ForwardedRef<HTMLLabelElement>) => {
     const style = useStyles(styles, {
         '.input': {
             position: 'absolute',
@@ -29,8 +30,19 @@ const Toggle = forwardRef(({ children, styles = {}, round = false, variant = 'de
             color: 'var(--f-clr-text-100)',
             padding: '.5em',
             borderRadius: 'var(--f-radius-sml)',
-            fontSize: 'var(--f-font-size-sml)',
             transition: 'background-color .25s, color .25s'
+        },
+
+        '.toggle[data-size="sml"]': {
+            fontSize: 'var(--f-font-size-xsm)'
+        },
+
+        '.toggle[data-size="med"]': {
+            fontSize: 'var(--f-font-size-sml)'
+        },
+
+        '.toggle[data-size="lrg"]': {
+            fontSize: 'var(--f-font-size-med)'
         },
 
         '.toggle[data-variant="minimal"]': {
@@ -82,7 +94,7 @@ const Toggle = forwardRef(({ children, styles = {}, round = false, variant = 'de
     useUpdate(() => state ? check() : uncheck(), [state]);
 
     return <Halo disabled={props.disabled}>
-        <label ref={ref} {...rest} className={classes(style.toggle, props.className)} data-checked={state} data-disabled={!!props.disabled} data-round={round} data-variant={variant}>
+        <label ref={ref} {...rest} className={classes(style.toggle, props.className)} data-checked={state} data-disabled={!!props.disabled} data-round={round} data-size={size} data-variant={variant}>
             <input {...split} type="checkbox" className={style.input} onChange={e => {
                 setState?.(e.target.checked);
                 split.onChange?.(e);

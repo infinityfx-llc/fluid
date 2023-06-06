@@ -1,5 +1,5 @@
 import useStyles from '@/src/hooks/use-styles';
-import { FluidSize, FluidStyles } from '@/src/types';
+import { FluidStyles } from '@/src/types';
 import { forwardRef, useState } from 'react';
 import Link from './link';
 import { Button } from '../../input';
@@ -8,19 +8,22 @@ import Heading from './heading';
 import { LayoutGroup } from '@infinityfx/lively/layout';
 import User from './user';
 import Scrollarea from '../scrollarea';
+import useFluid from '@/src/hooks/use-fluid';
+import useLayout from '@/src/hooks/use-layout';
 
 export type SidebarProps = {
     styles?: FluidStyles;
-    collapsed?: boolean;
-    onCollapse?: (value: boolean) => void;
-    header?: FluidSize;
 } & React.HTMLAttributes<HTMLElement>;
 
 const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
     Link: typeof Link;
     Heading: typeof Heading;
     User: typeof User;
-} = forwardRef(({ children, styles = {}, collapsed, onCollapse, header = 'med', ...props }: SidebarProps, ref: React.ForwardedRef<HTMLElement>) => {
+} = forwardRef(({ children, styles = {}, ...props }: SidebarProps, ref: React.ForwardedRef<HTMLElement>) => {
+    const fluid = useFluid();
+    const [isCollapsed, setCollapsed] = useState(false);
+    const { header } = useLayout({ sidebar: true, collapsed: isCollapsed });
+
     const style = useStyles(styles, {
         '.sidebar': {
             position: 'fixed',
@@ -37,7 +40,7 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
             flexDirection: 'column',
             paddingBottom: '1em',
             width: 'var(--f-sidebar)',
-            transition: 'width .3s'
+            transition: 'width .3s, translate .3s'
         },
 
         '.sidebar[data-collapsed="true"]': {
@@ -46,11 +49,12 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
 
         '.button': {
             translate: '50% 0%',
-            marginLeft: 'auto'
+            marginLeft: 'auto',
+            transition: 'translate .3s'
         },
 
         '.header': {
-            height: `var(--f-header-${header})`,
+            height: `var(--f-header-${header || 'sml'})`,
             display: 'flex',
             alignItems: 'center'
         },
@@ -62,29 +66,32 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
             padding: '0 1em',
             minHeight: '100%',
             overflow: 'hidden'
-        }
+        },
+
+        [`@media (max-width: ${fluid.breakpoints[1]}px)`]: {
+            '.sidebar[data-collapsed="true"]': {
+                translate: '-100% 0%'
+            },
+
+            '.sidebar[data-collapsed="true"] .button': {
+                translate: '150% 0%'
+            },
+        },
     });
 
-    const [isCollapsed, setCollapsed] = collapsed !== undefined ? [collapsed] : useState(false);
+    return <aside ref={ref} {...props} className={style.sidebar} data-collapsed={isCollapsed}>
+        <div className={style.header}>
+            <Button variant="light" onClick={() => setCollapsed(!isCollapsed)} className={style.button}>
+                <MdArrowBack />
+            </Button>
+        </div>
 
-    return <LayoutGroup>
-        <aside ref={ref} {...props} className={style.sidebar} data-collapsed={isCollapsed}>
-            <div className={style.header}>
-                <Button variant="light" onClick={() => {
-                    setCollapsed?.(!isCollapsed);
-                    onCollapse?.(!isCollapsed);
-                }} className={style.button}>
-                    <MdArrowBack />
-                </Button>
+        <Scrollarea style={{ flexGrow: 1 }}>
+            <div className={style.content}>
+                {children}
             </div>
-
-            <Scrollarea style={{ flexGrow: 1 }}>
-                <div className={style.content}>
-                    {children}
-                </div>
-            </Scrollarea>
-        </aside>
-    </LayoutGroup>;
+        </Scrollarea>
+    </aside>;
 }) as any;
 
 Sidebar.Link = Link;

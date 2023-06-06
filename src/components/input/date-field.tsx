@@ -38,6 +38,7 @@ const DateField = forwardRef(({ styles = {}, value, defaultValue = new Date(), o
         <Calendar
             className={style.calendar}
             round={props.round}
+            size={props.size}
             disabled={disabled}
             value={state}
             onChange={date => {

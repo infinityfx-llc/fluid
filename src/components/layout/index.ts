@@ -6,7 +6,7 @@ import Collapsible from "./collapsible";
 import Accordion from "./accordion";
 import Frame from "./frame";
 import Grid from "./grid";
-import Page from "./page";
+import Section from './section';
 import Sidebar from "./sidebar";
 import Header from "./header";
 
@@ -19,7 +19,7 @@ export {
     Accordion,
     Frame,
     Grid,
-    Page,
+    Section,
     Sidebar,
     Header
 }

@@ -43,10 +43,6 @@ const User = forwardRef(({ children, styles = {}, name, status, indicator = fals
             position: 'relative',
             width: '2.5em',
             height: '2.5em',
-            backgroundColor: 'var(--f-clr-primary-400)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             fontWeight: 700,
             textTransform: 'uppercase',
             fontSize: '1.2em',
@@ -57,7 +53,11 @@ const User = forwardRef(({ children, styles = {}, name, status, indicator = fals
             position: 'absolute',
             inset: 0,
             borderRadius: 'var(--f-radius-sml)',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            backgroundColor: 'var(--f-clr-primary-400)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
         },
 
         '.user[data-round="true"] .frame': {

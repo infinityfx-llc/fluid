@@ -31,8 +31,19 @@ const Select = forwardRef(({ styles = {}, options, multiple = false, searchable,
             border: 'solid 1px var(--f-clr-grey-100)',
             borderRadius: 'var(--f-radius-sml)',
             boxShadow: '0 0 8px rgb(0, 0, 0, 0.06)',
-            fontSize: 'var(--f-font-size-sml)',
-            width: 'clamp(0px, 12em, 100vw)'
+            width: '100%'
+        },
+
+        '.container[data-size="sml"]':{
+            fontSize: 'var(--f-font-size-xsm)'
+        },
+
+        '.container[data-size="med"]':{
+            fontSize: 'var(--f-font-size-sml)'
+        },
+
+        '.container[data-size="lrg"]':{
+            fontSize: 'var(--f-font-size-med)'
         },
 
         '.options': {
@@ -84,8 +95,8 @@ const Select = forwardRef(({ styles = {}, options, multiple = false, searchable,
 
     const filtered = search ? options.filter(({ value }) => value?.toString().includes(search)) : options;
 
-    return <Popover role="listbox" aria-multiselectable={multiple} disabled={props.disabled || readOnly} content={close => <Animatable key="select-options-outer" animate={Move.unique({ duration: .2 })} unmount triggers={[{ on: 'mount' }]}>
-        <Scrollarea className={style.container}>
+    return <Popover role="listbox" aria-multiselectable={multiple} disabled={props.disabled || readOnly} stretch content={close => <Animatable key="select-options-outer" animate={Move.unique({ duration: .2 })} unmount triggers={[{ on: 'mount' }]}>
+        <Scrollarea className={style.container} data-size={props.size}>
             <div className={style.options}>
                 <Animatable key="select-options-inner" animate={Pop.unique({ duration: .2 })} staggerLimit={4} stagger={.06}>
                     {filtered.map(({ label, value, disabled }, i) => {

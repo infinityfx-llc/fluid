@@ -6,20 +6,24 @@ import { classes } from '@/src/core/utils';
 import Navigation from './navigation';
 import { Animatable } from '@infinityfx/lively';
 import { useLink, useScroll } from '@infinityfx/lively/hooks';
+import useFluid from '@/src/hooks/use-fluid';
+import useLayout from '@/src/hooks/use-layout';
 
 export type HeaderProps = {
     styles?: FluidStyles;
     variant?: 'default' | 'transparent';
     size?: FluidSize;
     width?: FluidSize;
-    sidebar?: boolean;
     collapsible?: boolean;
 } & React.HTMLAttributes<HTMLElement>;
 
 const Header: React.ForwardRefExoticComponent<HeaderProps> & {
     Navigation: typeof Navigation;
     Menu: typeof Menu;
-} = forwardRef(({ children, styles = {}, variant = 'default', size = 'med', width = 'med', sidebar, collapsible, ...props }: HeaderProps, ref: React.ForwardedRef<HTMLElement>) => {
+} = forwardRef(({ children, styles = {}, variant = 'default', size = 'med', width = 'med', collapsible, ...props }: HeaderProps, ref: React.ForwardedRef<HTMLElement>) => {
+    const fluid = useFluid();
+    const { sidebar, collapsed } = useLayout({ header: variant === 'transparent' ? false : size });
+
     const style = useStyles(styles, {
         '.header': {
             position: 'fixed',
@@ -27,6 +31,7 @@ const Header: React.ForwardRefExoticComponent<HeaderProps> & {
             left: 0,
             width: '100vw',
             height: `var(--f-header-${size})`,
+            paddingLeft: `var(--f-page-${width})`,
             paddingRight: `var(--f-page-${width})`,
             display: 'flex',
             gap: 'var(--f-spacing-med)',
@@ -45,6 +50,16 @@ const Header: React.ForwardRefExoticComponent<HeaderProps> & {
         '.header[data-variant="default"] .background': {
             boxShadow: '0 0 8px rgb(0, 0, 0, .05)',
             borderBottom: 'solid 1px var(--f-clr-grey-100)'
+        },
+
+        [`@media(min-width: ${fluid.breakpoints[1] + 1}px)`]: {
+            '.header[data-sidebar="true"][data-collapsed="true"]': {
+                paddingLeft: `max(calc(5rem + var(--f-spacing-lrg)), var(--f-page-${width}))`
+            },
+
+            '.header[data-sidebar="true"]': {
+                paddingLeft: `calc(var(--f-sidebar) + var(--f-spacing-lrg))`
+            }
         }
     });
 
@@ -66,7 +81,7 @@ const Header: React.ForwardRefExoticComponent<HeaderProps> & {
     }, []);
 
     return <Animatable animate={{ translate: hidden(val => val ? '0% -100%' : '0% 0%') }}>
-        <header ref={ref} {...props} className={classes(style.header, props.className)} style={{ ...props.style, paddingLeft: sidebar ? `calc(var(--f-sidebar) + var(--f-spacing-lrg))` : `var(--f-page-${width})` }} data-variant={variant}>
+        <header ref={ref} {...props} className={classes(style.header, props.className)} data-variant={variant} data-sidebar={sidebar} data-collapsed={collapsed}>
             <Animatable noInherit animate={{ opacity: variant === 'transparent' ? scroll(val => Math.min(val / window.innerHeight * 2, 1)) : undefined }}>
                 <div className={style.background} />
             </Animatable>
