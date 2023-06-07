@@ -78,15 +78,14 @@ class StyleStore {
             (document.head || document.getElementsByName('head')[0]).appendChild(tag);
         }
 
-        const version = parseInt(tag.dataset.href?.split('__')[2] || '0');
-        if (version < this.version) {
-            tag.innerText = this.serialize();
-            tag.dataset.href = `fluid__styles__${this.version}`;
-        }
+        const version = parseInt(tag.innerText.match(/\/\*(\d+)\*\//)?.[1] || '0');
+        if (version < this.version) tag.innerText = this.serialize();
     }
 
     serialize() {
-        return Object.values(this.rules).reduce((str, { rules }) => str + rules, '');
+        const styles = Object.values(this.rules).reduce((str, { rules }) => str + rules, '');
+
+        return `/*${this.version}*/${styles}`;
     }
 
 }

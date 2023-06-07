@@ -4,37 +4,39 @@ import { LayoutGroup } from '@infinityfx/lively/layout';
 import { forwardRef, cloneElement, useRef, useState, useEffect, useId, isValidElement } from 'react';
 import { createPortal } from 'react-dom';
 
-const Popover = forwardRef(<T extends React.ReactElement>({ children, content, longpress, stretch, disabled, ...props }:
+const Popover = forwardRef(<T extends React.ReactElement>({ children, content, longpress, position = 'auto', stretch, disabled, ...props }:
     {
         children: T;
         content: (close: () => void) => React.ReactElement;
         longpress?: boolean;
+        position?: 'auto' | 'center';
         stretch?: boolean;
         disabled?: boolean;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const element = useRef<HTMLElement | null>(null);
     const [mounted, setMounted] = useState(false);
-    const [state, setState] = useState<{ left: string; top?: string; bottom?: string; minWidth?: string; } | null>(null);
+    const [state, setState] = useState<{ left?: string; right?: string; top?: string; bottom?: string; minWidth?: string; transform?: string; } | null>(null);
 
     function toggle(value: boolean) {
         if (!value || !element.current) return setState(null);
 
-        const { x, y, width, height } = element.current.getBoundingClientRect();
+        const { x, y, right, width, height } = element.current.getBoundingClientRect();
         const bottom = window.innerHeight - height - y;
+        const isLeft = x + width / 2 < window.innerWidth / 2;
+        const isTop = y > bottom;
+        const left = (position === 'auto' ?
+            isLeft ? x : right :
+            x + width / 2) + 'px';
+        const transform = position === 'center' ?
+            'translateX(-50%)' :
+            isLeft ? undefined : 'translateX(-100%)';
 
-        if (y > bottom) {
-            return setState({
-                left: x + 'px',
-                bottom: `calc(${bottom + height}px + var(--f-spacing-xsm))`,
-                minWidth: stretch ? `${width}px` : undefined
-            });
-        } else {
-            return setState({
-                left: x + 'px',
-                top: `calc(${y + height}px + var(--f-spacing-xsm))`,
-                minWidth: stretch ? `${width}px` : undefined
-            });
-        }
+        return setState({
+            left,
+            transform,
+            [isTop ? 'bottom' : 'top']: `calc(${isTop ? bottom + height : y + height}px + var(--f-spacing-xsm))`,
+            minWidth: stretch ? `${width}px` : undefined
+        });
     }
 
     useEffect(() => {
@@ -85,4 +87,3 @@ Popover.displayName = 'Popover';
 export default Popover;
 
 // longpress
-// right align/center (position)

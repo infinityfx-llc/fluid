@@ -34,7 +34,7 @@ const DateField = forwardRef(({ styles = {}, value, defaultValue = new Date(), o
         return [nums.slice(0, 4), nums.slice(4, 6), nums.slice(6, 8)].filter(val => val.length).join('-');
     }
 
-    return <Popover role="listbox" aria-multiselectable={false} disabled={disabled === true || props.readOnly} content={() => <Animatable key="date-field-calendar" animate={Move.unique({ duration: .2 })} unmount triggers={[{ on: 'mount' }]}>
+    return <Popover role="listbox" position="center" aria-multiselectable={false} disabled={disabled === true || props.readOnly} content={() => <Animatable key="date-field-calendar" animate={Move.unique({ duration: .2 })} unmount triggers={[{ on: 'mount' }]}>
         <Calendar
             className={style.calendar}
             round={props.round}

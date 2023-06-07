@@ -75,9 +75,9 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
     const [visible, setVisible] = useState(false);
     const [computed, setComputed] = useState<string>(position);
 
-    let timeout: any;
+    const timeout = useRef<any>();
     function show(value: boolean, delay = 0) {
-        clearTimeout(timeout);
+        clearTimeout(timeout.current);
         if (!element.current || !value) return setVisible(alwaysVisible);
 
         if (position === 'auto') {
@@ -90,7 +90,7 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
             setComputed(max[1] as string);
         }
 
-        timeout = setTimeout(() => {
+        timeout.current = setTimeout(() => {
             setVisible(true);
         }, delay * 1000);
     }
