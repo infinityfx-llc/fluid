@@ -1,13 +1,14 @@
-import { useCallback, useState, forwardRef } from 'react';
+import { useCallback, useState, forwardRef, useRef } from 'react';
 import Field, { FieldProps } from "./field";
 import { MdAdd, MdRemove } from 'react-icons/md';
 import Button from './button';
 import { round, toNumber } from '@/src/core/utils';
 import { FluidInputvalue } from '@/src/types';
 
-const NumberField = forwardRef(({ children, styles = {}, precision = 3, controls = true, ...props }: { precision?: number; controls?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(children || '');
+const NumberField = forwardRef(({ styles = {}, precision = 3, controls = true, defaultValue, ...props }: { precision?: number; controls?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(defaultValue || '');
 
+    const inputRef = useRef<HTMLInputElement | null>(null);
     const step = toNumber(props.step, 1);
     const min = toNumber(props.min, -Number.MAX_VALUE);
     const max = toNumber(props.max, Number.MAX_VALUE);
@@ -33,9 +34,17 @@ const NumberField = forwardRef(({ children, styles = {}, precision = 3, controls
         }
     };
 
-    return <Field ref={ref} {...props} type="number" value={value}
+    function increment(amount: number) {
+        if (inputRef.current) {
+            Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set?.call(inputRef.current, format(value, amount));
+            inputRef.current.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+    }
+
+    return <Field ref={ref} inputRef={inputRef} {...props} type="number" value={value}
         onChange={e => {
-            setValue?.(format(e.target.value));
+            setValue?.(e.target.value = format(e.target.value)?.toString() || '');
+
             props.onChange?.(e);
         }}
         styles={{
@@ -49,15 +58,10 @@ const NumberField = forwardRef(({ children, styles = {}, precision = 3, controls
                 margin: 0
             }
         }}
-        left={controls ? <Button variant="minimal" size={props.size} disabled={props.disabled} styles={buttonStyles} onClick={() => {
-            setValue?.(format(value, -step));
-            // call onChange event!!
-        }}>
+        left={controls ? <Button variant="minimal" size={props.size} disabled={props.disabled} styles={buttonStyles} onClick={() => increment(-step)}>
             <MdRemove />
         </Button> : null}
-        right={controls ? <Button variant="minimal" size={props.size} disabled={props.disabled} styles={buttonStyles} onClick={() => {
-            setValue?.(format(value, step));
-        }}>
+        right={controls ? <Button variant="minimal" size={props.size} disabled={props.disabled} styles={buttonStyles} onClick={() => increment(step)}>
             <MdAdd />
         </Button> : null} />;
 });

@@ -5,7 +5,7 @@ import { FluidError, FluidInputvalue, FluidSize, FluidStyles } from '@/src/types
 import { forwardRef, useId } from 'react';
 
 export type FieldProps = {
-    children?: FluidInputvalue;
+    defaultValue?: FluidInputvalue;
     styles?: FluidStyles;
     round?: boolean;
     size?: FluidSize;
@@ -14,9 +14,10 @@ export type FieldProps = {
     label?: string;
     left?: React.ReactNode;
     right?: React.ReactNode;
+    inputRef?: React.RefObject<HTMLInputElement>;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>;
 
-const Field = forwardRef(({ children, styles = {}, round = false, size = 'med', error, icon, label, left, right, ...props }: FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Field = forwardRef(({ styles = {}, round = false, size = 'med', error, icon, label, left, right, inputRef, ...props }: FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             display: 'flex',
@@ -118,7 +119,7 @@ const Field = forwardRef(({ children, styles = {}, round = false, size = 'med', 
             <label className={style.content}>
                 {icon}
 
-                <input {...split} aria-labelledby={label ? id : undefined} aria-invalid={!!error} defaultValue={children} className={style.input} />
+                <input {...split} ref={inputRef} aria-labelledby={label ? id : undefined} aria-invalid={!!error} className={style.input} />
             </label>
 
             {right}

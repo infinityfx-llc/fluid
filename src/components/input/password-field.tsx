@@ -8,8 +8,8 @@ import useInputProps from '@/src/hooks/use-input-props';
 
 const colors = ['#eb2a1c', '#eb2a1c', '#e8831e', '#f0d030', '#fff952', '#5aff54'];
 
-const PasswordField = forwardRef(({ children, styles = {}, strengthBar = false, size, round, error, icon, label, left, right, ...props }: { strengthBar?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(children || '');
+const PasswordField = forwardRef(({ styles = {}, strengthBar = false, size, round, error, icon, label, left, right, defaultValue, ...props }: { strengthBar?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(defaultValue || '');
     const [visible, setVisible] = useState(false);
 
     const strength = useMemo(() => {

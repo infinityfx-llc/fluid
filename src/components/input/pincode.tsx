@@ -4,9 +4,9 @@ import useStyles from "@/src/hooks/use-styles";
 import { FluidError, FluidInputvalue, FluidSize, FluidStyles } from "@/src/types";
 import { forwardRef, useId, useRef, useState } from "react";
 
-const Pincode = forwardRef(({ children, styles = {}, length = 4, masked, size = 'med', round = false, label, value, error, onChange, ...props }:
+const Pincode = forwardRef(({ styles = {}, length = 4, masked, size = 'med', round = false, label, value, error, onChange, defaultvalue, ...props }:
     {
-        children?: FluidInputvalue;
+        defaultvalue?: FluidInputvalue;
         styles?: FluidStyles;
         length?: number;
         masked?: boolean;
@@ -16,7 +16,7 @@ const Pincode = forwardRef(({ children, styles = {}, length = 4, masked, size = 
         value?: string;
         error?: FluidError;
         onChange?: (value: string) => void;
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'size' | 'value' | 'onChange' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'size' | 'value' | 'defaultValue' | 'onChange' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             display: 'flex',
@@ -98,7 +98,7 @@ const Pincode = forwardRef(({ children, styles = {}, length = 4, masked, size = 
 
     const id = useId();
     const refs = useRef<(HTMLInputElement | null)[]>([]);
-    const [state, setState] = value !== undefined ? [value] : useState(children?.toString().slice(0, length) || '');
+    const [state, setState] = value !== undefined ? [value] : useState(defaultvalue?.toString().slice(0, length) || '');
 
     function handleKey(e: React.KeyboardEvent<HTMLInputElement>, index: number) {
         let updated = state.slice();

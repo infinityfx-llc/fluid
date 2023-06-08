@@ -6,6 +6,7 @@ import ActionMenu from "./action-menu";
 import Timeline from './timeline';
 import Code from "./code";
 import Toast from "./toast";
+import Table from "./table";
 
 export {
     Key,
@@ -15,5 +16,6 @@ export {
     ActionMenu,
     Timeline,
     Code,
-    Toast
+    Toast,
+    Table
 }

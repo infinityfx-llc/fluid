@@ -3,16 +3,14 @@ import { FluidSize, FluidStyles } from "@/src/types";
 import { forwardRef, useState } from "react";
 import Halo from "../feedback/halo";
 import useInputProps from "@/src/hooks/use-input-props";
-import { useTrigger } from "@infinityfx/lively/hooks";
 import { Animatable } from "@infinityfx/lively";
-import useUpdate from "@/src/hooks/use-update";
 import { classes } from "@/src/core/utils";
 
 export type ToggleProps = {
     styles?: FluidStyles;
     size?: FluidSize;
     round?: boolean;
-    variant?: 'default' | 'minimal';
+    variant?: 'default' | 'minimal' | 'mono';
     checkedContent?: React.ReactNode;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>;
 
@@ -49,20 +47,28 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
             backgroundColor: 'transparent'
         },
 
+        '.toggle[data-variant="mono"]': {
+            backgroundColor: 'var(--f-clr-primary-500)'
+        },
+
         '.toggle[data-disabled="false"]': {
             cursor: 'pointer'
         },
 
         '.content': {
-            position: 'relative',
             display: 'flex',
             alignItems: 'center',
-            overflow: 'hidden',
             justifyContent: 'center',
-            gap: 'var(--f-spacing-xsm)'
+            gap: 'var(--f-spacing-xsm)',
+            gridArea: '1 / 1 / 1 / 1'
         },
 
-        '.toggle[data-checked="true"]': {
+        '.container': {
+            display: 'grid',
+            overflow: 'hidden'
+        },
+
+        '.toggle[data-checked="true"]:not([data-variant="mono"])': {
             backgroundColor: 'var(--f-clr-primary-100)',
             color: 'var(--f-clr-text-200)'
         },
@@ -87,11 +93,11 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
 
     const [state, setState] = props.checked !== undefined ? [props.checked] : useState(!!props.defaultChecked);
     const [split, rest] = useInputProps(props);
-    const check = useTrigger();
-    const uncheck = useTrigger();
-    const triggers = [{ on: check, immediate: true }, { on: uncheck, reverse: true, immediate: true }];
 
-    useUpdate(() => state ? check() : uncheck(), [state]);
+    const triggers = [
+        { on: state, immediate: true },
+        { on: !state, reverse: true, immediate: true }
+    ];
 
     return <Halo disabled={props.disabled}>
         <label ref={ref} {...rest} className={classes(style.toggle, props.className)} data-checked={state} data-disabled={!!props.disabled} data-round={round} data-size={size} data-variant={variant}>
@@ -100,21 +106,21 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
                 split.onChange?.(e);
             }} />
 
-            <span className={style.content}>
+            <div className={style.container}>
                 {checkedContent ? <Animatable
-                    animate={{ translate: ['0 0', '0 105%'], duration: .4 }}
-                    initial={{ translate: state ? '0 105%' : '0 0' }}
+                    animate={{ translate: ['0 0', '0 -100%'], duration: .4 }}
+                    initial={{ translate: state ? '0 -100%' : '0 0' }}
                     triggers={triggers}>
-                    <span className={style.content}>{children}</span>
+                    <div className={style.content}>{children}</div>
                 </Animatable> : children}
 
                 {checkedContent ? <Animatable
-                    animate={{ translate: ['0 -105%', '0 0'], duration: .4 }}
-                    initial={{ translate: state ? '0 0' : '0 -105%' }}
+                    animate={{ translate: ['0 100%', '0 0'], duration: .4 }}
+                    initial={{ translate: state ? '0 0' : '0 100%' }}
                     triggers={triggers}>
-                    <span className={style.content} style={{ position: 'absolute' }}>{checkedContent}</span>
+                    <div className={style.content}>{checkedContent}</div>
                 </Animatable> : null}
-            </span>
+            </div>
         </label>
     </Halo>;
 });

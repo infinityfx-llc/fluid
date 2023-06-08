@@ -3,8 +3,8 @@ import { Halo } from '../../feedback';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
 import { classes } from '@/src/core/utils';
-import { Button } from '../../input';
-import { MdArrowDownward, MdUnfoldMore } from 'react-icons/md';
+import { Button, Toggle } from '../../input';
+import { MdArrowDownward, MdArrowDropDown, MdArrowUpward, MdExpandLess, MdExpandMore, MdUnfoldLess, MdUnfoldLessDouble, MdUnfoldMore } from 'react-icons/md';
 import Collapsible from '../collapsible';
 
 const Link = forwardRef(({ children, styles = {}, label, icon, right, active = false, round = false, variant = 'default', disabled = false, ...props }:
@@ -82,20 +82,7 @@ const Link = forwardRef(({ children, styles = {}, label, icon, right, active = f
         },
 
         'aside[data-collapsed="false"] .sublinks': {
-            paddingLeft: '3em'
-        },
-
-        '.line': {
-            position: 'absolute',
-            left: 'calc(1.5em - 1px)',
-            height: 'calc(100% - 1.5em)',
-            width: '2px',
-            backgroundColor: 'var(--f-clr-grey-100)',
-            transition: 'opacity .3s'
-        },
-
-        'aside[data-collapsed="true"] .line': {
-            opacity: 0
+            paddingLeft: '1.5em'
         },
 
         '.sublinks > *': {
@@ -114,20 +101,18 @@ const Link = forwardRef(({ children, styles = {}, label, icon, right, active = f
                 <span className={style.content}>
                     {label}
 
-                    {count ? <Button variant="light" size="sml" round={round} onClick={e => {
+                    {count ? <Toggle size="sml" round={round} checked={open} checkedContent={<MdExpandLess />} onChange={e => {
                         e.stopPropagation();
                         
-                        setOpen(!open);
+                        setOpen(e.target.checked);
                     }} style={{ marginRight: '-.2em' }}>
-                        <MdUnfoldMore />
-                    </Button> : right}
+                        <MdExpandMore />
+                    </Toggle> : right}
                 </span>
             </div>
         </Halo>
 
         {count ? <Collapsible shown={open} className={style.sublinks}>
-            <div className={style.line} />
-
             {children}
         </Collapsible> : null}
     </>;

@@ -19,7 +19,7 @@ const Section = forwardRef(({ children, styles = {}, width, landing = false }: {
 
         '.section[data-landing="true"]': {
             minHeight: '100dvh',
-            paddingTop: header ? `var(--f-header-${header})` : undefined,
+            paddingTop: header ? `var(--f-header-${header})` : undefined, // optimize header so it doesnt re-add styles
         },
 
         [`@media(min-width: ${fluid.breakpoints[1] + 1}px)`]: {

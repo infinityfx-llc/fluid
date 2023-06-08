@@ -31,8 +31,8 @@ const Switch = forwardRef(({ styles = {}, error, round = true, iconOff, iconOn, 
 
         '.switch': {
             position: 'relative',
-            height: '1.6em',
-            width: '2.8em',
+            height: '1.5em',
+            width: '2.6em',
             padding: '.2em',
             aspectRatio: 2,
             backgroundColor: 'var(--f-clr-fg-100)',
@@ -46,7 +46,7 @@ const Switch = forwardRef(({ styles = {}, error, round = true, iconOff, iconOn, 
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-around',
-            fontSize: '.9em',
+            fontSize: '.8em',
             color: 'var(--f-clr-text-100)'
         },
 

@@ -85,6 +85,7 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
         }
     });
 
+    const scrolled = useRef(false);
     const area = useRef<HTMLDivElement | null>(null);
     const track = useRef<HTMLDivElement | null>(null);
     const handle = useRef<HTMLDivElement | null>(null);
@@ -124,12 +125,17 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
         const el = area.current;
         if (!el || !handle.current || !track.current || matchMedia('(pointer: coarse)').matches || disabled) return;
 
-        const key = horizontal ? 'offsetWidth' : 'offsetHeight';
-        const max = el[horizontal ? 'scrollWidth' : 'scrollHeight'] - el[key];
-        const updated = Math.max(Math.min(el[horizontal ? 'scrollLeft' : 'scrollTop'] + Math.round(value), max), 0);
-        el[horizontal ? 'scrollLeft' : 'scrollTop'] = updated;
+        const wKey = horizontal ? 'offsetWidth' : 'offsetHeight';
+        const sKey = horizontal ? 'scrollLeft' : 'scrollTop';
+        const max = el[horizontal ? 'scrollWidth' : 'scrollHeight'] - el[wKey];
+        const updated = Math.max(Math.min(el[sKey] + Math.round(value), max), 0);
 
-        const offset = updated / max * (el[key] - handle.current[key]);
+        if (el[sKey] !== updated) {
+            el[sKey] = updated;
+            scrolled.current = true;
+        }
+
+        const offset = updated / max * (el[wKey] - handle.current[wKey]);
         handle.current.style.translate = horizontal ? `${offset}px 0px` : `0px ${offset}px`;
         handle.current.setAttribute('aria-valuenow', (updated / max * 100).toString());
         track.current.style.translate = horizontal ? `${updated}px 0px` : `0px ${updated}px`;
@@ -164,7 +170,23 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
 
     const id = useId();
 
-    return <div ref={combineRefs(ref, area)} {...props} id={id} className={classes(style.area, props.className)} onWheel={wheel} data-horizontal={horizontal} data-variant={variant} data-scrollable={scrollable} data-disabled={disabled}>
+    return <div ref={combineRefs(ref, area)} {...props}
+        id={id}
+        className={classes(style.area, props.className)}
+        onWheel={e => {
+            props.onWheel?.(e);
+            wheel(e);
+        }}
+        onScroll={e => {
+            props.onScroll?.(e);
+            if (scrolled.current) return scrolled.current = false;
+
+            scroll(0);
+        }}
+        data-horizontal={horizontal}
+        data-variant={variant}
+        data-scrollable={scrollable}
+        data-disabled={disabled}>
         {children}
 
         <div ref={track} className={style.track}>

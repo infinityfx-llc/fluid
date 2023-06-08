@@ -1,16 +1,28 @@
 import { classes } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
-import { FluidError, FluidStyles } from "@/src/types";
+import { FluidError, FluidSize, FluidStyles } from "@/src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { forwardRef } from "react";
 import Halo from "../feedback/halo";
 import useInputProps from "@/src/hooks/use-input-props";
 
-const Checkbox = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidStyles; error?: FluidError; } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Checkbox = forwardRef(({ styles = {}, error, size = 'med', ...props }: { styles?: FluidStyles; error?: FluidError; size?: FluidSize; } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             position: 'relative'
+        },
+
+        '.wrapper[data-size="sml"]': {
+            fontSize: 'var(--f-font-size-xsm)'
+        },
+
+        '.wrapper[data-size="med"]': {
+            fontSize: 'var(--f-font-size-sml)'
+        },
+
+        '.wrapper[data-size="lrg"]': {
+            fontSize: 'var(--f-font-size-med)'
         },
         
         '.input': {
@@ -21,8 +33,8 @@ const Checkbox = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidS
         },
 
         '.checkbox': {
-            width: '1.6em',
-            height: '1.6em',
+            width: '1.5em',
+            height: '1.5em',
             borderRadius: 'var(--f-radius-sml)',
             border: 'solid 2px var(--f-clr-fg-100)',
             transition: 'background-color .25s, border-color .25s',
@@ -41,7 +53,7 @@ const Checkbox = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidS
         },
 
         '.checkmark': {
-            width: '1.2em',
+            width: '1.1em',
             stroke: 'white',
             strokeWidth: 3,
             strokeLinecap: 'round',
@@ -79,7 +91,7 @@ const Checkbox = forwardRef(({ styles = {}, error, ...props }: { styles?: FluidS
     const [split, rest] = useInputProps(props);
 
     return <Halo className={style.halo} hover={false}>
-        <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-error={!!error}>
+        <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-error={!!error} data-size={size}>
             <input {...split} type="checkbox" className={style.input} aria-invalid={!!error} onChange={e => {
                 setLink(e.target.checked ? 1 : 0, .25);
                 props.onChange?.(e);

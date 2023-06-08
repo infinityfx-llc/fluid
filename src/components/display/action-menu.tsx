@@ -7,15 +7,17 @@ import { forwardRef } from 'react';
 import { Halo } from '../feedback';
 import Popover from '../layout/popover';
 
+export type ActionMenuOption = {
+    label: React.ReactNode;
+    onClick?: () => void;
+    disabled?: boolean;
+    shouldClose?: boolean;
+} | string;
+
 const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, ...props }: {
     children: React.ReactElement;
     styles?: FluidStyles;
-    options: ({
-        label: React.ReactNode;
-        onClick?: () => void;
-        disabled?: boolean;
-        shouldClose?: boolean;
-    } | string)[];
+    options: ActionMenuOption[];
     disabled?: boolean;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {

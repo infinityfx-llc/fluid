@@ -2,10 +2,9 @@ import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
 import { forwardRef, useState } from 'react';
 import Link from './link';
-import { Button } from '../../input';
-import { MdArrowBack } from 'react-icons/md';
+import { Toggle } from '../../input';
+import { MdArrowBack, MdArrowForward } from 'react-icons/md';
 import Heading from './heading';
-import { LayoutGroup } from '@infinityfx/lively/layout';
 import User from './user';
 import Scrollarea from '../scrollarea';
 import useFluid from '@/src/hooks/use-fluid';
@@ -48,15 +47,14 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
         },
 
         '.button': {
-            translate: '50% 0%',
-            marginLeft: 'auto',
-            transition: 'translate .3s'
+            marginLeft: 'auto'
         },
 
         '.header': {
             height: `var(--f-header-${header || 'sml'})`,
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            paddingInline: '1em'
         },
 
         '.content': {
@@ -71,19 +69,15 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
         [`@media (max-width: ${fluid.breakpoints[1]}px)`]: {
             '.sidebar[data-collapsed="true"]': {
                 translate: '-100% 0%'
-            },
-
-            '.sidebar[data-collapsed="true"] .button': {
-                translate: '150% 0%'
-            },
+            }
         },
     });
 
     return <aside ref={ref} {...props} className={style.sidebar} data-collapsed={isCollapsed}>
         <div className={style.header}>
-            <Button variant="light" onClick={() => setCollapsed(!isCollapsed)} className={style.button}>
-                <MdArrowBack />
-            </Button>
+            <Toggle variant="mono" checkedContent={<MdArrowBack />} checked={!isCollapsed} onChange={e => setCollapsed(!e.target.checked)} className={style.button}>
+                <MdArrowForward />
+            </Toggle>
         </div>
 
         <Scrollarea style={{ flexGrow: 1 }}>
