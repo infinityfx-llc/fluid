@@ -1,7 +1,8 @@
 import { classes, combineRefs } from "@/src/core/utils";
+import useDomEffect from "@/src/hooks/use-dom-effect";
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
-import { forwardRef, useLayoutEffect, useRef, useState, useId } from "react";
+import { forwardRef, useRef, useState, useId } from "react";
 
 const speed = 100;
 
@@ -152,7 +153,7 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
         scroll(-Number.MAX_VALUE); // TEMP
     }
 
-    useLayoutEffect(() => {
+    useDomEffect(() => {
         resize();
 
         const observer = new ResizeObserver(resize);

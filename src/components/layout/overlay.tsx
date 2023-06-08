@@ -51,5 +51,5 @@ export default function Overlay({ children, show, onClose }: { children?: React.
                 <div className={style.tint} onClick={onClose} />
             </Animatable>
         </div>}
-    </LayoutGroup>, document.body) : null;
+    </LayoutGroup>, document.getElementById('__fluid') as HTMLElement) : null;
 }

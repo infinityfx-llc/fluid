@@ -78,7 +78,7 @@ const Popover = forwardRef(<T extends React.ReactElement>({ children, content, l
             {state && <div ref={combineRefs(menu, ref)} {...props} id={id} style={{ position: 'fixed', zIndex: 999, ...state, ...props.style }}>
                 {content(() => setState(null))}
             </div>}
-        </LayoutGroup>, document.body)}
+        </LayoutGroup>, document.getElementById('__fluid') as HTMLElement)}
     </>;
 });
 

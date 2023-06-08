@@ -1,6 +1,7 @@
-import { useLayoutEffect, useState } from "react";
+import { useState } from "react";
 import { cookies, formatCookie } from "../core/utils";
 import { COLOR_SCHEME_COOKIE, FluidTheme } from "../core/theme";
+import useDomEffect from "./use-dom-effect";
 
 export type ColorScheme<T extends FluidTheme> = (keyof T['palettes'] extends string ? keyof T['palettes'] : never) | 'light' | 'dark';
 
@@ -18,7 +19,7 @@ export default function useColorScheme<T extends FluidTheme>(initial: ColorSchem
         setAutomatic(false);
     }
 
-    useLayoutEffect(() => {
+    useDomEffect(() => {
         const scheme = cookies()[COLOR_SCHEME_COOKIE];
         updateColorScheme(scheme as ColorScheme<T>);
     }, []);

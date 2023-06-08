@@ -170,3 +170,4 @@ Table.displayName = 'Table';
 export default Table;
 
 // fix row actions with index
+// further implement selection (select all button)

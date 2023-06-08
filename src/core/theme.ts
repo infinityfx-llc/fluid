@@ -172,11 +172,11 @@ export function parseColorPalettes<T extends FluidTheme>(theme: T) {
             insertVariables(`clr-${key}`, theme.palettes[name][key as never], vars);
         }
 
-        ruleset[`body.scheme-${name}`] = vars;
+        ruleset[`#__fluid.scheme-${name}`] = vars;
 
         if (name === 'light' || name === 'dark') {
             ruleset[`@media(prefers-color-scheme: ${name})`] = {
-                'body.automatic': vars
+                '#__fluid.automatic': vars
             };
         }
     }

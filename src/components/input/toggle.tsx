@@ -112,7 +112,7 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
                     initial={{ translate: state ? '0 -100%' : '0 0' }}
                     triggers={triggers}>
                     <div className={style.content}>{children}</div>
-                </Animatable> : children}
+                </Animatable> : <div className={style.content}>{children}</div>}
 
                 {checkedContent ? <Animatable
                     animate={{ translate: ['0 100%', '0 0'], duration: .4 }}

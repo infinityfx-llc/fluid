@@ -14,7 +14,7 @@ type FluidContext = FluidTheme & {
 
 export const FluidContext = createContext<FluidContext | null>(null);
 
-export default function FluidProvider({ children, theme = {}, initialColorScheme }: { children: React.ReactElement<HTMLBodyElement>, theme?: PartialFluidTheme; initialColorScheme?: ColorScheme<any>; }) {
+export default function FluidProvider({ children, theme = {}, initialColorScheme }: { children: React.ReactElement; theme?: PartialFluidTheme; initialColorScheme?: ColorScheme<any>; }) {
     const [styles, fluid, colorSchemes] = useMemo(() => {
         const fluid = mergeRecursive(theme, DEFAULT_THEME);
         const variables = parseCSSVariables(fluid);
@@ -74,6 +74,7 @@ export default function FluidProvider({ children, theme = {}, initialColorScheme
 
     return <FluidContext.Provider value={{ ...fluid, colorScheme, setColorScheme }}>
         {cloneElement(children, {
+            id: '__fluid',
             className: classes(`scheme-${colorScheme}`, automatic ? 'automatic' : undefined)
         })}
     </FluidContext.Provider>

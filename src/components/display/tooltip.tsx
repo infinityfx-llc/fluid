@@ -1,7 +1,8 @@
 import { classes, combineRefs } from "@/src/core/utils";
+import useDomEffect from "@/src/hooks/use-dom-effect";
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
-import { forwardRef, cloneElement, useState, useRef, useLayoutEffect, isValidElement } from "react";
+import { forwardRef, cloneElement, useState, useRef, isValidElement } from "react";
 import { createPortal } from "react-dom";
 
 const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto', alwaysVisible = false, delay = .3, ...props }:
@@ -105,7 +106,7 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
         frame = requestAnimationFrame(update);
     }
 
-    useLayoutEffect(() => {
+    useDomEffect(() => {
         show(alwaysVisible);
         frame = requestAnimationFrame(update);
 
@@ -140,7 +141,7 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
 
         {visible && element.current && createPortal(<div ref={combineRefs(ref, tooltip)} {...props} className={classes(style.tooltip, props.className)} data-position={computed}>
             {content}
-        </div>, document.body)}
+        </div>, document.getElementById('__fluid') as HTMLElement)}
     </>;
 });
 
