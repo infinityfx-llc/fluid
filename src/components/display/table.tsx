@@ -51,7 +51,8 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
         },
 
         '.collapsed': {
-            minWidth: '2rem'
+            minWidth: '2rem',
+            display: 'flex'
         },
 
         '.header': {
@@ -130,21 +131,23 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
 
                 return <Halo key={i} disabled={!selectable}>
                     <label role="row" className={style.row} style={{ gridTemplateColumns }}>
-                        {selectable && <Checkbox size="sml" className={style.collapsed} styles={{
-                            '.checkbox': {
-                                borderColor: 'var(--f-clr-grey-300) !important',
-                                borderWidth: '1px !important'
-                            },
+                        {selectable && <div className={style.collapsed}>
+                            <Checkbox size="xsm" styles={{
+                                '.checkbox': {
+                                    borderColor: 'var(--f-clr-grey-300) !important',
+                                    borderWidth: '1px !important'
+                                },
 
-                            '.input:checked:enabled + .checkbox': {
-                                backgroundColor: 'var(--f-clr-text-100)',
-                                borderColor: 'var(--f-clr-text-100) !important'
-                            },
+                                '.input:checked:enabled + .checkbox': {
+                                    backgroundColor: 'var(--f-clr-text-100)',
+                                    borderColor: 'var(--f-clr-text-100) !important'
+                                },
 
-                            '.checkmark': {
-                                stroke: 'var(--f-clr-text-200)'
-                            }
-                        }} />}
+                                '.checkmark': {
+                                    stroke: 'var(--f-clr-text-200)'
+                                }
+                            }} />
+                        </div>}
 
                         {columns.map((col, i) => {
 

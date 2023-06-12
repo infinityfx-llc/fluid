@@ -3,8 +3,8 @@ import { Halo } from '../../feedback';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
 import { classes } from '@/src/core/utils';
-import { Button, Toggle } from '../../input';
-import { MdArrowDownward, MdArrowDropDown, MdArrowUpward, MdExpandLess, MdExpandMore, MdUnfoldLess, MdUnfoldLessDouble, MdUnfoldMore } from 'react-icons/md';
+import { Toggle } from '../../input';
+import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import Collapsible from '../collapsible';
 
 const Link = forwardRef(({ children, styles = {}, label, icon, right, active = false, round = false, variant = 'default', disabled = false, ...props }:
@@ -121,5 +121,3 @@ const Link = forwardRef(({ children, styles = {}, label, icon, right, active = f
 Link.displayName = 'Sidebar.Link';
 
 export default Link;
-
-// different sizes

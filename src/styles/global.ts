@@ -9,13 +9,15 @@ export default {
 
     'html, body': {
         width: '100vw',
-        minHeight: '100vh',
+        minHeight: '100dvh',
         overflowX: 'hidden'
     },
 
     body: {
         fontFamily: 'var(--f-font-family)',
-        backgroundColor: 'var(--f-clr-bg-100)'
+        backgroundColor: 'var(--f-clr-bg-100)',
+        maxHeight: '100vh',
+        overflowY: 'auto'
     },
 
     a: {

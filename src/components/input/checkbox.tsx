@@ -13,6 +13,10 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', ...props }: { s
             position: 'relative'
         },
 
+        '.wrapper[data-size="xsm"]': {
+            fontSize: 'var(--f-font-size-xxs)'
+        },
+
         '.wrapper[data-size="sml"]': {
             fontSize: 'var(--f-font-size-xsm)'
         },

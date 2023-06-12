@@ -8,7 +8,7 @@ export type Selectors<T extends string = any> = {
     [key in T]: string;
 };
 
-export type FluidSize = 'sml' | 'med' | 'lrg';
+export type FluidSize = 'xsm' | 'sml' | 'med' | 'lrg';
 
 export type FluidInputvalue = string | number | readonly string[] | undefined;
 

@@ -9,7 +9,8 @@ class StyleStore {
             rules: string;
         }
     } = {};
-    version: number = 0;
+    version: number = 0; // stays in memory on server and client (so needs to be per page???)
+    // or find alternative to this version system
 
     get(key: string) {
         return key in this.rules ? this.rules[key].selectors : null;
@@ -70,11 +71,12 @@ class StyleStore {
     }
 
     update(inject = false) {
-        let tag = typeof window !== 'undefined' && document.querySelector('[data-href*="fluid__styles"]') as HTMLStyleElement;
+        let tag = typeof window !== 'undefined' && document.querySelector('[data-href="fluid__styles"]') as HTMLStyleElement;
         if (!tag) {
             if (!inject) return;
             
             tag = document.createElement('style');
+            tag.dataset.href = 'fluid__styles';
             (document.head || document.getElementsByName('head')[0]).appendChild(tag);
         }
 

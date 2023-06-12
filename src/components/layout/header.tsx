@@ -1,9 +1,7 @@
 import useStyles from '@/src/hooks/use-styles';
 import { FluidSize, FluidStyles } from '@/src/types';
 import { forwardRef, useEffect, useRef } from 'react';
-import Menu from './menu';
 import { classes } from '@/src/core/utils';
-import Navigation from './navigation';
 import { Animatable } from '@infinityfx/lively';
 import { useLink, useScroll } from '@infinityfx/lively/hooks';
 import useFluid from '@/src/hooks/use-fluid';
@@ -17,10 +15,7 @@ export type HeaderProps = {
     collapsible?: boolean;
 } & React.HTMLAttributes<HTMLElement>;
 
-const Header: React.ForwardRefExoticComponent<HeaderProps> & {
-    Navigation: typeof Navigation;
-    Menu: typeof Menu;
-} = forwardRef(({ children, styles = {}, variant = 'default', size = 'med', width = 'med', collapsible, ...props }: HeaderProps, ref: React.ForwardedRef<HTMLElement>) => {
+const Header = forwardRef(({ children, styles = {}, variant = 'default', size = 'med', width = 'med', collapsible, ...props }: HeaderProps, ref: React.ForwardedRef<HTMLElement>) => {
     const fluid = useFluid();
     const { sidebar, collapsed } = useLayout({ header: variant === 'transparent' ? false : size });
 
@@ -89,10 +84,8 @@ const Header: React.ForwardRefExoticComponent<HeaderProps> & {
             {children}
         </header>
     </Animatable>;
-}) as any;
+});
 
-Header.Navigation = Navigation;
-Header.Menu = Menu;
 Header.displayName = 'Header';
 
 export default Header;
