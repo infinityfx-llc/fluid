@@ -159,3 +159,5 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, color, hover 
 Halo.displayName = 'Halo';
 
 export default Halo;
+
+// FIX prop passing!!!

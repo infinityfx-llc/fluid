@@ -94,5 +94,3 @@ Sidebar.User = User;
 Sidebar.displayName = 'Sidebar';
 
 export default Sidebar;
-
-// hide on mobile

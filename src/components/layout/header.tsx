@@ -13,7 +13,7 @@ export type HeaderProps = {
     size?: FluidSize;
     width?: FluidSize;
     collapsible?: boolean;
-} & React.HTMLAttributes<HTMLElement>;
+} & React.HTMLAttributes<any>;
 
 const Header = forwardRef(({ children, styles = {}, variant = 'default', size = 'med', width = 'med', collapsible, ...props }: HeaderProps, ref: React.ForwardedRef<HTMLElement>) => {
     const fluid = useFluid();
