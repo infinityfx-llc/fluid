@@ -1,5 +1,5 @@
 import useStyles from '@/src/hooks/use-styles';
-import { FluidStyles } from '@/src/types';
+import { FluidSize, FluidStyles } from '@/src/types';
 import { forwardRef, useState } from 'react';
 import Link from './link';
 import { Toggle } from '../../input';
@@ -8,20 +8,22 @@ import Heading from './heading';
 import User from './user';
 import Scrollarea from '../scrollarea';
 import useFluid from '@/src/hooks/use-fluid';
-import useLayout from '@/src/hooks/use-layout';
+import { classes } from '@/src/core/utils';
 
 export type SidebarProps = {
     styles?: FluidStyles;
+    header?: boolean | FluidSize;
+    collapsed?: boolean;
+    onCollapse?: (value: boolean) => void;
 } & React.HTMLAttributes<HTMLElement>;
 
 const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
     Link: typeof Link;
     Heading: typeof Heading;
     User: typeof User;
-} = forwardRef(({ children, styles = {}, ...props }: SidebarProps, ref: React.ForwardedRef<HTMLElement>) => {
+} = forwardRef(({ children, styles = {}, header, collapsed, onCollapse, ...props }: SidebarProps, ref: React.ForwardedRef<HTMLElement>) => {
     const fluid = useFluid();
-    const [isCollapsed, setCollapsed] = useState(false);
-    const { header } = useLayout({ sidebar: true, collapsed: isCollapsed });
+    const [isCollapsed, setCollapsed] = collapsed !== undefined ? [collapsed] : useState(false);
 
     const style = useStyles(styles, {
         '.sidebar': {
@@ -73,9 +75,12 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
         },
     });
 
-    return <aside ref={ref} {...props} className={style.sidebar} data-collapsed={isCollapsed}>
+    return <aside ref={ref} {...props} className={classes(style.sidebar, props.className)} data-collapsed={isCollapsed}>
         <div className={style.header}>
-            <Toggle variant="mono" checkedContent={<MdArrowBack />} checked={!isCollapsed} onChange={e => setCollapsed(!e.target.checked)} className={style.button}>
+            <Toggle variant="mono" checkedContent={<MdArrowBack />} checked={!isCollapsed} onChange={e => {
+                setCollapsed?.(!e.target.checked);
+                onCollapse?.(!e.target.checked);
+            }} className={style.button}>
                 <MdArrowForward />
             </Toggle>
         </div>
@@ -94,3 +99,5 @@ Sidebar.User = User;
 Sidebar.displayName = 'Sidebar';
 
 export default Sidebar;
+
+// open button on mobile

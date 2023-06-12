@@ -18,7 +18,7 @@ const Segmented = forwardRef(({ styles = {}, round = false, options, name, value
     const style = useStyles(styles, {
         '.segmented': {
             padding: '.3em',
-            borderRadius: 'var(--f-radius-sml)',
+            borderRadius: 'calc(var(--f-radius-sml) + .15em)',
             backgroundColor: 'var(--f-clr-fg-100)'
         },
 
@@ -31,7 +31,7 @@ const Segmented = forwardRef(({ styles = {}, round = false, options, name, value
             border: 'none',
             outline: 'none',
             backgroundColor: 'transparent',
-            padding: '.7em .8em',
+            padding: '.65em .8em',
             fontWeight: 700,
             fontSize: 'var(--f-font-size-xsm)',
             color: 'var(--f-clr-text-100)',
@@ -69,8 +69,9 @@ const Segmented = forwardRef(({ styles = {}, round = false, options, name, value
         '.selection': {
             position: 'absolute',
             inset: 0,
-            backgroundColor: 'var(--f-clr-primary-100)',
-            borderRadius: 'var(--f-radius-sml)'
+            backgroundColor: 'var(--f-clr-primary-300)',
+            borderRadius: 'var(--f-radius-sml)',
+            boxShadow: '0 0 8px rgb(0, 0, 0, .08)'
         },
 
         '.segmented[data-round="true"] .selection': {
@@ -95,7 +96,7 @@ const Segmented = forwardRef(({ styles = {}, round = false, options, name, value
                 <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
                 <span className={style.content}>{label}</span>
 
-                <Morph id={`segmented-selection-${id}`} shown={state === option} include={['translate', 'scale']} deform={false}>
+                <Morph id={`segmented-selection-${id}`} shown={state === option} include={['translate', 'scale']} deform={false} transition={{ duration: .4 }}>
                     <div className={style.selection} />
                 </Morph>
             </button>;

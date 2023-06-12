@@ -5,7 +5,6 @@ import { classes } from '@/src/core/utils';
 import { Animatable } from '@infinityfx/lively';
 import { useLink, useScroll } from '@infinityfx/lively/hooks';
 import useFluid from '@/src/hooks/use-fluid';
-import useLayout from '@/src/hooks/use-layout';
 
 export type HeaderProps = {
     styles?: FluidStyles;
@@ -13,11 +12,12 @@ export type HeaderProps = {
     size?: FluidSize;
     width?: FluidSize;
     collapsible?: boolean;
+    sidebar?: boolean;
+    collapsed?: boolean;
 } & React.HTMLAttributes<any>;
 
-const Header = forwardRef(({ children, styles = {}, variant = 'default', size = 'med', width = 'med', collapsible, ...props }: HeaderProps, ref: React.ForwardedRef<HTMLElement>) => {
+const Header = forwardRef(({ children, styles = {}, variant = 'default', size = 'med', width = 'med', collapsible, sidebar, collapsed, ...props }: HeaderProps, ref: React.ForwardedRef<HTMLElement>) => {
     const fluid = useFluid();
-    const { sidebar, collapsed } = useLayout({ header: variant === 'transparent' ? false : size });
 
     const style = useStyles(styles, {
         '.header': {
