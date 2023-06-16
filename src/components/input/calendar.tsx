@@ -2,8 +2,10 @@ import useStyles from "@/src/hooks/use-styles";
 import { FluidSize, FluidStyles } from "@/src/types";
 import { forwardRef, useState } from "react";
 import Button from "./button";
-import { MdArrowBack, MdArrowForward } from "react-icons/md";
+import { MdArrowBack, MdArrowForward, MdExpand, MdExpandMore } from "react-icons/md";
 import { classes } from "@/src/core/utils";
+import { Halo } from "../feedback";
+import { Popover } from "../layout";
 
 const Calendar = forwardRef(({ styles = {}, locale, size = 'med', round, defaultValue = new Date(), value, onChange, disabled, ...props }:
     {
@@ -43,13 +45,29 @@ const Calendar = forwardRef(({ styles = {}, locale, size = 'med', round, default
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            fontWeight: 600,
-            marginBottom: '.6em',
-            color: 'var(--f-clr-text-100)'
+            marginBottom: '.6em'
         },
 
         '.header > *': {
             fontSize: '1em !important'
+        },
+
+        '.text': {
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--f-spacing-xsm)',
+            color: 'var(--f-clr-text-100)',
+            fontWeight: 700,
+            fontSize: 'var(--f-font-size-xsm) !important'
+        },
+
+        '.years': {
+            backgroundColor: 'var(--f-clr-bg-100)',
+            border: 'solid 1px var(--f-clr-grey-100)',
+            borderRadius: 'var(--f-radius-sml)',
+            boxShadow: '0 0 8px rgb(0, 0, 0, .06)',
+            height: '100px',
+            width: '200px'
         },
 
         '.grid': {
@@ -107,7 +125,7 @@ const Calendar = forwardRef(({ styles = {}, locale, size = 'med', round, default
 
     return <div ref={ref} {...props} className={classes(style.calendar, props.className)} data-size={size} data-round={round}>
         <div className={style.header}>
-            <Button disabled={disabled === true} variant="light" round={round} onClick={() => {
+            <Button disabled={disabled === true} variant="minimal" round={round} onClick={() => {
                 const updated = new Date(date);
                 updated.setMonth(date.getMonth() - 1);
                 update(updated);
@@ -115,9 +133,27 @@ const Calendar = forwardRef(({ styles = {}, locale, size = 'med', round, default
                 <MdArrowBack />
             </Button>
 
-            {date.toLocaleString(locale, { month: 'long', year: 'numeric' })}
+            <div className={style.text}>
+                {date.toLocaleString(locale, { month: 'long' })}
 
-            <Button disabled={disabled === true} variant="light" round={round} onClick={() => {
+                {/* <Popover2.Root position="center">
+                    <Popover2.Trigger> */}
+                        <Button size="sml" variant="light">
+                            {date.toLocaleString(locale, { year: 'numeric' })}
+
+                            <MdExpandMore />
+                        </Button>
+                    {/* </Popover2.Trigger>
+
+                    <Popover2.Content>
+                        <div className={style.years}>
+
+                        </div>
+                    </Popover2.Content>
+                </Popover2.Root> */}
+            </div>
+
+            <Button disabled={disabled === true} variant="minimal" round={round} onClick={() => {
                 const updated = new Date(date);
                 updated.setMonth(date.getMonth() + 1);
                 update(updated);

@@ -12,7 +12,7 @@ const Key = forwardRef(({ children, styles = {}, ...props }: { children: string;
             color: 'var(--f-clr-grey-600)',
             backgroundColor: 'var(--f-clr-grey-300)',
             borderRadius: 'var(--f-radius-sml)',
-            padding: '.3em .5em .5em .5em',
+            padding: '.2em .5em .4em .5em',
             zIndex: 0
         },
 

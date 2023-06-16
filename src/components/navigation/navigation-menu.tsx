@@ -49,7 +49,7 @@ const NavigationMenu = forwardRef(({ styles = {}, links, selected = -1, Link = '
         '.menu': {
             position: 'absolute',
             top: 'calc(100% + var(--f-spacing-sml))',
-            borderRadius: 'var(--f-radius-sml)',
+            borderRadius: 'calc(.2em + var(--f-radius-sml))',
             display: 'flex',
             flexDirection: 'column',
             padding: '.4em',

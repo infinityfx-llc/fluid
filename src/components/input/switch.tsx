@@ -57,7 +57,8 @@ const Switch = forwardRef(({ styles = {}, error, round = true, iconOff, iconOn, 
             aspectRatio: 1,
             backgroundColor: 'white',
             transition: 'translate .25s',
-            zIndex: 1
+            zIndex: 1,
+            boxShadow: '0 0 6px rgb(0, 0, 0, .06)'
         },
 
         '.input:checked:enabled + .switch': {

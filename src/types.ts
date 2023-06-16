@@ -1,3 +1,5 @@
+import type { PopoverRootReference } from "./components/layout/popover/root";
+
 export type FluidStyles = {
     [key: string]: React.CSSProperties | {
         [key: string]: React.CSSProperties
@@ -13,3 +15,7 @@ export type FluidSize = 'xsm' | 'sml' | 'med' | 'lrg';
 export type FluidInputvalue = string | number | readonly string[] | undefined;
 
 export type FluidError = null | boolean | string;
+
+export {
+    PopoverRootReference
+};

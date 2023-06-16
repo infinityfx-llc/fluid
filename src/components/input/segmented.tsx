@@ -19,7 +19,8 @@ const Segmented = forwardRef(({ styles = {}, round = false, options, name, value
         '.segmented': {
             padding: '.3em',
             borderRadius: 'calc(var(--f-radius-sml) + .15em)',
-            backgroundColor: 'var(--f-clr-fg-100)'
+            backgroundColor: 'var(--f-clr-fg-100)',
+            display: 'flex'
         },
 
         '.segmented[data-round="true"]': {
@@ -35,7 +36,8 @@ const Segmented = forwardRef(({ styles = {}, round = false, options, name, value
             fontWeight: 700,
             fontSize: 'var(--f-font-size-xsm)',
             color: 'var(--f-clr-text-100)',
-            borderRadius: 'var(--f-radius-sml)'
+            borderRadius: 'var(--f-radius-sml)',
+            flexGrow: 1
         },
 
         '.segmented[data-round="true"] .option': {
@@ -63,6 +65,7 @@ const Segmented = forwardRef(({ styles = {}, round = false, options, name, value
             zIndex: 1,
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'center',
             gap: 'var(--f-spacing-xsm)'
         },
 

@@ -7,6 +7,7 @@ import Timeline from './timeline';
 import Code from "./code";
 import Toast from "./toast";
 import Table from "./table";
+import Frame from "./frame";
 
 export {
     Key,
@@ -17,5 +18,6 @@ export {
     Timeline,
     Code,
     Toast,
-    Table
+    Table,
+    Frame
 }

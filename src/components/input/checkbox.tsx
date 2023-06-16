@@ -3,11 +3,11 @@ import useStyles from "@/src/hooks/use-styles";
 import { FluidError, FluidSize, FluidStyles } from "@/src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
-import { forwardRef } from "react";
+import { forwardRef, useState, useEffect } from "react";
 import Halo from "../feedback/halo";
 import useInputProps from "@/src/hooks/use-input-props";
 
-const Checkbox = forwardRef(({ styles = {}, error, size = 'med', ...props }: { styles?: FluidStyles; error?: FluidError; size?: FluidSize; } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Checkbox = forwardRef(({ styles = {}, error, size = 'med', checked, defaultChecked, ...props }: { styles?: FluidStyles; error?: FluidError; size?: FluidSize; } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             position: 'relative'
@@ -90,14 +90,17 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', ...props }: { s
             inset: '-.5em'
         }
     });
-    const [link, setLink] = useLink(props.defaultChecked ? 1 : 0);
+    const [link, setLink] = useLink(defaultChecked ? 1 : 0);
 
     const [split, rest] = useInputProps(props);
+    const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
+
+    useEffect(() => setLink(state ? 1 : 0, .25), [state]);
 
     return <Halo className={style.halo} hover={false}>
         <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-error={!!error} data-size={size}>
-            <input {...split} type="checkbox" className={style.input} aria-invalid={!!error} onChange={e => {
-                setLink(e.target.checked ? 1 : 0, .25);
+            <input {...split} checked={state} type="checkbox" className={style.input} aria-invalid={!!error} onChange={e => {
+                setState?.(e.target.checked);
                 props.onChange?.(e);
             }} />
 

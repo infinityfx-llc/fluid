@@ -81,6 +81,7 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
 
     const [column, setColumn] = useState<string>('');
     const [sorting, setSorting] = useState<'nil' | 'asc' | 'dsc'>('nil');
+    const [selected, setSelected] = useState<{ [key: number | string]: number | boolean; }>({ length: 0 });
 
     const rows = sorting !== 'nil' ?
         data.slice().sort((a, b) => {
@@ -92,10 +93,35 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
 
     const gridTemplateColumns = `${selectable ? 'auto' : ''} repeat(${columns.length}, 1fr) ${rowActions?.length ? 'auto' : ''}`;
 
+    const CheckboxStyles = {
+        '.checkbox': {
+            borderColor: 'var(--f-clr-grey-300) !important',
+            borderWidth: '1px !important'
+        },
+
+        '.input:checked:enabled + .checkbox': {
+            backgroundColor: 'var(--f-clr-text-100)',
+            borderColor: 'var(--f-clr-text-100) !important'
+        },
+
+        '.checkmark': {
+            stroke: 'var(--f-clr-text-200)'
+        }
+    };
+
     return <Scrollarea {...props} ref={ref} horizontal role="grid" className={classes(style.table, props.className)}>
         <div role="rowgroup" className={style.rows}>
             <div role="rowheader" className={classes(style.row, style.header)} style={{ gridTemplateColumns }}>
-                {selectable && <div className={style.collapsed} />}
+                {selectable && <div className={style.collapsed}>
+                    <Checkbox size="xsm" styles={CheckboxStyles} checked={selected.length === rows.length} onChange={e => {
+                        if (!e.target.checked) return setSelected({ length: 0 });
+
+                        for (let i = 0; i < rows.length; i++) selected[i] = true;
+                        selected.length = rows.length;
+
+                        setSelected(Object.assign({}, selected));
+                    }} />
+                </div>}
 
                 {columns.map((col, i) => {
                     const sort = Array.isArray(sortable) ? sortable.includes(col) : sortable;
@@ -132,20 +158,11 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
                 return <Halo key={i} disabled={!selectable}>
                     <label role="row" className={style.row} style={{ gridTemplateColumns }}>
                         {selectable && <div className={style.collapsed}>
-                            <Checkbox size="xsm" styles={{
-                                '.checkbox': {
-                                    borderColor: 'var(--f-clr-grey-300) !important',
-                                    borderWidth: '1px !important'
-                                },
+                            <Checkbox size="xsm" styles={CheckboxStyles} checked={!!selected[i]} onChange={e => {
+                                selected[i] = e.target.checked;
+                                (selected.length as number) += e.target.checked ? 1 : -1;
 
-                                '.input:checked:enabled + .checkbox': {
-                                    backgroundColor: 'var(--f-clr-text-100)',
-                                    borderColor: 'var(--f-clr-text-100) !important'
-                                },
-
-                                '.checkmark': {
-                                    stroke: 'var(--f-clr-text-200)'
-                                }
+                                setSelected(Object.assign({}, selected));
                             }} />
                         </div>}
 
@@ -173,5 +190,4 @@ Table.displayName = 'Table';
 export default Table;
 
 // fix row actions with index
-// further implement selection (select all button)
 // support react components as data

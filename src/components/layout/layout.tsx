@@ -2,7 +2,7 @@ import { Children, cloneElement, isValidElement, useState } from "react";
 import Section from "./section";
 import { FluidSize } from "@/src/types";
 import Header from "./header";
-import Sidebar from "./sidebar";
+import { Sidebar } from "./sidebar";
 
 export default function Layout({ children }: { children: React.ReactNode; }) {
     const [collapsed, setCollapsed] = useState(false);
@@ -12,7 +12,7 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
     Children.forEach(children, child => {
         if (!isValidElement(child)) return;
 
-        if (child.type === Header) header = child.props.variant === 'transparent' ? false : child.props.size;
+        if (child.type === Header) header = child.props.variant === 'transparent' ? false : child.props.size || 'med';
         if (child.type === Sidebar) sidebar = true;
     });
 

@@ -4,13 +4,13 @@ import Drawer from "./drawer";
 import Scrollarea from "./scrollarea";
 import Collapsible from "./collapsible";
 import Accordion from "./accordion";
-import Frame from "./frame";
 import Grid from "./grid";
 import Layout from "./layout";
 import Section from './section';
-import Sidebar from "./sidebar";
 import Header from "./header";
 import Cull from "./cull";
+import Popover from "./popover";
+import Divider from "./divider";
 
 export {
     Overlay,
@@ -19,11 +19,13 @@ export {
     Scrollarea,
     Collapsible,
     Accordion,
-    Frame,
     Grid,
     Layout,
     Section,
-    Sidebar,
     Header,
-    Cull
+    Cull,
+    Popover,
+    Divider
 }
+
+export * from "./sidebar";

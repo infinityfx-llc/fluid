@@ -25,6 +25,10 @@ const Button = forwardRef(({ children, styles = {}, round = false, size = 'med',
             borderRadius: '999px'
         },
 
+        '.button[data-size="xsm"]': {
+            fontSize: 'var(--f-font-size-xxs)'
+        },
+
         '.button[data-size="sml"]': {
             fontSize: 'var(--f-font-size-xsm)'
         },

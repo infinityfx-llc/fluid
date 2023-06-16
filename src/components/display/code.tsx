@@ -17,7 +17,7 @@ const Code = forwardRef(({ children, styles = {}, title, ...props }: { children:
 
         '.header': {
             backgroundColor: 'var(--f-clr-primary-500)',
-            padding: '1em',
+            padding: '.8em 1em',
             fontWeight: 500
         },
 
@@ -43,11 +43,18 @@ const Code = forwardRef(({ children, styles = {}, title, ...props }: { children:
             width: 'max-content'
         },
 
-        '.button': {
-            position: 'absolute !important' as any,
+        '.button_wrapper': {
+            position: 'absolute',
+            zIndex: '99',
             right: '1em',
-            bottom: '1em',
-            zIndex: '99 !important'
+            bottom: 0,
+            display: 'flex',
+            alignItems: 'center',
+            maxHeight: '100%'
+        },
+
+        '.button': {
+            marginBlock: '1em'
         }
     });
 
@@ -75,28 +82,30 @@ const Code = forwardRef(({ children, styles = {}, title, ...props }: { children:
             </Scrollarea>
         </code>
 
-        <Toggle className={style.button} checkedContent={<MdCheck />} checked={copied}
-            styles={{
-                '.toggle': {
-                    backgroundColor: 'var(--f-clr-bg-100)'
-                }
-            }}
-            onClick={() => {
-                const range = document.createRange(), el = document.getElementById(id) as HTMLDivElement;
-                range.selectNodeContents(el);
-                document.getSelection()?.addRange(range);
+        <div className={style.button_wrapper}>
+            <Toggle className={style.button} checkedContent={<MdCheck />} checked={copied}
+                styles={{
+                    '.toggle': {
+                        backgroundColor: 'var(--f-clr-bg-100)'
+                    }
+                }}
+                onClick={() => {
+                    const range = document.createRange(), el = document.getElementById(id) as HTMLDivElement;
+                    range.selectNodeContents(el);
+                    document.getSelection()?.addRange(range);
 
-                try {
-                    navigator.clipboard.writeText(el.innerText);
-                } catch (ex) {
-                    document.execCommand('copy');
-                }
+                    try {
+                        navigator.clipboard.writeText(el.innerText);
+                    } catch (ex) {
+                        document.execCommand('copy');
+                    }
 
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-            }}>
-            <MdCopyAll />
-        </Toggle>
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                }}>
+                <MdCopyAll />
+            </Toggle>
+        </div>
     </div>;
 });
 

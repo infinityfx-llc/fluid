@@ -1,11 +1,11 @@
 import { classes } from '@/src/core/utils';
 import useStyles from '@/src/hooks/use-styles';
-import { FluidStyles } from '@/src/types';
+import { FluidStyles, PopoverRootReference } from '@/src/types';
 import { Animate } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
-import { forwardRef } from 'react';
+import { forwardRef, useRef } from 'react';
 import { Halo } from '../feedback';
-import Popover from '../layout/popover';
+import { Popover } from '../layout';
 
 export type ActionMenuOption = {
     label: React.ReactNode;
@@ -25,7 +25,7 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, ...pr
             padding: '.3em',
             background: 'var(--f-clr-bg-100)',
             border: 'solid 1px var(--f-clr-grey-100)',
-            borderRadius: 'var(--f-radius-sml)',
+            borderRadius: 'calc(.15em + var(--f-radius-sml))',
             boxShadow: '0 0 8px rgb(0, 0, 0, 0.06)',
             fontSize: 'var(--f-font-size-sml)',
             width: 'clamp(0px, 10em, 100vw)'
@@ -68,27 +68,35 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, ...pr
         }
     });
 
-    return <Popover role="menu" disabled={disabled} content={close => <Animate key="menu" animations={[Move.unique({ duration: .2 }), Pop.unique({ duration: .2 })]} unmount triggers={[{ on: 'mount' }]} levels={2} stagger={.06}>
-        <div ref={ref} {...props} className={classes(style.menu, props.className)}>
-            {options.map((option, i) => {
-                if (typeof option === 'string') return <div key={i} className={style.title}>{option}</div>;
+    const popover = useRef<PopoverRootReference>(null);
 
-                const { label, onClick, disabled = false, shouldClose = true } = option;
-                return <div key={i}>
-                    <Halo disabled={disabled}>
-                        <button role="menuitem" className={style.option} disabled={disabled} onClick={() => {
-                            if (shouldClose) close();
-                            onClick?.();
-                        }}>
-                            {label}
-                        </button>
-                    </Halo>
-                </div>;
-            })}
-        </div>
-    </Animate>}>
-        {children}
-    </Popover>;
+    return <Popover.Root ref={popover}>
+        <Popover.Trigger disabled={disabled}>
+            {children}
+        </Popover.Trigger>
+
+        <Popover.Content role="menu">
+            <Animate key="menu" animations={[Move.unique({ duration: .2 }), Pop.unique({ duration: .2 })]} unmount triggers={[{ on: 'mount' }]} levels={2} stagger={.06}>
+                <div ref={ref} {...props} className={classes(style.menu, props.className)}>
+                    {options.map((option, i) => {
+                        if (typeof option === 'string') return <div key={i} className={style.title}>{option}</div>;
+
+                        const { label, onClick, disabled = false, shouldClose = true } = option;
+                        return <div key={i}>
+                            <Halo disabled={disabled}>
+                                <button role="menuitem" className={style.option} disabled={disabled} onClick={() => {
+                                    if (shouldClose) popover.current?.close();
+                                    onClick?.();
+                                }}>
+                                    {label}
+                                </button>
+                            </Halo>
+                        </div>;
+                    })}
+                </div>
+            </Animate>
+        </Popover.Content>
+    </Popover.Root>
 });
 
 ActionMenu.displayName = 'ActionMenu';

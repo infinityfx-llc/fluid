@@ -5,7 +5,7 @@ import { classes } from '@/src/core/utils';
 import { Halo, Indicator } from '../../feedback';
 import { MdMoreVert } from 'react-icons/md';
 
-const User = forwardRef(({ children, styles = {}, name, status, indicator = false, round = false, icon = <MdMoreVert />, ...props }:
+const SidebarUser = forwardRef(({ children, styles = {}, name, status, indicator = false, round = false, icon = <MdMoreVert />, ...props }:
     {
         styles?: FluidStyles;
         name: string;
@@ -124,6 +124,6 @@ const User = forwardRef(({ children, styles = {}, name, status, indicator = fals
     </Halo>;
 });
 
-User.displayName = 'Sidebar.User';
+SidebarUser.displayName = 'SidebarUser';
 
-export default User;
+export default SidebarUser;

@@ -6,7 +6,7 @@ import { Morph } from "@infinityfx/lively/layout";
 import { classes } from "@/src/core/utils";
 import { Scrollarea } from "../layout";
 
-const Tabs = forwardRef(({ options, styles = {}, value, defaultValue, onChange, ...props }:
+const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, defaultValue, onChange, ...props }:
     {
         options: {
             label: string;
@@ -14,21 +14,25 @@ const Tabs = forwardRef(({ options, styles = {}, value, defaultValue, onChange, 
             disabled?: boolean;
         }[];
         styles?: FluidStyles;
+        variant?: 'default' | 'minimal';
         value?: FluidInputvalue;
         defaultValue?: FluidInputvalue;
         onChange?: (value: FluidInputvalue) => void;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
-        '.wrapper': {
+        '.wrapper[data-variant="default"]': {
             backgroundColor: 'var(--f-clr-fg-100)',
             borderRadius: 'var(--f-radius-sml)'
         },
         
         '.tabs': {
             display: 'flex',
-            gap: 'var(--f-spacing-sml)',
-            padding: '0 .6em',
             width: 'max-content'
+        },
+
+        '.wrapper[data-variant="default"] .tabs': {
+            gap: 'var(--f-spacing-sml)',
+            padding: '0 .6em'
         },
 
         '.option': {
@@ -36,11 +40,16 @@ const Tabs = forwardRef(({ options, styles = {}, value, defaultValue, onChange, 
             padding: '.6em 0'
         },
 
+        '.wrapper[data-variant="minimal"] .option': {
+            padding: '.6em'
+        },
+
         '.selection': {
             position: 'absolute',
             width: '100%',
             height: '3px',
             backgroundColor: 'var(--f-clr-text-100)',
+            left: 0,
             bottom: 0,
             borderRadius: '99px'
         },
@@ -69,7 +78,7 @@ const Tabs = forwardRef(({ options, styles = {}, value, defaultValue, onChange, 
     const id = useId();
     const [state, setState] = value !== undefined ? [value] : useState<FluidInputvalue>(defaultValue || options[0]?.value);
 
-    return <div ref={ref} {...props} className={classes(style.wrapper, props.className)}>
+    return <div ref={ref} {...props} className={classes(style.wrapper, props.className)} data-variant={variant}>
         <Scrollarea horizontal>
             <div className={style.tabs}>
                 {options.map(({ label, value, disabled }, i) => {

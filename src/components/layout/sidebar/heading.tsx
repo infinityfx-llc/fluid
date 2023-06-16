@@ -3,7 +3,7 @@ import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
 import { classes } from '@/src/core/utils';
 
-const Heading = forwardRef(({ children, styles = {}, ...props }:
+const SidebarHeading = forwardRef(({ children, styles = {}, ...props }:
     {
         styles?: FluidStyles;
     } & React.ButtonHTMLAttributes<HTMLHeadingElement>, ref: React.ForwardedRef<HTMLHeadingElement>) => {
@@ -25,6 +25,6 @@ const Heading = forwardRef(({ children, styles = {}, ...props }:
     return <h3 ref={ref} {...props} className={classes(style.heading, props.className)}>{children}</h3>;
 });
 
-Heading.displayName = 'Sidebar.Heading';
+SidebarHeading.displayName = 'SidebarHeading';
 
-export default Heading;
+export default SidebarHeading;

@@ -1,11 +1,11 @@
 import useStyles from '@/src/hooks/use-styles';
 import { FluidSize, FluidStyles } from '@/src/types';
 import { forwardRef, useState } from 'react';
-import Link from './link';
+import SidebarLink from './link';
 import { Toggle } from '../../input';
 import { MdArrowBack, MdArrowForward } from 'react-icons/md';
-import Heading from './heading';
-import User from './user';
+import SidebarHeading from './heading';
+import SidebarUser from './user';
 import Scrollarea from '../scrollarea';
 import useFluid from '@/src/hooks/use-fluid';
 import { classes } from '@/src/core/utils';
@@ -17,11 +17,7 @@ export type SidebarProps = {
     onCollapse?: (value: boolean) => void;
 } & React.HTMLAttributes<HTMLElement>;
 
-const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
-    Link: typeof Link;
-    Heading: typeof Heading;
-    User: typeof User;
-} = forwardRef(({ children, styles = {}, header, collapsed, onCollapse, ...props }: SidebarProps, ref: React.ForwardedRef<HTMLElement>) => {
+const Sidebar = forwardRef(({ children, styles = {}, header, collapsed, onCollapse, ...props }: SidebarProps, ref: React.ForwardedRef<HTMLElement>) => {
     const fluid = useFluid();
     const [isCollapsed, setCollapsed] = collapsed !== undefined ? [collapsed] : useState(false);
 
@@ -91,13 +87,15 @@ const Sidebar: React.ForwardRefExoticComponent<SidebarProps> & {
             </div>
         </Scrollarea>
     </aside>;
-}) as any;
+});
 
-Sidebar.Link = Link;
-Sidebar.Heading = Heading;
-Sidebar.User = User;
 Sidebar.displayName = 'Sidebar';
 
-export default Sidebar;
+export {
+    Sidebar,
+    SidebarHeading,
+    SidebarLink,
+    SidebarUser
+}
 
 // open button on mobile

@@ -54,6 +54,7 @@ export function ruleToString(selector: string, rules: React.CSSProperties | { [k
 
     return `${prefixed}{${Object.entries(rules).reduce((str, [attr, value]) => {
         if (typeof value === 'object') return str + ruleToString(attr, value, selectors, postfix);
+        if (value === undefined) return str;
 
         return str + `${attr.replace(/(.?)([A-Z])/g, '$1-$2').toLowerCase()}:${value};`;
     }, '')}}`;

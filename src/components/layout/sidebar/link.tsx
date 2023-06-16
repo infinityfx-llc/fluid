@@ -7,7 +7,7 @@ import { Toggle } from '../../input';
 import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import Collapsible from '../collapsible';
 
-const Link = forwardRef(({ children, styles = {}, label, icon, right, active = false, round = false, variant = 'default', disabled = false, ...props }:
+const SidebarLink = forwardRef(({ children, styles = {}, label, icon, right, active = false, round = false, variant = 'default', disabled = false, ...props }:
     {
         styles?: FluidStyles;
         label: string;
@@ -78,7 +78,7 @@ const Link = forwardRef(({ children, styles = {}, label, icon, right, active = f
             display: 'flex',
             flexDirection: 'column',
             gap: 'var(--f-spacing-xsm)',
-            transition: 'padding-left .3s, opacity .35s'
+            transition: 'padding-left .3s, opacity .35s !important'
         },
 
         'aside[data-collapsed="false"] .sublinks': {
@@ -118,6 +118,6 @@ const Link = forwardRef(({ children, styles = {}, label, icon, right, active = f
     </>;
 });
 
-Link.displayName = 'Sidebar.Link';
+SidebarLink.displayName = 'SidebarLink';
 
-export default Link;
+export default SidebarLink;
