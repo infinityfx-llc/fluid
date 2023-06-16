@@ -6,12 +6,19 @@ import { Move, Pop } from '@infinityfx/lively/animations';
 import { forwardRef, useRef } from 'react';
 import { Halo } from '../feedback';
 import { Popover } from '../layout';
+import { MdChevronRight, MdExpandMore } from 'react-icons/md';
 
 export type ActionMenuOption = {
     label: React.ReactNode;
     onClick?: () => void;
     disabled?: boolean;
     shouldClose?: boolean;
+    options?: {
+        label: string;
+        onClick?: () => void;
+        disabled?: boolean;
+        shouldClose?: boolean;
+    }[];
 } | string;
 
 const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, ...props }: {
@@ -65,6 +72,22 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, ...pr
         '.title:not(:first-child)': {
             borderTop: 'solid 1px var(--f-clr-grey-100)',
             marginTop: '.5em'
+        },
+
+        '.submenu': {
+            position: 'absolute',
+            left: '100%',
+            top: 0,
+            opacity: 0,
+            visibility: 'hidden',
+            translate: '-12px 0',
+            transition: 'opacity .2s, visibility .2s, translate .2s'
+        },
+
+        '.option:enabled:hover > .submenu': {
+            opacity: 1,
+            visibility: 'visible',
+            translate: '0 0'
         }
     });
 
@@ -81,7 +104,7 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, ...pr
                     {options.map((option, i) => {
                         if (typeof option === 'string') return <div key={i} className={style.title}>{option}</div>;
 
-                        const { label, onClick, disabled = false, shouldClose = true } = option;
+                        const { label, onClick, disabled = false, shouldClose = true, options } = option;
                         return <div key={i}>
                             <Halo disabled={disabled}>
                                 <button role="menuitem" className={style.option} disabled={disabled} onClick={() => {
@@ -89,6 +112,23 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, ...pr
                                     onClick?.();
                                 }}>
                                     {label}
+
+                                    {options && <MdChevronRight style={{ marginLeft: 'auto' }} />}
+
+                                    {options && <div className={classes(style.submenu, style.menu)}>
+                                        {options.map(({ label, disabled, onClick, shouldClose }, i) => {
+                                            return <Halo key={i} disabled={disabled}>
+                                                <button className={style.option} disabled={disabled} onClick={e => {
+                                                    e.stopPropagation();
+
+                                                    if (shouldClose) popover.current?.close();
+                                                    onClick?.();
+                                                }}>
+                                                    {label}
+                                                </button>
+                                            </Halo>;
+                                        })}
+                                    </div>}
                                 </button>
                             </Halo>
                         </div>;

@@ -93,15 +93,18 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
     const dragging = useRef<{ x: number; y: number; } | null>(null);
     const [scrollable, setScrollable] = useState(false);
 
-    function wheel(e: React.WheelEvent) {
+    function wheel(e: WheelEvent) {
         scroll(Math.sign(e.deltaY) * speed);
-
+        
         const el = area.current;
         if (!el) return;
 
         const val = el[horizontal ? 'scrollLeft' : 'scrollTop'];
         const max = el[horizontal ? 'scrollWidth' : 'scrollHeight'] - el[horizontal ? 'offsetWidth' : 'offsetHeight'];
-        if (val > 0 && val < max) e.stopPropagation();
+        if (val > 0 && val < max) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
     }
 
     function drag(e: MouseEvent) {
@@ -157,7 +160,12 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
         resize();
 
         const observer = new ResizeObserver(resize);
-        if (area.current) observer.observe(area.current);
+        if (area.current) {
+            observer.observe(area.current);
+            if (area.current.children.length) observer.observe(area.current.children[0]);
+
+            area.current.addEventListener('wheel', wheel);
+        }
 
         window.addEventListener('mousemove', drag);
         window.addEventListener('mouseup', drag);
@@ -166,6 +174,7 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
             observer.disconnect();
             window.removeEventListener('mousemove', drag);
             window.removeEventListener('mouseup', drag);
+            area.current?.removeEventListener('wheel', wheel);
         }
     }, []);
 
@@ -174,10 +183,6 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
     return <div ref={combineRefs(ref, area)} {...props}
         id={id}
         className={classes(style.area, props.className)}
-        onWheel={e => {
-            props.onWheel?.(e);
-            wheel(e);
-        }}
         onScroll={e => {
             props.onScroll?.(e);
             if (scrolled.current) return scrolled.current = false;

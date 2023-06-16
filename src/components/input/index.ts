@@ -16,6 +16,7 @@ import ThemeToggle from "./theme-toggle";
 import Select from "./select";
 import Calendar from "./calendar";
 import DateField from "./date-field";
+import Textarea from "./textarea";
 
 export {
     Button,
@@ -35,5 +36,6 @@ export {
     ThemeToggle,
     Select,
     Calendar,
-    DateField
+    DateField,
+    Textarea
 }
