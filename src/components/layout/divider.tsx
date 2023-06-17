@@ -3,11 +3,12 @@ import useStyles from "@/src/hooks/use-styles";
 import { FluidSize, FluidStyles } from "@/src/types";
 import { forwardRef } from "react";
 
-const Divider = forwardRef(({ styles = {}, vertical = false, label, size = 'med', ...props }:
+const Divider = forwardRef(({ styles = {}, vertical = false, label, labelPosition = 'center', size = 'med', ...props }:
     {
         styles?: FluidStyles;
         vertical?: boolean;
         label?: string;
+        labelPosition?: 'start' | 'center' | 'end';
         size?: FluidSize;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
@@ -41,11 +42,11 @@ const Divider = forwardRef(({ styles = {}, vertical = false, label, size = 'med'
     });
 
     return <div ref={ref} {...props} className={classes(style.divider, props.className)} data-vertical={vertical}>
-        {label && <div className={style.line} />}
+        {label && labelPosition !== 'start' && <div className={style.line} />}
 
         {label}
 
-        <div className={style.line} />
+        {!(label && labelPosition === 'end') && <div className={style.line} />}
     </div>;
 });
 

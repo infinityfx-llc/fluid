@@ -1,9 +1,11 @@
+'use client';
+
 import { forwardRef } from 'react';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
 import { classes } from '@/src/core/utils';
 
-const SidebarHeading = forwardRef(({ children, styles = {}, ...props }:
+const Heading = forwardRef(({ children, styles = {}, ...props }:
     {
         styles?: FluidStyles;
     } & React.ButtonHTMLAttributes<HTMLHeadingElement>, ref: React.ForwardedRef<HTMLHeadingElement>) => {
@@ -25,6 +27,6 @@ const SidebarHeading = forwardRef(({ children, styles = {}, ...props }:
     return <h3 ref={ref} {...props} className={classes(style.heading, props.className)}>{children}</h3>;
 });
 
-SidebarHeading.displayName = 'SidebarHeading';
+Heading.displayName = 'Heading';
 
-export default SidebarHeading;
+export default Heading;

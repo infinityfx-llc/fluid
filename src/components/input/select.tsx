@@ -1,14 +1,17 @@
+'use client';
+
 import { forwardRef, useRef, useState } from 'react';
 import Field, { FieldProps } from './field';
 import Button from './button';
 import { MdArrowDownward, MdCheck } from 'react-icons/md';
 import useStyles from '@/src/hooks/use-styles';
-import { Halo } from '../feedback';
+import Halo from '../feedback/halo';
 import { FluidInputvalue, PopoverRootReference } from '@/src/types';
 import { Animatable } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
 import { classes } from '@/src/core/utils';
-import { Popover, Scrollarea } from '../layout';
+import Popover from '../layout/popover';
+import Scrollarea from '../layout/scrollarea';
 
 const Select = forwardRef(({ styles = {}, options, multiple = false, searchable, limit, emptyMessage = 'Nothing found', value, defaultValue, onChange, readOnly, ...props }:
     {

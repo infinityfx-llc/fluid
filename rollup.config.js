@@ -29,5 +29,11 @@ export default {
         preserveModules: true,
         preserveModulesRoot: 'src'
     },
-    plugins
+    plugins,
+    onwarn: (msg, handler) => {
+        if (msg.code === 'THIS_IS_UNDEFINED') return;
+        if (msg.code === 'MODULE_LEVEL_DIRECTIVE') return;
+
+        handler(msg);
+    }
 }

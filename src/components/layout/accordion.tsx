@@ -1,3 +1,5 @@
+'use client';
+
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
 import { Fragment, forwardRef, useState, useId } from "react";

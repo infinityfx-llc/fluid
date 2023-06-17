@@ -1,3 +1,5 @@
+'use client';
+
 import { classes } from '@/src/core/utils';
 import useFluid from '@/src/hooks/use-fluid';
 import useStyles from '@/src/hooks/use-styles';

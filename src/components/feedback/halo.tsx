@@ -1,3 +1,5 @@
+'use client';
+
 import { classes, combineRefs } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
 import { Animatable } from "@infinityfx/lively";

@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, useContext, useEffect, useId, useRef, useState, forwardRef, useImperativeHandle, useCallback } from "react";
 
 export const PopoverContext = createContext<{

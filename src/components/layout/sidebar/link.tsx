@@ -1,3 +1,5 @@
+'use client';
+
 import { Children, forwardRef, useState } from 'react';
 import { Halo } from '../../feedback';
 import useStyles from '@/src/hooks/use-styles';
@@ -7,7 +9,7 @@ import { Toggle } from '../../input';
 import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import Collapsible from '../collapsible';
 
-const SidebarLink = forwardRef(({ children, styles = {}, label, icon, right, active = false, round = false, variant = 'default', disabled = false, ...props }:
+const Link = forwardRef(({ children, styles = {}, label, icon, right, active = false, round = false, variant = 'default', disabled = false, ...props }:
     {
         styles?: FluidStyles;
         label: string;
@@ -118,6 +120,6 @@ const SidebarLink = forwardRef(({ children, styles = {}, label, icon, right, act
     </>;
 });
 
-SidebarLink.displayName = 'SidebarLink';
+Link.displayName = 'Link';
 
-export default SidebarLink;
+export default Link;

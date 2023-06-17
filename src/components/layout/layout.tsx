@@ -1,8 +1,10 @@
+'use client';
+
 import { Children, cloneElement, isValidElement, useState } from "react";
 import Section from "./section";
 import { FluidSize } from "@/src/types";
 import Header from "./header";
-import { Sidebar } from "./sidebar";
+import Sidebar from "./sidebar";
 
 export default function Layout({ children }: { children: React.ReactNode; }) {
     const [collapsed, setCollapsed] = useState(false);
@@ -13,7 +15,7 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
         if (!isValidElement(child)) return;
 
         if (child.type === Header) header = child.props.variant === 'transparent' ? false : child.props.size || 'med';
-        if (child.type === Sidebar) sidebar = true;
+        if (child.type === Sidebar.Root) sidebar = true;
     });
 
     return <>
@@ -22,7 +24,7 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
 
             if (child.type === Section) return cloneElement(child as React.ReactElement, { header, sidebar, collapsed });
             if (child.type === Header) return cloneElement(child as React.ReactElement, { sidebar, collapsed });
-            if (child.type === Sidebar) return cloneElement(child as React.ReactElement, { header, collapsed, onCollapse: setCollapsed });
+            if (child.type === Sidebar.Root) return cloneElement(child as React.ReactElement, { header, collapsed, onCollapse: setCollapsed });
 
             return child;
         })}

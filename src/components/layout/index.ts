@@ -7,6 +7,7 @@ import Accordion from "./accordion";
 import Grid from "./grid";
 import Layout from "./layout";
 import Section from './section';
+import Sidebar from "./sidebar";
 import Header from "./header";
 import Cull from "./cull";
 import Popover from "./popover";
@@ -22,6 +23,7 @@ export {
     Grid,
     Layout,
     Section,
+    Sidebar,
     Header,
     Cull,
     Popover,

@@ -1,3 +1,5 @@
+'use client';
+
 import useStyles from "@/src/hooks/use-styles";
 import { Animatable } from "@infinityfx/lively";
 import { LayoutGroup } from "@infinityfx/lively/layout";

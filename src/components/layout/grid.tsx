@@ -1,3 +1,5 @@
+// 'use client';
+
 import useStyles from "@/src/hooks/use-styles";
 import { Children, cloneElement, forwardRef } from "react";
 

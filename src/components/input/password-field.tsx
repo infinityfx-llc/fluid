@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, forwardRef, useMemo } from 'react';
 import Field, { FieldProps } from "./field";
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md';

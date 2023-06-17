@@ -1,3 +1,5 @@
+'use client';
+
 import { combineRefs } from "@/src/core/utils";
 import { cloneElement, isValidElement, useRef } from "react";
 import { usePopover } from "./root";

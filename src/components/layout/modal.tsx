@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, useId } from 'react';
 import Overlay from './overlay';
 import useStyles from '@/src/hooks/use-styles';

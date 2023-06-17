@@ -1,3 +1,5 @@
+'use client';
+
 import { classes } from '@/src/core/utils';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles, PopoverRootReference } from '@/src/types';

@@ -1,9 +1,11 @@
+'use client';
+
 import { classes } from '@/src/core/utils';
 import useInputProps from '@/src/hooks/use-input-props';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidError, FluidSize, FluidStyles } from '@/src/types';
 import { forwardRef, useId, useState } from 'react';
-import { Scrollarea } from '../layout';
+import Scrollarea from '../layout/scrollarea';
 
 const Textarea = forwardRef(({ styles = {}, label, error, size, resize = 'both', ...props }:
     {
@@ -51,7 +53,7 @@ const Textarea = forwardRef(({ styles = {}, label, error, size, resize = 'both',
             transition: 'border-color .2s',
             width: '100%',
             height: '4em',
-            resize
+            resize // (maybe move to data attr / style tag)
         },
 
         '.textarea:focus-within': {
@@ -59,7 +61,7 @@ const Textarea = forwardRef(({ styles = {}, label, error, size, resize = 'both',
         },
 
         '.input': {
-            resize: 'none', // (maybe move to data attr / style tag)
+            resize: 'none',
             outline: 'none',
             border: 'none',
             background: 'none',

@@ -1,10 +1,12 @@
+'use client';
+
 import { forwardRef, useState } from 'react';
 import Field, { FieldProps } from './field';
 import useStyles from '@/src/hooks/use-styles';
 import { Animatable } from '@infinityfx/lively';
 import { Move } from '@infinityfx/lively/animations';
 import Calendar from './calendar';
-import { Popover } from '../layout';
+import Popover from '../layout/popover';
 
 const DateField = forwardRef(({ styles = {}, value, defaultValue = new Date(), onChange, disabled, ...props }:
     {

@@ -1,3 +1,5 @@
+'use client';
+
 import { combineRefs } from '@/src/core/utils';
 import useClickOutside from '@/src/hooks/use-click-outside';
 import { LayoutGroup } from '@infinityfx/lively/layout';

@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef } from "react";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import Toggle, { ToggleProps } from "./toggle";

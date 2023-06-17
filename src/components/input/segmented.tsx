@@ -1,3 +1,5 @@
+'use client';
+
 import useStyles from "@/src/hooks/use-styles";
 import { FluidError, FluidInputvalue, FluidStyles } from "@/src/types";
 import { forwardRef, useId, useState } from "react";

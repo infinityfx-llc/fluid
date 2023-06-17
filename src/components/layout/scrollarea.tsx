@@ -1,3 +1,5 @@
+'use client';
+
 import { classes, combineRefs } from "@/src/core/utils";
 import useDomEffect from "@/src/hooks/use-dom-effect";
 import useStyles from "@/src/hooks/use-styles";

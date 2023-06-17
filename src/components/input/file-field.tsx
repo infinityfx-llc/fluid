@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, useId, useRef, useState } from 'react';
 import Button from './button';
 import { MdUpload } from 'react-icons/md';

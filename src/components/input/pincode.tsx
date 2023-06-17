@@ -1,3 +1,5 @@
+'use client';
+
 import { classes } from "@/src/core/utils";
 import useInputProps from "@/src/hooks/use-input-props";
 import useStyles from "@/src/hooks/use-styles";

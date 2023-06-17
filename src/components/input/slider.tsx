@@ -1,9 +1,11 @@
+'use client';
+
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
 import { forwardRef, useId, useRef, useState, useEffect } from "react";
-import { Halo } from "../feedback";
+import Halo from "../feedback/halo";
 import { classes, round, toNumber } from "@/src/core/utils";
-import { Tooltip } from "../display";
+import Tooltip from "../display/tooltip";
 import useInputProps from "@/src/hooks/use-input-props";
 
 const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, alwaysShowTooltips, formatTooltip, label, value, defaultValue, onChange, ...props }:

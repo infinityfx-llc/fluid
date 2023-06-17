@@ -1,3 +1,5 @@
+'use client';
+
 import useGlobalStyles from "@/src/hooks/use-global-styles";
 import { cloneElement, createContext, useInsertionEffect, useMemo } from "react";
 import { DEFAULT_THEME, FluidTheme, PartialFluidTheme, parseCSSVariables, parseColorPalettes } from "@/src/core/theme";
