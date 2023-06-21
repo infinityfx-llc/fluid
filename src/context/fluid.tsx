@@ -72,7 +72,7 @@ export default function FluidProvider({ children, theme = {}, initialColorScheme
     useGlobalStyles(styles);
     useGlobalStyles(global);
 
-    // useInsertionEffect(() => FluidStyleStore.update(true), []);
+    useInsertionEffect(() => FluidStyleStore.update(true), []);
 
     return <FluidContext.Provider value={{ ...fluid, colorScheme, setColorScheme }}>
         {cloneElement(children, {

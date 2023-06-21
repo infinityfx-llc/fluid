@@ -10,6 +10,22 @@ FluidStyleStore.add('radio', {
     '.wrapper': {
         position: 'relative'
     },
+
+    '.wrapper[data-size="xsm"]': {
+        fontSize: 'var(--f-font-size-xxs)'
+    },
+
+    '.wrapper[data-size="sml"]': {
+        fontSize: 'var(--f-font-size-xsm)'
+    },
+
+    '.wrapper[data-size="med"]': {
+        fontSize: 'var(--f-font-size-sml)'
+    },
+
+    '.wrapper[data-size="lrg"]': {
+        fontSize: 'var(--f-font-size-med)'
+    },
     
     '.input': {
         position: 'absolute',
@@ -43,7 +59,7 @@ FluidStyleStore.add('radio', {
         position: 'absolute',
         inset: '2px',
         borderRadius: '999px',
-        backgroundColor: 'var(--f-clr-text-200)',
+        backgroundColor: 'white',
         scale: 0,
         transition: 'scale .25s'
     },
@@ -85,7 +101,7 @@ const Radio = forwardRef(({ styles = {}, error, size = 'med', ...props }: { styl
     const [split, rest] = useInputProps(props);
 
     return <Halo className={style.halo} hover={false}>
-        <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-error={!!error}>
+        <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-size={size} data-error={!!error}>
             <input {...split} type="radio" className={style.input} aria-invalid={!!error} />
 
             <div className={style.radio}>

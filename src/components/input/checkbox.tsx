@@ -114,7 +114,7 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--
 
             <div className={style.checkbox}>
                 <svg viewBox="0 0 18 18" className={style.checkmark}>
-                    <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: split.defaultChecked ? 0 : 1 }}>
+                    <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: state ? 0 : 1 }}>
                         <path d="M 3 9 L 8 13 L 15 5" fill="none" />
                     </Animatable>
                 </svg>

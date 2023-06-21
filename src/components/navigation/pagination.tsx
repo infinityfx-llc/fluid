@@ -14,7 +14,7 @@ const Pagination = forwardRef(({ styles = {}, pages, compact, skipable, round, v
         compact?: boolean;
         skipable?: boolean;
         round?: boolean;
-        variant?: 'default' | 'light';
+        variant?: 'default' | 'neutral' | 'light';
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.pagination': {
@@ -31,7 +31,7 @@ const Pagination = forwardRef(({ styles = {}, pages, compact, skipable, round, v
     const [state, setState] = useState(1);
 
     return <div ref={ref} {...props} className={classes(style.pagination, props.className)}>
-        {compact && skipable && <Button round={round} variant="minimal" disabled={state < 2} onClick={() => setState(1)}>
+        {compact && skipable && <Button round={round} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state < 2} onClick={() => setState(1)}>
             <MdFirstPage />
         </Button>}
 
@@ -51,7 +51,7 @@ const Pagination = forwardRef(({ styles = {}, pages, compact, skipable, round, v
             <MdArrowForward />
         </Button>
 
-        {compact && skipable && <Button round={round} variant="minimal" disabled={state > pages - 1} onClick={() => setState(pages)}>
+        {compact && skipable && <Button round={round} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state > pages - 1} onClick={() => setState(pages)}>
             <MdLastPage />
         </Button>}
     </div>;

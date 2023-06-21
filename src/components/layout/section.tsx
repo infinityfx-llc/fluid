@@ -6,14 +6,12 @@ import useStyles from '@/src/hooks/use-styles';
 import { FluidSize, FluidStyles } from '@/src/types';
 import { forwardRef } from 'react';
 
-const Section = forwardRef(({ children, styles = {}, width, landing = false, header='med', sidebar, collapsed, ...props }:
+const Section = forwardRef(({ children, styles = {}, width, header = 'none', sidebar, ...props }:
     {
         styles?: FluidStyles;
         width: FluidSize;
-        landing?: boolean;
-        header?: boolean | FluidSize;
-        sidebar?: boolean;
-        collapsed?: boolean;
+        header?: 'none' | FluidSize;
+        sidebar?: 'none' | 'collapsed' | 'expanded';
     } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
     const fluid = useFluid();
 
@@ -21,14 +19,10 @@ const Section = forwardRef(({ children, styles = {}, width, landing = false, hea
         '.section': {
             paddingLeft: `var(--f-page-${width})`,
             paddingRight: `var(--f-page-${width})`,
+            paddingTop: header !== 'none' ? `var(--f-header-${header})` : undefined,
             display: 'flex',
             flexDirection: 'column',
             transition: 'padding-left .3s'
-        },
-
-        '.section[data-landing="true"]': {
-            minHeight: '100dvh',
-            paddingTop: header ? `var(--f-header-${header})` : undefined,
         },
 
         [`@media(min-width: ${fluid.breakpoints[1] + 1}px)`]: {
@@ -36,13 +30,13 @@ const Section = forwardRef(({ children, styles = {}, width, landing = false, hea
                 paddingLeft: `max(calc(5rem + var(--f-spacing-lrg)), var(--f-page-${width}))`
             },
 
-            '.section[data-sidebar="true"]': {
+            '.section[data-sidebar="expanded"]': {
                 paddingLeft: `calc(var(--f-sidebar) + var(--f-spacing-lrg))`
             }
         }
     });
 
-    return <section ref={ref} {...props} className={classes(style.section, props.className)} data-landing={landing} data-sidebar={(sidebar && collapsed) ? 'collapsed' : sidebar}>
+    return <section ref={ref} {...props} className={classes(style.section, props.className)} data-sidebar={sidebar}>
         {children}
     </section>;
 });

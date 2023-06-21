@@ -8,17 +8,17 @@ import { Animatable } from '@infinityfx/lively';
 import { useLink, useScroll } from '@infinityfx/lively/hooks';
 import useFluid from '@/src/hooks/use-fluid';
 
-export type HeaderProps = {
-    styles?: FluidStyles;
-    variant?: 'default' | 'transparent';
-    size?: FluidSize;
-    width?: FluidSize;
-    collapsible?: boolean;
-    sidebar?: boolean;
-    collapsed?: boolean;
-} & React.HTMLAttributes<any>;
-
-const Header = forwardRef(({ children, styles = {}, variant = 'default', size = 'med', width = 'med', collapsible, sidebar, collapsed, ...props }: HeaderProps, ref: React.ForwardedRef<HTMLElement>) => {
+const Header = forwardRef(({ children, styles = {}, variant = 'default', size = 'med', width = 'med', collapsible, left, right, sidebar = 'none', ...props }:
+    {
+        styles?: FluidStyles;
+        variant?: 'default' | 'transparent';
+        size?: FluidSize;
+        width?: FluidSize;
+        collapsible?: boolean;
+        left?: React.ReactNode;
+        right?: React.ReactNode;
+        sidebar?: 'none' | 'collapsed' | 'expanded';
+    } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
     const fluid = useFluid();
 
     const style = useStyles(styles, {
@@ -28,13 +28,8 @@ const Header = forwardRef(({ children, styles = {}, variant = 'default', size = 
             left: 0,
             width: '100vw',
             height: `var(--f-header-${size})`,
-            paddingLeft: `var(--f-page-${width})`,
-            paddingRight: `var(--f-page-${width})`,
             display: 'flex',
-            gap: 'var(--f-spacing-med)',
-            alignItems: 'center',
-            zIndex: 250,
-            transition: 'padding-left .3s'
+            zIndex: 250
         },
 
         '.background': {
@@ -49,13 +44,28 @@ const Header = forwardRef(({ children, styles = {}, variant = 'default', size = 
             borderBottom: 'solid 1px var(--f-clr-grey-100)'
         },
 
+        '.left': {
+            width: `var(--f-page-${width})`,
+            transition: 'width .3s'
+        },
+
+        '.right': {
+            width: `var(--f-page-${width})`
+        },
+
+        '.content': {
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--f-spacing-lrg)',
+        },
+
         [`@media(min-width: ${fluid.breakpoints[1] + 1}px)`]: {
-            '.header[data-sidebar="true"][data-collapsed="true"]': {
-                paddingLeft: `max(calc(5rem + var(--f-spacing-lrg)), var(--f-page-${width}))`
+            '.header[data-sidebar="collapsed"] .left': {
+                width: `max(calc(5rem + var(--f-spacing-lrg)), var(--f-page-${width}))`
             },
 
-            '.header[data-sidebar="true"]': {
-                paddingLeft: `calc(var(--f-sidebar) + var(--f-spacing-lrg))`
+            '.header[data-sidebar="expanded"] .left': {
+                width: `calc(var(--f-sidebar) + var(--f-spacing-lrg))`
             }
         }
     });
@@ -78,12 +88,22 @@ const Header = forwardRef(({ children, styles = {}, variant = 'default', size = 
     }, []);
 
     return <Animatable animate={{ translate: hidden(val => val ? '0% -100%' : '0% 0%') }}>
-        <header ref={ref} {...props} className={classes(style.header, props.className)} data-variant={variant} data-sidebar={sidebar} data-collapsed={collapsed}>
+        <header ref={ref} {...props} className={classes(style.header, props.className)} data-variant={variant} data-sidebar={sidebar}>
             <Animatable noInherit animate={{ opacity: variant === 'transparent' ? scroll(val => Math.min(val / window.innerHeight * 2, 1)) : undefined }}>
                 <div className={style.background} />
             </Animatable>
 
-            {children}
+            <section className={style.left}>
+                {left}
+            </section>
+
+            <section className={style.content}>
+                {children}
+            </section>
+
+            <section className={style.right}>
+                {right}
+            </section>
         </header>
     </Animatable>;
 });
@@ -91,5 +111,3 @@ const Header = forwardRef(({ children, styles = {}, variant = 'default', size = 
 Header.displayName = 'Header';
 
 export default Header;
-
-// add right/left sections

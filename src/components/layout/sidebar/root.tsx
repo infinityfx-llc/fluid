@@ -9,14 +9,13 @@ import Scrollarea from '../scrollarea';
 import useFluid from '@/src/hooks/use-fluid';
 import { classes } from '@/src/core/utils';
 
-export type SidebarProps = {
-    styles?: FluidStyles;
-    header?: boolean | FluidSize;
-    collapsed?: boolean;
-    onCollapse?: (value: boolean) => void;
-} & React.HTMLAttributes<HTMLElement>;
-
-const Root = forwardRef(({ children, styles = {}, header, collapsed, onCollapse, ...props }: SidebarProps, ref: React.ForwardedRef<HTMLElement>) => {
+const Root = forwardRef(({ children, styles = {}, header = 'med', collapsed, onCollapse, ...props }:
+    {
+        styles?: FluidStyles;
+        header?: FluidSize;
+        collapsed?: boolean;
+        onCollapse?: (value: boolean) => void;
+    } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
     const fluid = useFluid();
     const [isCollapsed, setCollapsed] = collapsed !== undefined ? [collapsed] : useState(false);
 
@@ -48,7 +47,7 @@ const Root = forwardRef(({ children, styles = {}, header, collapsed, onCollapse,
         },
 
         '.header': {
-            height: `var(--f-header-${header || 'sml'})`,
+            height: `var(--f-header-${header})`,
             display: 'flex',
             alignItems: 'center',
             paddingInline: '1em'
@@ -91,5 +90,3 @@ const Root = forwardRef(({ children, styles = {}, header, collapsed, onCollapse,
 Root.displayName = 'Sidebar.Root';
 
 export default Root;
-
-// open button on mobile
