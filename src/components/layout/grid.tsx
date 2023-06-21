@@ -1,6 +1,7 @@
 // 'use client';
 
 import useStyles from "@/src/hooks/use-styles";
+import { FluidSize } from "@/src/types";
 import { Children, cloneElement, forwardRef } from "react";
 
 type GridItemProps = { row?: number; col?: number; } & React.HTMLAttributes<HTMLDivElement>;
@@ -18,7 +19,7 @@ Item.displayName = 'Grid.Item';
 type GridProps = {
     children: GridItem | GridItem[];
     columns: number;
-    spacing?: 'none' | 'sml' | 'med' | 'lrg';
+    spacing?: 'none' | FluidSize;
     masonry?: boolean;
     fill?: boolean;
 } & Omit<React.HtmlHTMLAttributes<HTMLDivElement>, 'children'>;

@@ -3,7 +3,7 @@
 import { forwardRef, useRef, useState } from 'react';
 import Field, { FieldProps } from './field';
 import Button from './button';
-import { MdArrowDownward, MdCheck } from 'react-icons/md';
+import { MdCheck, MdExpandMore } from 'react-icons/md';
 import useStyles from '@/src/hooks/use-styles';
 import Halo from '../feedback/halo';
 import { FluidInputvalue, PopoverRootReference } from '@/src/types';
@@ -12,6 +12,13 @@ import { Move, Pop } from '@infinityfx/lively/animations';
 import { classes } from '@/src/core/utils';
 import Popover from '../layout/popover';
 import Scrollarea from '../layout/scrollarea';
+import Badge from '../display/badge';
+
+const BadgeStyles = {
+    '.badge': {
+        backgroundColor: 'var(--f-clr-grey-100)'
+    }
+};
 
 const Select = forwardRef(({ styles = {}, options, multiple = false, searchable, limit, emptyMessage = 'Nothing found', value, defaultValue, onChange, readOnly, ...props }:
     {
@@ -32,7 +39,7 @@ const Select = forwardRef(({ styles = {}, options, multiple = false, searchable,
             maxHeight: '10.3em',
             background: 'var(--f-clr-bg-100)',
             border: 'solid 1px var(--f-clr-grey-100)',
-            borderRadius: 'var(--f-radius-sml)',
+            borderRadius: 'calc(.15em + var(--f-radius-sml))',
             boxShadow: '0 0 8px rgb(0, 0, 0, 0.06)',
             width: '100%'
         },
@@ -98,9 +105,17 @@ const Select = forwardRef(({ styles = {}, options, multiple = false, searchable,
     const [search, setSearch] = useState<string | null>(null);
 
     const filtered = search ? options.filter(({ value }) => value?.toString().includes(search)) : options;
-    const fieldValue = Array.isArray(state) ?
-        (state.length ? `${state.length} selected` : '') :
-        state;
+    // let fieldValue;
+
+    // if (Array.isArray(state) && state.length > 0) {
+    //     if (state.length < 3) {
+    //         fieldValue = <>
+    //             {state.map(val => <Badge styles={BadgeStyles}>{val}</Badge>)}
+    //         </>;
+    //     } else {
+    //         fieldValue = <Badge styles={BadgeStyles}>{state.length} selected</Badge>;
+    //     }
+    // }
 
     return <Popover.Root ref={popover} stretch onClose={() => setSearch(null)}>
         <Popover.Trigger disabled={props.disabled || readOnly}>
@@ -110,12 +125,13 @@ const Select = forwardRef(({ styles = {}, options, multiple = false, searchable,
                 aria-autocomplete={searchable ? 'list' : 'none'}
                 aria-disabled={readOnly || props.disabled || false}
                 readOnly={!searchable || readOnly}
-                value={search !== null ? search : fieldValue}
+                value={search !== null ? search : state?.toString()}
+                // displayValue={fieldValue}
                 onChange={e => {
                     setSearch(e.target.value);
                 }}
                 right={<Button round={props.round} size={props.size} disabled={props.disabled || readOnly} variant="light" style={{ marginRight: '.3em' }}>
-                    <MdArrowDownward />
+                    <MdExpandMore />
                 </Button>} />
         </Popover.Trigger>
 

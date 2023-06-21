@@ -9,8 +9,8 @@ export type FieldProps = {
     styles?: FluidStyles;
     round?: boolean;
     size?: FluidSize;
-    error?: FluidError; 
-    icon?: React.ReactNode; 
+    error?: FluidError;
+    icon?: React.ReactNode;
     label?: string;
     left?: React.ReactNode;
     right?: React.ReactNode;
@@ -88,6 +88,10 @@ const Field = forwardRef(({ styles = {}, round = false, size = 'med', error, ico
 
         '.field[data-disabled="true"] .input': {
             color: 'var(--f-clr-grey-500)'
+        },
+
+        '.wrapper[data-size="xsm"]': {
+            fontSize: 'var(--f-font-size-xxs)'
         },
 
         '.wrapper[data-size="sml"]': {

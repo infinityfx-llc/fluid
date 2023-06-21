@@ -3,6 +3,7 @@ import { mergeRecursive, ruleToString } from "./utils";
 
 class StyleStore {
 
+    styles: { [key: string]: FluidStyles; } = {};
     rules: {
         [key: string]: {
             selectors: Selectors;
@@ -11,6 +12,18 @@ class StyleStore {
     } = {};
     version: number = 0; // stays in memory on server and client (so needs to be per page???)
     // or find alternative to this version system
+
+    add(key: string, ruleset: FluidStyles) {
+        this.styles[key] = ruleset;
+    }
+
+    compile__TEST() {
+        // feed this.styles through insert and hard code result into this.rules
+        // that way useStyles hook calling .get will return hardcodes result
+        // when using compiled mode, .serialize() can be can be hardcoded as well
+        // this serialized string can then be rendered only on the server
+        // .update() shouldnt do anything in compiled mode
+    }
 
     get(key: string) {
         return key in this.rules ? this.rules[key].selectors : null;

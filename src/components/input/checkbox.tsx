@@ -9,7 +9,13 @@ import { forwardRef, useState, useEffect } from "react";
 import Halo from "../feedback/halo";
 import useInputProps from "@/src/hooks/use-input-props";
 
-const Checkbox = forwardRef(({ styles = {}, error, size = 'med', checked, defaultChecked, ...props }: { styles?: FluidStyles; error?: FluidError; size?: FluidSize; } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Checkbox = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', checked, defaultChecked, ...props }:
+    {
+        styles?: FluidStyles;
+        error?: FluidError;
+        size?: FluidSize;
+        color?: string;
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             position: 'relative'
@@ -30,7 +36,7 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', checked, defaul
         '.wrapper[data-size="lrg"]': {
             fontSize: 'var(--f-font-size-med)'
         },
-        
+
         '.input': {
             position: 'absolute',
             opacity: 0,
@@ -42,7 +48,7 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', checked, defaul
             width: '1.5em',
             height: '1.5em',
             borderRadius: 'var(--f-radius-sml)',
-            border: 'solid 2px var(--f-clr-fg-100)',
+            border: 'solid 1px var(--f-clr-grey-100)',
             transition: 'background-color .25s, border-color .25s',
             display: 'flex',
             alignItems: 'center',
@@ -54,14 +60,14 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', checked, defaul
         },
 
         '.input:checked:enabled + .checkbox': {
-            backgroundColor: 'var(--f-clr-primary-300)',
-            borderColor: 'var(--f-clr-primary-300)'
+            backgroundColor: color,
+            borderColor: color
         },
 
         '.checkmark': {
             width: '1.1em',
             stroke: 'white',
-            strokeWidth: 3,
+            strokeWidth: 2,
             strokeLinecap: 'round',
             strokeLinejoin: 'round'
         },
@@ -88,8 +94,8 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', checked, defaul
         },
 
         '.halo': {
-            borderRadius: 'var(--f-radius-sml)',
-            inset: '-.5em'
+            borderRadius: 'var(--f-radius-sml) !important',
+            inset: '-.5em !important'
         }
     });
     const [link, setLink] = useLink(defaultChecked ? 1 : 0);

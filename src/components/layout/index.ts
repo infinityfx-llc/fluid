@@ -29,5 +29,3 @@ export {
     Popover,
     Divider
 }
-
-export * from "./sidebar";

@@ -1,21 +1,39 @@
 import { classes } from '@/src/core/utils';
 import useStyles from '@/src/hooks/use-styles';
-import { FluidError, FluidStyles } from '@/src/types';
+import { FluidError, FluidSize, FluidStyles } from '@/src/types';
 import { forwardRef } from 'react';
 import Halo from '../feedback/halo';
 import useInputProps from '@/src/hooks/use-input-props';
 
-const Switch = forwardRef(({ styles = {}, error, round = true, iconOff, iconOn, ...props }:
+const Switch = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', round = true, iconOff, iconOn, ...props }:
     {
         styles?: FluidStyles; 
-        error?: FluidError; 
+        error?: FluidError;
+        size?: FluidSize;
+        color?: string;
         round?: boolean;
         iconOff?: React.ReactNode;
         iconOn?: React.ReactNode;
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             position: 'relative'
+        },
+
+        '.wrapper[data-size="xsm"]': {
+            fontSize: 'var(--f-font-size-xxs)'
+        },
+
+        '.wrapper[data-size="sml"]': {
+            fontSize: 'var(--f-font-size-xsm)'
+        },
+
+        '.wrapper[data-size="med"]': {
+            fontSize: 'var(--f-font-size-sml)'
+        },
+
+        '.wrapper[data-size="lrg"]': {
+            fontSize: 'var(--f-font-size-med)'
         },
 
         '.input': {
@@ -32,8 +50,8 @@ const Switch = forwardRef(({ styles = {}, error, round = true, iconOff, iconOn, 
         '.switch': {
             position: 'relative',
             height: '1.5em',
-            width: '2.6em',
-            padding: '.2em',
+            width: 'calc(calc(1.5em - 6px) * 2 + 6px)',
+            padding: '3px',
             aspectRatio: 2,
             backgroundColor: 'var(--f-clr-fg-100)',
             borderRadius: 'var(--f-radius-sml)',
@@ -52,7 +70,7 @@ const Switch = forwardRef(({ styles = {}, error, round = true, iconOff, iconOn, 
 
         '.handle': {
             position: 'relative',
-            borderRadius: 'var(--f-radius-sml)',
+            borderRadius: 'calc(var(--f-radius-sml) - 1px)',
             height: '100%',
             aspectRatio: 1,
             backgroundColor: 'white',
@@ -62,7 +80,7 @@ const Switch = forwardRef(({ styles = {}, error, round = true, iconOff, iconOn, 
         },
 
         '.input:checked:enabled + .switch': {
-            backgroundColor: 'var(--f-clr-primary-300)'
+            backgroundColor: color
         },
 
         '.input:checked + .switch .handle': {
@@ -102,7 +120,7 @@ const Switch = forwardRef(({ styles = {}, error, round = true, iconOff, iconOn, 
     const [split, rest] = useInputProps(props);
 
     return <Halo className={style.halo} hover={false}>
-        <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-round={round} data-error={!!error}>
+        <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-size={size} data-round={round} data-error={!!error}>
             <input {...split} type="checkbox" className={style.input} aria-invalid={!!error} />
 
             <div className={style.switch}>

@@ -6,7 +6,7 @@ import useStyles from '@/src/hooks/use-styles';
 import { FluidSize, FluidStyles } from '@/src/types';
 import { forwardRef } from 'react';
 
-const Section = forwardRef(({ children, styles = {}, width, landing = false, header, sidebar, collapsed, ...props }:
+const Section = forwardRef(({ children, styles = {}, width, landing = false, header='med', sidebar, collapsed, ...props }:
     {
         styles?: FluidStyles;
         width: FluidSize;

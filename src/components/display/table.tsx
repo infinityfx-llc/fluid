@@ -3,21 +3,25 @@
 import { classes } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
-import { forwardRef, useState } from "react";
+import { forwardRef, useState, Fragment } from "react";
 import { Halo } from "../feedback";
 import { Scrollarea } from "../layout";
 import { Button, Checkbox } from "../input";
 import { MdArrowDownward, MdArrowUpward, MdMoreVert, MdRemove, MdSort, MdSwapVert } from "react-icons/md";
 import ActionMenu, { ActionMenuOption } from "./action-menu";
 
-const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, rowActions, ...props }:
+const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, rowActions, columnFormatters = {}, ...props }:
     {
         styles?: FluidStyles;
         data: { [key: string]: string | number; }[];
         columns: string[];
         selectable?: boolean;
+        onSelect?: (selected: number[]) => void;
         sortable?: boolean | string[];
         rowActions?: ActionMenuOption[];
+        columnFormatters?: {
+            [column: string]: React.JSXElementConstructor<React.HTMLAttributes<any>> | keyof React.ReactHTML;
+        };
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
 
     const style = useStyles(styles, {
@@ -95,17 +99,11 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
 
     const gridTemplateColumns = `${selectable ? 'auto' : ''} repeat(${columns.length}, 1fr) ${rowActions?.length ? 'auto' : ''}`;
 
-    const CheckboxStyles = {
+    const CheckboxStyles = { // merge with styles prop (also do for other components)
         '.checkbox': {
-            borderColor: 'var(--f-clr-grey-300) !important',
-            borderWidth: '1px !important'
+            border: 'solid 1px var(--f-clr-grey-300)'
         },
-
-        '.input:checked:enabled + .checkbox': {
-            backgroundColor: 'var(--f-clr-text-100)',
-            borderColor: 'var(--f-clr-text-100) !important'
-        },
-
+        
         '.checkmark': {
             stroke: 'var(--f-clr-text-200)'
         }
@@ -115,7 +113,7 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
         <div role="rowgroup" className={style.rows}>
             <div role="rowheader" className={classes(style.row, style.header)} style={{ gridTemplateColumns }}>
                 {selectable && <div className={style.collapsed}>
-                    <Checkbox size="xsm" styles={CheckboxStyles} checked={selected.length === rows.length} onChange={e => {
+                    <Checkbox size="xsm" color="var(--f-clr-text-100)" styles={CheckboxStyles} checked={selected.length === rows.length} onChange={e => {
                         if (!e.target.checked) return setSelected({ length: 0 });
 
                         for (let i = 0; i < rows.length; i++) selected[i] = true;
@@ -160,7 +158,7 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
                 return <Halo key={i} disabled={!selectable}>
                     <label role="row" className={style.row} style={{ gridTemplateColumns }}>
                         {selectable && <div className={style.collapsed}>
-                            <Checkbox size="xsm" styles={CheckboxStyles} checked={!!selected[i]} onChange={e => {
+                            <Checkbox size="xsm" color="var(--f-clr-text-100)" styles={CheckboxStyles} checked={!!selected[i]} onChange={e => {
                                 selected[i] = e.target.checked;
                                 (selected.length as number) += e.target.checked ? 1 : -1;
 
@@ -169,8 +167,13 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
                         </div>}
 
                         {columns.map((col, i) => {
+                            const Wrapper = columnFormatters[col] || Fragment;
 
-                            return <div key={i} role="gridcell">{row[col]}</div>;
+                            return <div key={i} role="gridcell">
+                                <Wrapper>
+                                    {row[col]}
+                                </Wrapper>
+                            </div>;
                         })}
 
                         {rowActions?.length ? <div className={style.collapsed}>
@@ -192,4 +195,4 @@ Table.displayName = 'Table';
 export default Table;
 
 // fix row actions with index
-// support react components as data
+// support react components with formatter prop (or something similar)

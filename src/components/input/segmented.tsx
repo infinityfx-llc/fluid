@@ -6,9 +6,10 @@ import { forwardRef, useId, useState } from "react";
 import { Morph } from '@infinityfx/lively/layout';
 import { classes } from "@/src/core/utils";
 
-const Segmented = forwardRef(({ styles = {}, round = false, options, name, value, defaultValue, onChange, error, ...props }:
+const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false, options, name, value, defaultValue, onChange, error, ...props }:
     {
         styles?: FluidStyles;
+        variant?: 'default' | 'neutral';
         round?: boolean;
         options: { label: React.ReactNode; value: FluidInputvalue; disabled?: boolean; }[];
         name?: string;
@@ -55,11 +56,7 @@ const Segmented = forwardRef(({ styles = {}, round = false, options, name, value
         },
 
         '.option:focus-visible': {
-            backgroundColor: 'var(--f-clr-primary-400)'
-        },
-
-        '.option:focus-visible .selection': {
-            backgroundColor: 'var(--f-clr-primary-400)'
+            outline: 'solid 2px var(--f-clr-grey-700)'
         },
 
         '.content': {
@@ -73,10 +70,15 @@ const Segmented = forwardRef(({ styles = {}, round = false, options, name, value
 
         '.selection': {
             position: 'absolute',
-            inset: 0,
-            backgroundColor: 'var(--f-clr-primary-300)',
+            inset: '1px',
+            backgroundColor: 'var(--f-clr-primary-200)',
             borderRadius: 'var(--f-radius-sml)',
             boxShadow: '0 0 8px rgb(0, 0, 0, .08)'
+        },
+
+        '.segmented[data-variant="neutral"] .selection': {
+            backgroundColor: 'var(--f-clr-bg-100)',
+            border: 'solid 1px var(--f-clr-grey-100)'
         },
 
         '.segmented[data-round="true"] .selection': {
@@ -91,7 +93,7 @@ const Segmented = forwardRef(({ styles = {}, round = false, options, name, value
     const [state, setState] = value !== undefined ? [value] : useState(defaultValue || options[0]?.value);
     const id = useId();
 
-    return <div ref={ref} {...props} role="radiogroup" className={classes(style.segmented, props.className)} data-round={round} data-error={!!error}>
+    return <div ref={ref} {...props} role="radiogroup" className={classes(style.segmented, props.className)} data-variant={variant} data-round={round} data-error={!!error}>
         {options.map(({ label, value: option, disabled = false }, i) => {
 
             return <button key={i} className={style.option} type="button" role="radio" aria-checked={state === option} disabled={disabled} onClick={() => {

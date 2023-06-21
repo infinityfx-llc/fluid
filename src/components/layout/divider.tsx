@@ -1,3 +1,5 @@
+// 'use client';
+
 import { classes } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
 import { FluidSize, FluidStyles } from "@/src/types";

@@ -3,11 +3,11 @@ import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
 import { forwardRef } from "react";
 
-const Badge = forwardRef(({ children, styles = {}, round = false, color, ...props }: { children: string; styles?: FluidStyles; round?: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Badge = forwardRef(({ children, styles = {}, round = false, color, ...props }: { styles?: FluidStyles; round?: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.badge': {
             fontSize: 'var(--f-font-size-xxs)',
-            fontWeight: 800,
+            fontWeight: 700,
             color: 'var(--f-clr-text-100)',
             textTransform: 'uppercase',
             backgroundColor: 'var(--f-clr-primary-400)',
