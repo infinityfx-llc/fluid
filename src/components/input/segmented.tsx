@@ -21,7 +21,7 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false,
     const style = useStyles(styles, {
         '.segmented': {
             padding: '.3em',
-            borderRadius: 'calc(var(--f-radius-sml) + .15em)',
+            borderRadius: 'calc(var(--f-radius-sml) + .3em)',
             backgroundColor: 'var(--f-clr-fg-100)',
             display: 'flex'
         },
