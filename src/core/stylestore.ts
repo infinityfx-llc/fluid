@@ -3,15 +3,15 @@ import { mergeRecursive, ruleToString } from "./utils";
 
 class StyleStore {
 
+    synchronized = false;
     styles: { [key: string]: FluidStyles; } = {};
     rules: {
         [key: string]: {
             selectors: Selectors;
             rules: string;
+            injected: boolean;
         }
     } = {};
-    version: number = 0; // stays in memory on server and client (so needs to be per page???)
-    // or find alternative to this version system
 
     add(key: string, ruleset: FluidStyles) {
         this.styles[key] = ruleset;
@@ -26,7 +26,7 @@ class StyleStore {
     }
 
     get(key: string) {
-        return key in this.rules ? this.rules[key].selectors : null;
+        return this.rules[key]?.selectors || null;
     }
 
     has(key: string) {
@@ -43,9 +43,9 @@ class StyleStore {
 
         this.rules[key] = {
             selectors,
-            rules
+            rules,
+            injected: this.rules[key]?.injected || false
         };
-        this.version++;
 
         this.update();
 
@@ -93,14 +93,30 @@ class StyleStore {
             (document.head || document.getElementsByName('head')[0]).appendChild(tag);
         }
 
-        const version = parseInt(tag.innerText.match(/\/\*(\d+)\*\//)?.[1] || '0');
-        if (version < this.version) tag.innerText = this.serialize();
+        if (!this.synchronized) {
+            const header = (tag.innerText.match(/\/\*(.+?)\*\//)?.[1] || '').split(',');
+            header.forEach(key => {
+                key in this.rules ? this.rules[key].injected = true : this.rules[key] = { injected: true } as any;
+            });
+
+            this.synchronized = true;
+        }
+
+        let styles = '';
+        for (const key in this.rules) {
+            if (this.rules[key].injected) continue;
+
+            this.rules[key].injected = true;
+            styles += this.rules[key].rules;
+        }
+
+        if (styles) tag.innerText += styles;
     }
 
     serialize() {
         const styles = Object.values(this.rules).reduce((str, { rules }) => str + rules, '');
 
-        return `/*${this.version}*/${styles}`;
+        return `/*${Object.keys(this.rules)}*/${styles}`;
     }
 
 }

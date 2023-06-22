@@ -19,8 +19,8 @@ const Swatch = forwardRef(({ styles = {}, size = 'med', round = false, color, ..
             position: 'absolute',
             inset: 0,
             background: 'linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%),linear-gradient(45deg, #eee 25%, #fff 25%, #fff 75%, #eee 75%, #eee 100%)',
-            backgroundPosition: '0 0, 1rem 1rem',
-            backgroundSize: '2rem 2rem',
+            backgroundPosition: '0 0, 1em 1em',
+            backgroundSize: '2em 2em',
             backgroundRepeat: 'repeat',
             zIndex: -1
         },

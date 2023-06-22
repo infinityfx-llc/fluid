@@ -1,9 +1,8 @@
-'use client'; // CHECK WHY THIS IS NECESSARY!!!
-
 import FluidStyleStore from "../core/stylestore";
+import ClientFluidStyles from "./test";
 
 export default function FluidStyles() {
 
     // @ts-expect-error
-    return <style precedence="default" href="fluid__styles" dangerouslySetInnerHTML={{ __html: FluidStyleStore.serialize() }} />;
+    return <><style precedence="fluid__server" href="fluid__server__styles" dangerouslySetInnerHTML={{ __html: FluidStyleStore.serialize() }} /><ClientFluidStyles /></>;
 }
