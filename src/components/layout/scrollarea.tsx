@@ -153,9 +153,10 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
 
         const size = horizontal ? el.offsetWidth / el.scrollWidth : el.offsetHeight / el.scrollHeight;
         handle.current.style[horizontal ? 'width' : 'height'] = size * 100 + '%';
+        handle.current.style.translate = '0px 0px';
         setScrollable(size < 1);
 
-        scroll(-Number.MAX_VALUE); // TEMP
+        scroll(0);
     }
 
     useDomEffect(() => {
