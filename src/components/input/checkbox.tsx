@@ -41,6 +41,8 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--
             position: 'absolute',
             opacity: 0,
             inset: 0,
+            width: '100%',
+            height: '100%',
             zIndex: 1
         },
 

@@ -26,11 +26,13 @@ FluidStyleStore.add('radio', {
     '.wrapper[data-size="lrg"]': {
         fontSize: 'var(--f-font-size-med)'
     },
-    
+
     '.input': {
         position: 'absolute',
         opacity: 0,
         inset: 0,
+        width: '100%',
+        height: '100%',
         zIndex: 1
     },
 
