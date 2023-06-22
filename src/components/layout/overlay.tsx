@@ -35,8 +35,12 @@ export default function Overlay({ children, show, onClose }: { children?: React.
     useEffect(() => {
         if (mounted && show) {
             document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
         } else
-            if (!show) document.body.style.overflow = '';
+            if (!show) {
+                document.body.style.overflow = '';
+                document.documentElement.style.overflow = '';
+            }
         setMounted(true);
 
         function keypress(e: KeyboardEvent) {

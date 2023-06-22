@@ -16,7 +16,6 @@ export default {
     body: {
         fontFamily: 'var(--f-font-family)',
         backgroundColor: 'var(--f-clr-bg-100)',
-        maxHeight: '100vh',
         overflowY: 'auto'
     },
 
