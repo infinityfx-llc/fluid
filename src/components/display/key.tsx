@@ -20,7 +20,7 @@ const Key = forwardRef(({ children, styles = {}, ...props }: { children: string;
             content: '""',
             position: 'absolute',
             backgroundColor: 'var(--f-clr-grey-200)',
-            borderRadius: 'calc(var(--f-radius-sml) - 1px)',
+            borderRadius: 'calc(var(--f-radius-sml) - 2px)',
             inset: '2px 2px calc(2px + .2em) 2px',
             zIndex: -1
         }

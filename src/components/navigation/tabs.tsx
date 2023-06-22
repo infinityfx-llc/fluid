@@ -39,12 +39,11 @@ const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, def
         },
 
         '.option': {
-            position: 'relative',
-            padding: '.6em 0'
+            position: 'relative'
         },
 
-        '.wrapper[data-variant="minimal"] .option': {
-            padding: '.6em'
+        '.wrapper[data-variant="default"] .option': {
+            padding: '.6em 0'
         },
 
         '.selection': {
@@ -69,6 +68,10 @@ const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, def
             fontWeight: 600
         },
 
+        '.wrapper[data-variant="minimal"] .button': {
+            padding: '.8em 1.2em'
+        },
+
         '.button:enabled': {
             cursor: 'pointer'
         },
@@ -87,7 +90,7 @@ const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, def
                 {options.map(({ label, value, disabled, panelId }, i) => {
 
                     return <div key={i} className={style.option}>
-                        <Halo disabled={disabled} color="var(--f-clr-primary-200)">
+                        <Halo disabled={disabled} color={variant === 'default' ? 'var(--f-clr-primary-200)' : undefined}>
                             <button role={panelId ? 'tab' : 'none'} aria-selected={state === value} aria-controls={panelId} className={style.button} disabled={disabled} onClick={() => {
                                 setState?.(value);
                                 onChange?.(value);
