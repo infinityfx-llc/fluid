@@ -14,6 +14,7 @@ const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, def
             label: string;
             value: FluidInputvalue;
             disabled?: boolean;
+            panelId?: string;
         }[];
         styles?: FluidStyles;
         variant?: 'default' | 'minimal';
@@ -82,11 +83,12 @@ const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, def
 
     return <div ref={ref} {...props} className={classes(style.wrapper, props.className)} data-variant={variant}>
         <Scrollarea horizontal>
-            <div className={style.tabs}>
-                {options.map(({ label, value, disabled }, i) => {
+            <div className={style.tabs} role="tablist">
+                {options.map(({ label, value, disabled, panelId }, i) => {
+
                     return <div key={i} className={style.option}>
                         <Halo disabled={disabled} color="var(--f-clr-primary-200)">
-                            <button className={style.button} disabled={disabled} onClick={() => {
+                            <button role={panelId ? 'tab' : 'none'} aria-selected={state === value} aria-controls={panelId} className={style.button} disabled={disabled} onClick={() => {
                                 setState?.(value);
                                 onChange?.(value);
                             }}>

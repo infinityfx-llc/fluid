@@ -86,7 +86,7 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false,
             outline: 'solid 2px var(--f-clr-error-300)'
         },
 
-        '.halo': {
+        '.option[aria-checked="true"] .halo': {
             inset: '-.5em'
         }
     });

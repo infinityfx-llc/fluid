@@ -7,7 +7,7 @@ import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { forwardRef, useEffect } from "react";
 
-const ProgressBar = forwardRef(({ styles = {}, size = 'med', value, defaultValue, color, ...props }: { styles?: FluidStyles; size?: FluidSize; value?: number; defaultValue?: number; color?: string; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const ProgressBar = forwardRef(({ styles = {}, size = 'med', value, defaultValue = 0, color, ...props }: { styles?: FluidStyles; size?: FluidSize; value?: number; defaultValue?: number; color?: string; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.track': {
             height: '.4em',
@@ -38,13 +38,12 @@ const ProgressBar = forwardRef(({ styles = {}, size = 'med', value, defaultValue
         }
     });
 
-    const [link, setLink] = useLink((value !== undefined ? value : defaultValue) || 0);
+    const state = value !== undefined ? value : defaultValue;
+    const [link, setLink] = useLink(state);
 
-    useEffect(() => {
-        if (value !== undefined) setLink(value, .3);
-    }, [value]);
+    useEffect(() => setLink(state, .3), [state]);
 
-    return <div ref={ref} {...props} className={classes(style.track, props.className)} data-size={size}>
+    return <div ref={ref} {...props} role="progressbar" aria-valuenow={state * 100} className={classes(style.track, props.className)} data-size={size}>
         <Animatable animate={{ scale: link(val => `${val} 1`) }} initial={{ scale: `${link()} 1` }} deform={false}>
             <div className={style.progress} style={{ backgroundColor: color }} />
         </Animatable>

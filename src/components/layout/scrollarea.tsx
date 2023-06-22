@@ -206,5 +206,3 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
 Scrollarea.displayName = 'Scrollarea';
 
 export default Scrollarea;
-
-// when no scrollbars visible wheel event doesnt cascade

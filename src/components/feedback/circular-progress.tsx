@@ -7,7 +7,7 @@ import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { forwardRef, useEffect } from "react";
 
-const CircularProgress = forwardRef(({ styles = {}, size = 'med', slice = 0, value, defaultValue, color, ...props }: { styles?: FluidStyles; size?: FluidSize; slice?: number; value?: number; defaultValue?: number; color?: string; } & Omit<React.HTMLAttributes<SVGSVGElement>, 'children' | 'defaultValue'>, ref: React.ForwardedRef<SVGSVGElement>) => {
+const CircularProgress = forwardRef(({ styles = {}, size = 'med', slice = 0, value, defaultValue = 0, color, ...props }: { styles?: FluidStyles; size?: FluidSize; slice?: number; value?: number; defaultValue?: number; color?: string; } & Omit<React.HTMLAttributes<SVGSVGElement>, 'children' | 'defaultValue'>, ref: React.ForwardedRef<SVGSVGElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             width: '3.2em'
@@ -40,13 +40,12 @@ const CircularProgress = forwardRef(({ styles = {}, size = 'med', slice = 0, val
         }
     });
 
-    const [link, setLink] = useLink((value !== undefined ? value : defaultValue) || 0);
+    const state = value !== undefined ? value : defaultValue;
+    const [link, setLink] = useLink(state);
 
-    useEffect(() => {
-        if (value !== undefined) setLink(value, .3);
-    }, [value]);
+    useEffect(() => setLink(state, .3), [state]);
 
-    return <svg ref={ref} {...props} viewBox="0 0 100 100" className={classes(style.wrapper, props.className)} style={{ ...props.style, rotate: `${90 + 180 * slice}deg` }} data-size={size}>
+    return <svg ref={ref} {...props} viewBox="0 0 100 100" role="progressbar" aria-valuenow={state * 100} className={classes(style.wrapper, props.className)} style={{ ...props.style, rotate: `${90 + 180 * slice}deg` }} data-size={size}>
         <circle r={45} cx={50} cy={50} fill="none" className={style.track} pathLength={1} style={{ strokeDashoffset: slice }} />
 
         <Animatable animate={{ strokeLength: link(val => val * (1 - slice)) }} initial={{ strokeDashoffset: 1 - (link() * (1 - slice)) }}>

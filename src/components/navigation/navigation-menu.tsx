@@ -108,6 +108,8 @@ const NavigationMenu = forwardRef(({ styles = {}, links, selected = -1, Link = '
 
             return <div key={i} className={style.container}>
                 <Link href={href} className={style.link}
+                    aria-expanded={links ? showMenu : undefined}
+                    aria-controls={links ? i + id : undefined}
                     onMouseEnter={() => update(i)}
                     onFocus={() => update(i)}>
                     {label}
@@ -118,7 +120,7 @@ const NavigationMenu = forwardRef(({ styles = {}, links, selected = -1, Link = '
                 </Link>
 
                 {links && <Morph id={`fluid-header-navigation-menu-${id}`} shown={showMenu} include={['translate', 'scale']} deform={false} transition={{ duration: .35 }}>
-                    <div className={style.menu}>
+                    <div className={style.menu} id={i + id}>
                         <Animatable noInherit
                             stagger={.06}
                             animations={{

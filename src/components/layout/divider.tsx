@@ -41,7 +41,7 @@ const Divider = forwardRef(({ styles = {}, vertical = false, label, labelPositio
         },
     });
 
-    return <div ref={ref} {...props} className={classes(style.divider, props.className)} data-vertical={vertical}>
+    return <div ref={ref} {...props} role="separator" aria-orientation={vertical ? 'vertical' : 'horizontal'} className={classes(style.divider, props.className)} data-vertical={vertical}>
         {label && labelPosition !== 'start' && <div className={style.line} />}
 
         {label}

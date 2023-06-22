@@ -26,7 +26,7 @@ const Header = forwardRef(({ children, styles = {}, variant = 'default', size = 
             position: 'fixed',
             top: 0,
             left: 0,
-            width: '100vw',
+            width: '100%',
             height: `var(--f-header-${size})`,
             display: 'flex',
             zIndex: 250
@@ -57,6 +57,7 @@ const Header = forwardRef(({ children, styles = {}, variant = 'default', size = 
             display: 'flex',
             alignItems: 'center',
             gap: 'var(--f-spacing-lrg)',
+            flexGrow: 1
         },
 
         [`@media(min-width: ${fluid.breakpoints[1] + 1}px)`]: {
