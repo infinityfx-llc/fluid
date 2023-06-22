@@ -5,6 +5,7 @@ import { FluidError, FluidInputvalue, FluidStyles } from "@/src/types";
 import { forwardRef, useId, useState } from "react";
 import { Morph } from '@infinityfx/lively/layout';
 import { classes } from "@/src/core/utils";
+import { Halo } from "../feedback";
 
 const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false, options, name, value, defaultValue, onChange, error, ...props }:
     {
@@ -55,10 +56,6 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false,
             color: 'var(--f-clr-grey-500)'
         },
 
-        '.option:focus-visible': {
-            outline: 'solid 2px var(--f-clr-grey-700)'
-        },
-
         '.content': {
             position: 'relative',
             zIndex: 1,
@@ -70,7 +67,7 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false,
 
         '.selection': {
             position: 'absolute',
-            inset: '1px',
+            inset: '0',
             backgroundColor: 'var(--f-clr-primary-200)',
             borderRadius: 'var(--f-radius-sml)',
             boxShadow: '0 0 8px rgb(0, 0, 0, .08)'
@@ -87,6 +84,10 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false,
 
         '.segmented[data-error="true"]': {
             outline: 'solid 2px var(--f-clr-error-300)'
+        },
+
+        '.halo': {
+            inset: '-.5em'
         }
     });
 
@@ -96,17 +97,19 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false,
     return <div ref={ref} {...props} role="radiogroup" className={classes(style.segmented, props.className)} data-variant={variant} data-round={round} data-error={!!error}>
         {options.map(({ label, value: option, disabled = false }, i) => {
 
-            return <button key={i} className={style.option} type="button" role="radio" aria-checked={state === option} disabled={disabled} onClick={() => {
-                setState?.(option);
-                onChange?.(option);
-            }}>
-                <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
-                <span className={style.content}>{label}</span>
+            return <Halo key={i} hover={false} className={style.halo}>
+                <button className={style.option} type="button" role="radio" aria-checked={state === option} disabled={disabled} onClick={() => {
+                    setState?.(option);
+                    onChange?.(option);
+                }}>
+                    <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
+                    <span className={style.content}>{label}</span>
 
-                <Morph id={`segmented-selection-${id}`} shown={state === option} include={['translate', 'scale']} deform={false} transition={{ duration: .4 }}>
-                    <div className={style.selection} />
-                </Morph>
-            </button>;
+                    <Morph id={`segmented-selection-${id}`} shown={state === option} include={['translate', 'scale']} deform={false} transition={{ duration: .4 }}>
+                        <div className={style.selection} />
+                    </Morph>
+                </button>
+            </Halo>;
         })}
     </div>
 });

@@ -7,7 +7,7 @@ import useInputProps from '@/src/hooks/use-input-props';
 
 const Switch = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', round = true, iconOff, iconOn, ...props }:
     {
-        styles?: FluidStyles; 
+        styles?: FluidStyles;
         error?: FluidError;
         size?: FluidSize;
         color?: string;
@@ -61,11 +61,24 @@ const Switch = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-
         '.icons': {
             position: 'absolute',
             inset: 0,
+            display: 'flex'
+        },
+
+        '.icon': {
+            flexGrow: 1,
+            flexBasis: 0,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-around',
-            fontSize: '.8em',
-            color: 'var(--f-clr-text-100)'
+            justifyContent: 'center',
+            fontSize: '.75em'
+        },
+
+        '.icon:first-child': {
+            color: 'white'
+        },
+
+        '.icon:last-child': {
+            color: 'var(--f-clr-grey-400)'
         },
 
         '.handle': {
@@ -125,9 +138,13 @@ const Switch = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-
 
             <div className={style.switch}>
                 <div className={style.icons}>
-                    {iconOn}
+                    <div className={style.icon}>
+                        {iconOn}
+                    </div>
 
-                    {iconOff}
+                    <div className={style.icon}>
+                        {iconOff}
+                    </div>
                 </div>
 
                 <div className={style.handle} />
