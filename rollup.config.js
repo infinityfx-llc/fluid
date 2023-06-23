@@ -42,6 +42,7 @@ export default [
     },
     {
         input: ['bin/cli.ts'],
+        external: ['react', 'react-dom', 'react/jsx-runtime', /@infinityfx\/lively/, 'react-icons'],
         output: {
             dir: 'dist',
             format: 'es',
@@ -54,6 +55,12 @@ export default [
             typescript({ tsconfig: './tsconfig.json' }),
             preserveShebangs(),
             terser()
-        ]
+        ],
+        onwarn: (msg, handler) => {
+            if (msg.code === 'THIS_IS_UNDEFINED') return;
+            if (msg.code === 'MODULE_LEVEL_DIRECTIVE') return;
+
+            handler(msg);
+        }
     }
 ]
