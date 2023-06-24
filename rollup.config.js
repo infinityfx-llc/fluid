@@ -21,10 +21,12 @@ if (process.env.NODE_ENV === 'production') {
     }));
 }
 
+const external = ['react', /react-dom/, 'react/jsx-runtime', /@infinityfx\/lively/, 'react-icons']; // add focus-trap and react-icons
+
 export default [
     {
         input: ['src/index.ts', 'src/hooks.ts', 'src/server.ts'],
-        external: ['react', 'react-dom', 'react/jsx-runtime', /@infinityfx\/lively/, 'react-icons'],
+        external,
         output: {
             dir: 'dist',
             format: 'es',
@@ -42,7 +44,7 @@ export default [
     },
     {
         input: ['bin/cli.ts'],
-        external: ['react', 'react-dom', 'react/jsx-runtime', /@infinityfx\/lively/, 'react-icons'],
+        external,
         output: {
             dir: 'dist',
             format: 'es',
