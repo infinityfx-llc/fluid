@@ -35,7 +35,7 @@ const Modal = forwardRef(({ children, styles = {}, show, onClose, title, ...prop
             color: 'var(--f-clr-text-100)'
         },
 
-        [`@media (max-width: ${fluid.breakpoints[0]}px)`]: {
+        [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {
             '.modal': {
                 width: '100vw',
                 bottom: 0,

@@ -89,11 +89,6 @@ FluidStyleStore.add('radio', {
 
     '.wrapper[data-error="true"] .input:checked:enabled + .radio': {
         backgroundColor: 'var(--f-clr-error-200)'
-    },
-
-    '.halo': {
-        borderRadius: '999px !important',
-        inset: '-.5em !important'
     }
 });
 
@@ -102,7 +97,7 @@ const Radio = forwardRef(({ styles = {}, error, size = 'med', ...props }: { styl
 
     const [split, rest] = useInputProps(props);
 
-    return <Halo className={style.halo} hover={false}>
+    return <Halo hover={false} styles={{ '.halo': { borderRadius: '999px', inset: '-.5em' } }}>
         <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-size={size} data-error={!!error}>
             <input {...split} type="radio" className={style.input} aria-invalid={!!error} />
 

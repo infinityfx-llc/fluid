@@ -122,11 +122,6 @@ const Switch = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-
             backgroundColor: 'var(--f-clr-grey-200)'
         },
 
-        '.halo': {
-            borderRadius: 'var(--f-radius-sml)',
-            inset: '-.5em'
-        },
-
         '.wrapper[data-round="true"] .halo': {
             borderRadius: '999px'
         }
@@ -134,7 +129,7 @@ const Switch = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-
 
     const [split, rest] = useInputProps(props);
 
-    return <Halo className={style.halo} hover={false}>
+    return <Halo hover={false} styles={{ '.halo': { borderRadius: 'var(--f-radius-sml)', inset: '-.5em' } }}>
         <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-size={size} data-round={round} data-error={!!error}>
             <input {...split} type="checkbox" className={style.input} aria-invalid={!!error} />
 

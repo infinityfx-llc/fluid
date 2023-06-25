@@ -49,10 +49,10 @@ export function emitCSS(Component: React.JSXElementConstructor<any>, content: st
             const [key, store] = rule;
             content = content.slice(0, match.index) + `${JSON.stringify(store.selectors)};` + content.slice(match.index + match[0].length);
 
-            const cssInsert = content.match(/(?:(?:'|")use\sclient(?:'|");)?()/s);
+            const cssInsert = content.match(/(?:(?:'|")use\sclient(?:'|");\n?)?()/s);
             if (cssInsert?.index !== undefined) {
                 const idx = cssInsert.index + cssInsert[0].length;
-                content = content.slice(0, idx) + `import './${key}.css';` + content.slice(idx);
+                content = content.slice(0, idx) + `import"./${key}.css";` + content.slice(idx);
             }
 
 

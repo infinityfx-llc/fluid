@@ -115,10 +115,6 @@ const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, alwaysS
             height: '.8em'
         },
 
-        '.halo': {
-            inset: '-.5em'
-        },
-
         '.handle[aria-disabled="true"]::after': {
             backgroundColor: 'var(--f-clr-grey-200)'
         },
@@ -230,7 +226,7 @@ const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, alwaysS
                 const val = values[i];
 
                 return <Tooltip key={i} delay={0} content={formatTooltip ? formatTooltip(round(val, 2)) : round(val, 2)} alwaysVisible={alwaysShowTooltips} position={vertical ? 'right' : 'bottom'}>
-                    <Halo className={style.halo} disabled={props.disabled}>
+                    <Halo disabled={props.disabled} styles={{ '.halo': { inset: '-.5em' } }}>
                         <div className={style.handle} role="slider" tabIndex={props.disabled ? -1 : 0} aria-disabled={!!props.disabled}
                             onMouseDown={e => {
                                 e.stopPropagation();

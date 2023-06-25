@@ -97,7 +97,7 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false,
     return <div ref={ref} {...props} role="radiogroup" className={classes(style.segmented, props.className)} data-variant={variant} data-round={round} data-error={!!error}>
         {options.map(({ label, value: option, disabled = false }, i) => {
 
-            return <Halo key={i} hover={false} className={style.halo}>
+            return <Halo key={i} hover={false} styles={{ [`:global(.${style.option})[aria-checked="true"] .halo`]: { inset: '-.5em' } }}>
                 <button className={style.option} type="button" role="radio" aria-checked={state === option} disabled={disabled} onClick={() => {
                     setState?.(option);
                     onChange?.(option);

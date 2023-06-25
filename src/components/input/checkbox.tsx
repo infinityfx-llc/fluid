@@ -93,11 +93,6 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--
 
         '.wrapper[data-error="true"] .input:checked:enabled + .checkbox': {
             backgroundColor: 'var(--f-clr-error-200)'
-        },
-
-        '.halo': {
-            borderRadius: 'var(--f-radius-sml) !important',
-            inset: '-.5em !important'
         }
     });
     const [link, setLink] = useLink(defaultChecked ? 1 : 0);
@@ -107,7 +102,7 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--
 
     useEffect(() => setLink(state ? 1 : 0, .25), [state]);
 
-    return <Halo className={style.halo} hover={false}>
+    return <Halo hover={false} styles={{ '.halo': { borderRadius: 'var(--f-radius-sml)', inset: '-.5em' } }}>
         <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-error={!!error} data-size={size}>
             <input {...split} checked={state} type="checkbox" className={style.input} aria-invalid={!!error} onChange={e => {
                 setState?.(e.target.checked);

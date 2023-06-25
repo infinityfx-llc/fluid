@@ -1,4 +1,4 @@
-import { FluidStyles } from "../types";
+import { FluidBreakpoint, FluidStyles } from "../types";
 
 export type PartialFluidTheme = {
     palettes?: {
@@ -41,7 +41,9 @@ export type PartialFluidTheme = {
             xxl?: string;
         }
     },
-    breakpoints?: number[]
+    breakpoints?: {
+        [key in FluidBreakpoint]?: number;
+    }
 };
 
 export type FluidTheme = {
@@ -85,7 +87,9 @@ export type FluidTheme = {
             xxl: string;
         }
     },
-    breakpoints: number[]
+    breakpoints: {
+        [key in FluidBreakpoint]: number;
+    }
 }
 
 export const DEFAULT_THEME = {
@@ -138,7 +142,12 @@ export const DEFAULT_THEME = {
             xxl: '4rem'
         }
     },
-    breakpoints: [480, 768, 1024, 1200]
+    breakpoints: {
+        mob: 480, 
+        tab: 768, 
+        lap: 1024, 
+        dsk: 1200
+    }
 }
 
 function insertVariables(prefix: string, map: { [key: string]: any } | any[], variables: { [key: string]: string }) {

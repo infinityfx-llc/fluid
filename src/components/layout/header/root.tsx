@@ -71,7 +71,7 @@ const Root = forwardRef(({ children, styles = {}, variant = 'default', size = 'm
             flexGrow: 1
         },
 
-        [`@media(min-width: ${fluid.breakpoints[1] + 1}px)`]: {
+        [`@media(min-width: ${fluid.breakpoints.tab + 1}px)`]: {
             '.header[data-sidebar="collapsed"] .left': {
                 width: `max(calc(5rem + var(--f-spacing-lrg)), var(--f-page-${width}))`
             },

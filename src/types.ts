@@ -12,6 +12,8 @@ export type Selectors<T extends string = any> = {
 
 export type FluidSize = 'xsm' | 'sml' | 'med' | 'lrg';
 
+export type FluidBreakpoint = 'mob' | 'tab' | 'lap' | 'dsk';
+
 export type FluidInputvalue = string | number | readonly string[] | undefined;
 
 export type FluidError = null | boolean | string;

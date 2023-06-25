@@ -107,33 +107,31 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, ...pr
                         if (typeof option === 'string') return <div key={i} className={style.title}>{option}</div>;
 
                         const { label, onClick, disabled = false, shouldClose = true, options } = option;
-                        return <div key={i}>
-                            <Halo disabled={disabled}>
-                                <button role="menuitem" className={style.option} disabled={disabled} onClick={() => {
-                                    if (shouldClose) popover.current?.close();
-                                    onClick?.();
-                                }}>
-                                    {label}
+                        return <Halo key={i} disabled={disabled}>
+                            <button role="menuitem" className={style.option} disabled={disabled} onClick={() => {
+                                if (shouldClose) popover.current?.close();
+                                onClick?.();
+                            }}>
+                                {label}
 
-                                    {options && <MdChevronRight style={{ marginLeft: 'auto' }} />}
+                                {options && <MdChevronRight style={{ marginLeft: 'auto' }} />}
 
-                                    {options && <div className={classes(style.submenu, style.menu)}>
-                                        {options.map(({ label, disabled, onClick, shouldClose }, i) => {
-                                            return <Halo key={i} disabled={disabled}>
-                                                <button className={style.option} disabled={disabled} onClick={e => {
-                                                    e.stopPropagation();
+                                {options && <div className={classes(style.submenu, style.menu)}>
+                                    {options.map(({ label, disabled, onClick, shouldClose }, i) => {
+                                        return <Halo key={i} disabled={disabled}>
+                                            <button className={style.option} disabled={disabled} onClick={e => {
+                                                e.stopPropagation();
 
-                                                    if (shouldClose) popover.current?.close();
-                                                    onClick?.();
-                                                }}>
-                                                    {label}
-                                                </button>
-                                            </Halo>;
-                                        })}
-                                    </div>}
-                                </button>
-                            </Halo>
-                        </div>;
+                                                if (shouldClose) popover.current?.close();
+                                                onClick?.();
+                                            }}>
+                                                {label}
+                                            </button>
+                                        </Halo>;
+                                    })}
+                                </div>}
+                            </button>
+                        </Halo>;
                     })}
                 </div>
             </Animate>

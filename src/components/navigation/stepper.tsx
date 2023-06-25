@@ -77,10 +77,6 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
             flexDirection: 'column'
         },
 
-        '.halo': {
-            inset: '-.5em'
-        },
-
         '.button': {
             position: 'relative',
             borderRadius: '999px',
@@ -197,7 +193,7 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
 
                 return <div key={i} className={style.step} data-completed={isCompleted} data-current={variant === 'compact' ? !isCompleted : i === completed} data-error={error}>
                     <div className={style.header}>
-                        <Halo className={style.halo} disabled={!navigatable}>
+                        <Halo disabled={!navigatable} styles={{ '.halo': { inset: '-.5em' } }}>
                             <button type="button" className={style.button} disabled={!navigatable} onClick={() => setCompleted(i)} aria-labelledby={label ? stepId : undefined}>
                                 <div className={style.bullet}>
                                     <div className={style.icon}>

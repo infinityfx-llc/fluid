@@ -25,7 +25,7 @@ const Section = forwardRef(({ children, styles = {}, width, header = 'none', sid
             transition: 'padding-left .3s'
         },
 
-        [`@media(min-width: ${fluid.breakpoints[1] + 1}px)`]: {
+        [`@media(min-width: ${fluid.breakpoints.tab + 1}px)`]: {
             '.section[data-sidebar="collapsed"]': {
                 paddingLeft: `max(calc(5rem + var(--f-spacing-lrg)), var(--f-page-${width}))`
             },

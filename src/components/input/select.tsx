@@ -143,30 +143,28 @@ const Select = forwardRef(({ styles = {}, options, multiple = false, searchable,
                             {filtered.map(({ label, value, disabled }, i) => {
                                 const selected = (Array.isArray(state) ? state.includes(value) : state === value);
 
-                                return <div key={i}>
-                                    <Halo disabled={disabled}>
-                                        <button type="button" role="option" aria-selected={selected} disabled={disabled} className={style.option} onClick={() => {
-                                            if (!Array.isArray(state)) {
-                                                popover.current?.close();
-                                                setState?.(value);
-                                                onChange?.(value);
-                                            } else {
-                                                const updated = state.slice();
-                                                const idx = updated.indexOf(value);
-                                                if (idx < 0) {
-                                                    if (!limit || updated.length < limit) updated.push(value);
-                                                } else updated.splice(idx, 1);
+                                return <Halo key={i} disabled={disabled}>
+                                    <button type="button" role="option" aria-selected={selected} disabled={disabled} className={style.option} onClick={() => {
+                                        if (!Array.isArray(state)) {
+                                            popover.current?.close();
+                                            setState?.(value);
+                                            onChange?.(value);
+                                        } else {
+                                            const updated = state.slice();
+                                            const idx = updated.indexOf(value);
+                                            if (idx < 0) {
+                                                if (!limit || updated.length < limit) updated.push(value);
+                                            } else updated.splice(idx, 1);
 
-                                                setState?.(updated);
-                                                onChange?.(updated);
-                                            }
-                                        }}>
-                                            {label}
+                                            setState?.(updated);
+                                            onChange?.(updated);
+                                        }
+                                    }}>
+                                        {label}
 
-                                            {selected && <MdCheck />}
-                                        </button>
-                                    </Halo>
-                                </div>;
+                                        {selected && <MdCheck />}
+                                    </button>
+                                </Halo>;
                             })}
                         </Animatable>
 

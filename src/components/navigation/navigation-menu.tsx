@@ -132,13 +132,11 @@ const NavigationMenu = forwardRef(({ styles = {}, links, selected = -1, Link = '
                                 { on: showMenu && !left, immediate: true, name: 'right' }
                             ]}>
                             {links?.map(({ label, href }, i) => {
-                                return <div key={i}>
-                                    <Halo>
-                                        <Link href={href} className={style.link}>
-                                            {label}
-                                        </Link>
-                                    </Halo>
-                                </div>;
+                                return <Halo key={i}>
+                                    <Link href={href} className={style.link}>
+                                        {label}
+                                    </Link>
+                                </Halo>;
                             })}
                         </Animatable>
                     </div>

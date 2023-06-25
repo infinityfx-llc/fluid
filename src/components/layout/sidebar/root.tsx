@@ -62,7 +62,7 @@ const Root = forwardRef(({ children, styles = {}, header = 'med', collapsed, onC
             overflow: 'hidden'
         },
 
-        [`@media (max-width: ${fluid.breakpoints[1]}px)`]: {
+        [`@media (max-width: ${fluid.breakpoints.tab}px)`]: {
             '.sidebar[data-collapsed="true"]': {
                 translate: '-100% 0%'
             }

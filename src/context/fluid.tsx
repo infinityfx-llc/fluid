@@ -34,28 +34,28 @@ export default function FluidProvider({ children, theme = {}, initialColorScheme
                 '--f-page-med': '18rem',
                 '--f-page-sml': '24rem',
             },
-            [`@media(max-width: ${fluid.breakpoints[3]}px)`]: {
+            [`@media(max-width: ${fluid.breakpoints.dsk}px)`]: {
                 ':root': {
                     '--f-page-lrg': '8rem',
                     '--f-page-med': '12rem',
                     '--f-page-sml': '18rem',
                 }
             },
-            [`@media(max-width: ${fluid.breakpoints[2]}px)`]: {
+            [`@media(max-width: ${fluid.breakpoints.lap}px)`]: {
                 ':root': {
                     '--f-page-lrg': '4rem',
                     '--f-page-med': '8rem',
                     '--f-page-sml': '12rem',
                 }
             },
-            [`@media(max-width: ${fluid.breakpoints[1]}px)`]: {
+            [`@media(max-width: ${fluid.breakpoints.tab}px)`]: {
                 ':root': {
                     '--f-page-lrg': '2rem',
                     '--f-page-med': '4rem',
                     '--f-page-sml': '6rem',
                 }
             },
-            [`@media(max-width: ${fluid.breakpoints[0]}px)`]: {
+            [`@media(max-width: ${fluid.breakpoints.mob}px)`]: {
                 ':root': {
                     '--f-page-lrg': '1rem',
                     '--f-page-med': '2rem',
