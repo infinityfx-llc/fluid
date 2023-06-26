@@ -5,7 +5,7 @@
 	"description": "React UI library.",
 	"main": "dist/index.js",
 	"module": "dist/index.js",
-	"types": "dist/types/index.d.ts",
+	"types": "dist/types/src/index.d.ts",
 	"exports": {
 		".": "./dist/index.js",
 		"./hooks": "./dist/hooks.js",
@@ -14,10 +14,13 @@
 	"typesVersions": {
 		"*": {
 			"hooks": [
-				"./dist/types/hooks.d.ts"
+				"./dist/types/src/hooks.d.ts"
 			],
 			"server": [
-				"./dist/types/server.d.ts"
+				"./dist/types/src/server.d.ts"
+			],
+			"types": [
+				"./dist/types/src/types.d.ts"
 			]
 		}
 	},

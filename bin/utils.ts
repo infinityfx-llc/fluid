@@ -2,9 +2,11 @@ import FluidStyleStore from "@/src/core/stylestore";
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
 import fs from 'fs';
-import path from 'path';
+import { FluidConfig } from "@/src/types";
+import FluidProvider from "@/src/context/fluid";
+import { DIST_ROOT, OUTPUT_ROOT } from "./const";
 
-let fluidConfig = {};
+let fluidConfig: FluidConfig = {};
 
 export async function getConfig() {
     try {
@@ -17,33 +19,64 @@ export async function getConfig() {
     }
 }
 
-export function emitCSS(Component: React.JSXElementConstructor<any>, content: string, outputPath: string) {
+export function getCompilerConfig() {
+    let config: any = {};
+    if (!fs.existsSync('./package.json')) return [config, 'jsconfig.json'];
 
-    const basePath = outputPath.replace(/[^\/\\]*?$/, '');
-    // fs.mkdirSync(basePath, { recursive: true });
+    const json = JSON.parse(fs.readFileSync('./package.json', { encoding: 'ascii' }));
+    const isTS = json.devDependencies?.typescript || json.dependencies?.typescript;
+    const file = isTS ? 'tsconfig.json' : 'jsconfig.json';
 
-    // let importPath, offset = 0;
-    // const imports = content.matchAll(/((?:from|import)\s*(?:'|"))(\..+?)(?:'|");/g);
-    // while (importPath = imports.next().value) {
-    //     const absolutePath = path.join(basePath, importPath[2]);
-    //     if (/^(\.fluid\\components|\.fluid\\context)/.test(absolutePath)) continue;
+    if (fs.existsSync(file)) {
+        config = JSON.parse(fs.readFileSync(file, { encoding: 'ascii' }));
+    }
 
-    //     const mappedPath = path.join(basePath.replace('./.fluid', '@infinityfx/fluid/dist'), importPath[2]);
-    //     const idx = importPath.index + importPath[1].length + offset;
+    return [config, file];
+}
 
-    //     content = content.slice(0, idx) + mappedPath.replace(/\\/g, '/') + content.slice(idx + importPath[2].length);
-    //     offset += mappedPath.length - importPath[2].length;
-    // }
+export async function processFile(root: string, path: string, name: string, componentMap: any, stylesMap: any) {
+    let fileContent = fs.readFileSync(DIST_ROOT + root + path, { encoding: 'ascii' });
+    const [outputPath, filename] = (OUTPUT_ROOT + root + path).split(/([^\/\\]*?$)/);
+    const Component = componentMap[name];
+
+    let styles: any = {};
+    if (name in stylesMap) styles = stylesMap[name];
+
+    if (/index.js$/.test(path)) {
+        let component;
+        const components = fileContent.matchAll(/import\s*(.+?)\s*from\s*(?:'|")(.+?)(?:'|");/g);
+
+        while (component = components.next().value) {
+            const [_, name, subPath] = component;
+
+            await processFile(path.replace(/[^\/\\]*?$/, ''), subPath, name, Component, styles);
+        }
+    }
+
+    if (Component instanceof Function || 'render' in Component) {
+        fileContent = await emitCSS(createElement(Component, { styles, key: 0 }), fileContent, outputPath);
+    }
+
+    fs.writeFileSync(outputPath + filename, fileContent);
+}
+
+export async function emitCSS(Component: React.ReactElement, content: string, outputPath: string) {
+
+    const config = await getConfig();
 
     const fnName = content.match(/import\s*([^"']+?)\s*from\s*(?:"|')[^'"]*use-styles.*?(?:"|');/)?.[1];
     const match = content.match(new RegExp(`${fnName}\\(.+?\\);`, 's'));
 
     if (match?.index) {
         try {
-            renderToString(createElement(Component)); // fix fluidprovider context issues
+            const context = createElement(FluidProvider, { theme: config.theme } as any,
+                createElement('div', { key: 0 }, Component)
+            );
+
+            renderToString(context);
         } catch (ex) { }
 
-        const rule = Object.entries(FluidStyleStore.rules)[0]; // check for multiple entries
+        const rule = Object.entries(FluidStyleStore.rules).filter(([_, val]) => !val.global)[0];
 
         if (rule !== undefined) {
             const [key, store] = rule;
@@ -56,11 +89,11 @@ export function emitCSS(Component: React.JSXElementConstructor<any>, content: st
             }
 
 
-            fs.writeFileSync(basePath + `/${key}.css`, store.rules);
+            fs.writeFileSync(outputPath + `/${key}.css`, store.rules);
 
             FluidStyleStore.rules = {};
         }
     }
 
-    fs.writeFileSync(outputPath, content);
+    return content;
 }

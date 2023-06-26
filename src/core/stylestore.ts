@@ -4,18 +4,14 @@ import { mergeRecursive, ruleToString } from "./utils";
 class StyleStore {
 
     synchronized = false;
-    styles: { [key: string]: FluidStyles; } = {};
     rules: {
         [key: string]: {
             selectors: Selectors;
             rules: string;
+            global: boolean;
             injected: boolean;
         }
     } = {};
-
-    add(key: string, ruleset: FluidStyles) {
-        this.styles[key] = ruleset;
-    }
 
     compile__TEST() {
         // feed this.styles through insert and hard code result into this.rules
@@ -38,12 +34,13 @@ class StyleStore {
         let rules = '';
 
         for (const selector in ruleset) {
-            rules += ruleToString(selector, ruleset[selector], selectors, global ? undefined : key);
+            rules += ruleToString(selector, ruleset[selector] as any, selectors, global ? undefined : key);
         }
 
         this.rules[key] = {
             selectors,
             rules,
+            global,
             injected: this.rules[key]?.injected || false
         };
 
