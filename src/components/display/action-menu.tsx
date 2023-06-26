@@ -23,11 +23,12 @@ export type ActionMenuOption = {
     }[];
 } | string;
 
-const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, ...props }: {
+const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, stretch, ...props }: {
     children: React.ReactElement;
     styles?: FluidStyles;
     options: ActionMenuOption[];
     disabled?: boolean;
+    stretch?: boolean;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.menu': {
@@ -37,7 +38,8 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, ...pr
             borderRadius: 'calc(.3em + var(--f-radius-sml))',
             boxShadow: '0 0 8px rgb(0, 0, 0, 0.06)',
             fontSize: 'var(--f-font-size-sml)',
-            width: 'clamp(0px, 10em, 100vw)'
+            minWidth: 'clamp(0px, 10em, 100vw)',
+            width: '100%'
         },
 
         '.option': {
@@ -95,7 +97,7 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, ...pr
 
     const popover = useRef<PopoverRootReference>(null);
 
-    return <Popover.Root ref={popover}>
+    return <Popover.Root ref={popover} stretch={stretch}>
         <Popover.Trigger disabled={disabled}>
             {children}
         </Popover.Trigger>

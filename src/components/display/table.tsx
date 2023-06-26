@@ -3,7 +3,7 @@
 import { classes } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
-import { forwardRef, useState, Fragment } from "react";
+import { forwardRef, useState } from "react";
 import Halo from "../feedback/halo";
 import Scrollarea from "../layout/scrollarea";
 import Button from "../input/button";
@@ -11,18 +11,19 @@ import Checkbox from "../input/checkbox";
 import { MdArrowDownward, MdArrowUpward, MdMoreVert, MdSort } from "react-icons/md";
 import ActionMenu, { ActionMenuOption } from "./action-menu";
 
-const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, rowActions, columnFormatters = {}, ...props }:
+const Table = forwardRef(<T extends { [key: string]: string | number | boolean | Date; }>({ styles = {}, data, columns, selectable, sortable, selected, onSelect, columnFormatters = {}, rowActions, ...props }:
     {
         styles?: FluidStyles;
-        data: { [key: string]: string | number; }[];
-        columns: string[];
+        data: T[];
+        columns: (keyof T)[];
         selectable?: boolean;
+        sortable?: boolean | (keyof T)[];
+        selected?: number[];
         onSelect?: (selected: number[]) => void;
-        sortable?: boolean | string[];
-        rowActions?: ActionMenuOption[];
         columnFormatters?: {
-            [column: string]: React.JSXElementConstructor<React.HTMLAttributes<any>> | keyof React.ReactHTML;
+            [column in keyof T]?: (value: T[column]) => React.ReactNode;
         };
+        rowActions?: (index: number) => ActionMenuOption[];
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
 
     const style = useStyles(styles, {
@@ -88,7 +89,12 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
 
     const [column, setColumn] = useState<string>('');
     const [sorting, setSorting] = useState<'nil' | 'asc' | 'dsc'>('nil');
-    const [selected, setSelected] = useState<{ [key: number | string]: number | boolean; }>({ length: 0 });
+    const [selectedIndices, setSelectedIndices] = selected !== undefined ? [selected] : useState<number[]>([]);
+
+    function updateSelected(value: number[]) {
+        setSelectedIndices?.(value);
+        onSelect?.(value);
+    }
 
     const rows = sorting !== 'nil' ?
         data.slice().sort((a, b) => {
@@ -98,13 +104,13 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
             return 0;
         }) : data;
 
-    const gridTemplateColumns = `${selectable ? 'auto' : ''} repeat(${columns.length}, 1fr) ${rowActions?.length ? 'auto' : ''}`;
+    const gridTemplateColumns = `${selectable ? 'auto' : ''} repeat(${columns.length}, 1fr) ${rowActions ? 'auto' : ''}`;
 
     const CheckboxStyles = { // merge with styles prop (also do for other components)
         '.checkbox': {
             border: 'solid 1px var(--f-clr-grey-300)'
         },
-        
+
         '.checkmark': {
             stroke: 'var(--f-clr-text-200)'
         }
@@ -114,13 +120,10 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
         <div role="rowgroup" className={style.rows}>
             <div role="rowheader" className={classes(style.row, style.header)} style={{ gridTemplateColumns }}>
                 {selectable && <div className={style.collapsed}>
-                    <Checkbox size="xsm" color="var(--f-clr-text-100)" styles={CheckboxStyles} checked={selected.length === rows.length} onChange={e => {
-                        if (!e.target.checked) return setSelected({ length: 0 });
+                    <Checkbox size="xsm" color="var(--f-clr-text-100)" styles={CheckboxStyles} checked={selectedIndices.length === rows.length} onChange={e => {
+                        if (!e.target.checked) return updateSelected([]);
 
-                        for (let i = 0; i < rows.length; i++) selected[i] = true;
-                        selected.length = rows.length;
-
-                        setSelected(Object.assign({}, selected));
+                        updateSelected(new Array(rows.length).fill(0).map((_, i) => i));
                     }} />
                 </div>}
 
@@ -130,7 +133,7 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
                     return <div key={i} role="columnheader">
                         <Halo disabled={!sort}>
                             <button disabled={!sort} className={style.label} onClick={() => {
-                                setColumn(col);
+                                setColumn(col as string);
 
                                 if (column !== col || sorting === 'nil') {
                                     setSorting('asc');
@@ -141,7 +144,7 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
                                         setSorting('nil');
                                     }
                             }}>
-                                {col}
+                                {col as string}
 
                                 {(column !== col || sorting === 'nil') && sort && <MdSort />}
                                 {column === col && sorting === 'asc' && <MdArrowUpward />}
@@ -151,7 +154,7 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
                     </div>;
                 })}
 
-                {rowActions?.length ? <div className={style.collapsed} /> : null}
+                {rowActions ? <div className={style.collapsed} /> : null}
             </div>
 
             {rows.map((row, i) => {
@@ -159,26 +162,24 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
                 return <Halo key={i} disabled={!selectable}>
                     <label role="row" className={style.row} style={{ gridTemplateColumns }}>
                         {selectable && <div className={style.collapsed}>
-                            <Checkbox size="xsm" color="var(--f-clr-text-100)" styles={CheckboxStyles} checked={!!selected[i]} onChange={e => {
-                                selected[i] = e.target.checked;
-                                (selected.length as number) += e.target.checked ? 1 : -1;
+                            <Checkbox size="xsm" color="var(--f-clr-text-100)" styles={CheckboxStyles} checked={selectedIndices.includes(i)} onChange={e => {
+                                const updated = selectedIndices.slice();
+                                e.target.checked ? updated.push(i) : updated.splice(updated.indexOf(i), 1);
 
-                                setSelected(Object.assign({}, selected));
+                                updateSelected(updated);
                             }} />
                         </div>}
 
                         {columns.map((col, i) => {
-                            const Wrapper = columnFormatters[col] || Fragment;
+                            const formatter = columnFormatters[col] || (val => val.toString());
 
                             return <div key={i} role="gridcell">
-                                <Wrapper>
-                                    {row[col]}
-                                </Wrapper>
+                                {formatter(row[col])}
                             </div>;
                         })}
 
-                        {rowActions?.length ? <div className={style.collapsed}>
-                            <ActionMenu options={rowActions}>
+                        {rowActions ? <div className={style.collapsed}>
+                            <ActionMenu options={rowActions(i)}>
                                 <Button variant="minimal" style={{ marginLeft: 'auto' }}>
                                     <MdMoreVert />
                                 </Button>
@@ -194,6 +195,3 @@ const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, ro
 Table.displayName = 'Table';
 
 export default Table;
-
-// fix row actions with index
-// support react components with formatter prop (or something similar)

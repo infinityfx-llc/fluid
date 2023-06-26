@@ -4,8 +4,8 @@ import { classes, combineRefs } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
 import { Animatable } from "@infinityfx/lively";
-import { useTrigger } from "@infinityfx/lively/hooks";
-import { Children, cloneElement, forwardRef, isValidElement } from "react";
+import { useLink, useTrigger } from "@infinityfx/lively/hooks";
+import { Children, cloneElement, forwardRef, isValidElement, useRef } from "react";
 
 const Halo = forwardRef(<T extends React.ReactElement>({ children, styles = {}, color, hover = true, disabled = false, ...props }:
     {
@@ -57,34 +57,41 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, styles = {}, 
         },
 
         '.ring': {
-            minWidth: '141%',
-            minHeight: '141%',
+            minWidth: '241%',
+            minHeight: '241%',
             aspectRatio: 1,
             backgroundColor: 'var(--f-clr-grey-500)',
-            borderRadius: '999px',
+            borderRadius: '9999px',
             zIndex: -1
         }
     });
 
+    const container = useRef<HTMLElement>(null);
     const click = useTrigger();
+    const [translate, setTranslate] = useLink('0px 0px');
 
     children = Array.isArray(children) ? children[0] : children;
     if (!isValidElement(children)) return children;
 
     const arr = Children.toArray(children.props.children);
     arr.unshift(<div key="halo" className={_style.halo} data-hover={hover}>
-        <Animatable animate={{ opacity: [0, 1], scale: [0, 1], duration: .4, easing: 'linear' }} initial={{ opacity: 1, scale: 1 }} triggers={[{ on: click, immediate: true }]}>
+        <Animatable animate={{ translate, opacity: [0, 1], scale: [0, 1], duration: .4, easing: 'ease-in' }} initial={{ opacity: 1, scale: 1 }} triggers={[{ on: click, immediate: true }]}>
             <div className={_style.ring} style={{ backgroundColor: color }} />
         </Animatable>
     </div>);
 
     return cloneElement(children, {
         ...props,
-        ref: combineRefs(ref, (children as any).ref),
+        ref: combineRefs(container, ref, (children as any).ref),
         className: classes(children.props.className, _style.container),
-        onClick: (e: any) => {
+        onClick: (e: React.MouseEvent<HTMLDivElement>) => {
             children.props.onClick?.(e);
             props.onClick?.(e);
+
+            const { x, y, width, height } = container.current?.getBoundingClientRect() || { x: 0, y: 0, width: 0, height: 0 };
+            const { clientX, clientY } = e;
+
+            setTranslate(`${clientX - (x + width / 2)}px ${clientY - (y + height / 2)}px`);
             click();
         }
     }, arr);
