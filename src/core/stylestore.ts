@@ -13,14 +13,6 @@ class StyleStore {
         }
     } = {};
 
-    compile__TEST() {
-        // feed this.styles through insert and hard code result into this.rules
-        // that way useStyles hook calling .get will return hardcodes result
-        // when using compiled mode, .serialize() can be can be hardcoded as well
-        // this serialized string can then be rendered only on the server
-        // .update() shouldnt do anything in compiled mode
-    }
-
     get(key: string) {
         return this.rules[key]?.selectors || null;
     }

@@ -7,6 +7,7 @@ import { classes } from '@/src/core/utils';
 import { Animatable } from '@infinityfx/lively';
 import { useLink, useScroll } from '@infinityfx/lively/hooks';
 import useFluid from '@/src/hooks/use-fluid';
+import useLayout from '@/src/hooks/use-layout';
 
 const HeaderContext = createContext<{
     left: React.RefObject<HTMLElement>;
@@ -21,16 +22,17 @@ export function useHeader() {
     return context;
 }
 
-const Root = forwardRef(({ children, styles = {}, variant = 'default', size = 'med', width = 'med', collapsible, sidebar = 'none', ...props }:
+const Root = forwardRef(({ children, styles = {}, variant = 'default', height = '5rem', width = 'med', collapsible, ...props }:
     {
         styles?: FluidStyles;
         variant?: 'default' | 'transparent';
-        size?: FluidSize;
+        height?: string;
         width?: FluidSize;
         collapsible?: boolean;
-        sidebar?: 'none' | 'collapsed' | 'expanded';
     } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
     const fluid = useFluid();
+    const { header, sidebar, collapsed } = useLayout();
+    header.current = height;
 
     const style = useStyles(styles, {
         '.header': {
@@ -38,7 +40,7 @@ const Root = forwardRef(({ children, styles = {}, variant = 'default', size = 'm
             top: 0,
             left: 0,
             width: '100%',
-            height: `var(--f-header-${size})`,
+            height,
             display: 'flex',
             zIndex: 250
         },
@@ -77,7 +79,7 @@ const Root = forwardRef(({ children, styles = {}, variant = 'default', size = 'm
             },
 
             '.header[data-sidebar="expanded"] .left': {
-                width: `calc(var(--f-sidebar) + var(--f-spacing-lrg))`
+                width: `calc(${sidebar.current} + var(--f-spacing-lrg))`
             }
         }
     });
@@ -103,7 +105,7 @@ const Root = forwardRef(({ children, styles = {}, variant = 'default', size = 'm
     }, []);
 
     return <Animatable animate={{ translate: hidden(val => val ? '0% -100%' : '0% 0%') }}>
-        <header ref={ref} {...props} className={classes(style.header, props.className)} data-variant={variant} data-sidebar={sidebar}>
+        <header ref={ref} {...props} className={classes(style.header, props.className)} data-variant={variant} data-sidebar={sidebar.current && (collapsed ? 'collapsed' : 'expanded')}>
             <HeaderContext.Provider value={{
                 left,
                 right

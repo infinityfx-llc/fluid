@@ -2,24 +2,24 @@
 
 import { classes } from '@/src/core/utils';
 import useFluid from '@/src/hooks/use-fluid';
+import useLayout from '@/src/hooks/use-layout';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidSize, FluidStyles } from '@/src/types';
 import { forwardRef } from 'react';
 
-const Section = forwardRef(({ children, styles = {}, width, header = 'none', sidebar, ...props }:
+const Section = forwardRef(({ children, styles = {}, width, ...props }:
     {
         styles?: FluidStyles;
         width: FluidSize;
-        header?: 'none' | FluidSize;
-        sidebar?: 'none' | 'collapsed' | 'expanded';
-    } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
+    } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => { // WIP (NOT PERFECT)
     const fluid = useFluid();
+    const { header, sidebar, collapsed } = useLayout();
 
     const style = useStyles(styles, {
         '.section': {
             paddingLeft: `var(--f-page-${width})`,
             paddingRight: `var(--f-page-${width})`,
-            paddingTop: header !== 'none' ? `var(--f-header-${header})` : undefined,
+            paddingTop: header.current,
             display: 'flex',
             flexDirection: 'column',
             transition: 'padding-left .3s'
@@ -31,12 +31,12 @@ const Section = forwardRef(({ children, styles = {}, width, header = 'none', sid
             },
 
             '.section[data-sidebar="expanded"]': {
-                paddingLeft: `calc(var(--f-sidebar) + var(--f-spacing-lrg))`
+                paddingLeft: `calc(${sidebar.current} + var(--f-spacing-lrg))`
             }
         }
     });
 
-    return <section ref={ref} {...props} className={classes(style.section, props.className)} data-sidebar={sidebar}>
+    return <section ref={ref} {...props} className={classes(style.section, props.className)} data-sidebar={sidebar.current && (collapsed ? 'collapsed' : 'expanded')}>
         {children}
     </section>;
 });

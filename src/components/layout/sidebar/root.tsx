@@ -8,16 +8,18 @@ import { MdArrowBack, MdArrowForward } from 'react-icons/md';
 import Scrollarea from '../scrollarea';
 import useFluid from '@/src/hooks/use-fluid';
 import { classes } from '@/src/core/utils';
+import useLayout from '@/src/hooks/use-layout';
 
-const Root = forwardRef(({ children, styles = {}, header = 'med', collapsed, onCollapse, ...props }:
+const Root = forwardRef(({ children, styles = {}, size = '18rem', ...props }:
     {
         styles?: FluidStyles;
-        header?: FluidSize;
-        collapsed?: boolean;
-        onCollapse?: (value: boolean) => void;
+        size?: string;
     } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
     const fluid = useFluid();
+
+    const { header, collapsed, onCollapse, sidebar } = useLayout();
     const [isCollapsed, setCollapsed] = collapsed !== undefined ? [collapsed] : useState(false);
+    sidebar.current = size;
 
     const style = useStyles(styles, {
         '.sidebar': {
@@ -34,7 +36,7 @@ const Root = forwardRef(({ children, styles = {}, header = 'med', collapsed, onC
             display: 'flex',
             flexDirection: 'column',
             paddingBottom: '1em',
-            width: 'var(--f-sidebar)',
+            width: size,
             transition: 'width .3s, translate .3s'
         },
 
@@ -47,7 +49,7 @@ const Root = forwardRef(({ children, styles = {}, header = 'med', collapsed, onC
         },
 
         '.header': {
-            height: `var(--f-header-${header})`,
+            height: header.current || '5rem',
             display: 'flex',
             alignItems: 'center',
             paddingInline: '1em'

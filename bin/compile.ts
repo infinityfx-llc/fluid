@@ -36,7 +36,7 @@ export default async function () {
             ...compilerConfig.compilerOptions,
             paths: {
                 ...COMPILER_CONFIG.compilerOptions.paths,
-                ...compilerConfig.compilderOptions?.paths
+                ...compilerConfig.compilerOptions?.paths
             }
         },
         exclude: COMPILER_CONFIG.exclude.concat(compilerConfig.exclude).filter((val, i, arr) => {

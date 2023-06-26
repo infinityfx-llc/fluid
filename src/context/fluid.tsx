@@ -26,10 +26,6 @@ export default function FluidProvider({ children, theme = {}, initialColorScheme
             ...colorPalettes,
             ':root': {
                 ...variables,
-                '--f-sidebar': '18rem',
-                '--f-header-sml': '4rem',
-                '--f-header-med': '5rem',
-                '--f-header-lrg': '6rem',
                 '--f-page-lrg': '12rem',
                 '--f-page-med': '18rem',
                 '--f-page-sml': '24rem',
