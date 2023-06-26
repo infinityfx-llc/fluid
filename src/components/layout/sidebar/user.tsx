@@ -4,7 +4,8 @@ import { forwardRef } from 'react';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
 import { classes } from '@/src/core/utils';
-import { Halo, Indicator } from '../../feedback';
+import Halo from '../../feedback/halo';
+import Indicator from '../../feedback/indicator';
 import { MdMoreVert } from 'react-icons/md';
 
 const User = forwardRef(({ children, styles = {}, name, status, indicator = false, round = false, icon = <MdMoreVert />, ...props }:

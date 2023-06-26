@@ -3,8 +3,8 @@
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
 import { Fragment, forwardRef, useId, useState } from "react";
-import { Scrollarea } from "../layout";
-import { Toggle } from "../input";
+import Scrollarea from "../layout/scrollarea";
+import Toggle from "../input/toggle";
 import { MdCheck, MdCopyAll } from "react-icons/md";
 
 const Code = forwardRef(({ children, styles = {}, title, ...props }: { children: string; styles?: FluidStyles; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: any) => {

@@ -3,7 +3,7 @@
 import useStyles from '@/src/hooks/use-styles';
 import { FluidSize, FluidStyles } from '@/src/types';
 import { forwardRef, useState } from 'react';
-import { Toggle } from '../../input';
+import Toggle from '../../input/toggle';
 import { MdArrowBack, MdArrowForward } from 'react-icons/md';
 import Scrollarea from '../scrollarea';
 import useFluid from '@/src/hooks/use-fluid';

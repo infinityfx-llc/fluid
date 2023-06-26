@@ -1,11 +1,11 @@
 'use client';
 
 import { Children, forwardRef, useState } from 'react';
-import { Halo } from '../../feedback';
+import Halo from '../../feedback/halo';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
 import { classes } from '@/src/core/utils';
-import { Toggle } from '../../input';
+import Toggle from '../../input/toggle';
 import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import Collapsible from '../collapsible';
 

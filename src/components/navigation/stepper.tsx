@@ -6,7 +6,8 @@ import { FluidStyles } from "@/src/types";
 import { Animatable } from "@infinityfx/lively";
 import { forwardRef, useId } from "react";
 import { MdCheck } from "react-icons/md";
-import { Halo, ProgressBar } from "../feedback";
+import Halo from "../feedback/halo";
+import ProgressBar from "../feedback/progress-bar";
 
 const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navigation = 'backwards', vertical = false, variant = 'default', ...props }:
     {

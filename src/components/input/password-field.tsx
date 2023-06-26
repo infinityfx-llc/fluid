@@ -5,7 +5,7 @@ import Field, { FieldProps } from "./field";
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
 import { FluidInputvalue } from '@/src/types';
 import Toggle from './toggle';
-import { ProgressBar } from '../feedback';
+import ProgressBar from '../feedback/progress-bar';
 import useInputProps from '@/src/hooks/use-input-props';
 
 const colors = ['#eb2a1c', '#eb2a1c', '#e8831e', '#f0d030', '#fff952', '#5aff54'];

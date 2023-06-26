@@ -15,7 +15,7 @@ type Merged<T, P> = [T, P] extends [{ [key: string]: unknown }, { [key: string]:
 
 export function mergeRecursive<T = any, P = any>(a: T, b: P) {
     if (a === undefined) return b as Merged<T, P>;
-    if (typeof a !== 'object') return a as Merged<T, P>;
+    if (typeof a !== 'object' || Array.isArray(a)) return a as Merged<T, P>;
 
     const merged: any = Object.assign({}, a);
     for (const key in b) {

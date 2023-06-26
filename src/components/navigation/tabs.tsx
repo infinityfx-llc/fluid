@@ -2,11 +2,11 @@
 
 import { FluidInputvalue, FluidStyles } from "@/src/types";
 import { forwardRef, useId, useState } from "react";
-import { Halo } from "../feedback";
+import Halo from "../feedback/halo";
 import useStyles from "@/src/hooks/use-styles";
 import { Morph } from "@infinityfx/lively/layout";
 import { classes } from "@/src/core/utils";
-import { Scrollarea } from "../layout";
+import Scrollarea from "../layout/scrollarea";
 
 const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, defaultValue, onChange, ...props }:
     {

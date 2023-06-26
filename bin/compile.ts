@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { getCompilerConfig, getConfig, processFile } from './utils';
+import { compileTheme, getCompilerConfig, getConfig, processFile } from './utils';
 import { COMPILER_CONFIG, DIST_ROOT, OUTPUT_ROOT } from './const';
 
 export default async function () {
@@ -25,6 +25,8 @@ export default async function () {
         process.stdout.cursorTo(0);
         process.stdout.write(`${(i / size * 100).toFixed(1)}% ` + new Array(Math.round(i / size * 40)).fill('=').join(''));
     }
+
+    await compileTheme();
 
     const [compilerConfig, compilerFile] = getCompilerConfig();
     const updatedConfig = {

@@ -5,18 +5,21 @@ import fs from 'fs';
 import { FluidConfig } from "@/src/types";
 import FluidProvider from "@/src/context/fluid";
 import { DIST_ROOT, OUTPUT_ROOT } from "./const";
+import { mergeRecursive } from "@/src/core/utils";
+import { DEFAULT_THEME } from "@/src/core/theme";
 
-let fluidConfig: FluidConfig = {};
+let fluidConfig: FluidConfig;
 
 export async function getConfig() {
     try {
-        const { default: config } = await import('file://' + process.cwd() + '/fluid.config.js' as any);
-        fluidConfig = config;
+        if (!fluidConfig) {
+            fluidConfig = (await import('file://' + process.cwd() + '/fluid.config.js' as any)).default;
+        }
     } catch (ex) {
-
-    } finally {
-        return fluidConfig;
+        fluidConfig = {};
     }
+
+    return fluidConfig;
 }
 
 export function getCompilerConfig() {
@@ -96,4 +99,20 @@ export async function emitCSS(Component: React.ReactElement, content: string, ou
     }
 
     return content;
+}
+
+export async function compileTheme() { // TEMP SOLUTION
+    const config = await getConfig();
+
+    let fileContent = fs.readFileSync(DIST_ROOT + 'core/theme.js', { encoding: 'ascii' });
+    const varName = fileContent.match(/(?:([^,{]+?)\s*as\s*)?DEFAULT_THEME/s)?.[1] || 'DEFAULT_THEME';
+    const match = fileContent.match(new RegExp(`(${varName}\\s*=\\s*)(\\{[^;]+\\});`, 's'));
+
+    if (!match?.index) return;
+
+    const merged = mergeRecursive(config.theme, DEFAULT_THEME);
+
+    fileContent = fileContent.slice(0, match.index + match[1].length) + `${JSON.stringify(merged)};` + fileContent.slice(match.index + match[0].length);
+
+    fs.writeFileSync(OUTPUT_ROOT + 'core/theme.js', fileContent);
 }

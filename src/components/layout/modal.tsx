@@ -4,7 +4,7 @@ import { forwardRef, useId } from 'react';
 import Overlay from './overlay';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
-import { Button } from '../input';
+import Button from '../input/button';
 import { MdClose } from 'react-icons/md';
 import useFluid from '@/src/hooks/use-fluid';
 import { classes } from '@/src/core/utils';

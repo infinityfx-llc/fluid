@@ -3,7 +3,7 @@
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
 import { forwardRef, useState } from "react";
-import { Button } from "../input";
+import Button from "../input/button";
 import { MdArrowBack, MdArrowForward, MdFirstPage, MdLastPage } from "react-icons/md";
 import { classes } from "@/src/core/utils";
 

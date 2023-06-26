@@ -1,7 +1,7 @@
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
 import { forwardRef } from "react";
-import { Button } from "../input";
+import Button from "../input/button";
 import { MdClose } from "react-icons/md";
 import { classes } from "@/src/core/utils";
 

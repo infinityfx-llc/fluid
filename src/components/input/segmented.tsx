@@ -5,7 +5,7 @@ import { FluidError, FluidInputvalue, FluidStyles } from "@/src/types";
 import { forwardRef, useId, useState } from "react";
 import { Morph } from '@infinityfx/lively/layout';
 import { classes } from "@/src/core/utils";
-import { Halo } from "../feedback";
+import Halo from "../feedback/halo";
 
 const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false, options, name, value, defaultValue, onChange, error, ...props }:
     {

@@ -5,7 +5,7 @@ import { FluidStyles } from '@/src/types';
 import { forwardRef, useState, useId, useRef } from 'react';
 import { Animatable } from '@infinityfx/lively';
 import { Morph } from '@infinityfx/lively/layout';
-import { Halo } from '../feedback';
+import Halo from '../feedback/halo';
 import { classes } from '@/src/core/utils';
 
 const NavigationMenu = forwardRef(({ styles = {}, links, selected = -1, Link = 'a', ...props }:

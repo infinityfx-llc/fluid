@@ -4,7 +4,7 @@ import useStyles from "@/src/hooks/use-styles";
 import { Animatable } from "@infinityfx/lively";
 import { LayoutGroup } from "@infinityfx/lively/layout";
 import { createFocusTrap, FocusTrap } from "focus-trap";
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from "react-dom";
 
 export default function Overlay({ children, show, onClose }: { children?: React.ReactNode; show: boolean; onClose: () => void; }) {

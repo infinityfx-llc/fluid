@@ -3,7 +3,7 @@
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
 import { Fragment, forwardRef, useState, useId } from "react";
-import { Halo } from "../feedback";
+import Halo from "../feedback/halo";
 import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
 import Collapsible from "./collapsible";
 import { Animatable } from "@infinityfx/lively";

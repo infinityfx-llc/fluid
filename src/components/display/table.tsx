@@ -4,10 +4,11 @@ import { classes } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
 import { forwardRef, useState, Fragment } from "react";
-import { Halo } from "../feedback";
-import { Scrollarea } from "../layout";
-import { Button, Checkbox } from "../input";
-import { MdArrowDownward, MdArrowUpward, MdMoreVert, MdRemove, MdSort, MdSwapVert } from "react-icons/md";
+import Halo from "../feedback/halo";
+import Scrollarea from "../layout/scrollarea";
+import Button from "../input/button";
+import Checkbox from "../input/checkbox";
+import { MdArrowDownward, MdArrowUpward, MdMoreVert, MdSort } from "react-icons/md";
 import ActionMenu, { ActionMenuOption } from "./action-menu";
 
 const Table = forwardRef(({ styles = {}, data, columns, selectable, sortable, rowActions, columnFormatters = {}, ...props }:
