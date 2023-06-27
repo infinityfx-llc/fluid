@@ -89,9 +89,8 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, styles = {}, 
             props.onClick?.(e);
 
             const { x, y, width, height } = container.current?.getBoundingClientRect() || { x: 0, y: 0, width: 0, height: 0 };
-            const { clientX, clientY } = e;
 
-            setTranslate(`${clientX - (x + width / 2)}px ${clientY - (y + height / 2)}px`);
+            if (e.clientX || e.clientY) setTranslate(`${e.clientX - (x + width / 2)}px ${e.clientY - (y + height / 2)}px`);
             click();
         }
     }, arr);
