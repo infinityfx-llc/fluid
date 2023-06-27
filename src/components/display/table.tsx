@@ -31,7 +31,7 @@ const Table = forwardRef(<T extends { [key: string]: string | number | boolean |
             backgroundColor: 'var(--f-clr-fg-100)',
             borderRadius: 'var(--f-radius-sml)',
             overflow: 'hidden',
-            border: 'solid 1px var(--f-clr-grey-100)'
+            border: 'solid 1px var(--f-clr-fg-200)'
         },
 
         '.rows': {
@@ -51,7 +51,7 @@ const Table = forwardRef(<T extends { [key: string]: string | number | boolean |
         },
 
         '.row:not(:last-child)': {
-            borderBottom: 'solid 1px var(--f-clr-grey-100)'
+            borderBottom: 'solid 1px var(--f-clr-fg-200)'
         },
 
         '.row > *:not(.collapsed)': {
@@ -195,3 +195,5 @@ const Table = forwardRef(<T extends { [key: string]: string | number | boolean |
 Table.displayName = 'Table';
 
 export default Table;
+
+// instead of index maybe pass row to rowActions function??

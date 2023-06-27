@@ -20,7 +20,7 @@ const Toast = forwardRef(({ styles = {}, icon, color, title, text, round, onClos
             padding: '.4em',
             backgroundColor: 'var(--f-clr-fg-100)',
             borderRadius: 'var(--f-radius-sml)',
-            border: 'solid 1px var(--f-clr-grey-100)',
+            border: 'solid 1px var(--f-clr-fg-200)',
             display: 'flex',
             alignItems: 'center',
             gap: 'var(--f-spacing-med)',

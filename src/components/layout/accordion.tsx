@@ -61,7 +61,7 @@ const Accordion = forwardRef(({ styles = {}, items, multiple, variant = 'default
 
         '.divider': {
             height: '1px',
-            backgroundColor: 'var(--f-clr-grey-100)'
+            backgroundColor: 'var(--f-clr-fg-200)'
         },
 
         '.icon': {

@@ -5,9 +5,11 @@ import { classes } from "@/src/core/utils";
 import { FluidSize, FluidStyles } from "@/src/types";
 import Spinner from "../feedback/spinner";
 
+export type ButtonStyles = FluidStyles<'.button' | '.content' | '.loader'>;
+
 const Button = forwardRef(({ children, styles = {}, round = false, size = 'med', variant = 'default', loading = false, ...props }:
     {
-        styles?: FluidStyles;
+        styles?: ButtonStyles;
         round?: boolean;
         size?: FluidSize;
         variant?: 'default' | 'neutral' | 'light' | 'minimal';
@@ -19,7 +21,7 @@ const Button = forwardRef(({ children, styles = {}, round = false, size = 'med',
             border: 'none',
             outline: 'none',
             borderRadius: 'var(--f-radius-sml)',
-            padding: '.5em .5em', // TESTING
+            padding: '.5em',
             backgroundColor: 'var(--f-clr-primary-100)',
             color: 'var(--f-clr-text-100)',
             fontWeight: 600,
@@ -57,8 +59,8 @@ const Button = forwardRef(({ children, styles = {}, round = false, size = 'med',
         },
 
         '.button[data-variant="neutral"]': {
-            backgroundColor: 'var(--f-clr-fg-100)',
-            border: 'solid 1px var(--f-clr-grey-100)'
+            backgroundColor: 'var(--f-clr-bg-100)',
+            border: 'solid 1px var(--f-clr-fg-200)'
         },
 
         '.button[data-loading="false"]:disabled': {

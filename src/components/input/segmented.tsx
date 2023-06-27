@@ -70,12 +70,12 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false,
             inset: '0',
             backgroundColor: 'var(--f-clr-primary-200)',
             borderRadius: 'var(--f-radius-sml)',
-            boxShadow: '0 0 8px rgb(0, 0, 0, .08)'
+            boxShadow: '0 0 8px rgb(0, 0, 0, .06)'
         },
 
         '.segmented[data-variant="neutral"] .selection': {
             backgroundColor: 'var(--f-clr-bg-100)',
-            border: 'solid 1px var(--f-clr-grey-100)'
+            border: 'solid 1px var(--f-clr-fg-200)'
         },
 
         '.segmented[data-round="true"] .selection': {
@@ -97,7 +97,15 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false,
     return <div ref={ref} {...props} role="radiogroup" className={classes(style.segmented, props.className)} data-variant={variant} data-round={round} data-error={!!error}>
         {options.map(({ label, value: option, disabled = false }, i) => {
 
-            return <Halo key={i} hover={false} styles={{ [`:global(.${style.option})[aria-checked="true"] .halo`]: { inset: '-.5em' } }}>
+            return <Halo key={i} hover={false} styles={{
+                [`:global(.${style.option})[aria-checked="true"] .halo`]: { inset: '-.5em' },
+                '.halo': {
+                    zIndex: 0
+                },
+                '.container': {
+                    zIndex: 'unset'
+                }
+            }}>
                 <button className={style.option} type="button" role="radio" aria-checked={state === option} disabled={disabled} onClick={() => {
                     setState?.(option);
                     onChange?.(option);

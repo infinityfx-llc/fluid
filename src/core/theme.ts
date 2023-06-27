@@ -100,7 +100,7 @@ export const DEFAULT_THEME = {
             grey: ['#e6e6e6', '#cccccc', '#b3b3b3', '#999999', '#808080', '#666666', '#4d4d4d', '#333333', '#191919'],
             text: ['#000', '#fff'],
             bg: ['#fff'],
-            fg: ['#f0f7f7'],
+            fg: ['#f0f7f7', '#d8e3e3'],
             error: ['#ff1f1f', '#ff5454', '#ff8c8c', '#ffbdbd']
         },
         dark: {
@@ -109,7 +109,7 @@ export const DEFAULT_THEME = {
             grey: ['#191919','#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#b3b3b3', '#cccccc', '#e6e6e6'],
             text: ['#fff', '#000'],
             bg: ['#000'],
-            fg: ['#161717'],
+            fg: ['#161717', '#292b2b'],
             error: ['#ff1f1f', '#b32727', '#822f2f', '#632c2c']
         }
     },
@@ -181,11 +181,13 @@ export function parseColorPalettes<T extends FluidTheme>(theme: T) {
             insertVariables(`clr-${key}`, theme.palettes[name][key as never], vars);
         }
 
-        ruleset[`#__fluid.scheme-${name}`] = vars;
+        let key = `#__fluid.scheme-${name}`;
+        if (theme.defaultColorScheme === name) key += ', #__fluid.scheme-system';
+        ruleset[key] = vars;
 
         if (name === 'light' || name === 'dark') {
             ruleset[`@media(prefers-color-scheme: ${name})`] = {
-                '#__fluid.automatic': vars
+                '#__fluid.scheme-system': vars
             };
         }
     }

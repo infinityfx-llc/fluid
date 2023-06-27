@@ -1,3 +1,4 @@
+import type { ButtonStyles } from "./components/input/button";
 import type { RadioStyles } from "./components/input/radio";
 import type { PopoverRootReference } from "./components/layout/popover/root";
 import { PartialFluidTheme } from "./core/theme";
@@ -23,6 +24,7 @@ export type FluidError = null | boolean | string;
 export type FluidConfig = {
     theme?: PartialFluidTheme;
     components?: {
+        Button?: ButtonStyles;
         Radio?: RadioStyles;
     }
 }

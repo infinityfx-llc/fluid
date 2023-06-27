@@ -54,7 +54,7 @@ const Root = forwardRef(({ children, styles = {}, variant = 'default', height = 
 
         '.header[data-variant="default"] .background': {
             boxShadow: '0 0 8px rgb(0, 0, 0, .05)',
-            borderBottom: 'solid 1px var(--f-clr-grey-100)'
+            borderBottom: 'solid 1px var(--f-clr-fg-200)'
         },
 
         '.left': {

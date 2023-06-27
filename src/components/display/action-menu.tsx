@@ -34,7 +34,7 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, stret
         '.menu': {
             padding: '.3em',
             background: 'var(--f-clr-bg-100)',
-            border: 'solid 1px var(--f-clr-grey-100)',
+            border: 'solid 1px var(--f-clr-fg-200)',
             borderRadius: 'calc(.3em + var(--f-radius-sml))',
             boxShadow: '0 0 8px rgb(0, 0, 0, 0.06)',
             fontSize: 'var(--f-font-size-sml)',

@@ -43,7 +43,7 @@ const Radio = forwardRef(({ styles = {}, error, size = 'med', ...props }: { styl
             width: '1.5em',
             height: '1.5em',
             borderRadius: '999px',
-            border: 'solid 2px var(--f-clr-fg-100)',
+            border: 'solid 2px var(--f-clr-fg-200)',
             transition: 'background-color .25s, border-color .25s',
             display: 'flex',
             alignItems: 'center',

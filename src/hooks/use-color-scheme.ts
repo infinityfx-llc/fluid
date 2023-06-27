@@ -3,11 +3,10 @@ import { cookies, formatCookie } from "../core/utils";
 import { COLOR_SCHEME_COOKIE, FluidTheme } from "../core/theme";
 import useDomEffect from "./use-dom-effect";
 
-export type ColorScheme<T extends FluidTheme> = (keyof T['palettes'] extends string ? keyof T['palettes'] : never) | 'light' | 'dark';
+export type ColorScheme<T extends FluidTheme> = (keyof T['palettes'] extends string ? keyof T['palettes'] : never) | 'light' | 'dark' | 'system';
 
-export default function useColorScheme<T extends FluidTheme>(initial: ColorScheme<T> = 'light', schemes = ['light', 'dark']) {
+export default function useColorScheme<T extends FluidTheme>(initial: ColorScheme<T> = 'system', schemes = ['light', 'dark', 'system']) {
     const [colorScheme, setColorScheme] = useState(initial);
-    const [automatic, setAutomatic] = useState(true);
 
     function updateColorScheme(scheme: ColorScheme<T>) {
         if (!schemes.includes(scheme)) return;
@@ -16,7 +15,6 @@ export default function useColorScheme<T extends FluidTheme>(initial: ColorSchem
         });
 
         setColorScheme(scheme);
-        setAutomatic(false);
     }
 
     useDomEffect(() => {
@@ -25,7 +23,6 @@ export default function useColorScheme<T extends FluidTheme>(initial: ColorSchem
     }, []);
 
     return {
-        automatic,
         colorScheme,
         setColorScheme: updateColorScheme
     };

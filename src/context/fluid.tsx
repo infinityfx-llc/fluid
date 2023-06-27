@@ -4,7 +4,7 @@ import useGlobalStyles from "@/src/hooks/use-global-styles";
 import { cloneElement, createContext, useInsertionEffect, useMemo } from "react";
 import { DEFAULT_THEME, FluidTheme, PartialFluidTheme, parseCSSVariables, parseColorPalettes } from "@/src/core/theme";
 import global from "@/src/styles/global";
-import { classes, mergeRecursive } from "@/src/core/utils";
+import { mergeRecursive } from "@/src/core/utils";
 import useColorScheme, { ColorScheme } from "@/src/hooks/use-color-scheme";
 import FluidStyleStore from "../core/stylestore";
 import { FluidStyles } from "../types";
@@ -60,10 +60,10 @@ export default function FluidProvider({ children, theme = {}, initialColorScheme
             }
         } as FluidStyles;
 
-        return [styles, fluid, Object.keys(fluid.palettes)];
+        return [styles, fluid, Object.keys(fluid.palettes).concat('system')];
     }, [theme]);
 
-    const { automatic, colorScheme, setColorScheme } = useColorScheme<typeof fluid>((initialColorScheme || fluid.defaultColorScheme) as ColorScheme<typeof fluid>, colorSchemes);
+    const { colorScheme, setColorScheme } = useColorScheme<typeof fluid>(initialColorScheme as ColorScheme<typeof fluid>, colorSchemes);
 
     useGlobalStyles(styles);
     useGlobalStyles(global);
@@ -73,7 +73,7 @@ export default function FluidProvider({ children, theme = {}, initialColorScheme
     return <FluidContext.Provider value={{ ...fluid, colorScheme, setColorScheme }}>
         {cloneElement(children, {
             id: '__fluid',
-            className: classes(`scheme-${colorScheme}`, automatic ? 'automatic' : undefined)
+            className: `scheme-${colorScheme}`
         })}
     </FluidContext.Provider>
 }

@@ -12,7 +12,7 @@ export type ToggleProps = {
     styles?: FluidStyles;
     size?: FluidSize;
     round?: boolean;
-    variant?: 'default' | 'minimal' | 'mono';
+    variant?: 'default' | 'minimal' | 'neutral';
     checkedContent?: React.ReactNode;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>;
 
@@ -49,8 +49,9 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
             backgroundColor: 'transparent'
         },
 
-        '.toggle[data-variant="mono"]': {
-            backgroundColor: 'var(--f-clr-primary-500)'
+        '.toggle[data-variant="neutral"]': {
+            backgroundColor: 'var(--f-clr-fg-100)',
+            border: 'solid 1px var(--f-clr-fg-200)'
         },
 
         '.toggle[data-disabled="false"]': {
@@ -70,9 +71,13 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
             overflow: 'hidden'
         },
 
-        '.toggle[data-checked="true"]:not([data-variant="mono"])': {
+        '.toggle[data-checked="true"]:not([data-variant="neutral"])': {
             backgroundColor: 'var(--f-clr-primary-100)',
             color: 'var(--f-clr-text-200)'
+        },
+
+        '.toggle[data-variant="neutral"][data-checked="true"]': {
+            backgroundColor: 'var(--f-clr-fg-200)'
         },
 
         '.toggle[data-variant="minimal"][data-checked="true"]': {

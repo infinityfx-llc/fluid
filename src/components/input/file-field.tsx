@@ -42,7 +42,7 @@ const FileField = forwardRef(({ styles = {}, size, round, icon, label, error, lo
 
         '.field': {
             backgroundColor: 'var(--f-clr-fg-100)',
-            border: 'solid 1px var(--f-clr-grey-100)',
+            border: 'solid 1px var(--f-clr-fg-200)',
             borderRadius: 'var(--f-radius-sml)',
             color: 'var(--f-clr-grey-200)',
             transition: 'border-color .2s, color .2s',

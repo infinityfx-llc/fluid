@@ -50,7 +50,7 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--
             width: '1.5em',
             height: '1.5em',
             borderRadius: 'var(--f-radius-sml)',
-            border: 'solid 1px var(--f-clr-grey-100)',
+            border: 'solid 1px var(--f-clr-fg-200)',
             transition: 'background-color .25s, border-color .25s',
             display: 'flex',
             alignItems: 'center',

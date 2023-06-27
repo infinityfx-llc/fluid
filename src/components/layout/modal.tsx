@@ -22,7 +22,7 @@ const Modal = forwardRef(({ children, styles = {}, show, onClose, title, ...prop
             flexDirection: 'column',
             padding: 'var(--f-spacing-med)',
             width: 'clamp(0px, 16rem, 100vw)',
-            border: 'solid 1px var(--f-clr-grey-100)',
+            border: 'solid 1px var(--f-clr-fg-200)',
             margin: 'var(--f-spacing-lrg)'
         },
 

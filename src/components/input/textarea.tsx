@@ -48,7 +48,7 @@ const Textarea = forwardRef(({ styles = {}, label, error, size, resize = 'both',
         '.textarea': {
             outline: 'none',
             backgroundColor: 'var(--f-clr-fg-100)',
-            border: 'solid 1px var(--f-clr-grey-100)',
+            border: 'solid 1px var(--f-clr-fg-200)',
             borderRadius: 'var(--f-radius-sml)',
             transition: 'border-color .2s',
             width: '100%',

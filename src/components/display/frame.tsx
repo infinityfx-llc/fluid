@@ -15,7 +15,7 @@ const Frame = forwardRef(({ children, radius = 'sml', shadow, border, background
             overflow: 'hidden',
             borderRadius: `var(--f-radius-${radius})`,
             boxShadow: shadow ? '0 0 8px rgb(0, 0, 0, 0.08)' : undefined,
-            border: border ? 'solid 1px var(--f-clr-grey-200)' : undefined,
+            border: border ? 'solid 1px var(--f-clr-fg-200)' : undefined,
             color: 'var(--f-clr-text-100)',
             background: background === 'dark' ?
                 'var(--f-clr-bg-100)' : background === 'light' ?

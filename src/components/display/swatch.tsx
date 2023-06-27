@@ -9,7 +9,7 @@ const Swatch = forwardRef(({ styles = {}, size = 'med', round = false, color, ..
             position: 'relative',
             width: '2em',
             height: '2em',
-            border: 'solid 1px var(--f-clr-grey-200)',
+            border: 'solid 1px var(--f-clr-fg-200)',
             borderRadius: 'var(--f-radius-sml)',
             overflow: 'hidden'
         },

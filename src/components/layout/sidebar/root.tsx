@@ -73,7 +73,7 @@ const Root = forwardRef(({ children, styles = {}, size = '18rem', ...props }:
 
     return <aside ref={ref} {...props} className={classes(style.sidebar, props.className)} data-collapsed={isCollapsed}>
         <div className={style.header}>
-            <Toggle variant="mono" checkedContent={<MdArrowBack />} checked={!isCollapsed} onChange={e => {
+            <Toggle variant="neutral" checkedContent={<MdArrowBack />} checked={!isCollapsed} onChange={e => {
                 setCollapsed?.(!e.target.checked);
                 onCollapse?.(!e.target.checked);
             }} className={style.button}>
