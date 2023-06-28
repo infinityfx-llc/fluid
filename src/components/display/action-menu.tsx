@@ -8,7 +8,7 @@ import { Move, Pop } from '@infinityfx/lively/animations';
 import { forwardRef, useRef } from 'react';
 import Halo from '../feedback/halo';
 import Popover from '../layout/popover';
-import { MdChevronRight, MdExpandMore } from 'react-icons/md';
+import { MdChevronRight } from 'react-icons/md';
 
 export type ActionMenuOption = {
     label: React.ReactNode;

@@ -4,7 +4,7 @@ import { renderToString } from "react-dom/server";
 import fs from 'fs';
 import { FluidConfig } from "@/src/types";
 import FluidProvider from "@/src/context/fluid";
-import { DIST_ROOT, OUTPUT_ROOT } from "./const";
+import { COMPILER_CONFIG, DIST_ROOT, OUTPUT_ROOT } from "./const";
 import { mergeRecursive } from "@/src/core/utils";
 import { DEFAULT_THEME } from "@/src/core/theme";
 
@@ -45,6 +45,12 @@ export async function processFile(root: string, path: string, name: string, comp
     let styles: any = {};
     if (name in stylesMap) styles = stylesMap[name];
 
+    let global = false;
+    if (/context\/fluid.js$/.test(path)) {
+        fileContent = await insertTheme(fileContent);
+        global = true;
+    }
+
     if (/index.js$/.test(path)) {
         let component;
         const components = fileContent.matchAll(/import\s*(.+?)\s*from\s*(?:'|")(.+?)(?:'|");/g);
@@ -57,62 +63,93 @@ export async function processFile(root: string, path: string, name: string, comp
     }
 
     if (Component instanceof Function || 'render' in Component) {
-        fileContent = await emitCSS(createElement(Component, { styles, key: 0 }), fileContent, outputPath);
+        fileContent = await emitCSS(name, createElement(Component, { styles, key: 0 }), fileContent, outputPath, global);
     }
 
     fs.writeFileSync(outputPath + filename, fileContent);
 }
 
-export async function emitCSS(Component: React.ReactElement, content: string, outputPath: string) {
-
+async function insertTheme(content: string) {
     const config = await getConfig();
 
-    const fnName = content.match(/import\s*([^"']+?)\s*from\s*(?:"|')[^'"]*use-styles.*?(?:"|');/)?.[1];
+    const mergeRecursiveImport = content.match(/import\s*\{[^{]*(mergeRecursive(?:\s*as\s*([^\s}]+))?)[^}]*\}/);
+    const fnName = mergeRecursiveImport?.[2] || 'mergeRecursive';
     const match = content.match(new RegExp(`${fnName}\\(.+?\\);`, 's'));
 
     if (match?.index) {
-        try {
-            const context = createElement(FluidProvider, { theme: config.theme } as any,
-                createElement('div', { key: 0 }, Component)
-            );
+        const merged = mergeRecursive(config.theme, DEFAULT_THEME);
 
-            renderToString(context);
-        } catch (ex) { }
-
-        const rule = Object.entries(FluidStyleStore.rules).filter(([_, val]) => !val.global)[0];
-
-        if (rule !== undefined) {
-            const [key, store] = rule;
-            content = content.slice(0, match.index) + `${JSON.stringify(store.selectors)};` + content.slice(match.index + match[0].length);
-
-            const cssInsert = content.match(/(?:(?:'|")use\sclient(?:'|");\n?)?()/s);
-            if (cssInsert?.index !== undefined) {
-                const idx = cssInsert.index + cssInsert[0].length;
-                content = content.slice(0, idx) + `import"./${key}.css";` + content.slice(idx);
-            }
-
-
-            fs.writeFileSync(outputPath + `/${key}.css`, store.rules);
-
-            FluidStyleStore.rules = {};
-        }
+        content = content.slice(0, match.index) + JSON.stringify(merged) + content.slice(match.index + match[0].length);
     }
 
     return content;
 }
 
-export async function compileTheme() { // TEMP SOLUTION
+export async function emitCSS(name: string, Component: React.ReactElement, content: string, outputPath: string, global: boolean) {
+    FluidStyleStore.modularize = false;
     const config = await getConfig();
 
-    let fileContent = fs.readFileSync(DIST_ROOT + 'core/theme.js', { encoding: 'ascii' });
-    const varName = fileContent.match(/(?:([^,{]+?)\s*as\s*)?DEFAULT_THEME/s)?.[1] || 'DEFAULT_THEME';
-    const match = fileContent.match(new RegExp(`(${varName}\\s*=\\s*)(\\{[^;]+\\});`, 's'));
+    try {
+        const context = createElement(FluidProvider, { theme: config.theme } as any,
+            createElement('div', { key: 0 }, global ? undefined : Component)
+        );
 
-    if (!match?.index) return;
+        renderToString(context);
+    } catch (ex) { }
 
-    const merged = mergeRecursive(config.theme, DEFAULT_THEME);
+    const rules = Object.values(FluidStyleStore.rules);
 
-    fileContent = fileContent.slice(0, match.index + match[1].length) + `${JSON.stringify(merged)};` + fileContent.slice(match.index + match[0].length);
+    if (rules.length) {
+        const cssInsert = content.match(/(?:(?:'|")use\sclient(?:'|");\n?)?()/s);
+        if (cssInsert?.index !== undefined && !global) {
+            const idx = cssInsert.index + cssInsert[0].length;
+            content = content.slice(0, idx) + `import FLUID_STYLES from "./${name}.module.css";` + content.slice(idx);
+        }
 
-    fs.writeFileSync(OUTPUT_ROOT + 'core/theme.js', fileContent);
+        const serialized = (global ? rules : rules.filter(val => !val.global))
+            .reduce((str, { rules }) => str + rules, '');
+
+        if (global) {
+            const path = config.cssOutput || 'app/globals.css';
+            fs.writeFileSync(path, serialized);
+        } else {
+            fs.writeFileSync(outputPath + `/${name}.module.css`, serialized);
+        }
+
+        const useStyles = content.match(/import\s*([^"']+?)\s*from\s*(?:"|')[^'"]*use-styles.*?(?:"|');/)?.[1];
+        const store = rules.filter(val => !val.global)[0];
+
+        if (store) {
+            // content = content.replace(new RegExp(`${useStyles}\\(.+?\\);`, 's'), `${JSON.stringify(store.selectors)};`);
+            content = content.replace(new RegExp(`${useStyles}\\(.+?\\);`, 's'), 'FLUID_STYLES;');
+        }
+
+        const useGlobalStyles = content.match(/import\s*([^"']+?)\s*from\s*(?:"|')[^'"]*use-global-styles.*?(?:"|');/)?.[1];
+        content = content.replace(new RegExp(`${useGlobalStyles}\\(.+?\\);`, 'gs'), '');
+
+        FluidStyleStore.rules = {};
+    }
+
+    return content;
+}
+
+export function insertCompilerConfig() {
+    const [compilerConfig, compilerFile] = getCompilerConfig();
+
+    const updatedConfig = {
+        ...compilerConfig,
+        compilerOptions: {
+            baseUrl: COMPILER_CONFIG.compilerOptions.baseUrl,
+            ...compilerConfig.compilerOptions,
+            paths: {
+                ...COMPILER_CONFIG.compilerOptions.paths,
+                ...compilerConfig.compilerOptions?.paths
+            }
+        },
+        exclude: COMPILER_CONFIG.exclude.concat(compilerConfig.exclude).filter((val, i, arr) => {
+            return val !== undefined && arr.indexOf(val) === i;
+        })
+    };
+
+    fs.writeFileSync(compilerFile, JSON.stringify(updatedConfig, null, '\t'));
 }

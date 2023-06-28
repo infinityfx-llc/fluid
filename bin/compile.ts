@@ -1,6 +1,6 @@
 import fs from 'fs';
-import { compileTheme, getCompilerConfig, getConfig, processFile } from './utils';
-import { COMPILER_CONFIG, DIST_ROOT, OUTPUT_ROOT } from './const';
+import { getConfig, insertCompilerConfig, processFile } from './utils';
+import { DIST_ROOT, OUTPUT_ROOT } from './const';
 
 export default async function () {
 
@@ -26,25 +26,7 @@ export default async function () {
         process.stdout.write(`${(i / size * 100).toFixed(1)}% ` + new Array(Math.round(i / size * 40)).fill('=').join(''));
     }
 
-    await compileTheme();
-
-    const [compilerConfig, compilerFile] = getCompilerConfig();
-    const updatedConfig = {
-        ...compilerConfig,
-        compilerOptions: {
-            baseUrl: COMPILER_CONFIG.compilerOptions.baseUrl,
-            ...compilerConfig.compilerOptions,
-            paths: {
-                ...COMPILER_CONFIG.compilerOptions.paths,
-                ...compilerConfig.compilerOptions?.paths
-            }
-        },
-        exclude: COMPILER_CONFIG.exclude.concat(compilerConfig.exclude).filter((val, i, arr) => {
-            return val !== undefined && arr.indexOf(val) === i;
-        })
-    }
-
-    fs.writeFileSync(compilerFile, JSON.stringify(updatedConfig, null, '\t'));
+    insertCompilerConfig();
 
     console.log('\n');
 }

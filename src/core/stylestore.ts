@@ -3,6 +3,7 @@ import { mergeRecursive, ruleToString } from "./utils";
 
 class StyleStore {
 
+    modularize = true;
     synchronized = false;
     rules: {
         [key: string]: {
@@ -26,7 +27,7 @@ class StyleStore {
         let rules = '';
 
         for (const selector in ruleset) {
-            rules += ruleToString(selector, ruleset[selector] as any, selectors, global ? undefined : key);
+            rules += ruleToString(selector, ruleset[selector] as any, selectors, (global || !this.modularize) ? undefined : key);
         }
 
         this.rules[key] = {

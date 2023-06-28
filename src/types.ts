@@ -22,6 +22,7 @@ export type FluidInputvalue = string | number | readonly string[] | undefined;
 export type FluidError = null | boolean | string;
 
 export type FluidConfig = {
+    cssOutput?: string;
     theme?: PartialFluidTheme;
     components?: {
         Button?: ButtonStyles;

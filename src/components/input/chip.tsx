@@ -38,7 +38,7 @@ const Chip = forwardRef(({ children, styles = {}, round = false, size = 'med', c
             display: 'flex',
             alignItems: 'center',
             gap: 'var(--f-spacing-xsm)',
-            transition: 'background-color .15s'
+            transition: 'background-color .15s, color .15s'
         },
 
         '.content': {
@@ -54,7 +54,7 @@ const Chip = forwardRef(({ children, styles = {}, round = false, size = 'med', c
 
         '.checkmark': {
             width: '1.1em',
-            stroke: 'var(--f-clr-text-100)',
+            stroke: 'var(--f-clr-text-200)',
             strokeWidth: 2,
             strokeLinecap: 'round',
             strokeLinejoin: 'round'
@@ -73,7 +73,8 @@ const Chip = forwardRef(({ children, styles = {}, round = false, size = 'med', c
         },
 
         '.input:checked + .chip': {
-            backgroundColor: 'var(--f-clr-primary-100)'
+            backgroundColor: 'var(--f-clr-primary-100)',
+            color: 'var(--f-clr-text-200)'
         },
 
         '.input:disabled + .chip': {
@@ -81,7 +82,7 @@ const Chip = forwardRef(({ children, styles = {}, round = false, size = 'med', c
         },
 
         '.input:disabled + .chip .checkmark': {
-            stroke: 'var(--f-clr-grey-500)'
+            stroke: 'var(--f-clr-grey-100)'
         },
 
         '.input:checked:disabled + .chip': {

@@ -1,25 +1,23 @@
 'use client';
 
 import useStyles from '@/src/hooks/use-styles';
-import { FluidSize, FluidStyles } from '@/src/types';
+import { FluidStyles } from '@/src/types';
 import { forwardRef, useState } from 'react';
 import Toggle from '../../input/toggle';
 import { MdArrowBack, MdArrowForward } from 'react-icons/md';
 import Scrollarea from '../scrollarea';
 import useFluid from '@/src/hooks/use-fluid';
 import { classes } from '@/src/core/utils';
-import useLayout from '@/src/hooks/use-layout';
 
-const Root = forwardRef(({ children, styles = {}, size = '18rem', ...props }:
+const Root = forwardRef(({ children, styles = {}, size = '18rem', collapsed, onCollapse, ...props }:
     {
         styles?: FluidStyles;
         size?: string;
+        collapsed?: boolean;
+        onCollapse?: (value: boolean) => void;
     } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
     const fluid = useFluid();
-
-    const { header, collapsed, onCollapse, sidebar } = useLayout();
     const [isCollapsed, setCollapsed] = collapsed !== undefined ? [collapsed] : useState(false);
-    sidebar.current = size;
 
     const style = useStyles(styles, {
         '.sidebar': {
@@ -49,7 +47,7 @@ const Root = forwardRef(({ children, styles = {}, size = '18rem', ...props }:
         },
 
         '.header': {
-            height: header.current || '5rem',
+            height: '5rem',
             display: 'flex',
             alignItems: 'center',
             paddingInline: '1em'
