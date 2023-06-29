@@ -5,23 +5,24 @@ import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles, PopoverRootReference } from '@/src/types';
 import { Animate } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
-import { forwardRef, useRef } from 'react';
+import { forwardRef, useCallback, useRef } from 'react';
 import Halo from '../feedback/halo';
 import Popover from '../layout/popover';
 import { MdChevronRight } from 'react-icons/md';
 
 export type ActionMenuOption = {
+    type: 'option';
     label: React.ReactNode;
     onClick?: () => void;
     disabled?: boolean;
     shouldClose?: boolean;
-    options?: {
-        label: string;
-        onClick?: () => void;
-        disabled?: boolean;
-        shouldClose?: boolean;
-    }[];
-} | string;
+    options?: ActionMenuOption[];
+} | {
+    type: 'heading';
+    text: string;
+} | {
+    type: 'divider'
+};
 
 const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, stretch, ...props }: {
     children: React.ReactElement;
@@ -66,34 +67,63 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, stret
             color: 'var(--f-clr-grey-500)'
         },
 
-        '.title': {
-            padding: '.5rem .8rem',
+        '.heading': {
+            padding: '.5rem .8rem .3rem .8rem',
             fontWeight: 700,
-            fontSize: '.8em',
-            color: 'var(--f-clr-grey-600)'
+            fontSize: '.85em',
+            color: 'var(--f-clr-text-100)'
         },
 
-        '.title:not(:first-child)': {
-            borderTop: 'solid 1px var(--f-clr-grey-100)',
-            marginTop: '.5em'
+        '.divider': {
+            height: '1px',
+            width: '100%',
+            backgroundColor: 'var(--f-clr-grey-100)',
+            marginBlock: '.3em'
         },
 
         '.submenu': {
             position: 'absolute',
             left: '100%',
-            top: 0,
+            top: 'calc(-1px - .3em)',
             opacity: 0,
             visibility: 'hidden',
             translate: '-12px 0',
             transition: 'opacity .2s, visibility .2s, translate .2s'
         },
 
-        '.option:enabled:hover > .submenu': {
+        '.wrapper': {
+            position: 'relative'
+        },
+
+        '.wrapper[data-disabled="false"]:hover > .submenu': {
             opacity: 1,
             visibility: 'visible',
             translate: '0 0'
         }
     });
+
+    const getOption = useCallback((option: ActionMenuOption, i: number) => {
+        if (option.type === 'heading') return <div key={i} className={style.heading}>{option.text}</div>;
+        if (option.type === 'divider') return <div key={i} className={style.divider} />;
+
+        const { label, onClick, disabled = false, shouldClose = true, options } = option;
+        return <div key={i} className={style.wrapper} data-disabled={disabled}>
+            <Halo disabled={disabled}>
+                <button role="menuitem" className={style.option} disabled={disabled} onClick={() => {
+                    if (shouldClose) popover.current?.close();
+                    onClick?.();
+                }}>
+                    {label}
+
+                    {options && <MdChevronRight style={{ marginLeft: 'auto' }} />}
+                </button>
+            </Halo>
+
+            {options && <div className={classes(style.submenu, style.menu)}>
+                {options.map(getOption)}
+            </div>}
+        </div>;
+    }, []);
 
     const popover = useRef<PopoverRootReference>(null);
 
@@ -105,36 +135,7 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, stret
         <Popover.Content role="menu">
             <Animate key="menu" animations={[Move.unique({ duration: .2 }), Pop.unique({ duration: .2 })]} unmount triggers={[{ on: 'mount' }]} levels={2} stagger={.06}>
                 <div ref={ref} {...props} className={classes(style.menu, props.className)}>
-                    {options.map((option, i) => {
-                        if (typeof option === 'string') return <div key={i} className={style.title}>{option}</div>;
-
-                        const { label, onClick, disabled = false, shouldClose = true, options } = option;
-                        return <Halo key={i} disabled={disabled}>
-                            <button role="menuitem" className={style.option} disabled={disabled} onClick={() => {
-                                if (shouldClose) popover.current?.close();
-                                onClick?.();
-                            }}>
-                                {label}
-
-                                {options && <MdChevronRight style={{ marginLeft: 'auto' }} />}
-
-                                {options && <div className={classes(style.submenu, style.menu)}>
-                                    {options.map(({ label, disabled, onClick, shouldClose }, i) => {
-                                        return <Halo key={i} disabled={disabled}>
-                                            <button className={style.option} disabled={disabled} onClick={e => {
-                                                e.stopPropagation();
-
-                                                if (shouldClose) popover.current?.close();
-                                                onClick?.();
-                                            }}>
-                                                {label}
-                                            </button>
-                                        </Halo>;
-                                    })}
-                                </div>}
-                            </button>
-                        </Halo>;
-                    })}
+                    {options.map(getOption)}
                 </div>
             </Animate>
         </Popover.Content>
