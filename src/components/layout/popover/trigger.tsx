@@ -1,19 +1,19 @@
 'use client';
 
 import { combineRefs } from "@/src/core/utils";
-import { cloneElement, isValidElement, useRef } from "react";
+import { cloneElement, useRef } from "react";
 import { usePopover } from "./root";
 
-export default function Trigger({ children, longpress, disabled }: { children: React.ReactElement; longpress?: boolean; disabled?: boolean; }) {
+export type PopoverTrigger = { children: React.ReactElement; longpress?: boolean; disabled?: boolean; } & React.HTMLAttributes<any>;
+
+export default function Trigger({ children, longpress, disabled, ...props }: PopoverTrigger) {
     const { id, trigger, opened, toggle } = usePopover();
     const timeout = useRef<any>();
-
-    // children = Array.isArray(children) ? children[0] : children;
-    // if (!isValidElement(children)) return children;
 
     const action = () => !disabled && toggle(!opened);
 
     return cloneElement(children, {
+        ...props,
         'aria-expanded': !!opened,
         'aria-controls': id,
         'aria-disabled': disabled,

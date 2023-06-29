@@ -1,11 +1,12 @@
 'use client';
 
 import Popover from "../../layout/popover";
+import { PopoverTrigger } from "../../layout/popover/trigger";
 
-export default function Trigger({ children, longpress, disabled }: { children: React.ReactElement; longpress?: boolean; disabled?: boolean; }) {
+export default function Trigger(props: PopoverTrigger) {
     
-    return <Popover.Trigger>
-        {children}
+    return <Popover.Trigger {...props}>
+        {props.children}
     </Popover.Trigger>;
 }
 

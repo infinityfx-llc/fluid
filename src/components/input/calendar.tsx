@@ -6,6 +6,7 @@ import { forwardRef, useState } from "react";
 import Button from "./button";
 import { MdArrowBack, MdArrowForward, MdExpand, MdExpandMore } from "react-icons/md";
 import { classes } from "@/src/core/utils";
+import { Combobox } from "../display";
 // import { Halo } from "../feedback";
 // import { Popover } from "../layout";
 
@@ -115,6 +116,7 @@ const Calendar = forwardRef(({ styles = {}, locale, size = 'med', round, default
     const first = new Date(date.getFullYear(), date.getMonth(), 1);
     const monday = new Date(first), day = first.getDay();
     monday.setDate(first.getDate() - (day || 7) + 1);
+    const year = date.getFullYear();
 
     function update(value: Date) {
         setDate?.(value);
@@ -138,21 +140,26 @@ const Calendar = forwardRef(({ styles = {}, locale, size = 'med', round, default
             <div className={style.text}>
                 {date.toLocaleString(locale, { month: 'long' })}
 
-                {/* <Popover2.Root position="center">
-                    <Popover2.Trigger> */}
-                        <Button size="sml" variant="light">
+                <Combobox.Root position="center">
+                    <Combobox.Trigger>
+                        <Button size="sml" variant="minimal">
                             {date.toLocaleString(locale, { year: 'numeric' })}
 
                             <MdExpandMore />
                         </Button>
-                    {/* </Popover2.Trigger>
+                    </Combobox.Trigger>
 
-                    <Popover2.Content>
-                        <div className={style.years}>
+                    <Combobox.Content>
+                        {new Array(21).fill(0).map((_, i) => {
+                            return <Combobox.Option key={i} value={year + 10 - i} onSelect={value => {
+                                const updated = new Date(date);
+                                updated.setFullYear(value as number);
 
-                        </div>
-                    </Popover2.Content>
-                </Popover2.Root> */}
+                                update(updated);
+                            }}>{year + 10 - i}</Combobox.Option>;
+                        })}
+                    </Combobox.Content>
+                </Combobox.Root>
             </div>
 
             <Button disabled={disabled === true} variant="minimal" round={round} onClick={() => {

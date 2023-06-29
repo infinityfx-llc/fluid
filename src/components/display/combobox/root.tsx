@@ -2,12 +2,12 @@
 
 import { forwardRef } from "react";
 import Popover from "../../layout/popover";
-import type { PopoverRootReference } from "../../layout/popover/root";
+import type { PopoverRoot, PopoverRootReference } from "../../layout/popover/root";
 
-const Root = forwardRef(({ children, position = 'auto', stretch, onClose }: { children: React.ReactNode; position?: 'auto' | 'center'; stretch?: boolean; onClose?: () => void; }, ref: React.ForwardedRef<PopoverRootReference>) => {
+const Root = forwardRef((props: PopoverRoot, ref: React.ForwardedRef<PopoverRootReference>) => {
     
-    return <Popover.Root>
-        {children}
+    return <Popover.Root ref={ref} {...props}>
+        {props.children}
     </Popover.Root>
 });
 

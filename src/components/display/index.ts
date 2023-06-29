@@ -3,6 +3,7 @@ import Badge from "./badge";
 import Tooltip from "./tooltip";
 import Swatch from "./swatch";
 import ActionMenu from "./action-menu";
+import Combobox from "./combobox";
 import Timeline from './timeline';
 import Code from "./code";
 import Toast from "./toast";
@@ -15,6 +16,7 @@ export {
     Tooltip,
     Swatch,
     ActionMenu,
+    Combobox,
     Timeline,
     Code,
     Toast,

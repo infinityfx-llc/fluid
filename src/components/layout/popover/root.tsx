@@ -22,7 +22,14 @@ export type PopoverRootReference = {
     close: () => void;
 }
 
-const Root = forwardRef(({ children, position = 'auto', stretch, onClose }: { children: React.ReactNode; position?: 'auto' | 'center'; stretch?: boolean; onClose?: () => void; }, ref: React.ForwardedRef<PopoverRootReference>) => {
+export type PopoverRoot = {
+    children: React.ReactNode;
+    position?: 'auto' | 'center';
+    stretch?: boolean;
+    onClose?: () => void;
+};
+
+const Root = forwardRef(({ children, position = 'auto', stretch, onClose }: PopoverRoot, ref: React.ForwardedRef<PopoverRootReference>) => {
     const id = useId();
     const trigger = useRef<HTMLElement>(null);
     const [mounted, setMounted] = useState(false);

@@ -20,9 +20,10 @@ const InputProps = {
     pattern: 16,
     accept: 17,
     autoComplete: 18,
-    multiple: 19,
-    enterKeyHint: 20,
-    inputMode: 21
+    autoFocus: 19,
+    multiple: 20,
+    enterKeyHint: 21,
+    inputMode: 22
 };
 
 export default function useInputProps<T = any>(props: React.InputHTMLAttributes<T>): [Pick<React.InputHTMLAttributes<T>, keyof typeof InputProps>, React.HTMLAttributes<any>] {
