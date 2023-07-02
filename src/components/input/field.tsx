@@ -14,7 +14,7 @@ export type FieldProps = {
     label?: string;
     left?: React.ReactNode;
     right?: React.ReactNode;
-    inputRef?: React.RefObject<HTMLInputElement>;
+    inputRef?: React.Ref<HTMLInputElement>;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>;
 
 const Field = forwardRef(({ styles = {}, round = false, size = 'med', error, icon, label, left, right, inputRef, ...props }: FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {

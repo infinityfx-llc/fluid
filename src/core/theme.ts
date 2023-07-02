@@ -106,7 +106,7 @@ export const DEFAULT_THEME = {
         dark: {
             primary: ['#1dddf2', '#1ac4d6', '#1bb2c2', '#1298a6', '#10707a', '#0d545c'],
             accent: ['#22e39f'],
-            grey: ['#191919','#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#b3b3b3', '#cccccc', '#e6e6e6'],
+            grey: ['#191919', '#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#b3b3b3', '#cccccc', '#e6e6e6'],
             text: ['#fff', '#000'],
             bg: ['#000'],
             fg: ['#161717', '#292b2b'],
@@ -131,7 +131,7 @@ export const DEFAULT_THEME = {
         xlg: '16px'
     },
     font: {
-        family: 'sans-serif',
+        family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
         size: {
             xxs: '.7rem',
             xsm: '.85rem',
@@ -143,9 +143,9 @@ export const DEFAULT_THEME = {
         }
     },
     breakpoints: {
-        mob: 480, 
-        tab: 768, 
-        lap: 1024, 
+        mob: 480,
+        tab: 768,
+        lap: 1024,
         dsk: 1200
     }
 }

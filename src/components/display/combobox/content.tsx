@@ -1,6 +1,6 @@
 'use client';
 
-import { Children, forwardRef, useState, isValidElement } from 'react';
+import { Children, forwardRef, useState, isValidElement, useRef, cloneElement } from 'react';
 import Popover from '../../layout/popover';
 import Scrollarea from '../../layout/scrollarea';
 import { useStyles } from '@/src/hooks';
@@ -47,26 +47,48 @@ const Content = forwardRef(({ children, searchable, placeholder = 'Search..', em
         }
     });
 
+    const selected = useRef(searchable ? 0 : -1);
+    const options = useRef<HTMLElement[]>([]);
     const [search, setSearch] = useState<string>('');
 
+    let optionIndex = 0, focused = false;
     const filtered = Children.map(children, child => {
-        if (isValidElement(child) && child.props.value.toString().includes(search)) return child;
+        if (isValidElement(child) && child.props.value.toString().includes(search)) {
+            if (child.props.disabled) return child;
+
+            const i = (searchable ? 1 : 0) + optionIndex++;
+
+            const clone = cloneElement(child as React.ReactElement, {
+                autoFocus: !focused && !searchable,
+                ref: (el: HTMLElement) => options.current[i] = el
+            });
+
+            return (focused = true, clone);
+        }
 
         return null;
     });
 
-    // FIX ARIA STUFF!!!
-
     return <Popover.Content>
         <Animatable key="combobox-options-outer" animate={Move.unique({ duration: .2 })} unmount triggers={[{ on: 'mount' }]}>
-            <div ref={ref} {...props} role="listbox" className={classes(style.container, props.className)}>
+            <div ref={ref} {...props} role="listbox" className={classes(style.container, props.className)}
+                onKeyDown={e => {
+                    props.onKeyDown?.(e);
+                    
+                    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                        e.preventDefault();
+            
+                        selected.current = e.key === 'ArrowDown' ? Math.min(selected.current + 1, options.current.length - 1) : Math.max(selected.current - 1, 0);
+                        options.current[selected.current]?.focus();
+                    }
+                }}>
                 {searchable && <Field
-                    role="combobox"
-                    aria-autocomplete="list"
+                    inputRef={(el: any) => options.current[0] = el}
                     autoFocus
                     placeholder={placeholder}
                     value={search}
                     onChange={e => {
+                        selected.current = 0;
                         setSearch(e.target.value);
                     }}
                     icon={<MdSearch />}
@@ -76,6 +98,10 @@ const Content = forwardRef(({ children, searchable, placeholder = 'Search..', em
                             borderRadius: 0,
                             borderBottom: 'solid 1px var(--f-clr-fg-200) !important',
                             backgroundColor: 'var(--f-clr-bg-100)'
+                        },
+
+                        '.wrapper': {
+                            width: 'auto'
                         }
                     }} />}
 

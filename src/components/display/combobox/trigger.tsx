@@ -5,7 +5,8 @@ import { PopoverTrigger } from "../../layout/popover/trigger";
 
 export default function Trigger(props: PopoverTrigger) {
     
-    return <Popover.Trigger {...props}>
+    // aria-autocomplete="list"
+    return <Popover.Trigger {...props} role="combobox">
         {props.children}
     </Popover.Trigger>;
 }
