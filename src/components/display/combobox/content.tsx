@@ -22,8 +22,8 @@ const Content = forwardRef(({ children, searchable, placeholder = 'Search..', em
             border: 'solid 1px var(--f-clr-fg-200)',
             borderRadius: 'calc(.3em + var(--f-radius-sml))',
             boxShadow: '0 0 8px rgb(0, 0, 0, 0.06)',
+            minWidth: 'clamp(0px, 10em, 100vw)',
             width: '100%',
-            // minWidth: 'clamp(0px, 10em, 100vw)',
             overflow: 'hidden'
         },
 

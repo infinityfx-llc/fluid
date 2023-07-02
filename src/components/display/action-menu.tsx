@@ -5,7 +5,7 @@ import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles, PopoverRootReference } from '@/src/types';
 import { Animate } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
-import { forwardRef, useCallback, useRef } from 'react';
+import { forwardRef, useCallback, useRef, useId } from 'react';
 import Halo from '../feedback/halo';
 import Popover from '../layout/popover';
 import { MdChevronRight } from 'react-icons/md';
@@ -104,7 +104,7 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, stret
 
     const getOption = useCallback((option: ActionMenuOption, i: number) => {
         if (option.type === 'heading') return <div key={i} className={style.heading}>{option.text}</div>;
-        if (option.type === 'divider') return <div key={i} className={style.divider} />;
+        if (option.type === 'divider') return <div key={i} className={style.divider} role="separator" />;
 
         const { label, onClick, disabled = false, shouldClose = true, options } = option;
         return <div key={i} className={style.wrapper} data-disabled={disabled}>
@@ -119,22 +119,23 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, stret
                 </button>
             </Halo>
 
-            {options && <div className={classes(style.submenu, style.menu)}>
+            {options && <div role="group" className={classes(style.submenu, style.menu)}>
                 {options.map(getOption)}
             </div>}
         </div>;
     }, []);
 
+    const id = useId();
     const popover = useRef<PopoverRootReference>(null);
 
     return <Popover.Root ref={popover} stretch={stretch}>
-        <Popover.Trigger disabled={disabled}>
+        <Popover.Trigger disabled={disabled} aria-haspopup="menu" id={id}>
             {children}
         </Popover.Trigger>
 
-        <Popover.Content role="menu">
+        <Popover.Content role="menu" aria-labelledby={id}>
             <Animate key="menu" animations={[Move.unique({ duration: .2 }), Pop.unique({ duration: .2 })]} unmount triggers={[{ on: 'mount' }]} levels={2} stagger={.06}>
-                <div ref={ref} {...props} className={classes(style.menu, props.className)}>
+                <div ref={ref} {...props} className={classes(style.menu, props.className)} role="group">
                     {options.map(getOption)}
                 </div>
             </Animate>
