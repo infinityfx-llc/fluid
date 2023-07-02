@@ -96,17 +96,20 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
     const [scrollable, setScrollable] = useState(false);
 
     function wheel(e: WheelEvent) {
-        scroll(Math.sign(e.deltaY) * speed);
-        
         const el = area.current;
         if (!el) return;
 
+        const amount = Math.sign(e.deltaY) * speed;
+
         const val = el[horizontal ? 'scrollLeft' : 'scrollTop'];
         const max = el[horizontal ? 'scrollWidth' : 'scrollHeight'] - el[horizontal ? 'offsetWidth' : 'offsetHeight'];
-        if (val > 0 && val < max) {
+
+        if (amount > 0 ? val < max : val > 0) {
             e.stopPropagation();
             e.preventDefault();
         }
+        
+        scroll(amount);
     }
 
     function drag(e: MouseEvent) {
