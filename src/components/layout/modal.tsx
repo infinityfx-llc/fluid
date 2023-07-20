@@ -50,7 +50,7 @@ const Modal = forwardRef(({ children, styles = {}, show, onClose, title, ...prop
     const id = useId();
 
     return <Overlay show={show} onClose={onClose}>
-        <Animatable animate={{ translate: ['0px 20px', '0px 0px'], opacity: [0, 1], duration: .25 }} unmount triggers={[{ on: 'mount' }]}>
+        <Animatable key="modal" animate={{ translate: ['0px 20px', '0px 0px'], opacity: [0, 1], duration: .25 }} unmount triggers={[{ on: 'mount' }]}>
             <div ref={ref} {...props} className={classes(style.modal, props.className)} role="dialog" aria-modal aria-labelledby={id}>
                 <div className={style.header}>
                     <span id={id}>{title}</span>

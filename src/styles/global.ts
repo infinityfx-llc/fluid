@@ -8,7 +8,7 @@ export default {
     },
 
     'html, body': {
-        width: '100vw',
+        width: '100%',
         minHeight: '100dvh',
         overflowX: 'hidden'
     },

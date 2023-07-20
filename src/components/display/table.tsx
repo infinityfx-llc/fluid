@@ -11,7 +11,7 @@ import Checkbox from "../input/checkbox";
 import { MdArrowDownward, MdArrowUpward, MdMoreVert, MdSort } from "react-icons/md";
 import ActionMenu, { ActionMenuOption } from "./action-menu";
 
-const Table = forwardRef(<T extends { [key: string]: string | number | boolean | Date; }>({ styles = {}, data, columns, selectable, sortable, selected, onSelect, columnFormatters = {}, rowActions, ...props }:
+const Table = forwardRef(<T extends { [key: string]: any; }>({ styles = {}, data, columns, selectable, sortable, selected, onSelect, columnFormatters = {}, rowActions, ...props }:
     {
         styles?: FluidStyles;
         data: T[];
@@ -23,7 +23,7 @@ const Table = forwardRef(<T extends { [key: string]: string | number | boolean |
         columnFormatters?: {
             [column in keyof T]?: (value: T[column]) => React.ReactNode;
         };
-        rowActions?: (index: number) => ActionMenuOption[];
+        rowActions?: (row: T) => ActionMenuOption[];
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
 
     const style = useStyles(styles, {
@@ -160,7 +160,7 @@ const Table = forwardRef(<T extends { [key: string]: string | number | boolean |
             {rows.map((row, i) => {
 
                 return <Halo key={i} disabled={!selectable}>
-                    <label role="row" className={style.row} style={{ gridTemplateColumns }}>
+                    <div role="row" className={style.row} style={{ gridTemplateColumns }}>
                         {selectable && <div className={style.collapsed}>
                             <Checkbox size="xsm" color="var(--f-clr-text-100)" styles={CheckboxStyles} checked={selectedIndices.includes(i)} onChange={e => {
                                 const updated = selectedIndices.slice();
@@ -179,13 +179,13 @@ const Table = forwardRef(<T extends { [key: string]: string | number | boolean |
                         })}
 
                         {rowActions ? <div className={style.collapsed}>
-                            <ActionMenu options={rowActions(i)}>
+                            <ActionMenu options={rowActions(rows[i])}>
                                 <Button variant="minimal" style={{ marginLeft: 'auto' }}>
                                     <MdMoreVert />
                                 </Button>
                             </ActionMenu>
                         </div> : null}
-                    </label>
+                    </div>
                 </Halo>;
             })}
         </div>
@@ -195,5 +195,3 @@ const Table = forwardRef(<T extends { [key: string]: string | number | boolean |
 Table.displayName = 'Table';
 
 export default Table;
-
-// instead of index maybe pass row to rowActions function??

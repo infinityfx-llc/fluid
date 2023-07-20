@@ -1,3 +1,5 @@
+'use client';
+
 import { classes } from '@/src/core/utils';
 import useInputProps from '@/src/hooks/use-input-props';
 import useStyles from '@/src/hooks/use-styles';
@@ -14,16 +16,17 @@ export type FieldProps = {
     label?: string;
     left?: React.ReactNode;
     right?: React.ReactNode;
+    onEnter?: () => void;
     inputRef?: React.Ref<HTMLInputElement>;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>;
 
-const Field = forwardRef(({ styles = {}, round = false, size = 'med', error, icon, label, left, right, inputRef, ...props }: FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Field = forwardRef(({ styles = {}, round = false, size = 'med', error, icon, label, left, right, onEnter, inputRef, ...props }: FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             display: 'flex',
             flexDirection: 'column',
             gap: 'var(--f-spacing-xxs)',
-            width: 'clamp(0px, 12em, 100vw)'
+            minWidth: 'clamp(0px, 12em, 100vw)' // check inside other similar components
         },
 
         '.input': {
@@ -123,7 +126,9 @@ const Field = forwardRef(({ styles = {}, round = false, size = 'med', error, ico
             <label className={style.content}>
                 {icon}
 
-                <input {...split} ref={inputRef} aria-labelledby={label ? id : undefined} aria-invalid={!!error} className={style.input} />
+                <input {...split} ref={inputRef} aria-labelledby={label ? id : undefined} aria-invalid={!!error} className={style.input} onKeyDown={e => {
+                    if (e.key === 'Enter') onEnter?.();
+                }} />
             </label>
 
             {right}

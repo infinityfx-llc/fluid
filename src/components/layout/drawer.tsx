@@ -53,6 +53,12 @@ const Drawer = forwardRef(({ children, styles = {}, show, onClose, position = 'r
 
         '.drawer[data-position="right"] .title': {
             order: 1
+        },
+
+        '.content': {
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column'
         }
     });
 
@@ -69,7 +75,7 @@ const Drawer = forwardRef(({ children, styles = {}, show, onClose, position = 'r
     }
 
     return <Overlay show={show} onClose={onClose}>
-        <Animatable animate={{ translate: [`${position === 'right' ? 100 : -100}% 0%`, '0% 0%'], duration: .25 }} unmount triggers={[{ on: 'mount' }]}>
+        <Animatable key="drawer" animate={{ translate: [`${position === 'right' ? 100 : -100}% 0%`, '0% 0%'], duration: .25 }} unmount triggers={[{ on: 'mount' }]}>
             <div ref={ref} {...props} className={classes(style.drawer, props.className)} role="dialog" aria-modal aria-labelledby={id} data-position={position} onTouchStart={touch} onTouchMove={touch}>
                 <div className={style.header}>
                     <span id={id} className={style.title}>{title}</span>
@@ -79,7 +85,7 @@ const Drawer = forwardRef(({ children, styles = {}, show, onClose, position = 'r
                     </Button>
                 </div>
 
-                <Scrollarea>
+                <Scrollarea className={style.content}>
                     {children}
                 </Scrollarea>
             </div>

@@ -49,7 +49,7 @@ const Select = forwardRef((
             display: 'flex',
             flexDirection: 'column',
             gap: 'var(--f-spacing-xxs)',
-            width: 'clamp(0px, 12em, 100vw)'
+            minWidth: 'clamp(0px, 12em, 100vw)'
         },
 
         '.label': {
@@ -101,6 +101,10 @@ const Select = forwardRef((
             flexGrow: 1
         },
 
+        '.content_wrapper > *:not(.content)': {
+            flexShrink: 0
+        },
+
         '.content': {
             position: 'relative',
             display: 'flex',
@@ -130,7 +134,8 @@ const Select = forwardRef((
 
         '.input': {
             position: 'absolute',
-            opacity: 0
+            opacity: 0,
+            width: 0
         },
 
         '.wrapper[data-size="xsm"]': {
@@ -189,7 +194,7 @@ const Select = forwardRef((
                                         <Badge round={round} styles={BadgeStyles}>+{state.length - 1} more</Badge>
                                     </>
                                 ) :
-                                state
+                                options.find(option => option.value === state)?.label // TESTING!!
                             }
                         </div>
 
@@ -207,7 +212,7 @@ const Select = forwardRef((
             {options.map(({ label, value, disabled }, i) => {
                 const selected = (Array.isArray(state) ? state.includes(value) : state === value);
 
-                return <Combobox.Option key={i} value={value} disabled={disabled} aria-selected={selected} onSelect={() => {
+                return <Combobox.Option key={i} value={label} disabled={disabled} aria-selected={selected} onSelect={() => {
                     if (!Array.isArray(state)) {
                         popover.current?.close();
                         setState?.(value);

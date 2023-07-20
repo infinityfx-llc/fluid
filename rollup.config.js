@@ -25,7 +25,7 @@ const external = ['react', /react-dom/, 'react/jsx-runtime', /@infinityfx\/livel
 
 export default [
     {
-        input: ['src/index.ts', 'src/hooks.ts', 'src/server.ts'],
+        input: ['src/index.ts', 'src/hooks.ts', 'src/server.ts', 'src/utils.ts'],
         external,
         output: {
             dir: 'dist',

@@ -28,7 +28,7 @@ export default function Cull({ children, include }: { children: React.ReactNode;
                 val !== 'dsk' ? fluid.breakpoints[val] : null
             ]
                 .map((val, i) => {
-                    return val !== null ? `(${['min', 'max'][i]}-width: ${val}px)` : null;
+                    return val !== null ? `(${['min', 'max'][i]}-width: ${val + (i ? 0 : 1)}px)` : null;
                 })
                 .filter(val => val)
                 .join(' and ');

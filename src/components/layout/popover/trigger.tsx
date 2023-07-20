@@ -40,6 +40,20 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
 
             clearTimeout(timeout.current);
             if (!longpress) action();
+        },
+        onKeyDown: (e: React.KeyboardEvent) => {
+            children.props.onKeyDown?.(e);
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+
+            e.preventDefault();
+            if (longpress) timeout.current = setTimeout(action, 400);
+        },
+        onKeyUp: (e: React.KeyboardEvent) => {
+            children.props.onKeyUp?.(e);
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+
+            clearTimeout(timeout.current);
+            if (!longpress) action();
         }
     });
 }

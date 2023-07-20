@@ -23,7 +23,7 @@ const FileField = forwardRef(({ styles = {}, size, round, icon, label, error, lo
             display: 'flex',
             flexDirection: 'column',
             gap: 'var(--f-spacing-xxs)',
-            width: 'clamp(0px, 12em, 100vw)'
+            minWidth: 'clamp(0px, 12em, 100vw)'
         },
 
         '.input': {
