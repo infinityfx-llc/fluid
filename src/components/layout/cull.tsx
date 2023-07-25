@@ -4,9 +4,9 @@ import { classes } from '@/src/core/utils';
 import useFluid from '@/src/hooks/use-fluid';
 import useStyles from '@/src/hooks/use-styles';
 import { FluidBreakpoint } from '@/src/types';
-import { cloneElement, isValidElement } from 'react';
+import { cloneElement } from 'react';
 
-export default function Cull({ children, include }: { children: React.ReactNode; include: FluidBreakpoint[]; }) {
+export default function Cull({ children, include }: { children: React.ReactElement; include: FluidBreakpoint[]; }) {
     const fluid = useFluid();
 
     const style = useStyles({
@@ -33,7 +33,6 @@ export default function Cull({ children, include }: { children: React.ReactNode;
     });
 
     children = Array.isArray(children) ? children[0] : children;
-    if (!isValidElement(children)) return <>{children}</>;
 
     return cloneElement(children as React.ReactElement, {
         className: classes(...include.map(breakpoint => style[`cull__${breakpoint}`]), children.props.className)

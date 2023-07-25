@@ -9,6 +9,7 @@ export type PopoverTrigger = { children: React.ReactElement; longpress?: boolean
 export default function Trigger({ children, longpress, disabled, ...props }: PopoverTrigger) {
     const { id, trigger, opened, toggle } = usePopover();
     const timeout = useRef<any>();
+    const pressed = useRef(false);
 
     const action = () => !disabled && toggle(!opened);
 
@@ -18,42 +19,46 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
         'aria-controls': id,
         'aria-disabled': disabled,
         ref: combineRefs(trigger, (children as any).ref),
+        onClick: (e: React.MouseEvent) => {
+            children.props.onClick?.(e);
+            if (longpress) return;
+
+            action();
+        },
         onMouseDown: (e: React.MouseEvent) => {
             children.props.onMouseDown?.(e);
+            if (!longpress) return;
             
-            clearTimeout(timeout.current);
-            if (longpress) timeout.current = setTimeout(action, 400);
+            timeout.current = setTimeout(action, 400);
         },
         onTouchStart: (e: React.TouchEvent) => {
             children.props.onTouchStart?.(e);
-            if (longpress) timeout.current = setTimeout(action, 400);
+            if (!longpress) return;
+
+            timeout.current = setTimeout(action, 400);
         },
         onMouseUp: (e: React.MouseEvent) => {
             children.props.onMouseUp?.(e);
 
             clearTimeout(timeout.current);
-            if (!longpress) action();
         },
         onTouchEnd: (e: React.TouchEvent) => {
-            e.preventDefault();
             children.props.onTouchEnd?.(e);
 
             clearTimeout(timeout.current);
-            if (!longpress) action();
         },
         onKeyDown: (e: React.KeyboardEvent) => {
             children.props.onKeyDown?.(e);
-            if (e.key !== 'Enter' && e.key !== ' ') return;
+            if ((e.key !== 'Enter' && e.key !== ' ') || !longpress || pressed.current) return;
 
-            e.preventDefault();
-            if (longpress) timeout.current = setTimeout(action, 400);
+            pressed.current = true;
+            timeout.current = setTimeout(action, 400);
         },
         onKeyUp: (e: React.KeyboardEvent) => {
             children.props.onKeyUp?.(e);
-            if (e.key !== 'Enter' && e.key !== ' ') return;
 
+            pressed.current = false;
             clearTimeout(timeout.current);
-            if (!longpress) action();
         }
     });
 }
