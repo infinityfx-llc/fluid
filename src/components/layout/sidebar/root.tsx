@@ -24,7 +24,7 @@ const Root = forwardRef(({ children, styles = {}, size = '18rem', collapsed, onC
             position: 'fixed',
             top: 0,
             left: 0,
-            height: '100vh',
+            height: '100dvh',
             zIndex: 500,
             backgroundColor: 'var(--f-clr-bg-100)',
             borderTopRightRadius: 'var(--f-radius-lrg)',

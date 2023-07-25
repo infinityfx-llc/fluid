@@ -8,6 +8,8 @@ import { Morph } from "@infinityfx/lively/layout";
 import { classes } from "@/src/core/utils";
 import Scrollarea from "../layout/scrollarea";
 
+export type TabsStyles = FluidStyles<'.wrapper' | '.tabs' | '.option' | '.selection' | '.button' | '.wrapper__var__default' | '.wrapper__var__minimal'>;
+
 const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, defaultValue, onChange, ...props }:
     {
         options: {
@@ -16,24 +18,24 @@ const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, def
             disabled?: boolean;
             panelId?: string;
         }[];
-        styles?: FluidStyles;
+        styles?: TabsStyles;
         variant?: 'default' | 'minimal';
         value?: FluidInputvalue;
         defaultValue?: FluidInputvalue;
         onChange?: (value: FluidInputvalue) => void;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
-        '.wrapper[data-variant="default"]': {
+        '.wrapper__var__default': {
             backgroundColor: 'var(--f-clr-fg-100)',
             borderRadius: 'var(--f-radius-sml)'
         },
-        
+
         '.tabs': {
             display: 'flex',
             width: 'max-content'
         },
 
-        '.wrapper[data-variant="default"] .tabs': {
+        '.wrapper__var__default .tabs': {
             gap: 'var(--f-spacing-sml)',
             padding: '0 .6em'
         },
@@ -42,7 +44,7 @@ const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, def
             position: 'relative'
         },
 
-        '.wrapper[data-variant="default"] .option': {
+        '.wrapper__var__default .option': {
             padding: '.6em 0'
         },
 
@@ -68,7 +70,7 @@ const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, def
             fontWeight: 600
         },
 
-        '.wrapper[data-variant="minimal"] .button': {
+        '.wrapper__var__minimal .button': {
             padding: '.8em 1.2em'
         },
 
@@ -84,7 +86,11 @@ const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, def
     const id = useId();
     const [state, setState] = value !== undefined ? [value] : useState<FluidInputvalue>(defaultValue || options[0]?.value);
 
-    return <div ref={ref} {...props} className={classes(style.wrapper, props.className)} data-variant={variant}>
+    return <div ref={ref} {...props} className={classes(
+        style.wrapper,
+        style[`wrapper__var__${variant}`],
+        props.className
+    )}>
         <Scrollarea horizontal>
             <div className={style.tabs} role="tablist">
                 {options.map(({ label, value, disabled, panelId }, i) => {

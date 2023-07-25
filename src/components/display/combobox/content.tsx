@@ -53,7 +53,7 @@ const Content = forwardRef(({ children, searchable, placeholder = 'Search..', em
 
     let optionIndex = 0, focused = false;
     const filtered = Children.map(children, child => {
-        if (isValidElement(child) && child.props.value.toString().includes(search)) {
+        if (isValidElement(child) && child.props.value.toString().toLowerCase().includes(search.toLowerCase())) {
             if (child.props.disabled) return child;
 
             const i = (searchable ? 1 : 0) + optionIndex++;

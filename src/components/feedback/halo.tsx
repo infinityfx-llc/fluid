@@ -7,15 +7,17 @@ import { Animatable } from "@infinityfx/lively";
 import { useLink, useTrigger } from "@infinityfx/lively/hooks";
 import { Children, cloneElement, forwardRef, isValidElement, useRef } from "react";
 
+export type HaloStyles = FluidStyles<'.halo' | '.ring'>;
+
 const Halo = forwardRef(<T extends React.ReactElement>({ children, styles = {}, color, hover = true, disabled = false, ...props }:
     {
         children: T;
-        styles?: FluidStyles;
+        styles?: HaloStyles;
         color?: string;
         hover?: boolean;
         disabled?: boolean;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<T>) => {
-    const _style = useStyles(styles, {
+    const style = useStyles(styles, {
         '.container': {
             zIndex: 0
         },
@@ -74,16 +76,16 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, styles = {}, 
     if (!isValidElement(children)) return children;
 
     const arr = Children.toArray(children.props.children);
-    arr.unshift(<div key="halo" className={_style.halo} data-hover={hover}>
+    arr.unshift(<div key="halo" className={style.halo} data-hover={hover}>
         <Animatable animate={{ translate, opacity: [0, 1], scale: [0, 1], duration: .4, easing: 'ease-in' }} initial={{ opacity: 1, scale: 1 }} triggers={[{ on: click, immediate: true }]}>
-            <div className={_style.ring} style={{ backgroundColor: color }} />
+            <div className={style.ring} style={{ backgroundColor: color }} />
         </Animatable>
     </div>);
 
     return cloneElement(children, {
         ...props,
         ref: combineRefs(container, ref, (children as any).ref),
-        className: classes(children.props.className, _style.container),
+        className: classes(children.props.className, style.container),
         onClick: (e: React.MouseEvent<HTMLDivElement>) => {
             children.props.onClick?.(e);
             props.onClick?.(e);

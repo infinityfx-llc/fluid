@@ -11,7 +11,9 @@ import { classes } from '@/src/core/utils';
 import { Animatable } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
 
-const Modal = forwardRef(({ children, styles = {}, show, onClose, title, ...props }: { children: React.ReactNode; styles?: FluidStyles; show: boolean; onClose: () => void; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+export type ModalStyles = FluidStyles<'.modal' | '.header'>;
+
+const Modal = forwardRef(({ children, styles = {}, show, onClose, title, ...props }: { children: React.ReactNode; styles?: ModalStyles; show: boolean; onClose: () => void; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const fluid = useFluid();
     const style = useStyles(styles, {
         '.modal': {

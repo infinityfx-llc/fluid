@@ -1,12 +1,13 @@
 import { classes } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
-import { FluidStyles } from "@/src/types";
+import { FluidSize, FluidStyles } from "@/src/types";
 import { forwardRef } from "react";
 
-const Badge = forwardRef(({ children, styles = {}, round = false, color, ...props }: { styles?: FluidStyles; round?: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+export type BadgeStyles = FluidStyles<'.badge' | '.badge__round' | '.badge__xsm' | '.badge__sml' | '.badge__med' | '.badge__lrg'>;
+
+const Badge = forwardRef(({ children, styles = {}, round = false, size = 'sml', color, ...props }: { styles?: BadgeStyles; round?: boolean; size?: FluidSize; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.badge': {
-            fontSize: 'var(--f-font-size-xxs)',
             fontWeight: 700,
             color: 'var(--f-clr-text-100)',
             textTransform: 'uppercase',
@@ -15,12 +16,35 @@ const Badge = forwardRef(({ children, styles = {}, round = false, color, ...prop
             padding: '.2em .6em'
         },
 
-        '.badge[data-round="true"]': {
+        '.badge__xsm': {
+            fontSize: '.5rem'
+        },
+
+        '.badge__sml': {
+            fontSize: 'var(--f-font-size-xxs)',
+        },
+
+        '.badge__med': {
+            fontSize: 'var(--f-font-size-xsm)',
+        },
+
+        '.badge__lrg': {
+            fontSize: 'var(--f-font-size-sml)',
+        },
+
+        '.badge__round': {
             borderRadius: '999px'
         }
     });
 
-    return <div ref={ref} {...props} className={classes(style.badge, props.className)} style={{ ...props.style, backgroundColor: color }} data-round={round}>
+    return <div ref={ref} {...props}
+        className={classes(
+            style.badge,
+            style[`badge__${size}`],
+            round && style.badge__round,
+            props.className
+        )}
+        style={{ backgroundColor: color, ...props.style }}>
         {children}
     </div>;
 });

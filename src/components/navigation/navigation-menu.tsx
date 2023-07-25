@@ -8,9 +8,11 @@ import { Morph } from '@infinityfx/lively/layout';
 import Halo from '../feedback/halo';
 import { classes } from '@/src/core/utils';
 
+export type NavigationMenuStyles = FluidStyles<'.navigation' | '.link' | '.selection' | '.menu' | '.container'>;
+
 const NavigationMenu = forwardRef(({ styles = {}, links, selected = -1, Link = 'a', ...props }:
     {
-        styles?: FluidStyles;
+        styles?: NavigationMenuStyles;
         links?: {
             label: string;
             href: string;

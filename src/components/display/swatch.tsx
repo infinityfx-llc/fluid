@@ -3,7 +3,9 @@ import useStyles from "@/src/hooks/use-styles";
 import { FluidSize, FluidStyles } from "@/src/types";
 import { forwardRef } from "react";
 
-const Swatch = forwardRef(({ styles = {}, size = 'med', round = false, color, ...props }: { styles?: FluidStyles; size?: FluidSize; round?: boolean; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+export type SwatchStyles = FluidStyles<'.swatch' | '.swatch__round' | '.swatch__xsm' | '.swatch__sml' | '.swatch__med' | '.swatch__lrg'>;
+
+const Swatch = forwardRef(({ styles = {}, size = 'med', round = false, color, ...props }: { styles?: SwatchStyles; size?: FluidSize; round?: boolean; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.swatch': {
             position: 'relative',
@@ -25,24 +27,33 @@ const Swatch = forwardRef(({ styles = {}, size = 'med', round = false, color, ..
             zIndex: -1
         },
 
-        '.swatch[data-round="true"]': {
+        '.swatch__round': {
             borderRadius: '999px'
         },
 
-        '.swatch[data-size="sml"]': {
+        '.swatch__xsm': {
+            fontSize: 'var(--f-font-size-xxs)'
+        },
+
+        '.swatch__sml': {
             fontSize: 'var(--f-font-size-xsm)'
         },
 
-        '.swatch[data-size="med"]': {
+        '.swatch__med': {
             fontSize: 'var(--f-font-size-sml)'
         },
 
-        '.swatch[data-size="lrg"]': {
+        '.swatch__lrg': {
             fontSize: 'var(--f-font-size-med)'
         }
     });
 
-    return <div ref={ref} {...props} className={classes(style.swatch, props.className)} style={{ ...props.style, backgroundColor: color }} data-size={size} data-round={round} />;
+    return <div ref={ref} {...props} className={classes(
+        style.swatch,
+        style[`swatch__${size}`],
+        round && style.swatch__round,
+        props.className
+    )} style={{ backgroundColor: color, ...props.style }} />;
 });
 
 Swatch.displayName = 'Swatch';

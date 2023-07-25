@@ -3,7 +3,9 @@ import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
 import { forwardRef } from "react";
 
-const Key = forwardRef(({ children, styles = {}, ...props }: { children: string; styles?: FluidStyles; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+export type KeyStyles = FluidStyles<'.key' | '.key::after'>;
+
+const Key = forwardRef(({ children, styles = {}, ...props }: { children: string; styles?: KeyStyles; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.key': {
             position: 'relative',

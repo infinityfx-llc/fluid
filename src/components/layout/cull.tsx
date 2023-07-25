@@ -3,50 +3,39 @@
 import { classes } from '@/src/core/utils';
 import useFluid from '@/src/hooks/use-fluid';
 import useStyles from '@/src/hooks/use-styles';
-import { FluidBreakpoint, FluidStyles } from '@/src/types';
-import { cloneElement, isValidElement, useMemo } from 'react';
-
-const MinBreakpoints: {
-    [key in FluidBreakpoint]: FluidBreakpoint | null;
-} = {
-    mob: null,
-    tab: 'mob',
-    lap: 'tab',
-    dsk: 'lap'
-};
+import { FluidBreakpoint } from '@/src/types';
+import { cloneElement, isValidElement } from 'react';
 
 export default function Cull({ children, include }: { children: React.ReactNode; include: FluidBreakpoint[]; }) {
     const fluid = useFluid();
 
-    const style = useMemo(() => {
-        const styles: FluidStyles = {};
-        const queries = include.map(val => {
-            const min = MinBreakpoints[val];
-
-            return [
-                min && fluid.breakpoints[min],
-                val !== 'dsk' ? fluid.breakpoints[val] : null
-            ]
-                .map((val, i) => {
-                    return val !== null ? `(${['min', 'max'][i]}-width: ${val + (i ? 0 : 1)}px)` : null;
-                })
-                .filter(val => val)
-                .join(' and ');
-        });
-
-        for (const query of queries) styles[`@media ${query}`] = {
-            '.cull': {
+    const style = useStyles({
+        [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {
+            '.cull__mob': {
                 display: 'none !important'
             }
-        };
-
-        return useStyles(styles);
-    }, [include]);
+        },
+        [`@media (min-width: ${fluid.breakpoints.mob + 1}px) and (max-width: ${fluid.breakpoints.tab}px)`]: {
+            '.cull__tab': {
+                display: 'none !important'
+            }
+        },
+        [`@media (min-width: ${fluid.breakpoints.tab + 1}px) and (max-width: ${fluid.breakpoints.lap}px)`]: {
+            '.cull__lap': {
+                display: 'none !important'
+            }
+        },
+        [`@media (min-width: ${fluid.breakpoints.lap + 1}px)`]: {
+            '.cull__dsk': {
+                display: 'none !important'
+            }
+        }
+    });
 
     children = Array.isArray(children) ? children[0] : children;
     if (!isValidElement(children)) return <>{children}</>;
 
     return cloneElement(children as React.ReactElement, {
-        className: classes(style.cull, children.props.className)
+        className: classes(...include.map(breakpoint => style[`cull__${breakpoint}`]), children.props.className)
     });
 }

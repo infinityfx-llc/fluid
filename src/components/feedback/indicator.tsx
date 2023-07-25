@@ -5,7 +5,11 @@ import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
 import { Children, cloneElement, forwardRef, isValidElement } from "react";
 
-const Indicator = forwardRef(<T extends React.ReactElement>({ children, styles = {}, content, color, outline, round, ...props }: { children: T; styles?: FluidStyles; content?: number | string | boolean; color?: string; outline?: string; round?: boolean; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'>, ref: React.ForwardedRef<T>) => {
+// fix cloneElement issues!!
+
+export type IndicatorStyles = FluidStyles<'.indicator' | '.indicator__round'>;
+
+const Indicator = forwardRef(<T extends React.ReactElement>({ children, styles = {}, content, color, outline, round, ...props }: { children: T; styles?: IndicatorStyles; content?: number | string | boolean; color?: string; outline?: string; round?: boolean; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'>, ref: React.ForwardedRef<T>) => {
     const style = useStyles(styles, {
         '.indicator': {
             position: 'absolute',
@@ -25,7 +29,7 @@ const Indicator = forwardRef(<T extends React.ReactElement>({ children, styles =
             zIndex: 99
         },
 
-        '.indicator[data-round="true"]': {
+        '.indicator__round': {
             top: '14%',
             right: '14%'
         }
@@ -35,11 +39,18 @@ const Indicator = forwardRef(<T extends React.ReactElement>({ children, styles =
     if (!isValidElement(children)) return children;
 
     const arr = Children.toArray(children.props.children);
-    if (content !== false) arr.push(<div {...props} key="indicator" className={classes(style.indicator, props.className)} data-round={round} style={{
-        ...props.style,
-        backgroundColor: color,
-        borderColor: outline
-    }}>
+    if (content !== false) arr.push(<div {...props}
+        key="indicator"
+        className={classes(
+            style.indicator,
+            round && style.indicator__round,
+            props.className
+        )}
+        style={{
+            ...props.style,
+            backgroundColor: color,
+            borderColor: outline
+        }}>
         {typeof content !== 'boolean' ? content : null}
     </div>);
 

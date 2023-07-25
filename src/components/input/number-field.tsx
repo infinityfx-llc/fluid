@@ -25,7 +25,7 @@ const NumberField = forwardRef(({ styles = {}, precision = 3, controls = true, d
             num = Math.min(num, max);
         }
 
-        return num === undefined ? value : round(num, precision).toString();
+        return num === undefined ? '' : round(num, precision).toString();
     }, [precision]);
 
     const buttonStyles = {
@@ -45,7 +45,8 @@ const NumberField = forwardRef(({ styles = {}, precision = 3, controls = true, d
 
     return <Field ref={ref} inputRef={inputRef} {...props} type="number" value={value}
         onChange={e => {
-            setValue?.(e.target.value = format(e.target.value)?.toString() || '');
+            e.target.value = format(e.target.value); // maybe only do on blur??
+            setValue?.(e.target.value);
 
             props.onChange?.(e);
         }}

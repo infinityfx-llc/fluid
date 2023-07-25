@@ -8,6 +8,8 @@ import useInputProps from "@/src/hooks/use-input-props";
 import { Animatable } from "@infinityfx/lively";
 import { classes } from "@/src/core/utils";
 
+export type ToggleStyles = FluidStyles<'.toggle' | '.content' | '.container' | '.toggle__xsm' | '.toggle__sml' | '.toggle__med' | '.toggle__lrg' | '.toggle__round' | '.toggle__var__default' | '.toggle__var__minimal' | '.toggle__var__neutral'>;
+
 export type ToggleProps = {
     styles?: FluidStyles;
     size?: FluidSize;
@@ -16,11 +18,19 @@ export type ToggleProps = {
     checkedContent?: React.ReactNode;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>;
 
-const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false, variant = 'default', checkedContent, ...props }: ToggleProps, ref: React.ForwardedRef<HTMLLabelElement>) => {
+const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false, variant = 'default', checkedContent, ...props }: ToggleProps, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.input': {
             position: 'absolute',
-            opacity: 0
+            opacity: 0,
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 2
+        },
+
+        '.input:enabled': {
+            cursor: 'pointer'
         },
 
         '.toggle': {
@@ -33,29 +43,29 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
             transition: 'background-color .25s, color .25s'
         },
 
-        '.toggle[data-size="sml"]': {
+        '.toggle__xsm': {
+            fontSize: 'var(--f-font-size-xxs)'
+        },
+
+        '.toggle__sml': {
             fontSize: 'var(--f-font-size-xsm)'
         },
 
-        '.toggle[data-size="med"]': {
+        '.toggle__med': {
             fontSize: 'var(--f-font-size-sml)'
         },
 
-        '.toggle[data-size="lrg"]': {
+        '.toggle__lrg': {
             fontSize: 'var(--f-font-size-med)'
         },
 
-        '.toggle[data-variant="minimal"]': {
+        '.toggle__var__minimal': {
             backgroundColor: 'transparent'
         },
 
-        '.toggle[data-variant="neutral"]': {
+        '.toggle__var__neutral': {
             backgroundColor: 'var(--f-clr-fg-100)',
             border: 'solid 1px var(--f-clr-fg-200)'
-        },
-
-        '.toggle[data-disabled="false"]': {
-            cursor: 'pointer'
         },
 
         '.content': {
@@ -71,16 +81,16 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
             overflow: 'hidden'
         },
 
-        '.toggle[data-checked="true"]:not([data-variant="neutral"])': {
+        '.toggle[data-checked="true"]:not(.toggle__var__neutral)': {
             backgroundColor: 'var(--f-clr-primary-100)',
             color: 'var(--f-clr-text-200)'
         },
 
-        '.toggle[data-variant="neutral"][data-checked="true"]': {
+        '.toggle__var__neutral[data-checked="true"]': {
             backgroundColor: 'var(--f-clr-fg-200)'
         },
 
-        '.toggle[data-variant="minimal"][data-checked="true"]': {
+        '.toggle__var__minimal[data-checked="true"]': {
             backgroundColor: 'var(--f-clr-primary-300)'
         },
 
@@ -93,7 +103,7 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
             color: 'var(--f-clr-grey-100)'
         },
 
-        '.toggle[data-round="true"]': {
+        '.toggle__round': {
             borderRadius: '999px'
         }
     });
@@ -107,7 +117,16 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
     ];
 
     return <Halo disabled={props.disabled}>
-        <label ref={ref} {...rest} className={classes(style.toggle, props.className)} data-checked={state} data-disabled={!!props.disabled} data-round={round} data-size={size} data-variant={variant}>
+        <div ref={ref} {...rest}
+            className={classes(
+                style.toggle,
+                round && style.toggle__round,
+                style[`toggle__${size}`],
+                style[`toggle__var__${variant}`],
+                props.className
+            )}
+            data-checked={state}
+            data-disabled={!!props.disabled}>
             <input {...split} type="checkbox" className={style.input} onChange={e => {
                 setState?.(e.target.checked);
                 split.onChange?.(e);
@@ -128,7 +147,7 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
                     <div className={style.content}>{checkedContent}</div>
                 </Animatable> : null}
             </div>
-        </label>
+        </div>
     </Halo>;
 });
 

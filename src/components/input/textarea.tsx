@@ -7,6 +7,8 @@ import { FluidError, FluidSize, FluidStyles } from '@/src/types';
 import { forwardRef, useId, useState } from 'react';
 import Scrollarea from '../layout/scrollarea';
 
+export type Textarea = FluidStyles<'.wrapper' | '.label' | '.textarea' | '.input' | '.wrapper__xsm' | '.wrapper__sml' | '.wrapper__med' | '.wrapper__lrg'>;
+
 const Textarea = forwardRef(({ styles = {}, label, error, size, resize = 'both', ...props }:
     {
         styles?: FluidStyles;
@@ -23,19 +25,19 @@ const Textarea = forwardRef(({ styles = {}, label, error, size, resize = 'both',
             width: 'clamp(0px, 12em, 100vw)'
         },
 
-        '.wrapper[data-size="xsm"]': {
+        '.wrapper__xsm': {
             fontSize: 'var(--f-font-size-xxs)'
         },
 
-        '.wrapper[data-size="sml"]': {
+        '.wrapper__sml': {
             fontSize: 'var(--f-font-size-xsm)'
         },
 
-        '.wrapper[data-size="med"]': {
+        '.wrapper__med': {
             fontSize: 'var(--f-font-size-sml)'
         },
 
-        '.wrapper[data-size="lrg"]': {
+        '.wrapper__lrg': {
             fontSize: 'var(--f-font-size-med)'
         },
 
@@ -52,8 +54,7 @@ const Textarea = forwardRef(({ styles = {}, label, error, size, resize = 'both',
             borderRadius: 'var(--f-radius-sml)',
             transition: 'border-color .2s',
             width: '100%',
-            height: '4em',
-            resize // (maybe move to data attr / style tag)
+            height: '4em'
         },
 
         '.textarea:focus-within': {
@@ -92,15 +93,24 @@ const Textarea = forwardRef(({ styles = {}, label, error, size, resize = 'both',
     const [split, rest] = useInputProps(props);
     const [rows, setRows] = useState(1);
 
-    return <div ref={ref} {...rest} className={classes(style.wrapper, props.className)}>
+    return <div ref={ref} {...rest} className={classes(
+        style.wrapper,
+        style[`wrapper__${size}`],
+        props.className
+    )}>
         {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
 
         <Scrollarea className={style.textarea} data-error={!!error} data-disabled={props.disabled}>
-            <textarea {...split} rows={rows} className={style.input} aria-labelledby={label ? id : undefined} aria-invalid={!!error} onChange={e => {
-                split.onChange?.(e);
+            <textarea {...split} rows={rows}
+                className={style.input}
+                aria-labelledby={label ? id : undefined}
+                aria-invalid={!!error}
+                style={{ resize }}
+                onChange={e => {
+                    split.onChange?.(e);
 
-                setRows(e.target.value.split(/\n/g).length);
-            }} />
+                    setRows(e.target.value.split(/\n/g).length);
+                }} />
         </Scrollarea>
     </div>;
 });

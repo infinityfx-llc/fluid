@@ -47,16 +47,16 @@
 		"fluid": "dist/cli.js"
 	},
 	"dependencies": {
-		"focus-trap": "^7.4.3"
+		"focus-trap": "^7.5.2"
 	},
 	"peerDependencies": {
-		"@infinityfx/lively": "^3.1.13",
+		"@infinityfx/lively": "^3.1.14",
 		"react": ">=16.0.0",
 		"react-dom": ">=16.0.0",
 		"react-icons": "^4.8.0"
 	},
 	"devDependencies": {
-		"@infinityfx/lively": "^3.1.13",
+		"@infinityfx/lively": "^3.1.14",
 		"@rollup/plugin-commonjs": "^25.0.1",
 		"@rollup/plugin-node-resolve": "^15.0.2",
 		"@rollup/plugin-typescript": "^11.1.0",

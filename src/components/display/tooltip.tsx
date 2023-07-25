@@ -7,13 +7,15 @@ import { FluidStyles } from "@/src/types";
 import { forwardRef, cloneElement, useState, useRef, isValidElement, useId } from "react";
 import { createPortal } from "react-dom";
 
-const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto', alwaysVisible = false, delay = .3, ...props }:
+export type TooltipStyles = FluidStyles<'.tooltip'>;
+
+const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto', visibility = 'interact', delay = .3, ...props }:
     {
         children: React.ReactElement;
         content?: React.ReactNode;
-        styles?: FluidStyles;
+        styles?: TooltipStyles;
         position?: 'auto' | 'top' | 'left' | 'bottom' | 'right';
-        alwaysVisible?: boolean;
+        visibility?: 'never' | 'interact' | 'always';
         delay?: number;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
@@ -52,7 +54,8 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
             fontSize: 'var(--f-font-size-xsm)',
             padding: '.2em .3em',
             borderRadius: 'var(--f-radius-sml)',
-            pointerEvents: 'none'
+            pointerEvents: 'none',
+            border: 'solid 1px var(--f-clr-fg-200)'
         },
 
         '.tooltip[data-position="top"]': {
@@ -82,7 +85,7 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
     const timeout = useRef<any>();
     function show(value: boolean, delay = 0) {
         clearTimeout(timeout.current);
-        if (!element.current || !value) return setVisible(alwaysVisible);
+        if (!element.current || !value || visibility === 'never') return setVisible(visibility === 'always');
 
         if (position === 'auto') {
             let { left, top, right, bottom } = element.current.getBoundingClientRect();
@@ -110,11 +113,11 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
     }
 
     useDomEffect(() => {
-        show(alwaysVisible);
+        show(visibility === 'always');
         frame = requestAnimationFrame(update);
 
         return () => cancelAnimationFrame(frame);
-    }, [alwaysVisible]);
+    }, [visibility]);
 
     children = Array.isArray(children) ? children[0] : children;
     if (!isValidElement(children)) return children;

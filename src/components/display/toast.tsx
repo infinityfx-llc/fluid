@@ -5,9 +5,11 @@ import Button from "../input/button";
 import { MdClose } from "react-icons/md";
 import { classes } from "@/src/core/utils";
 
+export type ToastStyles = FluidStyles<'.toast' | '.icon' | '.background' | '.content' | '.text'>;
+
 const Toast = forwardRef(({ styles = {}, icon, color, title, text, round, onClose, ...props }:
     {
-        styles?: FluidStyles;
+        styles?: ToastStyles;
         icon: React.ReactNode;
         color: string;
         title: string;
@@ -27,7 +29,7 @@ const Toast = forwardRef(({ styles = {}, icon, color, title, text, round, onClos
             minWidth: 'clamp(0px, 16rem, 100%)'
         },
 
-        '.toast[data-round="true"]': {
+        '.toast__round': {
             borderRadius: '999px'
         },
 
@@ -52,7 +54,7 @@ const Toast = forwardRef(({ styles = {}, icon, color, title, text, round, onClos
             zIndex: -1
         },
 
-        '.toast[data-round="true"] .background': {
+        '.toast__round .background': {
             borderRadius: '999px'
         },
 
@@ -85,7 +87,13 @@ const Toast = forwardRef(({ styles = {}, icon, color, title, text, round, onClos
         }
     });
 
-    return <div ref={ref} {...props} className={classes(style.toast, props.className)} data-round={round} data-hastext={!!text}>
+    return <div ref={ref} {...props}
+        className={classes(
+            style.toast,
+            round && style.toast__round,
+            props.className
+        )}
+        data-hastext={!!text}>
         <div className={style.icon}>
             <div className={style.background} style={{ backgroundColor: color }} />
 

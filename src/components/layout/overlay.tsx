@@ -1,14 +1,17 @@
 'use client';
 
 import useStyles from "@/src/hooks/use-styles";
+import { FluidStyles } from "@/src/types";
 import { Animatable } from "@infinityfx/lively";
 import { LayoutGroup } from "@infinityfx/lively/layout";
-import { createFocusTrap, FocusTrap } from "focus-trap";
+// import { createFocusTrap, FocusTrap } from "focus-trap";
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from "react-dom";
 
-export default function Overlay({ children, show, onClose }: { children?: React.ReactNode; show: boolean; onClose: () => void; }) {
-    const style = useStyles({
+export type OverlayStyles = FluidStyles<'.tint'>;
+
+export default function Overlay({ children, styles = {}, show, onClose }: { children?: React.ReactNode; styles?: OverlayStyles; show: boolean; onClose: () => void; }) {
+    const style = useStyles(styles, {
         '.overlay': {
             position: 'fixed',
             width: '100vw',
@@ -29,7 +32,7 @@ export default function Overlay({ children, show, onClose }: { children?: React.
         }
     });
 
-    const trap = useRef<FocusTrap>();
+    // const trap = useRef<FocusTrap>();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -53,7 +56,7 @@ export default function Overlay({ children, show, onClose }: { children?: React.
     }, [show]);
 
     return mounted ? createPortal(<LayoutGroup adaptive={false}>
-        {show && <div ref={el => {
+        {/* {show && <div ref={el => {
             if (el && !trap.current) {
                 trap.current = createFocusTrap(el);
                 trap.current.activate();
@@ -63,7 +66,8 @@ export default function Overlay({ children, show, onClose }: { children?: React.
                 trap.current.deactivate();
                 trap.current = undefined;
             }
-        }} className={style.overlay}>
+        }} className={style.overlay}> */}
+        {show && <div className={style.overlay}>
             {children}
 
             <Animatable key="overlay" animate={{ opacity: [0, 1], duration: .25 }} unmount triggers={[{ on: 'mount' }]}>

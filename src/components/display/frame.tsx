@@ -13,13 +13,23 @@ const Frame = forwardRef(({ children, radius = 'sml', shadow, border, background
     const style = useStyles({
         '.frame': {
             overflow: 'hidden',
-            borderRadius: `var(--f-radius-${radius})`,
-            boxShadow: shadow ? '0 0 8px rgb(0, 0, 0, 0.08)' : undefined,
-            border: border ? 'solid 1px var(--f-clr-fg-200)' : undefined,
-            color: 'var(--f-clr-text-100)',
-            background: background === 'dark' ?
-                'var(--f-clr-bg-100)' : background === 'light' ?
-                    'var(--f-clr-fg-100)' : undefined
+            color: 'var(--f-clr-text-100)'
+        },
+
+        '.frame__shadow': {
+            boxShadow: '0 0 8px rgb(0, 0, 0, 0.08)'
+        },
+
+        '.frame__border': {
+            border: 'solid 1px var(--f-clr-fg-200)'
+        },
+
+        '.frame__bg__light': {
+            background: 'var(--f-clr-fg-100)'
+        },
+
+        '.frame__bg__dark': {
+            background: 'var(--f-clr-bg-100)'
         },
 
         '.frame img': {
@@ -28,7 +38,18 @@ const Frame = forwardRef(({ children, radius = 'sml', shadow, border, background
         }
     });
 
-    return <div ref={ref} {...props} className={classes(style.frame, props.className)}>
+    return <div ref={ref} {...props}
+        className={classes(
+            style.frame,
+            shadow && style.frame__shadow,
+            border && style.frame__border,
+            style[`frame__bg__${background}`],
+            props.className
+        )}
+        style={{
+            borderRadius: `var(--f-radius-${radius})`,
+            ...props.style
+        }}>
         {children}
     </div>;
 });

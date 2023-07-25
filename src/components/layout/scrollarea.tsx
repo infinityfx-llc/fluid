@@ -8,7 +8,9 @@ import { forwardRef, useRef, useState, useId } from "react";
 
 const speed = 100;
 
-const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, variant = 'hover', disabled = false, ...props }: { styles?: FluidStyles; horizontal?: boolean; variant?: 'hover' | 'permanent'; disabled?: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: any) => {
+export type ScrollareaStyles = FluidStyles<'.track' | '.handle'>;
+
+const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, variant = 'hover', disabled = false, ...props }: { styles?: ScrollareaStyles; horizontal?: boolean; variant?: 'hover' | 'permanent'; disabled?: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: any) => {
     const style = useStyles(styles, {
         '.area': {
             position: 'relative',

@@ -10,7 +10,9 @@ import { classes } from '@/src/core/utils';
 import { Animatable } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
 
-const Drawer = forwardRef(({ children, styles = {}, show, onClose, position = 'right', title, ...props }: { children: React.ReactNode; styles?: FluidStyles; show: boolean; onClose: () => void; position?: 'left' | 'right'; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+type DrawerStyles = FluidStyles<'.drawer' | '.header' | '.content'>;
+
+const Drawer = forwardRef(({ children, styles = {}, show, onClose, position = 'right', title, ...props }: { children: React.ReactNode; styles?: DrawerStyles; show: boolean; onClose: () => void; position?: 'left' | 'right'; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.drawer': {
             position: 'absolute',
@@ -20,7 +22,8 @@ const Drawer = forwardRef(({ children, styles = {}, show, onClose, position = 'r
             padding: 'var(--f-spacing-med)',
             width: 'clamp(0px, 16rem, 100vw)',
             border: 'solid 1px var(--f-clr-fg-200)',
-            height: '100vh'
+            height: '100dvh',
+            top: 0
         },
 
         '.drawer[data-position="right"]': {

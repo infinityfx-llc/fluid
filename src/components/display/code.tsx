@@ -7,7 +7,9 @@ import Scrollarea from "../layout/scrollarea";
 import Toggle from "../input/toggle";
 import { MdCheck, MdCopyAll } from "react-icons/md";
 
-const Code = forwardRef(({ children, styles = {}, title, ...props }: { children: string; styles?: FluidStyles; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: any) => {
+export type CodeStyles = FluidStyles<'.wrapper' | '.header' | '.code' | '.numbers' | '.tab' | '.content' | '.toggle'>;
+
+const Code = forwardRef(({ children, styles = {}, title, ...props }: { children: string; styles?: CodeStyles; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: any) => {
     const style = useStyles(styles, {
         '.wrapper': {
             fontSize: 'var(--f-font-size-sml)',
@@ -45,7 +47,7 @@ const Code = forwardRef(({ children, styles = {}, title, ...props }: { children:
             width: 'max-content'
         },
 
-        '.button_wrapper': {
+        '.button__align': {
             position: 'absolute',
             zIndex: '99',
             right: '1em',
@@ -53,10 +55,6 @@ const Code = forwardRef(({ children, styles = {}, title, ...props }: { children:
             display: 'flex',
             alignItems: 'center',
             maxHeight: '100%'
-        },
-
-        '.button': {
-            marginBlock: '1em'
         }
     });
 
@@ -84,11 +82,13 @@ const Code = forwardRef(({ children, styles = {}, title, ...props }: { children:
             </Scrollarea>
         </code>
 
-        <div className={style.button_wrapper}>
-            <Toggle className={style.button} checkedContent={<MdCheck />} checked={copied}
+        <div className={style.button__align}>
+            <Toggle checkedContent={<MdCheck />} checked={copied}
                 styles={{
                     '.toggle': {
-                        backgroundColor: 'var(--f-clr-bg-100)'
+                        backgroundColor: 'var(--f-clr-bg-100)',
+                        marginBlock: '1em',
+                        ...styles['.toggle']
                     }
                 }}
                 onClick={() => {

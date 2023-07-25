@@ -42,7 +42,9 @@ const Pincode = forwardRef(({ styles = {}, length = 4, masked, size = 'med', rou
             border: 'solid 1px var(--f-clr-fg-200)',
             borderRadius: 'var(--f-radius-sml)',
             transition: 'border-color .2s',
-            padding: '.6em'
+            padding: '.6em',
+            display: 'flex',
+            flexGrow: 1
         },
 
         '.field:focus-within': {
@@ -53,6 +55,7 @@ const Pincode = forwardRef(({ styles = {}, length = 4, masked, size = 'med', rou
             border: 'none',
             outline: 'none',
             width: '1em',
+            flexGrow: 1,
             background: 'none',
             textAlign: 'center',
             color: 'var(--f-clr-text-100)'
@@ -149,7 +152,15 @@ const Pincode = forwardRef(({ styles = {}, length = 4, masked, size = 'med', rou
         <div className={style.pincode} data-error={!!error} data-disabled={props.disabled} data-round={round}>
             {new Array(length).fill(0).map((_, i) => {
                 return <div key={i} className={style.field}>
-                    <input ref={el => refs.current[i] = el} disabled={props.disabled} className={style.input} aria-invalid={!!error} inputMode="numeric" type={masked ? 'password' : 'text'} value={state.charAt(i)} onChange={handleChange} onKeyDown={e => handleKey(e, i)} />
+                    <input ref={el => refs.current[i] = el}
+                        disabled={props.disabled}
+                        className={style.input}
+                        aria-invalid={!!error}
+                        inputMode="numeric"
+                        type={masked ? 'password' : 'text'}
+                        value={state.charAt(i)}
+                        onChange={handleChange}
+                        onKeyDown={e => handleKey(e, i)} />
                 </div>;
             })}
         </div>
