@@ -5,7 +5,7 @@ import { classes } from "@/src/core/utils";
 import { FluidSize, FluidStyles } from "@/src/types";
 import Spinner from "../feedback/spinner";
 
-export type ButtonStyles = FluidStyles<'.button' | '.content' | '.loader'>;
+export type ButtonStyles = FluidStyles<'.button' | '.content' | '.loader' | '.button__round' | '.button__xsm' | '.button__sml' | '.button__med' | '.button__lrg' | '.button__var__default' | '.button__var__neutral' | '.button__var__light' | '.button__var__minimal'>;
 
 const Button = forwardRef(({ children, styles = {}, round = false, size = 'med', variant = 'default', loading = false, ...props }:
     {
@@ -30,35 +30,35 @@ const Button = forwardRef(({ children, styles = {}, round = false, size = 'med',
             justifyContent: 'center'
         },
 
-        '.button[data-round="true"]': {
+        '.button__round': {
             borderRadius: '999px'
         },
 
-        '.button[data-size="xsm"]': {
+        '.button__xsm': {
             fontSize: 'var(--f-font-size-xxs)'
         },
 
-        '.button[data-size="sml"]': {
+        '.button__sml': {
             fontSize: 'var(--f-font-size-xsm)'
         },
 
-        '.button[data-size="med"]': {
+        '.button__med': {
             fontSize: 'var(--f-font-size-sml)'
         },
 
-        '.button[data-size="lrg"]': {
+        '.button__lrg': {
             fontSize: 'var(--f-font-size-med)'
         },
 
-        '.button[data-variant="default"]': {
+        '.button__var__default': {
             color: 'var(--f-clr-text-200)'
         },
 
-        '.button[data-variant="light"]': {
+        '.button__var__light': {
             backgroundColor: 'var(--f-clr-primary-500)'
         },
 
-        '.button[data-variant="neutral"]': {
+        '.button__var__neutral': {
             backgroundColor: 'var(--f-clr-bg-100)',
             border: 'solid 1px var(--f-clr-fg-200)'
         },
@@ -68,7 +68,7 @@ const Button = forwardRef(({ children, styles = {}, round = false, size = 'med',
             backgroundColor: 'var(--f-clr-grey-100)'
         },
 
-        '.button[data-variant="minimal"]': {
+        '.button__var__minimal': {
             backgroundColor: 'transparent'
         },
 
@@ -90,13 +90,20 @@ const Button = forwardRef(({ children, styles = {}, round = false, size = 'med',
             position: 'absolute'
         },
 
-        '.button[data-variant="default"] .loader': {
+        '.button__var__default .loader': {
             stroke: 'var(--f-clr-text-200) !important'
         }
     });
 
     return <Halo disabled={props.disabled || loading}>
-        <button ref={ref} {...props} type={props.type || 'button'} disabled={props.disabled || loading} className={classes(style.button, props.className)} data-round={round} data-size={size} data-variant={variant} data-loading={loading}>
+        <button ref={ref} {...props} type={props.type || 'button'} disabled={props.disabled || loading}
+            className={classes(
+                style.button,
+                round && style.button__round,
+                style[`button__${size}`],
+                style[`button__var__${variant}`],
+                props.className
+            )} data-loading={loading}>
             <span className={style.content}>{children}</span>
 
             {loading && <Spinner className={style.loader} />}
