@@ -76,7 +76,8 @@ const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, tooltip
             backgroundColor: 'var(--f-clr-primary-100)',
             height: '100%',
             width: '100%',
-            transformOrigin: 'top left'
+            transformOrigin: 'top left',
+            willChange: 'transform'
         },
 
         '.handle': {
@@ -211,10 +212,12 @@ const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, tooltip
                 onMouseDown={e => {
                     e.stopPropagation();
                     dragging.current = -1;
+                    change(e.nativeEvent);
                 }}
                 onTouchStart={e => {
                     e.stopPropagation();
                     dragging.current = -1;
+                    change(e.nativeEvent);
                 }}>
                 <div className={style.progress} style={{
                     scale: vertical ? `1 ${scale}` : `${scale} 1`,

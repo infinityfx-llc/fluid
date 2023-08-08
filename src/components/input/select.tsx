@@ -26,6 +26,7 @@ const Select = forwardRef((
         readOnly,
         label,
         error,
+        showError,
         icon,
         size,
         round,
@@ -56,6 +57,12 @@ const Select = forwardRef((
             fontSize: '.8em',
             fontWeight: 500,
             color: 'var(--f-clr-text-100)'
+        },
+
+        '.error': {
+            fontSize: '.8em',
+            fontWeight: 500,
+            color: 'var(--f-clr-error-100)'
         },
 
         '.field': {
@@ -206,6 +213,8 @@ const Select = forwardRef((
                     </Button>
                 </div>
             </Combobox.Trigger>
+
+            {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
         </div>
 
         <Combobox.Content aria-multiselectable={multiple} searchable={searchable} emptyMessage={emptyMessage}>

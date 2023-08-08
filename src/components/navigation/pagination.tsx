@@ -9,9 +9,11 @@ import { classes } from "@/src/core/utils";
 
 export type PaginationStyles = FluidStyles<'.pagination' | '.button'>;
 
-const Pagination = forwardRef(({ styles = {}, pages, compact, skipable, round, variant, ...props }:
+const Pagination = forwardRef(({ styles = {}, page, setPage, pages, compact, skipable, round, variant, ...props }:
     {
         styles?: PaginationStyles;
+        page?: number;
+        setPage?: (page: number) => void;
         pages: number;
         compact?: boolean;
         skipable?: boolean;
@@ -31,30 +33,37 @@ const Pagination = forwardRef(({ styles = {}, pages, compact, skipable, round, v
     });
 
     const buttonStyles = { '.button': styles[".button"] };
-    const [state, setState] = useState(1);
+    const [state, setState] = page !== undefined ? [page] : useState(0);
+
+    function update(page: number) {
+        setState?.(page);
+        setPage?.(page);
+    }
 
     return <div ref={ref} {...props} className={classes(style.pagination, props.className)}>
-        {compact && skipable && <Button styles={buttonStyles} round={round} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state < 2} onClick={() => setState(1)}>
+        {compact && skipable && <Button styles={buttonStyles} round={round} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state < 1} onClick={() => update(0)}>
             <MdFirstPage />
         </Button>}
 
-        <Button styles={buttonStyles} round={round} variant={variant} disabled={state < 2} onClick={() => setState(state - 1)}>
+        <Button styles={buttonStyles} round={round} variant={variant} disabled={state < 1} onClick={() => update(state - 1)}>
             <MdArrowBack />
         </Button>
 
         {!compact && <>
-            {state !== 1 && <Button styles={buttonStyles} round={round} variant="minimal" onClick={() => setState(1)}>1</Button>}
-            {state === pages && <Button styles={buttonStyles} round={round} variant="minimal" onClick={() => setState(pages - 1)}>{pages - 1}</Button>}
-            <Button styles={buttonStyles} round={round} variant={variant} aria-current="page">{state}</Button>
-            {state === 1 && <Button styles={buttonStyles} round={round} variant="minimal" onClick={() => setState(2)}>2</Button>}
-            {state !== pages && <Button styles={buttonStyles} round={round} variant="minimal" onClick={() => setState(pages)}>{pages}</Button>}
+            {[0, state, pages - 1].map((idx, i) => {
+                if (i === 1 && pages >= 3 && [0, pages - 1].includes(state)) idx += state === 0 ? 1 : -1;
+                if (i !== 1 && state === idx && pages < 3) return null;
+                if (idx < 0 || idx >= pages) return null;
+
+                return <Button key={i} styles={buttonStyles} round={round} variant={idx === state ? variant : 'minimal'} onClick={() => update(idx)} aria-current={idx === state ? 'page' : undefined}>{idx + 1}</Button>;
+            })}
         </>}
 
-        <Button styles={buttonStyles} round={round} variant={variant} disabled={state > pages - 1} onClick={() => setState(state + 1)}>
+        <Button styles={buttonStyles} round={round} variant={variant} disabled={state >= pages - 1} onClick={() => update(state + 1)}>
             <MdArrowForward />
         </Button>
 
-        {compact && skipable && <Button styles={buttonStyles} round={round} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state > pages - 1} onClick={() => setState(pages)}>
+        {compact && skipable && <Button styles={buttonStyles} round={round} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state >= pages - 1} onClick={() => update(pages - 1)}>
             <MdLastPage />
         </Button>}
     </div>;

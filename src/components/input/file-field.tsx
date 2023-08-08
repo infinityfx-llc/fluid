@@ -8,12 +8,13 @@ import useInputProps from '@/src/hooks/use-input-props';
 import { FluidError, FluidSize, FluidStyles } from '@/src/types';
 import { classes } from '@/src/core/utils';
 
-const FileField = forwardRef(({ styles = {}, size, round, icon, label, error, loading = false, ...props }:
+const FileField = forwardRef(({ styles = {}, size, round, icon, label, error, showError, loading = false, ...props }:
     {
         styles?: FluidStyles;
         round?: boolean;
         size?: FluidSize;
         error?: FluidError;
+        showError?: boolean;
         loading?: boolean;
         icon?: React.ReactNode;
         label?: string;
@@ -63,6 +64,12 @@ const FileField = forwardRef(({ styles = {}, size, round, icon, label, error, lo
             fontSize: '.8em',
             fontWeight: 500,
             color: 'var(--f-clr-text-100)'
+        },
+
+        '.error': {
+            fontSize: '.8em',
+            fontWeight: 500,
+            color: 'var(--f-clr-error-100)'
         },
 
         '.field:focus-within': {
@@ -135,6 +142,8 @@ const FileField = forwardRef(({ styles = {}, size, round, icon, label, error, lo
                 <MdUpload />
             </Button>
         </label>
+
+        {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
     </div>;
 });
 

@@ -6,7 +6,7 @@ import useStyles from "@/src/hooks/use-styles";
 import { FluidError, FluidInputvalue, FluidSize, FluidStyles } from "@/src/types";
 import { forwardRef, useId, useRef, useState } from "react";
 
-const Pincode = forwardRef(({ styles = {}, length = 4, masked, size = 'med', round = false, label, value, error, onChange, defaultvalue, ...props }:
+const Pincode = forwardRef(({ styles = {}, length = 4, masked, size = 'med', round = false, label, value, error, onChange, defaultvalue, autoFocus, ...props }:
     {
         defaultvalue?: FluidInputvalue;
         styles?: FluidStyles;
@@ -153,6 +153,7 @@ const Pincode = forwardRef(({ styles = {}, length = 4, masked, size = 'med', rou
             {new Array(length).fill(0).map((_, i) => {
                 return <div key={i} className={style.field}>
                     <input ref={el => refs.current[i] = el}
+                        autoFocus={i === 0 && autoFocus}
                         disabled={props.disabled}
                         className={style.input}
                         aria-invalid={!!error}

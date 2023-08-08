@@ -19,10 +19,10 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
             error?: boolean;
         }[];
         completed: number;
-        setCompleted: (value: number) => void;
+        setCompleted?: (value: number) => void;
         navigation?: 'none' | 'forwards' | 'backwards' | 'both';
         vertical?: boolean;
-        variant?: 'default' | 'compact';
+        variant?: 'default' | 'compact'; // add vertical as variant
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
@@ -47,7 +47,10 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
         '.step': {
             display: 'flex',
             flexDirection: 'column',
-            gap: 'var(--f-spacing-sml)',
+            gap: 'var(--f-spacing-sml)'
+        },
+
+        '.step:not(:last-child)': {
             flexBasis: 0,
             flexGrow: 1
         },
@@ -110,8 +113,8 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
         },
 
         '.step[data-current="true"] .bullet': {
-            outlineColor: 'var(--f-clr-accent-100)',
-            color: 'var(--f-clr-accent-100)'
+            outlineColor: 'var(--f-clr-primary-400)',
+            color: 'var(--f-clr-pirmary-400)'
         },
 
         '.step[data-error="true"][data-completed="false"] .bullet': {
@@ -163,7 +166,7 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
         },
 
         '.step[data-current="true"] .label': {
-            color: 'var(--f-clr-accent-100)'
+            color: 'var(--f-clr-primary-400)'
         },
 
         '.step[data-error="true"] .label': {
@@ -195,7 +198,7 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
                 return <div key={i} className={style.step} data-completed={isCompleted} data-current={variant === 'compact' ? !isCompleted : i === completed} data-error={error}>
                     <div className={style.header}>
                         <Halo disabled={!navigatable} styles={{ '.halo': { inset: '-.5em' } }}>
-                            <button type="button" className={style.button} disabled={!navigatable} onClick={() => setCompleted(i)} aria-labelledby={label ? stepId : undefined}>
+                            <button type="button" className={style.button} disabled={!navigatable} onClick={() => setCompleted?.(i)} aria-labelledby={label ? stepId : undefined}>
                                 <div className={style.bullet}>
                                     <div className={style.icon}>
                                         <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} initial={{ translate: isCompleted ? '0% -50%' : '0% 0%' }} triggers={[{ on: isCompleted }, { on: !isCompleted, reverse: true }]}>

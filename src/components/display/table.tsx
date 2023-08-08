@@ -11,9 +11,11 @@ import Checkbox from "../input/checkbox";
 import { MdArrowDownward, MdArrowUpward, MdMoreVert, MdSort } from "react-icons/md";
 import ActionMenu, { ActionMenuOption } from "./action-menu";
 
-const Table = forwardRef(<T extends { [key: string]: any; }>({ styles = {}, data, columns, selectable, sortable, selected, onSelect, columnFormatters = {}, rowActions, ...props }:
+export type TableStyles = FluidStyles;
+
+const Table = forwardRef(<T extends { [key: string]: string | number | Date; }>({ styles = {}, data, columns, selectable, sortable, selected, onSelect, columnFormatters = {}, rowActions, ...props }:
     {
-        styles?: FluidStyles;
+        styles?: TableStyles;
         data: T[];
         columns: (keyof T)[];
         selectable?: boolean;

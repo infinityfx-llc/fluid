@@ -12,7 +12,7 @@ import Scrollarea from './scrollarea';
 
 type DrawerStyles = FluidStyles<'.drawer' | '.header' | '.content'>;
 
-const Drawer = forwardRef(({ children, styles = {}, show, onClose, position = 'right', title, ...props }: { children: React.ReactNode; styles?: DrawerStyles; show: boolean; onClose: () => void; position?: 'left' | 'right'; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Drawer = forwardRef(({ children, styles = {}, show, onClose, position = 'right', title, ...props }: { styles?: DrawerStyles; show: boolean; onClose: () => void; position?: 'left' | 'right'; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.drawer': {
             position: 'absolute',

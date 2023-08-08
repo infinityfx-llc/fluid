@@ -11,7 +11,7 @@ import { classes } from "@/src/core/utils";
 export type ToggleStyles = FluidStyles<'.toggle' | '.content' | '.container' | '.toggle__xsm' | '.toggle__sml' | '.toggle__med' | '.toggle__lrg' | '.toggle__round' | '.toggle__var__default' | '.toggle__var__minimal' | '.toggle__var__neutral'>;
 
 export type ToggleProps = {
-    styles?: FluidStyles;
+    styles?: ToggleStyles;
     size?: FluidSize;
     round?: boolean;
     variant?: 'default' | 'minimal' | 'neutral';
@@ -38,7 +38,7 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
             display: 'block',
             backgroundColor: 'var(--f-clr-fg-100)',
             color: 'var(--f-clr-text-100)',
-            padding: '.5em',
+            padding: '.6em',
             borderRadius: 'var(--f-radius-sml)',
             transition: 'background-color .25s, color .25s'
         },

@@ -12,6 +12,7 @@ export type FieldProps = {
     round?: boolean;
     size?: FluidSize;
     error?: FluidError;
+    showError?: boolean;
     icon?: React.ReactNode;
     label?: string;
     left?: React.ReactNode;
@@ -20,13 +21,13 @@ export type FieldProps = {
     inputRef?: React.Ref<HTMLInputElement>;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>;
 
-const Field = forwardRef(({ styles = {}, round = false, size = 'med', error, icon, label, left, right, onEnter, inputRef, ...props }: FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Field = forwardRef(({ styles = {}, round = false, size = 'med', error, showError, icon, label, left, right, onEnter, inputRef, ...props }: FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             display: 'flex',
             flexDirection: 'column',
             gap: 'var(--f-spacing-xxs)',
-            minWidth: 'clamp(0px, 12em, 100vw)' // check inside other similar components
+            minWidth: 'clamp(0px, 12em, 100vw)'
         },
 
         '.input': {
@@ -65,6 +66,12 @@ const Field = forwardRef(({ styles = {}, round = false, size = 'med', error, ico
             fontSize: '.8em',
             fontWeight: 500,
             color: 'var(--f-clr-text-100)'
+        },
+
+        '.error': {
+            fontSize: '.8em',
+            fontWeight: 500,
+            color: 'var(--f-clr-error-100)'
         },
 
         '.field:focus-within': {
@@ -133,6 +140,8 @@ const Field = forwardRef(({ styles = {}, round = false, size = 'med', error, ico
 
             {right}
         </div>
+
+        {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
     </div>;
 });
 

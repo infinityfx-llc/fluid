@@ -12,10 +12,17 @@ import { classes } from '@/src/core/utils';
 
 const colors = ['#eb2a1c', '#eb2a1c', '#e8831e', '#f0d030', '#fff952', '#5aff54'];
 
-const PasswordField = forwardRef(({ styles = {}, strengthBar = false, size, round, error, icon, label, left, right, defaultValue, onEnter, ...props }: { strengthBar?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+// optimize prop splitting
+const PasswordField = forwardRef(({ styles = {}, strengthBar = false, size, round, error, showError, icon, label, left, right, defaultValue, onEnter, ...props }: { strengthBar?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.container': {
             minWidth: 'clamp(0px, 12em, 100vw)'
+        },
+
+        '.error': {
+            fontSize: '.8em',
+            fontWeight: 500,
+            color: 'var(--f-clr-error-100)'
         }
     });
 
@@ -58,6 +65,8 @@ const PasswordField = forwardRef(({ styles = {}, strengthBar = false, size, roun
                 marginTop: 'var(--f-spacing-xsm)'
             }
         }} />}
+
+        {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
     </div>;
 });
 

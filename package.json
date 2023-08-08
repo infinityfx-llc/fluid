@@ -1,6 +1,6 @@
 {
 	"name": "@infinityfx/fluid",
-	"version": "0.1.0-beta.0",
+	"version": "0.1.0-beta.2",
 	"type": "module",
 	"description": "React UI library.",
 	"main": "dist/index.js",
@@ -53,26 +53,26 @@
 		"@infinityfx/lively": "^3.1.15",
 		"react": ">=16.0.0",
 		"react-dom": ">=16.0.0",
-		"react-icons": "^4.8.0"
+		"react-icons": "^4.10.1"
 	},
 	"devDependencies": {
 		"@infinityfx/lively": "^3.1.15",
-		"@rollup/plugin-commonjs": "^25.0.1",
+		"@rollup/plugin-commonjs": "^25.0.3",
 		"@rollup/plugin-node-resolve": "^15.0.2",
 		"@rollup/plugin-typescript": "^11.1.0",
-		"@types/react": "^18.2.6",
-		"@types/react-dom": "^18.2.4",
+		"@types/react": "^18.2.18",
+		"@types/react-dom": "^18.2.7",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"react-icons": "^4.8.0",
+		"react-icons": "^4.10.1",
 		"rollup": "^3.20.2",
 		"rollup-plugin-delete": "^2.0.0",
 		"rollup-plugin-preserve-directives": "^0.1.1",
 		"rollup-plugin-preserve-shebangs": "^0.2.0",
 		"rollup-plugin-terser": "^7.0.2",
 		"@rollup/plugin-json": "^6.0.0",
-		"tslib": "^2.5.0",
-		"typescript": "^5.0.4"
+		"tslib": "^2.6.1",
+		"typescript": "^5.1.6"
 	},
 	"sideEffects": false
 }

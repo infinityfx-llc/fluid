@@ -10,6 +10,8 @@ import { classes } from '@/src/core/utils';
 
 export type NavigationMenuStyles = FluidStyles<'.navigation' | '.link' | '.selection' | '.menu' | '.container'>;
 
+type AnchorLike<T extends React.HTMLAttributes<any> & { href: string; }> = React.JSXElementConstructor<T> | keyof React.ReactHTML;
+
 const NavigationMenu = forwardRef(({ styles = {}, links, selected = -1, Link = 'a', ...props }:
     {
         styles?: NavigationMenuStyles;
@@ -22,7 +24,7 @@ const NavigationMenu = forwardRef(({ styles = {}, links, selected = -1, Link = '
             }[];
         }[];
         selected?: number;
-        Link?: React.JSXElementConstructor<React.HTMLAttributes<any> & { href: string; }> | keyof React.ReactHTML;
+        Link?: AnchorLike<any>;
     } & Omit<React.HTMLAttributes<HTMLElement>, 'children'>, ref: React.ForwardedRef<HTMLElement>) => {
     const style = useStyles(styles, {
         '.navigation': {
