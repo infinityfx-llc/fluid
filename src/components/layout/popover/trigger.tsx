@@ -9,6 +9,7 @@ export type PopoverTrigger = { children: React.ReactElement; longpress?: boolean
 export default function Trigger({ children, longpress, disabled, ...props }: PopoverTrigger) {
     const { id, trigger, opened, toggle } = usePopover();
     const timeout = useRef<any>();
+    const touch = useRef({ clientX: 0, clientY: 0 });
     const pressed = useRef(false);
 
     function action() {
@@ -27,21 +28,27 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
             children.props.onMouseDown?.(e);
             if (longpress) timeout.current = setTimeout(action, 400);
         },
-        onTouchStart: (e: React.TouchEvent) => {
-            children.props.onTouchStart?.(e);
-            if (longpress) timeout.current = setTimeout(action, 400);
-        },
         onMouseUp: (e: React.MouseEvent) => {
             children.props.onMouseUp?.(e);
 
             clearTimeout(timeout.current);
             if (!longpress) action();
         },
+        onTouchStart: (e: React.TouchEvent) => {
+            children.props.onTouchStart?.(e);
+            touch.current = e.changedTouches[0];
+            if (longpress) timeout.current = setTimeout(action, 400);
+        },
         onTouchEnd: (e: React.TouchEvent) => {
             children.props.onTouchEnd?.(e);
+            const { clientX, clientY } = e.changedTouches[0];
+            const distance = Math.abs(touch.current.clientX - clientX) + Math.abs(touch.current.clientY - clientY);
 
             clearTimeout(timeout.current);
-            if (!longpress) action();
+            if (!longpress && distance < 8) {
+                e.preventDefault();
+                action();
+            }
         },
         onKeyDown: (e: React.KeyboardEvent) => {
             children.props.onKeyDown?.(e);

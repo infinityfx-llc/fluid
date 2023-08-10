@@ -31,10 +31,6 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
             gap: 'var(--f-spacing-sml)'
         },
 
-        '.progressbar': {
-            width: '100%'
-        },
-
         '.stepper': {
             display: 'flex',
             fontSize: 'var(--f-font-size-sml)'
@@ -226,7 +222,9 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
             })}
         </div>
 
-        {variant === 'compact' && <ProgressBar value={completed / steps.length} className={style.progressbar} />}
+        {variant === 'compact' && <ProgressBar value={completed / steps.length} styles={{
+            '.track': { width: '100%' }
+        }} />}
     </div>;
 });
 
