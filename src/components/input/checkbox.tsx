@@ -16,7 +16,7 @@ export type CheckboxStyles = FluidStyles<'.wrapper' | '.checkbox' | '.checkmark'
 
 const Checkbox = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', checked, defaultChecked, ...props }:
     {
-        styles?: FluidStyles;
+        styles?: CheckboxStyles;
         error?: FluidError;
         size?: FluidSize;
         color?: string;
@@ -66,11 +66,6 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--
             cursor: 'pointer'
         },
 
-        '.input:checked:enabled + .checkbox': {
-            backgroundColor: color,
-            borderColor: color
-        },
-
         '.checkmark': {
             width: '1.1em',
             stroke: 'white',
@@ -118,7 +113,7 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--
                 props.onChange?.(e);
             }} />
 
-            <div className={style.checkbox}>
+            <div className={style.checkbox} style={(state && !split.disabled) ? { backgroundColor: color, borderColor: color } : undefined}>
                 <svg viewBox="0 0 18 18" className={style.checkmark}>
                     <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: state ? 0 : 1 }}>
                         <path d="M 3 9 L 8 13 L 15 5" fill="none" />

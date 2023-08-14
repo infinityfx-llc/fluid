@@ -1,5 +1,5 @@
 import { classes } from "@/src/core/utils";
-import useStyles from "@/src/hooks/use-styles";
+import { useStyles } from "@/src/hooks";
 import { FluidSize, FluidStyles } from "@/src/types";
 import { forwardRef } from "react";
 

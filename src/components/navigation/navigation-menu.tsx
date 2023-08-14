@@ -2,7 +2,7 @@
 
 import useStyles from '@/src/hooks/use-styles';
 import { FluidStyles } from '@/src/types';
-import { forwardRef, useState, useId, useRef } from 'react';
+import { forwardRef, useState, useId, useRef, useEffect } from 'react';
 import { Animatable } from '@infinityfx/lively';
 import { Morph } from '@infinityfx/lively/layout';
 import Halo from '../feedback/halo';
@@ -89,6 +89,7 @@ const NavigationMenu = forwardRef(({ styles = {}, links, selected = -1, Link = '
     const [menuVisible, setMenuVisible] = useState(false);
 
     function update(index: number) {
+        if (prev.current === -2) return prev.current = selection;
         prev.current = selection;
 
         if (index < 0) {
@@ -99,6 +100,13 @@ const NavigationMenu = forwardRef(({ styles = {}, links, selected = -1, Link = '
             setSelection(index);
         }
     }
+
+    useEffect(() => {
+        const focus = () => prev.current = -2;
+        window.addEventListener('focus', focus);
+
+        return () => window.removeEventListener('focus', focus);
+    }, []);
 
     return <nav ref={ref} {...props} className={classes(style.navigation, props.className)}
         onMouseLeave={e => {

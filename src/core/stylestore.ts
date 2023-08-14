@@ -1,5 +1,5 @@
 import { FluidStyles, Selectors } from "../types";
-import { mergeRecursive, ruleToString } from "./utils";
+import { mergeRecursive, rulesToString__EXP } from "./utils";
 
 class StyleStore {
 
@@ -23,12 +23,13 @@ class StyleStore {
     }
 
     insert(key: string, ruleset: FluidStyles, global = false) {
-        const selectors: Selectors = {};
-        let rules = '';
+        // const selectors: Selectors = {};
+        // let rules = '';
 
-        for (const selector in ruleset) {
-            rules += ruleToString(selector, ruleset[selector] as any, selectors, (global || !this.modularize) ? undefined : key);
-        }
+        // for (const selector in ruleset) {
+        //     rules += ruleToString(selector, ruleset[selector] as any, selectors, (global || !this.modularize) ? undefined : key);
+        // }
+        const { rules, selectors } = rulesToString__EXP(ruleset, (global || !this.modularize) ? undefined : key);
 
         this.rules[key] = {
             selectors,

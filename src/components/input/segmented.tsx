@@ -1,16 +1,17 @@
 'use client';
 
 import useStyles from "@/src/hooks/use-styles";
-import { FluidError, FluidInputvalue, FluidStyles } from "@/src/types";
+import { FluidError, FluidInputvalue, FluidSize, FluidStyles } from "@/src/types";
 import { forwardRef, useId, useState } from "react";
 import { Morph } from '@infinityfx/lively/layout';
 import { classes } from "@/src/core/utils";
 import Halo from "../feedback/halo";
 
-const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false, options, name, value, defaultValue, onChange, error, ...props }:
+const Segmented = forwardRef(({ styles = {}, variant = 'default', size = 'med', round = false, options, name, value, defaultValue, onChange, error, ...props }:
     {
         styles?: FluidStyles;
         variant?: 'default' | 'neutral';
+        size?: Omit<FluidSize, 'xsm'>;
         round?: boolean;
         options: { label: React.ReactNode; value: FluidInputvalue; disabled?: boolean; }[];
         name?: string;
@@ -27,7 +28,19 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false,
             display: 'flex'
         },
 
-        '.segmented[data-round="true"]': {
+        '.segmented__sml': {
+            fontSize: 'var(--f-font-size-xxs)'
+        },
+
+        '.segmented__med': {
+            fontSize: 'var(--f-font-size-xsm)'
+        },
+
+        '.segmented__lrg': {
+            fontSize: 'var(--f-font-size-sml)'
+        },
+
+        '.segmented__round': {
             borderRadius: '999px'
         },
 
@@ -38,13 +51,12 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false,
             backgroundColor: 'transparent',
             padding: '.65em .8em',
             fontWeight: 700,
-            fontSize: 'var(--f-font-size-xsm)',
             color: 'var(--f-clr-text-100)',
             borderRadius: 'var(--f-radius-sml)',
             flexGrow: 1
         },
 
-        '.segmented[data-round="true"] .option': {
+        '.segmented__round .option': {
             borderRadius: '999px'
         },
 
@@ -73,12 +85,12 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false,
             boxShadow: '0 0 8px rgb(0, 0, 0, .06)'
         },
 
-        '.segmented[data-variant="neutral"] .selection': {
+        '.segmented__var__neutral .selection': {
             backgroundColor: 'var(--f-clr-bg-100)',
             border: 'solid 1px var(--f-clr-fg-200)'
         },
 
-        '.segmented[data-round="true"] .selection': {
+        '.segmented__round .selection': {
             borderRadius: '999px'
         },
 
@@ -94,7 +106,16 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', round = false,
     const [state, setState] = value !== undefined ? [value] : useState(defaultValue || options[0]?.value);
     const id = useId();
 
-    return <div ref={ref} {...props} role="radiogroup" className={classes(style.segmented, props.className)} data-variant={variant} data-round={round} data-error={!!error}>
+    return <div ref={ref} {...props}
+        role="radiogroup"
+        className={classes(
+            style.segmented,
+            style[`segmented__${size}`],
+            style[`segmented__var__${variant}`],
+            round && style.segmented__round,
+            props.className
+        )}
+        data-error={!!error}>
         {options.map(({ label, value: option, disabled = false }, i) => {
 
             return <Halo key={i} hover={false} styles={{

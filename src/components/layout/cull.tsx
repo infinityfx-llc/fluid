@@ -3,13 +3,13 @@
 import { classes, combineRefs } from '@/src/core/utils';
 import useFluid from '@/src/hooks/use-fluid';
 import useStyles from '@/src/hooks/use-styles';
-import { FluidBreakpoint } from '@/src/types';
+import { FluidBreakpoint, FluidStyles } from '@/src/types';
 import { cloneElement, forwardRef } from 'react';
 
-const Cull = forwardRef(({ children, include, ...props }: { children: React.ReactElement; include: FluidBreakpoint[]; } & React.HTMLAttributes<any>, ref: React.ForwardedRef<any>) => {
+const Cull = forwardRef(({ children, styles = {}, include, ...props }: { children: React.ReactElement; styles?: FluidStyles; include: FluidBreakpoint[]; } & React.HTMLAttributes<any>, ref: React.ForwardedRef<any>) => {
     const fluid = useFluid();
 
-    const style = useStyles({
+    const style = useStyles(styles, {
         [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {
             '.cull__mob': {
                 display: 'none !important'

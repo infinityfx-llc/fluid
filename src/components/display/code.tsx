@@ -1,11 +1,11 @@
 'use client';
 
-import useStyles from "@/src/hooks/use-styles";
 import { FluidStyles } from "@/src/types";
 import { Fragment, forwardRef, useId, useState } from "react";
 import Scrollarea from "../layout/scrollarea";
 import Toggle from "../input/toggle";
 import { MdCheck, MdCopyAll } from "react-icons/md";
+import { useStyles } from "@/src/hooks";
 
 export type CodeStyles = FluidStyles<'.wrapper' | '.header' | '.code' | '.numbers' | '.tab' | '.content' | '.toggle'>;
 

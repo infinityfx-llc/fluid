@@ -1,11 +1,12 @@
 import { classes } from "@/src/core/utils";
 import useStyles from "@/src/hooks/use-styles";
+import { FluidStyles } from "@/src/types";
 import { Animatable } from "@infinityfx/lively";
 import { LayoutGroup } from "@infinityfx/lively/layout";
 import { forwardRef } from "react";
 
-const Collapsible = forwardRef(({ children, shown, ...props }: { shown: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles({
+const Collapsible = forwardRef(({ children, styles = {}, shown, ...props }: { styles?: FluidStyles; shown: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const style = useStyles(styles, {
         '.content': {
             transition: 'opacity .35s',
             overflow: 'hidden'

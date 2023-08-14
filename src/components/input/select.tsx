@@ -4,12 +4,14 @@ import { forwardRef, useRef, useState, useId } from 'react';
 import { FieldProps } from './field';
 import Button from './button';
 import { MdCheck, MdUnfoldMore } from 'react-icons/md';
-import useStyles from '@/src/hooks/use-styles';
-import { FluidInputvalue, PopoverRootReference } from '@/src/types';
+import { FluidInputvalue, FluidStyles, PopoverRootReference } from '@/src/types';
 import { classes } from '@/src/core/utils';
 import Badge from '../display/badge';
 import Combobox from '../display/combobox';
 import useInputProps from '@/src/hooks/use-input-props';
+import { useStyles } from '@/src/hooks';
+
+type SelectStyles = FluidStyles<'.wrapper' | '.label' | '.error' | '.field' | '.content' | '.placeholder' | '.badge'>;
 
 const Select = forwardRef((
     {
@@ -33,6 +35,7 @@ const Select = forwardRef((
         ...props
     }:
         {
+            styles?: SelectStyles;
             options: {
                 label: string;
                 value: FluidInputvalue;
@@ -44,7 +47,7 @@ const Select = forwardRef((
             value?: FluidInputvalue | FluidInputvalue[];
             defaultValue?: FluidInputvalue | FluidInputvalue[];
             onChange?: (value: FluidInputvalue | FluidInputvalue[]) => void;
-        } & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+        } & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'styles'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
             display: 'flex',
@@ -166,9 +169,13 @@ const Select = forwardRef((
         }
     });
 
-    const BadgeStyles = {
+    const BadgeStyles = { // merge with select styles
         '.badge': {
-            backgroundColor: error ? 'var(--f-clr-error-400)' : 'var(--f-clr-fg-200)'
+            backgroundColor: 'var(--f-clr-fg-200)'
+        },
+
+        [`:global(.${style.field}[data-error="true"]) .badge`]: {
+            backgroundColor: 'var(--f-clr-error-400)'
         },
 
         [`:global(.${style.field}[data-disabled="true"]) .badge`]: {

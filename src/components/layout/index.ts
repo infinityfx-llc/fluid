@@ -4,7 +4,7 @@ import Drawer from "./drawer";
 import Scrollarea from "./scrollarea";
 import Collapsible from "./collapsible";
 import Accordion from "./accordion";
-import Grid from "./grid";
+// import Grid from "./grid";
 import Sidebar from "./sidebar";
 import Cull from "./cull";
 import Popover from "./popover";
@@ -17,7 +17,7 @@ export {
     Scrollarea,
     Collapsible,
     Accordion,
-    Grid,
+    // Grid,
     Sidebar,
     Cull,
     Popover,

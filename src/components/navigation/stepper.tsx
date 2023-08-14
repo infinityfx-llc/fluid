@@ -9,7 +9,7 @@ import { MdCheck } from "react-icons/md";
 import Halo from "../feedback/halo";
 import ProgressBar from "../feedback/progress-bar";
 
-const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navigation = 'backwards', vertical = false, variant = 'default', ...props }:
+const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navigation = 'backwards', variant = 'default', ...props }:
     {
         styles?: FluidStyles;
         steps: {
@@ -21,8 +21,7 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
         completed: number;
         setCompleted?: (value: number) => void;
         navigation?: 'none' | 'forwards' | 'backwards' | 'both';
-        vertical?: boolean;
-        variant?: 'default' | 'compact'; // add vertical as variant
+        variant?: 'default' | 'compact' | 'vertical';
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.wrapper': {
@@ -36,7 +35,7 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
             fontSize: 'var(--f-font-size-sml)'
         },
 
-        '.wrapper[data-vertical="true"] .stepper': {
+        '.wrapper[data-variant="vertical"] .stepper': {
             flexDirection: 'column'
         },
 
@@ -52,18 +51,19 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
         },
 
         '.wrapper[data-variant="compact"] .step': {
-            alignItems: 'center'
-        },
-
-        '.wrapper[data-vertical="true"] .step': {
+            alignItems: 'center',
             flexDirection: 'row'
         },
 
-        '.wrapper[data-vertical="false"] .step:not(:last-child)': {
+        '.wrapper[data-variant="vertical"] .step': {
+            flexDirection: 'row'
+        },
+
+        '.wrapper[data-variant="default"] .step:not(:last-child)': {
             paddingRight: 'var(--f-spacing-sml)'
         },
 
-        '.wrapper[data-vertical="true"] .step:not(:last-child)': {
+        '.wrapper[data-variant="vertical"] .step:not(:last-child)': {
             paddingBottom: 'var(--f-spacing-sml)'
         },
 
@@ -73,7 +73,7 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
             alignItems: 'center'
         },
 
-        '.wrapper[data-vertical="true"] .header': {
+        '.wrapper[data-variant="vertical"] .header': {
             flexDirection: 'column'
         },
 
@@ -141,7 +141,7 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
             borderRadius: 'var(--f-radius-xsm)'
         },
 
-        '.wrapper[data-vertical="true"] .progress': {
+        '.wrapper[data-variant="vertical"] .progress': {
             width: '3px',
             minHeight: '1em'
         },
@@ -180,9 +180,9 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
 
     const id = useId();
     const stepsArray = variant === 'compact' ? steps.slice(Math.min(completed, steps.length - 1), completed + 1) : steps;
-    vertical = variant === 'compact' || vertical;
+    const vertical = variant === 'compact' || variant === 'vertical';
 
-    return <div ref={ref} {...props} className={classes(style.wrapper, props.className)} data-vertical={vertical} data-variant={variant}>
+    return <div ref={ref} {...props} className={classes(style.wrapper, props.className)} data-variant={variant}>
         <div className={style.stepper}>
             {stepsArray.map(({ title, label, icon, error }, i) => {
                 const navigatable = (navigation === 'forwards' ? i >= completed :

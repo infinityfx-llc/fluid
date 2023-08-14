@@ -3,20 +3,24 @@
 import { Children, forwardRef, useState, isValidElement, useRef, cloneElement } from 'react';
 import Popover from '../../layout/popover';
 import Scrollarea from '../../layout/scrollarea';
-import { useStyles } from '@/src/hooks';
 import Field from '../../input/field';
 import { MdSearch } from 'react-icons/md';
 import { Animatable } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
 import { classes } from '@/src/core/utils';
+import { FluidStyles } from '@/src/types';
+import { useStyles } from '@/src/hooks';
 
-const Content = forwardRef(({ children, searchable, placeholder = 'Search..', emptyMessage = 'Nothing found', ...props }:
+type ComboboxContentStyles = FluidStyles<'.container' | '.content' | '.message'>;
+
+const Content = forwardRef(({ children, styles = {}, searchable, placeholder = 'Search..', emptyMessage = 'Nothing found', ...props }:
     {
+        styles?: ComboboxContentStyles;
         searchable?: boolean;
         placeholder?: string;
         emptyMessage?: string;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles({
+    const style = useStyles(styles, {
         '.container': {
             background: 'var(--f-clr-bg-100)',
             border: 'solid 1px var(--f-clr-fg-200)',
@@ -74,10 +78,10 @@ const Content = forwardRef(({ children, searchable, placeholder = 'Search..', em
             <div ref={ref} {...props} role="listbox" className={classes(style.container, props.className)}
                 onKeyDown={e => {
                     props.onKeyDown?.(e);
-                    
+
                     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
                         e.preventDefault();
-            
+
                         selected.current = e.key === 'ArrowDown' ? Math.min(selected.current + 1, options.current.length - 1) : Math.max(selected.current - 1, 0);
                         options.current[selected.current]?.focus();
                     }
@@ -92,7 +96,7 @@ const Content = forwardRef(({ children, searchable, placeholder = 'Search..', em
                         setSearch(e.target.value);
                     }}
                     icon={<MdSearch />}
-                    styles={{
+                    styles={{ // merge with outer styles
                         '.field': {
                             border: 'none',
                             borderRadius: 0,

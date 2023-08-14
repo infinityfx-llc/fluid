@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === 'production') {
     }));
 }
 
-const external = ['react', /react-dom/, 'react/jsx-runtime', /@infinityfx\/lively/, 'react-icons']; // add focus-trap and react-icons
+const external = ['react', /react-dom/, 'react/jsx-runtime', /@infinityfx\/lively/, 'react-icons']; // add focus-trap
 
 export default [
     {

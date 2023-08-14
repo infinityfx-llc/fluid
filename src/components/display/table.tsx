@@ -11,22 +11,23 @@ import Checkbox from "../input/checkbox";
 import { MdArrowDownward, MdArrowUpward, MdMoreVert, MdSort } from "react-icons/md";
 import ActionMenu, { ActionMenuOption } from "./action-menu";
 
-export type TableStyles = FluidStyles;
+export type TableStyles = FluidStyles<'.table' | '.rows' | '.row' | '.collapsed' | '.header' | '.label' | '.checkbox' | '.checkmark'>;
 
-const Table = forwardRef(<T extends { [key: string]: string | number | Date; }>({ styles = {}, data, columns, selectable, sortable, selected, onSelect, columnFormatters = {}, rowActions, ...props }:
-    {
-        styles?: TableStyles;
-        data: T[];
-        columns: (keyof T)[];
-        selectable?: boolean;
-        sortable?: boolean | (keyof T)[];
-        selected?: number[];
-        onSelect?: (selected: number[]) => void;
-        columnFormatters?: {
-            [column in keyof T]?: (value: T[column]) => React.ReactNode;
-        };
-        rowActions?: (row: T) => ActionMenuOption[];
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+type TableProps<T> = {
+    styles?: TableStyles;
+    data: T[];
+    columns: (keyof T)[];
+    selectable?: boolean;
+    sortable?: boolean | (keyof T)[];
+    selected?: number[];
+    onSelect?: (selected: number[]) => void;
+    columnFormatters?: {
+        [column in keyof T]?: (value: T[column]) => React.ReactNode;
+    };
+    rowActions?: (row: T) => ActionMenuOption[];
+} & React.HTMLAttributes<HTMLDivElement>;
+
+function TableComponent<T extends { [key: string]: string | number | Date; }>({ styles = {}, data, columns, selectable, sortable, selected, onSelect, columnFormatters = {}, rowActions, ...props }: TableProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
 
     const style = useStyles(styles, {
         '.table': {
@@ -192,7 +193,9 @@ const Table = forwardRef(<T extends { [key: string]: string | number | Date; }>(
             })}
         </div>
     </Scrollarea>;
-});
+}
+
+const Table = forwardRef(TableComponent) as (<T extends { [key: string]: string | number | Date; }>(props: TableProps<T> & { ref?: React.ForwardedRef<HTMLDivElement>; }) => ReturnType<typeof TableComponent>) & { displayName: string; };
 
 Table.displayName = 'Table';
 

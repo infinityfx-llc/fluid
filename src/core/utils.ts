@@ -1,4 +1,4 @@
-import { Selectors } from "../types";
+import { FluidClasses, FluidStyles, Selectors } from "../types";
 
 export const round = (val: number, n = 2) => Math.round(val * Math.pow(10, n)) / Math.pow(10, n);
 
@@ -38,6 +38,33 @@ export function combineRefs(...refs: React.Ref<any>[]) {
     };
 }
 
+export function rulesToString__EXP(ruleset: React.CSSProperties | { [key: string]: React.CSSProperties } | FluidStyles, postfix?: string, selectors: Selectors = {}): { rules: string; selectors: Selectors; } {
+    const rules = Object.entries(ruleset).reduce((str, [attr, value]) => {
+        if (typeof value === 'object') {
+            const prefixed = (postfix ?
+                attr.split(/((?::global\()?[.#][\w\-_][\w\d\-_]*)/gi)
+                    .reduce((prefixed, seg) => {
+                        if (/^[.#]/.test(seg)) {
+                            const name = seg.slice(1);
+                            selectors[name] = `${name}__${postfix}`;
+                            seg = `${seg}__${postfix}`;
+                        }
+
+                        return prefixed + seg;
+                    }, '') :
+                attr)
+                .replace(/:global\((.+?)\)/g, '$1');
+
+            return str + `${prefixed}{${rulesToString__EXP(value, postfix, selectors).rules}}`;
+        }
+        if (value === undefined) return str;
+
+        return str + `${attr.replace(/(.?)([A-Z])/g, '$1-$2').toLowerCase()}:${value};`;
+    }, '');
+
+    return { rules, selectors };
+}
+
 export function ruleToString(selector: string, rules: React.CSSProperties | { [key: string]: React.CSSProperties }, selectors: Selectors, postfix?: string): string {
     const prefixed = (postfix ?
         selector.split(/((?::global\()?[.#][\w\-_][\w\d\-_]*)/gi)
@@ -49,7 +76,8 @@ export function ruleToString(selector: string, rules: React.CSSProperties | { [k
                 }
 
                 return prefixed + seg;
-            }, '') : selector)
+            }, '') :
+        selector)
         .replace(/:global\((.+?)\)/g, '$1');
 
     return `${prefixed}{${Object.entries(rules).reduce((str, [attr, value]) => {

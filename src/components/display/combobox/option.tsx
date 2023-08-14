@@ -1,16 +1,19 @@
 'use client';
 
 import { forwardRef } from 'react';
-import { useStyles } from '@/src/hooks';
 import Halo from '../../feedback/halo';
-import { FluidInputvalue } from '@/src/types';
+import { FluidInputvalue, FluidStyles } from '@/src/types';
+import { useStyles } from '@/src/hooks';
 
-const Option = forwardRef(<T extends FluidInputvalue>({ children, value, onSelect, ...props }:
+type ComboboxOptionStyles = FluidStyles<'option'>;
+
+const Option = forwardRef(<T extends FluidInputvalue>({ children, styles = {}, value, onSelect, ...props }:
     {
+        styles?: ComboboxOptionStyles;
         value: T;
         onSelect?: (value: T) => void;
     } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onSelect'>, ref: React.ForwardedRef<HTMLButtonElement>) => {
-    const style = useStyles({
+    const style = useStyles(styles, {
         '.option': {
             position: 'relative',
             padding: '.5em',
