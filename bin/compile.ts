@@ -1,4 +1,5 @@
 import fs from 'fs';
+import readline from 'readline';
 import { getConfig, processFile } from './utils';
 import { DIST_ROOT, OUTPUT_ROOT } from './const';
 
@@ -25,7 +26,7 @@ export default async function () {
         const [_, name, path] = component;
         await processFile('', path, name, componentMap, config.components || {});
 
-        process.stdout.cursorTo(0);
+        readline.cursorTo(process.stdout, 0);
         process.stdout.write(`${(i / size * 100).toFixed(1)}% ` + new Array(Math.round(i / size * 40)).fill('=').join(''));
     }
     
