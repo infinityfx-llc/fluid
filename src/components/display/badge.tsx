@@ -1,6 +1,6 @@
-import { classes } from "@/src/core/utils";
-import { useStyles } from "@/src/hooks";
-import { FluidSize, FluidStyles } from "@/src/types";
+import { classes } from "../../../src/core/utils";
+import { useStyles } from "../../../src/hooks";
+import { FluidSize, FluidStyles } from "../../../src/types";
 import { forwardRef } from "react";
 
 export type BadgeStyles = FluidStyles<'.badge' | '.badge__round' | '.badge__xsm' | '.badge__sml' | '.badge__med' | '.badge__lrg'>;

@@ -1,9 +1,9 @@
 'use client';
 
-import { classes } from '@/src/core/utils';
-import useInputProps from '@/src/hooks/use-input-props';
-import useStyles from '@/src/hooks/use-styles';
-import { FluidSize, FluidStyles } from '@/src/types';
+import { classes } from '../../../src/core/utils';
+import useInputProps from '../../../src/hooks/use-input-props';
+import useStyles from '../../../src/hooks/use-styles';
+import { FluidSize, FluidStyles } from '../../../src/types';
 import { Animatable } from '@infinityfx/lively';
 import { useLink } from '@infinityfx/lively/hooks';
 import { forwardRef, useEffect, useState } from 'react';

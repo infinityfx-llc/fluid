@@ -3,6 +3,12 @@ import type { RadioStyles } from "./components/input/radio";
 import type { PopoverRootReference } from "./components/layout/popover/root";
 import { PartialFluidTheme } from "./core/theme";
 
+type SharedKeys<T, P> = keyof Omit<T | P, keyof (Omit<T, keyof P> & Omit<P, keyof T>)>;
+
+type MergeObjects<T, P> = T & P & { [K in SharedKeys<T, P>]: Merged<T[K], P[K]> };
+
+export type Merged<T, P> = [T, P] extends [{ [key: string]: unknown }, { [key: string]: unknown }] ? MergeObjects<T, P> : T & P;
+
 export type FluidStyles<T extends string = string> = {
     [key in (T | string & {})]?: React.CSSProperties | {
         [key: string]: React.CSSProperties

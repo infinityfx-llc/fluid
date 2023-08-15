@@ -4,8 +4,8 @@ import { useCallback, useState, forwardRef, useRef } from 'react';
 import Field, { FieldProps } from "./field";
 import { MdAdd, MdRemove } from 'react-icons/md';
 import Button from './button';
-import { round, toNumber } from '@/src/core/utils';
-import { FluidInputvalue } from '@/src/types';
+import { round, toNumber } from '../../../src/core/utils';
+import { FluidInputvalue } from '../../../src/types';
 
 const NumberField = forwardRef(({ styles = {}, precision = 3, controls = true, defaultValue, ...props }: { precision?: number; controls?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(defaultValue || '');

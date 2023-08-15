@@ -1,9 +1,12 @@
-import { classes } from "@/src/core/utils";
-import useStyles from "@/src/hooks/use-styles";
-import { FluidError, FluidSize, FluidStyles } from "@/src/types";
+import { classes } from "../../../src/core/utils";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidError, FluidSize, FluidStyles } from "../../../src/types";
 import { forwardRef } from "react";
 import Halo from "../feedback/halo";
-import useInputProps from "@/src/hooks/use-input-props";
+import useInputProps from "../../../src/hooks/use-input-props";
+
+// variant
+// color (no react value)
 
 export type RadioStyles = FluidStyles<'.wrapper' | '.input' | '.radio' | '.selection'>;
 

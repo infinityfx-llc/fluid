@@ -1,5 +1,5 @@
-import useStyles from "@/src/hooks/use-styles";
-import { FluidSize } from "@/src/types";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidSize } from "../../../src/types";
 import { Children, cloneElement, forwardRef } from "react";
 
 type GridItemProps = { row?: number; col?: number; } & React.HTMLAttributes<HTMLDivElement>;

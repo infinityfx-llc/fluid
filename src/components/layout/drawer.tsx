@@ -2,11 +2,11 @@
 
 import { forwardRef, useId, useRef } from 'react';
 import Overlay from './overlay';
-import useStyles from '@/src/hooks/use-styles';
-import { FluidStyles } from '@/src/types';
+import useStyles from '../../../src/hooks/use-styles';
+import { FluidStyles } from '../../../src/types';
 import Button from '../input/button';
 import { MdClose } from 'react-icons/md';
-import { classes } from '@/src/core/utils';
+import { classes } from '../../../src/core/utils';
 import { Animatable } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
 

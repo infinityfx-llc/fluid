@@ -4,16 +4,31 @@ import { forwardRef, useRef, useState, useId } from 'react';
 import { FieldProps } from './field';
 import Button from './button';
 import { MdCheck, MdUnfoldMore } from 'react-icons/md';
-import { FluidInputvalue, FluidStyles, PopoverRootReference } from '@/src/types';
-import { classes } from '@/src/core/utils';
+import { FluidInputvalue, FluidStyles, PopoverRootReference } from '../../../src/types';
+import { classes } from '../../../src/core/utils';
 import Badge from '../display/badge';
 import Combobox from '../display/combobox';
-import useInputProps from '@/src/hooks/use-input-props';
-import { useStyles } from '@/src/hooks';
+import useInputProps from '../../../src/hooks/use-input-props';
+import { useStyles } from '../../../src/hooks';
 
-type SelectStyles = FluidStyles<'.wrapper' | '.label' | '.error' | '.field' | '.content' | '.placeholder' | '.badge'>;
+export type SelectStyles = FluidStyles<'.wrapper' | '.label' | '.error' | '.field' | '.content' | '.placeholder' | '.badge'>;
 
-const Select = forwardRef((
+type SelectProps<T> = {
+    styles?: SelectStyles;
+    options: {
+        label: string;
+        value: FluidInputvalue;
+        disabled?: boolean;
+    }[];
+    searchable?: boolean;
+    limit?: number;
+    emptyMessage?: string;
+    value?: T;
+    defaultValue?: T;
+    onChange?: (value: T) => void;
+} & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'styles'>;
+
+function SelectComponent<T extends FluidInputvalue>(
     {
         styles = {},
         options,
@@ -33,21 +48,7 @@ const Select = forwardRef((
         size,
         round,
         ...props
-    }:
-        {
-            styles?: SelectStyles;
-            options: {
-                label: string;
-                value: FluidInputvalue;
-                disabled?: boolean;
-            }[];
-            searchable?: boolean;
-            limit?: number;
-            emptyMessage?: string;
-            value?: FluidInputvalue | FluidInputvalue[];
-            defaultValue?: FluidInputvalue | FluidInputvalue[];
-            onChange?: (value: FluidInputvalue | FluidInputvalue[]) => void;
-        } & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'styles'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    }: SelectProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
     const style = useStyles(styles, {
         '.wrapper': {
             display: 'flex',
@@ -232,7 +233,7 @@ const Select = forwardRef((
                     if (!Array.isArray(state)) {
                         popover.current?.close();
                         setState?.(value);
-                        onChange?.(value);
+                        onChange?.(value as T);
                     } else {
                         const updated = state.slice();
                         const idx = updated.indexOf(value);
@@ -241,7 +242,7 @@ const Select = forwardRef((
                         } else updated.splice(idx, 1);
 
                         setState?.(updated);
-                        onChange?.(updated);
+                        onChange?.(updated as any);
                     }
                 }}>
                     {label}
@@ -251,7 +252,9 @@ const Select = forwardRef((
             })}
         </Combobox.Content>
     </Combobox.Root>;
-});
+}
+
+const Select = forwardRef(SelectComponent) as (<T extends FluidInputvalue | FluidInputvalue[]>(props: SelectProps<T> & { ref?: React.ForwardedRef<HTMLDivElement>; }) => ReturnType<typeof SelectComponent>) & { displayName: string; };
 
 Select.displayName = 'Select';
 

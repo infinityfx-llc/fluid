@@ -1,9 +1,9 @@
 'use client';
 
-import { classes } from "@/src/core/utils";
-import useInputProps from "@/src/hooks/use-input-props";
-import useStyles from "@/src/hooks/use-styles";
-import { FluidError, FluidInputvalue, FluidSize, FluidStyles } from "@/src/types";
+import { classes } from "../../../src/core/utils";
+import useInputProps from "../../../src/hooks/use-input-props";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidError, FluidInputvalue, FluidSize, FluidStyles } from "../../../src/types";
 import { forwardRef, useId, useRef, useState } from "react";
 
 const Pincode = forwardRef(({ styles = {}, length = 4, masked, size = 'med', round = false, label, value, error, onChange, defaultvalue, autoFocus, ...props }:

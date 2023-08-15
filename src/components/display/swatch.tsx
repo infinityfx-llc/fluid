@@ -1,6 +1,6 @@
-import { classes } from "@/src/core/utils";
-import { useStyles } from "@/src/hooks";
-import { FluidSize, FluidStyles } from "@/src/types";
+import { classes } from "../../../src/core/utils";
+import { useStyles } from "../../../src/hooks";
+import { FluidSize, FluidStyles } from "../../../src/types";
 import { forwardRef } from "react";
 
 export type SwatchStyles = FluidStyles<'.swatch' | '.swatch__round' | '.swatch__xsm' | '.swatch__sml' | '.swatch__med' | '.swatch__lrg'>;

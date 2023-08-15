@@ -1,8 +1,8 @@
 'use client';
 
-import { classes, combineRefs } from "@/src/core/utils";
-import useStyles from "@/src/hooks/use-styles";
-import { FluidStyles } from "@/src/types";
+import { classes, combineRefs } from "../../../src/core/utils";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidStyles } from "../../../src/types";
 import { Children, cloneElement, forwardRef, isValidElement } from "react";
 
 // fix cloneElement issues!!

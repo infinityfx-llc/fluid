@@ -1,7 +1,9 @@
-import { classes } from '@/src/core/utils';
-import useStyles from '@/src/hooks/use-styles';
-import { FluidStyles } from '@/src/types';
+import { classes } from '../../../src/core/utils';
+import useStyles from '../../../src/hooks/use-styles';
+import { FluidStyles } from '../../../src/types';
 import { forwardRef, Children } from 'react';
+
+// TODO
 
 const Timeline = forwardRef(({ children, styles = {}, active, horizontal = false, uniform, reverse, ...props }: { styles?: FluidStyles; active: number; horizontal?: boolean; uniform?: boolean; reverse?: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const len = Children.count(children);

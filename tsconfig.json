@@ -16,11 +16,7 @@
     "declarationDir": "dist/types",
     "emitDeclarationOnly": true,
     "moduleResolution": "node",
-    "isolatedModules": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./*"]
-    }
+    "isolatedModules": true
   },
   "exclude": [
     "node_modules",

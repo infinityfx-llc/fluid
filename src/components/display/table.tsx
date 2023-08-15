@@ -1,8 +1,8 @@
 'use client';
 
-import { classes } from "@/src/core/utils";
-import useStyles from "@/src/hooks/use-styles";
-import { FluidStyles } from "@/src/types";
+import { classes } from "../../../src/core/utils";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidStyles } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Halo from "../feedback/halo";
 import Scrollarea from "../layout/scrollarea";

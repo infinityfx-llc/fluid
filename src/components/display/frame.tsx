@@ -1,6 +1,6 @@
-import { classes } from "@/src/core/utils";
-import { useStyles } from "@/src/hooks";
-import { FluidSize, FluidStyles } from "@/src/types";
+import { classes } from "../../../src/core/utils";
+import { useStyles } from "../../../src/hooks";
+import { FluidSize, FluidStyles } from "../../../src/types";
 import { forwardRef } from "react";
 
 type FrameStyles = FluidStyles<'.frame' | '.frame__shadow' | '.frame__border' | '.frame__bg__light' | '.frame__bg__dark'>;

@@ -1,4 +1,4 @@
-import { FluidClasses, FluidStyles, Selectors } from "../types";
+import type { FluidStyles, Merged, Selectors } from "../types";
 
 export const round = (val: number, n = 2) => Math.round(val * Math.pow(10, n)) / Math.pow(10, n);
 
@@ -7,11 +7,7 @@ export const toNumber = (val: any, fallback: number): number => {
     return val === undefined || isNaN(val) ? fallback : val;
 }
 
-type SharedKeys<T, P> = keyof Omit<T | P, keyof (Omit<T, keyof P> & Omit<P, keyof T>)>;
 
-type MergeObjects<T, P> = T & P & { [K in SharedKeys<T, P>]: Merged<T[K], P[K]> };
-
-type Merged<T, P> = [T, P] extends [{ [key: string]: unknown }, { [key: string]: unknown }] ? MergeObjects<T, P> : T & P;
 
 export function mergeRecursive<T = any, P = any>(a: T, b: P) {
     if (a === undefined) return b as Merged<T, P>;

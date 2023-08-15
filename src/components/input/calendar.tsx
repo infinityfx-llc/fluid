@@ -1,14 +1,16 @@
 'use client';
 
-import useStyles from "@/src/hooks/use-styles";
-import { FluidSize, FluidStyles } from "@/src/types";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidSize, FluidStyles } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Button from "./button";
-import { MdArrowBack, MdArrowForward, MdExpand, MdExpandMore } from "react-icons/md";
-import { classes } from "@/src/core/utils";
+import { MdArrowBack, MdArrowForward, MdExpandMore } from "react-icons/md";
+import { classes } from "../../../src/core/utils";
 import { Combobox } from "../display";
-// import { Halo } from "../feedback";
-// import { Popover } from "../layout";
+
+// TODO!!
+
+export type CalendarStyles = FluidStyles<'.calendar' | '.header' | '.text' | '.years'>;
 
 const Calendar = forwardRef(({ styles = {}, locale, size = 'med', round, defaultValue = new Date(), value, onChange, disabled, ...props }:
     {

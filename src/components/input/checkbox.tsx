@@ -1,13 +1,13 @@
 'use client';
 
-import { classes } from "@/src/core/utils";
-import useStyles from "@/src/hooks/use-styles";
-import { FluidError, FluidSize, FluidStyles } from "@/src/types";
+import { classes } from "../../../src/core/utils";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidError, FluidSize, FluidStyles } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { forwardRef, useState, useEffect } from "react";
 import Halo from "../feedback/halo";
-import useInputProps from "@/src/hooks/use-input-props";
+import useInputProps from "../../../src/hooks/use-input-props";
 
 // variant
 // color (no react value)

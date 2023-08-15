@@ -1,9 +1,9 @@
-import useStyles from "@/src/hooks/use-styles";
-import { FluidStyles } from "@/src/types";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidStyles } from "../../../src/types";
 import { forwardRef } from "react";
 import Button from "../input/button";
 import { MdClose } from "react-icons/md";
-import { classes } from "@/src/core/utils";
+import { classes } from "../../../src/core/utils";
 
 export type ToastStyles = FluidStyles<'.toast' | '.icon' | '.background' | '.content' | '.text'>;
 

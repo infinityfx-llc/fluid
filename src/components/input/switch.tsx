@@ -1,9 +1,11 @@
-import { classes } from '@/src/core/utils';
-import useStyles from '@/src/hooks/use-styles';
-import { FluidError, FluidSize, FluidStyles } from '@/src/types';
+import { classes } from '../../../src/core/utils';
+import useStyles from '../../../src/hooks/use-styles';
+import { FluidError, FluidSize, FluidStyles } from '../../../src/types';
 import { forwardRef } from 'react';
 import Halo from '../feedback/halo';
-import useInputProps from '@/src/hooks/use-input-props';
+import useInputProps from '../../../src/hooks/use-input-props';
+
+// variant
 
 const Switch = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', round = true, iconOff, iconOn, ...props }:
     {
@@ -94,10 +96,6 @@ const Switch = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-
             boxShadow: '0 0 6px rgb(0, 0, 0, .06)'
         },
 
-        '.input:checked:enabled + .switch': {
-            backgroundColor: color
-        },
-
         '.input:checked + .switch .handle': {
             translate: '100% 0%'
         },
@@ -133,7 +131,7 @@ const Switch = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-
         <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-size={size} data-round={round} data-error={!!error}>
             <input {...split} type="checkbox" className={style.input} aria-invalid={!!error} />
 
-            <div className={style.switch}>
+            <div className={style.switch} style={!split.disabled ? { backgroundColor: color } : undefined}> {/* and when checked */}
                 <div className={style.icons}>
                     <div className={style.icon}>
                         {iconOn}

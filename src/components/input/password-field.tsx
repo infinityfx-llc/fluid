@@ -3,12 +3,12 @@
 import { useState, forwardRef, useMemo } from 'react';
 import Field, { FieldProps } from "./field";
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
-import { FluidInputvalue } from '@/src/types';
+import { FluidInputvalue } from '../../../src/types';
 import Toggle from './toggle';
 import ProgressBar from '../feedback/progress-bar';
-import useInputProps from '@/src/hooks/use-input-props';
-import { useStyles } from '@/src/hooks';
-import { classes } from '@/src/core/utils';
+import useInputProps from '../../../src/hooks/use-input-props';
+import { useStyles } from '../../../src/hooks';
+import { classes } from '../../../src/core/utils';
 
 const colors = ['#eb2a1c', '#eb2a1c', '#e8831e', '#f0d030', '#fff952', '#5aff54'];
 

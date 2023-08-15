@@ -1,12 +1,12 @@
-import FluidStyleStore from "@/src/core/stylestore";
+import FluidStyleStore from "../src/core/stylestore";
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
 import fs from 'fs';
-import { FluidConfig } from "@/src/types";
-import FluidProvider from "@/src/context/fluid";
+import { FluidConfig } from "../src/types";
+import FluidProvider from "../src/context/fluid";
 import { DIST_ROOT, OUTPUT_ROOT } from "./const";
-import { mergeRecursive } from "@/src/core/utils";
-import { DEFAULT_THEME } from "@/src/core/theme";
+import { mergeRecursive } from "../src/core/utils";
+import { DEFAULT_THEME } from "../src/core/theme";
 
 let fluidConfig: FluidConfig;
 
@@ -63,7 +63,7 @@ export async function processFile(root: string, path: string, name: string, comp
         }
     }
 
-    if (Component instanceof Function || 'render' in Component) {
+    if (Component && (Component instanceof Function || 'render' in Component)) {
         fileContent = await emitCSS(name, createElement(Component, { styles, key: 0, steps: [], options: [], data: [], columns: [], include: [], name: '' }, ''), fileContent, outputPath, global);
         // extra props to render correctly
         // TODO: also fix missing context errors for Popover, Accordion
@@ -77,15 +77,29 @@ async function insertTheme(content: string) {
 
     const mergeRecursiveImport = content.match(/import\s*\{[^{]*(mergeRecursive(?:\s*as\s*([^\s}]+))?)[^}]*\}/);
     const fnName = mergeRecursiveImport?.[2] || 'mergeRecursive';
-    const match = content.match(new RegExp(`${fnName}\\(.+?\\);`, 's'));
+    const match = content.match(new RegExp(`(=|,|;|\\s|:)${fnName}\\(`, 's'));
 
     if (match?.index) {
         const merged = mergeRecursive(config.theme, DEFAULT_THEME);
+        const to = matchBrackets(content, match.index as number + match[0].length, '()');
 
-        content = content.slice(0, match.index) + JSON.stringify(merged) + content.slice(match.index + match[0].length);
+        content = content.slice(0, match.index + 1) + JSON.stringify(merged) + content.slice(to);
     }
 
+    // remove insertionEffect with stylestore dep
+
     return content;
+}
+
+function matchBrackets(content: string, start: number, type: '{}' | '()' | '[]' = '{}') {
+    let count = 1;
+
+    while (count > 0) {
+        if (content.charAt(start) === type.charAt(0)) count++;
+        if (content.charAt(start++) === type.charAt(1)) count--;
+    }
+
+    return start;
 }
 
 export async function emitCSS(name: string, Component: React.ReactElement, content: string, outputPath: string, global: boolean) {
@@ -115,19 +129,14 @@ export async function emitCSS(name: string, Component: React.ReactElement, conte
         let substyles = content.matchAll(/styles:\s*\{/g), substyle, substyleIndex = 1, substyleOffset = 0;
 
         while (substyle = substyles.next().value) {
-            let i = substyle.index + substyleOffset,
-                bracketIndex = i + substyle[0].length,
-                count = 1;
+            const i = substyle.index + substyleOffset;
 
-            while (count > 0) { // doesnt work when not defined using direct object (but variable reference)
-                if (content.charAt(bracketIndex) === '{') count++;
-                if (content.charAt(bracketIndex) === '}') count--;
-                bracketIndex++;
-            }
+            // doesnt work when not defined using direct object (but variable reference)
+            const to = matchBrackets(content, i + substyle[0].length);
 
             const replacement = `styles:${JSON.stringify(filtered[substyleIndex++]?.selectors || {})}`;
-            content = content.slice(0, i) + replacement + content.slice(bracketIndex);
-            substyleOffset += replacement.length - (bracketIndex - i);
+            content = content.slice(0, i) + replacement + content.slice(to);
+            substyleOffset += replacement.length - (to - i);
         }
 
         // if (global) {
@@ -138,16 +147,30 @@ export async function emitCSS(name: string, Component: React.ReactElement, conte
         // }
 
         const useStyles = content.match(/import\s*([^"']+?)\s*from\s*(?:"|')[^'"]*use-styles.*?(?:"|');/)?.[1];
+        const match = content.match(new RegExp(`(=|,|;|\\s|:)${useStyles}\\(`, 's'));
 
-        if (useStyles) {
+        if (useStyles && match?.index) {
             // content = content.replace(new RegExp(`${useStyles}\\(.+?\\);`, 's'), 'Object.assign(FLUID_STYLES, styles);');
-            content = content.replace(new RegExp(`${useStyles}\\(.+?\\);`, 's'), `Object.assign(${JSON.stringify(filtered[0]?.selectors || {})}, styles);`);
+            // content = content.replace(new RegExp(`${useStyles}\\(.+?\\);`, 's'), `Object.assign(${JSON.stringify(filtered[0]?.selectors || {})}, styles);`);
+            
+            const to = matchBrackets(content, match.index as number + match[0].length, '()');
+            content = content.slice(0, match.index + 1) + `Object.assign(${JSON.stringify(filtered[0]?.selectors || {})}, styles)` + content.slice(to);
         }
 
         const useGlobalStyles = content.match(/import\s*([^"']+?)\s*from\s*(?:"|')[^'"]*use-global-styles.*?(?:"|');/)?.[1];
-        if (useGlobalStyles) {
-            content = content.replace(new RegExp(`${useGlobalStyles}\\(.+?\\);`, 'gs'), '');
+        let matches = content.matchAll(new RegExp(`(=|,|;|\\s|:)${useGlobalStyles}\\(;`, 'gs')), globalStyle, globalStyleOffset = 0;
+
+        while (globalStyle = matches.next().value) {
+            const i = globalStyle.index + globalStyleOffset;
+            let to = matchBrackets(content, i + globalStyle[0].length, '()');
+            if (content.charAt(to + 1) === ';') to++;
+
+            content = content.slice(0, i + 1) + content.slice(to);
+            globalStyleOffset -= (to - (i + 1));
         }
+        // if (useGlobalStyles) {
+        //     content = content.replace(new RegExp(`${useGlobalStyles}\\(.+?\\);`, 'gs'), ''); // needs bracket matching!!!
+        // }
 
         FluidStyleStore.rules = {};
     }

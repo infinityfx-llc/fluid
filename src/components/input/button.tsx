@@ -1,8 +1,8 @@
-import useStyles from "@/src/hooks/use-styles";
+import useStyles from "../../../src/hooks/use-styles";
 import { forwardRef } from "react";
 import Halo from "../feedback/halo";
-import { classes } from "@/src/core/utils";
-import { FluidSize, FluidStyles } from "@/src/types";
+import { classes } from "../../../src/core/utils";
+import { FluidSize, FluidStyles } from "../../../src/types";
 import Spinner from "../feedback/spinner";
 
 export type ButtonStyles = FluidStyles<'.button' | '.content' | '.loader' | '.button__round' | '.button__xsm' | '.button__sml' | '.button__med' | '.button__lrg' | '.button__var__default' | '.button__var__neutral' | '.button__var__light' | '.button__var__minimal'>;

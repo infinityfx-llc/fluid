@@ -1,25 +1,26 @@
 'use client';
 
-import useStyles from "@/src/hooks/use-styles";
-import { FluidError, FluidInputvalue, FluidSize, FluidStyles } from "@/src/types";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidError, FluidInputvalue, FluidSize, FluidStyles } from "../../../src/types";
 import { forwardRef, useId, useState } from "react";
 import { Morph } from '@infinityfx/lively/layout';
-import { classes } from "@/src/core/utils";
+import { classes } from "../../../src/core/utils";
 import Halo from "../feedback/halo";
 
-const Segmented = forwardRef(({ styles = {}, variant = 'default', size = 'med', round = false, options, name, value, defaultValue, onChange, error, ...props }:
-    {
-        styles?: FluidStyles;
-        variant?: 'default' | 'neutral';
-        size?: Omit<FluidSize, 'xsm'>;
-        round?: boolean;
-        options: { label: React.ReactNode; value: FluidInputvalue; disabled?: boolean; }[];
-        name?: string;
-        value?: FluidInputvalue;
-        defaultValue?: FluidInputvalue;
-        onChange?: (value: FluidInputvalue) => void;
-        error?: FluidError;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+type SegmentedProps<T> = {
+    styles?: FluidStyles;
+    variant?: 'default' | 'neutral';
+    size?: Omit<FluidSize, 'xsm'>;
+    round?: boolean;
+    options: { label: React.ReactNode; value: FluidInputvalue; disabled?: boolean; }[];
+    name?: string;
+    value?: T;
+    defaultValue?: T;
+    onChange?: (value: T) => void;
+    error?: FluidError;
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>;
+
+function SegmentedComponent<T extends FluidInputvalue>({ styles = {}, variant = 'default', size = 'med', round = false, options, name, value, defaultValue, onChange, error, ...props }: SegmentedProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
     const style = useStyles(styles, {
         '.segmented': {
             padding: '.3em',
@@ -129,7 +130,7 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', size = 'med', 
             }}>
                 <button className={style.option} type="button" role="radio" aria-checked={state === option} disabled={disabled} onClick={() => {
                     setState?.(option);
-                    onChange?.(option);
+                    onChange?.(option as T);
                 }}>
                     <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
                     <span className={style.content}>{label}</span>
@@ -141,7 +142,9 @@ const Segmented = forwardRef(({ styles = {}, variant = 'default', size = 'med', 
             </Halo>;
         })}
     </div>
-});
+}
+
+const Segmented = forwardRef(SegmentedComponent) as (<T extends FluidInputvalue>(props: SegmentedProps<T> & { ref?: React.ForwardedRef<HTMLDivElement>; }) => ReturnType<typeof SegmentedComponent>) & { displayName: string; };
 
 Segmented.displayName = 'Segmented';
 

@@ -1,8 +1,8 @@
 'use client';
 
-import { classes } from "@/src/core/utils";
-import useStyles from "@/src/hooks/use-styles";
-import { FluidStyles } from "@/src/types";
+import { classes } from "../../../src/core/utils";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidStyles } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { forwardRef, useId } from "react";
 import { MdCheck } from "react-icons/md";

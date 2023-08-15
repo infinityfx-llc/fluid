@@ -1,13 +1,13 @@
 'use client';
 
-import useGlobalStyles from "@/src/hooks/use-global-styles";
+import useGlobalStyles from "../../src/hooks/use-global-styles";
 import { cloneElement, createContext, useInsertionEffect, useMemo } from "react";
-import { DEFAULT_THEME, FluidTheme, PartialFluidTheme, parseCSSVariables, parseColorPalettes } from "@/src/core/theme";
-import global from "@/src/styles/global";
-import { mergeRecursive } from "@/src/core/utils";
-import useColorScheme, { ColorScheme } from "@/src/hooks/use-color-scheme";
+import { DEFAULT_THEME, FluidTheme, PartialFluidTheme, parseCSSVariables, parseColorPalettes } from "../../src/core/theme";
+import global from "../../src/styles/global";
+import { mergeRecursive } from "../../src/core/utils";
+import useColorScheme, { ColorScheme } from "../../src/hooks/use-color-scheme";
 import FluidStyleStore from "../core/stylestore";
-import { FluidStyles } from "../types";
+import type { FluidStyles, Merged } from "../types";
 
 type FluidContext = FluidTheme & {
     colorScheme: string;
@@ -16,9 +16,9 @@ type FluidContext = FluidTheme & {
 
 export const FluidContext = createContext<FluidContext | null>(null);
 
-export default function FluidProvider({ children, theme = {}, initialColorScheme }: { children: React.ReactElement; theme?: PartialFluidTheme; initialColorScheme?: ColorScheme<any>; }) {
+export default function FluidProvider<T extends PartialFluidTheme>({ children, theme, initialColorScheme }: { children: React.ReactElement; theme?: T; initialColorScheme?: ColorScheme<Merged<T, typeof DEFAULT_THEME>>; }) {
     const [styles, fluid, colorSchemes] = useMemo(() => {
-        const fluid = mergeRecursive(theme, DEFAULT_THEME);
+        const fluid = mergeRecursive(theme || {}, DEFAULT_THEME);
         const variables = parseCSSVariables(fluid);
         const colorPalettes = parseColorPalettes(fluid);
 

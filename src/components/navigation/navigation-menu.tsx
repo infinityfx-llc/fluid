@@ -1,12 +1,12 @@
 'use client';
 
-import useStyles from '@/src/hooks/use-styles';
-import { FluidStyles } from '@/src/types';
+import useStyles from '../../../src/hooks/use-styles';
+import { FluidStyles } from '../../../src/types';
 import { forwardRef, useState, useId, useRef, useEffect } from 'react';
 import { Animatable } from '@infinityfx/lively';
 import { Morph } from '@infinityfx/lively/layout';
 import Halo from '../feedback/halo';
-import { classes } from '@/src/core/utils';
+import { classes } from '../../../src/core/utils';
 
 export type NavigationMenuStyles = FluidStyles<'.navigation' | '.link' | '.selection' | '.menu' | '.container'>;
 

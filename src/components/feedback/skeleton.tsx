@@ -1,6 +1,6 @@
-import { classes } from "@/src/core/utils";
-import useStyles from "@/src/hooks/use-styles";
-import { FluidSize, FluidStyles } from "@/src/types";
+import { classes } from "../../../src/core/utils";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidSize, FluidStyles } from "../../../src/types";
 import { forwardRef } from "react";
 
 export type SkeletonStyles = FluidStyles<'.skeleton' | '.skeleton__rad__xsm' | '.skeleton__rad__sml' | '.skeleton__rad__med' | '.skeleton__rad__lrg' | '.skeleton__rad__max'>;

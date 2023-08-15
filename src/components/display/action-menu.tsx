@@ -1,8 +1,8 @@
 'use client';
 
-import { classes } from '@/src/core/utils';
-import useStyles from '@/src/hooks/use-styles';
-import { FluidStyles, PopoverRootReference } from '@/src/types';
+import { classes } from '../../../src/core/utils';
+import useStyles from '../../../src/hooks/use-styles';
+import { FluidStyles, PopoverRootReference } from '../../../src/types';
 import { Animate } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
 import { forwardRef, useCallback, useRef, useId } from 'react';
@@ -95,32 +95,45 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, stret
             position: 'relative'
         },
 
-        '.wrapper[data-disabled="false"]:hover > .submenu': {
+        '.wrapper[data-disabled="false"]:hover > .submenu, .wrapper[data-disabled="false"]:focus-within > .submenu': {
             opacity: 1,
             visibility: 'visible',
             translate: '0 0'
         }
     });
 
+    // let refIndex = 0, lastIndex = -1;
+    // const selection = useRef(-1);
+    // const refs = useRef<{ ref: HTMLElement; l?: number; r?: number; u?: number; d?: number; }[]>([]);
+
     const getOption = useCallback((option: ActionMenuOption, i: number) => {
         if (option.type === 'heading') return <div key={i} className={style.heading}>{option.text}</div>;
         if (option.type === 'divider') return <div key={i} className={style.divider} role="separator" />;
 
         const { label, onClick, disabled = false, shouldClose = true, options } = option;
+
+        // const idx = refIndex++;
+        const subOptions = options && options.map(getOption);
+
         return <div key={i} className={style.wrapper} data-disabled={disabled}>
             <Halo disabled={disabled}>
                 <button role="menuitem" className={style.option} disabled={disabled} onClick={() => {
                     if (shouldClose) popover.current?.close();
                     onClick?.();
-                }}>
+                }}
+                    ref={el => {
+                        // refs.current[idx] = { ref: el as any, d: refIndex + 1 };
+                        // if (lastIndex >= 0) refs.current[idx].u = lastIndex;
+                        // if (subOptions) refs.current[i].r = idx + 1;
+                    }}>
                     {label}
 
                     {options && <MdChevronRight style={{ marginLeft: 'auto' }} />}
                 </button>
             </Halo>
 
-            {options && <div role="group" className={classes(style.submenu, style.menu)}>
-                {options.map(getOption)}
+            {subOptions && <div role="group" className={classes(style.submenu, style.menu)}>
+                {subOptions}
             </div>}
         </div>;
     }, []);

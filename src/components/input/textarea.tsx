@@ -1,9 +1,9 @@
 'use client';
 
-import { classes } from '@/src/core/utils';
-import useInputProps from '@/src/hooks/use-input-props';
-import useStyles from '@/src/hooks/use-styles';
-import { FluidError, FluidSize, FluidStyles } from '@/src/types';
+import { classes } from '../../../src/core/utils';
+import useInputProps from '../../../src/hooks/use-input-props';
+import useStyles from '../../../src/hooks/use-styles';
+import { FluidError, FluidSize, FluidStyles } from '../../../src/types';
 import { forwardRef, useId, useState } from 'react';
 import Scrollarea from '../layout/scrollarea';
 

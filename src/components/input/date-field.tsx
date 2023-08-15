@@ -2,7 +2,7 @@
 
 import { forwardRef, useState } from 'react';
 import Field, { FieldProps } from './field';
-import useStyles from '@/src/hooks/use-styles';
+import useStyles from '../../../src/hooks/use-styles';
 import { Animatable } from '@infinityfx/lively';
 import { Move } from '@infinityfx/lively/animations';
 import Calendar from './calendar';

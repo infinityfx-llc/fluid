@@ -5,10 +5,10 @@ import { Halo } from "../../feedback";
 import Collapsible from "../collapsible";
 import { Animatable } from "@infinityfx/lively";
 import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
-import { useStyles } from "@/src/hooks";
-import { FluidStyles } from "@/src/types";
+import { useStyles } from "../../../../src/hooks";
+import { FluidStyles } from "../../../../src/types";
 import { useAccordion } from "./root";
-import { classes } from "@/src/utils";
+import { classes } from "../../../../src/utils";
 
 const Item = forwardRef(({ children, styles = {}, label, defaultOpen = false, disabled, ...props }:
     {

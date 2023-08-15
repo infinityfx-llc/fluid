@@ -1,13 +1,13 @@
 'use client';
 
-import useStyles from '@/src/hooks/use-styles';
-import { FluidStyles } from '@/src/types';
+import useStyles from '../../../../src/hooks/use-styles';
+import { FluidStyles } from '../../../../src/types';
 import { forwardRef, useState } from 'react';
 import Toggle from '../../input/toggle';
 import { MdArrowBack, MdArrowForward } from 'react-icons/md';
 import Scrollarea from '../scrollarea';
-import useFluid from '@/src/hooks/use-fluid';
-import { classes } from '@/src/core/utils';
+import useFluid from '../../../../src/hooks/use-fluid';
+import { classes } from '../../../../src/core/utils';
 
 const Root = forwardRef(({ children, styles = {}, size = '18rem', collapsed, onCollapse, ...props }:
     {

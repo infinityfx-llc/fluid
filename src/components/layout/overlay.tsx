@@ -1,7 +1,7 @@
 'use client';
 
-import useStyles from "@/src/hooks/use-styles";
-import { FluidStyles } from "@/src/types";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidStyles } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { LayoutGroup } from "@infinityfx/lively/layout";
 // import { createFocusTrap, FocusTrap } from "focus-trap";

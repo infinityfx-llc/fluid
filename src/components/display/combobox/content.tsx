@@ -7,9 +7,9 @@ import Field from '../../input/field';
 import { MdSearch } from 'react-icons/md';
 import { Animatable } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
-import { classes } from '@/src/core/utils';
-import { FluidStyles } from '@/src/types';
-import { useStyles } from '@/src/hooks';
+import { classes } from '../../../../src/core/utils';
+import { FluidStyles } from '../../../../src/types';
+import { useStyles } from '../../../../src/hooks';
 
 type ComboboxContentStyles = FluidStyles<'.container' | '.content' | '.message'>;
 

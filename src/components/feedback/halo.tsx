@@ -1,8 +1,8 @@
 'use client';
 
-import { classes, combineRefs } from "@/src/core/utils";
-import useStyles from "@/src/hooks/use-styles";
-import { FluidStyles } from "@/src/types";
+import { classes, combineRefs } from "../../../src/core/utils";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidStyles } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink, useTrigger } from "@infinityfx/lively/hooks";
 import { Children, cloneElement, forwardRef, isValidElement, useRef } from "react";

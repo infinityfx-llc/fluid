@@ -1,12 +1,12 @@
 'use client';
 
-import { FluidSize, FluidStyles } from "@/src/types";
+import { FluidSize, FluidStyles } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Halo from "../feedback/halo";
-import useInputProps from "@/src/hooks/use-input-props";
+import useInputProps from "../../../src/hooks/use-input-props";
 import { Animatable } from "@infinityfx/lively";
-import { classes } from "@/src/core/utils";
-import { useStyles } from "@/src/hooks";
+import { classes } from "../../../src/core/utils";
+import { useStyles } from "../../../src/hooks";
 
 export type ToggleStyles = FluidStyles<'.toggle' | '.content' | '.container' | '.toggle__xsm' | '.toggle__sml' | '.toggle__med' | '.toggle__lrg' | '.toggle__round' | '.toggle__var__default' | '.toggle__var__minimal' | '.toggle__var__neutral'>;
 

@@ -1,9 +1,9 @@
 'use client';
 
 import { forwardRef } from 'react';
-import useStyles from '@/src/hooks/use-styles';
-import { FluidStyles } from '@/src/types';
-import { classes } from '@/src/core/utils';
+import useStyles from '../../../../src/hooks/use-styles';
+import { FluidStyles } from '../../../../src/types';
+import { classes } from '../../../../src/core/utils';
 import Halo from '../../feedback/halo';
 import Indicator from '../../feedback/indicator';
 import { MdMoreVert } from 'react-icons/md';

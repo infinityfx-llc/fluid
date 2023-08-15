@@ -1,29 +1,30 @@
 'use client';
 
-import { FluidInputvalue, FluidStyles } from "@/src/types";
+import { FluidInputvalue, FluidStyles } from "../../../src/types";
 import { forwardRef, useId, useState } from "react";
 import Halo from "../feedback/halo";
-import useStyles from "@/src/hooks/use-styles";
+import useStyles from "../../../src/hooks/use-styles";
 import { Morph } from "@infinityfx/lively/layout";
-import { classes } from "@/src/core/utils";
+import { classes } from "../../../src/core/utils";
 import Scrollarea from "../layout/scrollarea";
 
 export type TabsStyles = FluidStyles<'.wrapper' | '.tabs' | '.option' | '.selection' | '.button' | '.wrapper__var__default' | '.wrapper__var__minimal'>;
 
-const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, defaultValue, onChange, ...props }:
-    {
-        options: {
-            label: string;
-            value: FluidInputvalue;
-            disabled?: boolean;
-            panelId?: string;
-        }[];
-        styles?: TabsStyles;
-        variant?: 'default' | 'minimal';
-        value?: FluidInputvalue;
-        defaultValue?: FluidInputvalue;
-        onChange?: (value: FluidInputvalue) => void;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+type TabsProps<T> = {
+    options: {
+        label: string;
+        value: FluidInputvalue;
+        disabled?: boolean;
+        panelId?: string;
+    }[];
+    styles?: TabsStyles;
+    variant?: 'default' | 'minimal';
+    value?: T;
+    defaultValue?: T;
+    onChange?: (value: T) => void;
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>;
+
+function TabsComponent<T extends FluidInputvalue>({ options, styles = {}, variant = 'default', value, defaultValue, onChange, ...props }: TabsProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
     const style = useStyles(styles, {
         '.wrapper__var__default': {
             backgroundColor: 'var(--f-clr-fg-100)',
@@ -99,7 +100,7 @@ const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, def
                         <Halo disabled={disabled} color={variant === 'default' ? 'var(--f-clr-primary-200)' : undefined}>
                             <button role={panelId ? 'tab' : 'none'} aria-selected={state === value} aria-controls={panelId} className={style.button} disabled={disabled} onClick={() => {
                                 setState?.(value);
-                                onChange?.(value);
+                                onChange?.(value as T);
                             }}>
                                 {label}
                             </button>
@@ -113,7 +114,9 @@ const Tabs = forwardRef(({ options, styles = {}, variant = 'default', value, def
             </div>
         </Scrollarea>
     </div>;
-});
+}
+
+const Tabs = forwardRef(TabsComponent) as (<T extends FluidInputvalue>(props: TabsProps<T> & { ref?: React.ForwardedRef<HTMLDivElement>; }) => ReturnType<typeof TabsComponent>) & { displayName: string; };
 
 Tabs.displayName = 'Tabs';
 

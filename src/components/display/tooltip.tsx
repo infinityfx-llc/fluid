@@ -1,9 +1,9 @@
 'use client';
 
-import { classes, combineRefs } from "@/src/core/utils";
-import useDomEffect from "@/src/hooks/use-dom-effect";
-import useStyles from "@/src/hooks/use-styles";
-import { FluidStyles } from "@/src/types";
+import { classes, combineRefs } from "../../../src/core/utils";
+import useDomEffect from "../../../src/hooks/use-dom-effect";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidStyles } from "../../../src/types";
 import { forwardRef, cloneElement, useState, useRef, isValidElement, useId } from "react";
 import { createPortal } from "react-dom";
 

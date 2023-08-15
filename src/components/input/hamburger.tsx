@@ -1,13 +1,16 @@
 'use client';
 
-import useStyles from "@/src/hooks/use-styles";
-import { FluidStyles } from "@/src/types";
+import useStyles from "../../../src/hooks/use-styles";
+import { FluidStyles } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Halo from "../feedback/halo";
 import { Animatable } from "@infinityfx/lively";
-import { classes } from "@/src/core/utils";
+import { classes } from "../../../src/core/utils";
 
-const Hamburger = forwardRef(({ styles = {}, open, ...props }: { styles?: FluidStyles; open?: boolean; } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
+// sizes
+export type HamburgerStyles = FluidStyles<'.hamburger' | '.line' | '.cross'>;
+
+const Hamburger = forwardRef(({ styles = {}, open, ...props }: { styles?: HamburgerStyles; open?: boolean; } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
     const style = useStyles(styles, {
         '.hamburger': {
             position: 'relative',

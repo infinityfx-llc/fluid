@@ -10,7 +10,9 @@ import json from '@rollup/plugin-json';
 const plugins = [
     resolve(),
     commonjs(),
-    typescript({ tsconfig: './tsconfig.json' }),
+    typescript({
+        tsconfig: './tsconfig.json'
+    }),
     preserveDirectives.default()
 ];
 
@@ -21,7 +23,13 @@ if (process.env.NODE_ENV === 'production') {
     }));
 }
 
-const external = ['react', /react-dom/, 'react/jsx-runtime', /@infinityfx\/lively/, 'react-icons']; // add focus-trap
+const external = ['react', /react-dom/, 'react/jsx-runtime', /@infinityfx\/lively/]; // add focus-trap
+const onwarn = (msg, handler) => {
+    if (msg.code === 'THIS_IS_UNDEFINED') return;
+    if (msg.code === 'MODULE_LEVEL_DIRECTIVE') return;
+
+    handler(msg);
+};
 
 export default [
     {
@@ -35,12 +43,7 @@ export default [
             preserveModulesRoot: 'src'
         },
         plugins,
-        onwarn: (msg, handler) => {
-            if (msg.code === 'THIS_IS_UNDEFINED') return;
-            if (msg.code === 'MODULE_LEVEL_DIRECTIVE') return;
-
-            handler(msg);
-        }
+        onwarn
     },
     {
         input: ['bin/cli.ts'],
@@ -58,11 +61,6 @@ export default [
             preserveShebangs(),
             terser()
         ],
-        onwarn: (msg, handler) => {
-            if (msg.code === 'THIS_IS_UNDEFINED') return;
-            if (msg.code === 'MODULE_LEVEL_DIRECTIVE') return;
-
-            handler(msg);
-        }
+        onwarn
     }
 ]

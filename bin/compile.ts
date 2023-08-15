@@ -8,7 +8,7 @@ export default async function () {
         fs.rmSync(OUTPUT_ROOT, { recursive: true });
     }
     fs.cpSync(DIST_ROOT, OUTPUT_ROOT, { recursive: true });
-    const componentMap = await import('@/src/index');
+    const componentMap = await import('../src/index');
     const size = Object.keys(componentMap).length;
 
     const config = await getConfig();

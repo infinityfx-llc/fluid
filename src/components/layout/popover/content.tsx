@@ -1,7 +1,7 @@
 'use client';
 
-import { combineRefs } from '@/src/core/utils';
-import useClickOutside from '@/src/hooks/use-click-outside';
+import { combineRefs } from '../../../../src/core/utils';
+import useClickOutside from '../../../../src/hooks/use-click-outside';
 import { LayoutGroup } from '@infinityfx/lively/layout';
 import { forwardRef } from 'react';
 import { createPortal } from 'react-dom';

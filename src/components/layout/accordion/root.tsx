@@ -1,8 +1,8 @@
 'use client';
 
-import { useStyles } from "@/src/hooks";
-import { FluidStyles } from "@/src/types";
-import { classes } from "@/src/utils";
+import { useStyles } from "../../../../src/hooks";
+import { FluidStyles } from "../../../../src/types";
+import { classes } from "../../../../src/utils";
 import { createContext, forwardRef, useContext, useState, Children, Fragment } from "react";
 
 export const AccordionContext = createContext<{

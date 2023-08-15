@@ -1,9 +1,9 @@
 'use client';
 
 import { forwardRef } from 'react';
-import useStyles from '@/src/hooks/use-styles';
-import { FluidStyles } from '@/src/types';
-import { classes } from '@/src/core/utils';
+import useStyles from '../../../../src/hooks/use-styles';
+import { FluidStyles } from '../../../../src/types';
+import { classes } from '../../../../src/core/utils';
 
 const Heading = forwardRef(({ children, styles = {}, ...props }:
     {

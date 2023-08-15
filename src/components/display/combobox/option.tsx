@@ -2,8 +2,8 @@
 
 import { forwardRef } from 'react';
 import Halo from '../../feedback/halo';
-import { FluidInputvalue, FluidStyles } from '@/src/types';
-import { useStyles } from '@/src/hooks';
+import { FluidInputvalue, FluidStyles } from '../../../../src/types';
+import { useStyles } from '../../../../src/hooks';
 
 type ComboboxOptionStyles = FluidStyles<'option'>;
 
