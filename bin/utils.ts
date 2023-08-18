@@ -76,17 +76,23 @@ async function insertTheme(content: string) {
     const config = await getConfig();
 
     const mergeRecursiveImport = content.match(/import\s*\{[^{]*(mergeRecursive(?:\s*as\s*([^\s}]+))?)[^}]*\}/);
-    const fnName = mergeRecursiveImport?.[2] || 'mergeRecursive';
-    const match = content.match(new RegExp(`(=|,|;|\\s|:)${fnName}\\(`, 's'));
+    let match = content.match(new RegExp(`(=|,|;|\\s|:)${mergeRecursiveImport?.[mergeRecursiveImport.length - 1]}\\(`, 's'));
 
     if (match?.index) {
         const merged = mergeRecursive(config.theme, DEFAULT_THEME);
         const to = matchBrackets(content, match.index as number + match[0].length, '()');
 
-        content = content.slice(0, match.index + 1) + JSON.stringify(merged) + content.slice(to);
+        content = content.slice(0, match.index + 1) + JSON.stringify(merged) + content.slice(to + 1);
     }
 
-    // remove insertionEffect with stylestore dep
+    const insertionEffectImport = content.match(/import\s*\{[^{]*(useInsertionEffect(?:\s*as\s*([^\s},]+))?)[^}]*\}/);
+    match = content.match(new RegExp(`(=|,|;|\\s|:)${insertionEffectImport?.[insertionEffectImport.length - 1]}\\(`, 's'));
+
+    if (match?.index) {
+        let to = matchBrackets(content, match.index as number + match[0].length, '()'), next = content.charAt(to + 1);
+        if (next === ';' || next === ',') to++;
+        content = content.slice(0, match.index + 1) + content.slice(to + 1);
+    }
 
     return content;
 }
@@ -96,7 +102,8 @@ function matchBrackets(content: string, start: number, type: '{}' | '()' | '[]' 
 
     while (count > 0) {
         if (content.charAt(start) === type.charAt(0)) count++;
-        if (content.charAt(start++) === type.charAt(1)) count--;
+        if (content.charAt(start) === type.charAt(1)) count--;
+        if (count > 0) start++;
     }
 
     return start;
@@ -135,7 +142,7 @@ export async function emitCSS(name: string, Component: React.ReactElement, conte
             const to = matchBrackets(content, i + substyle[0].length);
 
             const replacement = `styles:${JSON.stringify(filtered[substyleIndex++]?.selectors || {})}`;
-            content = content.slice(0, i) + replacement + content.slice(to);
+            content = content.slice(0, i) + replacement + content.slice(to + 1);
             substyleOffset += replacement.length - (to - i);
         }
 
@@ -146,15 +153,19 @@ export async function emitCSS(name: string, Component: React.ReactElement, conte
         fs.writeFileSync(outputPath + `/${global ? 'globals' : name.toLowerCase()}.css`, (global ? rules : filtered).reduce((str, { rules }) => str + rules, ''));
         // }
 
-        const useStyles = content.match(/import\s*([^"']+?)\s*from\s*(?:"|')[^'"]*use-styles.*?(?:"|');/)?.[1];
-        const match = content.match(new RegExp(`(=|,|;|\\s|:)${useStyles}\\(`, 's'));
+        content = content.replace(/import\s*(?:"|')[^'"]*stylestore.*?(?:"|');/g, '');
+        const useStyles = content.match(/import\s*([^"']+?)\s*from\s*(?:"|')[^'"]*use-styles.*?(?:"|');/);
+        if (useStyles?.index) content = content.slice(0, useStyles.index) + content.slice(useStyles.index + useStyles[0].length);
+        const match = content.match(new RegExp(`(=|,|;|\\s|:)${useStyles?.[1]}\\(`, 's'));
+        // remove useStyles/useGlobalStyles imports
 
-        if (useStyles && match?.index) {
+        if (match?.index) {
             // content = content.replace(new RegExp(`${useStyles}\\(.+?\\);`, 's'), 'Object.assign(FLUID_STYLES, styles);');
             // content = content.replace(new RegExp(`${useStyles}\\(.+?\\);`, 's'), `Object.assign(${JSON.stringify(filtered[0]?.selectors || {})}, styles);`);
-            
+
             const to = matchBrackets(content, match.index as number + match[0].length, '()');
-            content = content.slice(0, match.index + 1) + `Object.assign(${JSON.stringify(filtered[0]?.selectors || {})}, styles)` + content.slice(to);
+            const stylesVar = content.match(/([^,;\s]+?)\s*\=\s*[^,;\s]+?\.styles/)?.[1];
+            content = content.slice(0, match.index + 1) + `Object.assign(${JSON.stringify(filtered[0]?.selectors || {})}, ${stylesVar} || {})` + content.slice(to + 1);
         }
 
         const useGlobalStyles = content.match(/import\s*([^"']+?)\s*from\s*(?:"|')[^'"]*use-global-styles.*?(?:"|');/)?.[1];
@@ -162,10 +173,10 @@ export async function emitCSS(name: string, Component: React.ReactElement, conte
 
         while (globalStyle = matches.next().value) {
             const i = globalStyle.index + globalStyleOffset;
-            let to = matchBrackets(content, i + globalStyle[0].length, '()');
-            if (content.charAt(to + 1) === ';') to++;
+            let to = matchBrackets(content, i + globalStyle[0].length, '()'), next = content.charAt(to + 1);
+            if (next === ';' || next === ',') to++;
 
-            content = content.slice(0, i + 1) + content.slice(to);
+            content = content.slice(0, i + 1) + content.slice(to + 1);
             globalStyleOffset -= (to - (i + 1));
         }
         // if (useGlobalStyles) {

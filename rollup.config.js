@@ -1,6 +1,6 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import { terser } from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 import del from 'rollup-plugin-delete';
 import typescript from '@rollup/plugin-typescript';
 import preserveDirectives from 'rollup-plugin-preserve-directives';
@@ -13,7 +13,7 @@ const plugins = [
     typescript({
         tsconfig: './tsconfig.json'
     }),
-    preserveDirectives.default()
+    preserveDirectives()
 ];
 
 if (process.env.NODE_ENV === 'production') {
