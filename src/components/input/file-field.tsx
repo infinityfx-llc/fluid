@@ -8,7 +8,7 @@ import useInputProps from '../../../src/hooks/use-input-props';
 import { FluidError, FluidSize, FluidStyles } from '../../../src/types';
 import { classes } from '../../../src/core/utils';
 
-const FileField = forwardRef(({ styles = {}, size, round, icon, label, error, showError, loading = false, ...props }:
+const FileField = forwardRef(({ styles = {}, size = 'med', round, icon, label, error, showError, loading = false, ...props }:
     {
         styles?: FluidStyles;
         round?: boolean;

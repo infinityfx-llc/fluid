@@ -9,7 +9,7 @@ import Scrollarea from '../layout/scrollarea';
 
 export type Textarea = FluidStyles<'.wrapper' | '.label' | '.textarea' | '.input' | '.wrapper__xsm' | '.wrapper__sml' | '.wrapper__med' | '.wrapper__lrg'>;
 
-const Textarea = forwardRef(({ styles = {}, label, error, size, resize = 'both', ...props }:
+const Textarea = forwardRef(({ styles = {}, label, error, size = 'med', resize = 'both', ...props }:
     {
         styles?: FluidStyles;
         label?: string;

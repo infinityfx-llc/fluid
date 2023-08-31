@@ -30,7 +30,6 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, styles = {}, 
             opacity: 0,
             zIndex: -1,
             transition: 'opacity .25s, scale .25s',
-            display: disabled ? 'none' : 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             pointerEvents: 'none'
@@ -76,7 +75,7 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, styles = {}, 
     if (!isValidElement(children)) return children;
 
     const arr = Children.toArray(children.props.children);
-    arr.unshift(<div key="halo" className={style.halo} data-hover={hover}>
+    arr.unshift(<div key="halo" className={style.halo} data-hover={hover} style={{ display: disabled ? 'none' : 'flex' }}>
         <Animatable animate={{ translate, opacity: [0, 1], scale: [0, 1], duration: .4, easing: 'ease-in' }} initial={{ opacity: 1, scale: 1 }} triggers={[{ on: click, immediate: true }]}>
             <div className={style.ring} style={{ backgroundColor: color }} />
         </Animatable>

@@ -13,7 +13,7 @@ import { classes } from '../../../src/core/utils';
 const colors = ['#eb2a1c', '#eb2a1c', '#e8831e', '#f0d030', '#fff952', '#5aff54'];
 
 // optimize prop splitting
-const PasswordField = forwardRef(({ styles = {}, strengthBar = false, size, round, error, showError, icon, label, left, right, defaultValue, onEnter, ...props }: { strengthBar?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const PasswordField = forwardRef(({ styles = {}, strengthBar = false, size = 'med', round, error, showError, icon, label, left, right, defaultValue, onEnter, ...props }: { strengthBar?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = useStyles(styles, {
         '.container': {
             minWidth: 'clamp(0px, 12em, 100vw)'

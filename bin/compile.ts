@@ -31,7 +31,6 @@ export default async function () {
     }
     
     fs.writeFileSync(DIST_ROOT + 'index.js', entry.replace(/(from\s*(?:'|"))\.\/(.*?(?:'|");)/g, '$1../compiled/$2')); // WIP
-    // insertCompilerConfig();
 
     console.log('\n');
 }

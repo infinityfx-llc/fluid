@@ -8,9 +8,7 @@ import { MdArrowBack, MdArrowForward, MdExpandMore } from "react-icons/md";
 import { classes } from "../../../src/core/utils";
 import { Combobox } from "../display";
 
-// TODO!!
-
-export type CalendarStyles = FluidStyles<'.calendar' | '.header' | '.text' | '.years'>;
+export type CalendarStyles = FluidStyles<'.calendar' | '.header' | '.text' | '.years' | '.calendar__round' | '.calendar__xsm' | '.calendar__sml' | '.calendar__med' | '.calendar__lrg'>;
 
 const Calendar = forwardRef(({ styles = {}, locale, size = 'med', round, defaultValue = new Date(), value, onChange, disabled, ...props }:
     {
@@ -30,19 +28,23 @@ const Calendar = forwardRef(({ styles = {}, locale, size = 'med', round, default
             borderRadius: 'var(--f-radius-sml)'
         },
 
-        '.calendar[data-size="sml"]': {
+        '.calendar__xsm': {
+            fontSize: 'var(--f-font-size-xxs)'
+        },
+
+        '.calendar__sml': {
             fontSize: 'var(--f-font-size-xsm)'
         },
 
-        '.calendar[data-size="med"]': {
+        '.calendar__med': {
             fontSize: 'var(--f-font-size-sml)'
         },
 
-        '.calendar[data-size="lrg"]': {
+        '.calendar__lrg': {
             fontSize: 'var(--f-font-size-med)'
         },
 
-        '.calendar[data-round="true"]': {
+        '.calendar__round': {
             borderRadius: 'var(--f-radius-xlg)'
         },
 
@@ -129,7 +131,12 @@ const Calendar = forwardRef(({ styles = {}, locale, size = 'med', round, default
         return a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
     }
 
-    return <div ref={ref} {...props} className={classes(style.calendar, props.className)} data-size={size} data-round={round}>
+    return <div ref={ref} {...props} className={classes(
+        style.calendar,
+        round && style.calendar__round,
+        style[`calendar__${size}`],
+        props.className
+    )}>
         <div className={style.header}>
             <Button disabled={disabled === true} variant="minimal" round={round} onClick={() => {
                 const updated = new Date(date);

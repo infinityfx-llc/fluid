@@ -45,7 +45,7 @@ function SelectComponent<T extends FluidInputvalue>(
         error,
         showError,
         icon,
-        size,
+        size = 'med',
         round,
         ...props
     }: SelectProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {

@@ -22,28 +22,12 @@ export async function getConfig() {
     return fluidConfig;
 }
 
-// export function getCompilerConfig() {
-//     let config: any = {};
-//     if (!fs.existsSync('./package.json')) return [config, 'jsconfig.json'];
-
-//     const json = JSON.parse(fs.readFileSync('./package.json', { encoding: 'ascii' }));
-//     const isTS = json.devDependencies?.typescript || json.dependencies?.typescript;
-//     const file = isTS ? 'tsconfig.json' : 'jsconfig.json';
-
-//     if (fs.existsSync(file)) {
-//         config = JSON.parse(fs.readFileSync(file, { encoding: 'ascii' }));
-//     }
-
-//     return [config, file];
-// }
-
 export async function processFile(root: string, path: string, name: string, componentMap: any, stylesMap: any) {
     let fileContent = fs.readFileSync(DIST_ROOT + root + path, { encoding: 'ascii' });
     const [outputPath, filename] = (OUTPUT_ROOT + root + path).split(/([^\/\\]*?$)/);
     const Component = componentMap[name];
 
-    let styles: any = {};
-    if (name in stylesMap) styles = stylesMap[name];
+    const styles: any = name in stylesMap ? stylesMap[name] : {};
 
     let global = false;
     if (/context\/fluid.js$/.test(path)) {
@@ -52,21 +36,16 @@ export async function processFile(root: string, path: string, name: string, comp
     }
 
     if (/index.js$/.test(path)) {
-        let component;
-        const components = fileContent.matchAll(/import\s*(.+?)\s*from\s*(?:'|")(.+?)(?:'|");/g);
-        // fileContent = fileContent.replace(/(from".*?)([^\/\\]*?";)/g, '$1__$2');
-
-        while (component = components.next().value) {
-            const [_, name, subPath] = component;
-
-            await processFile(path.replace(/[^\/\\]*?$/, ''), subPath, name, Component, styles);
+        for (const name in Component) {
+            await processFile(path.replace(/[^\/\\]*?$/, ''), `./${name.toLowerCase()}.js`, name, Component, styles);
         }
     }
 
     if (Component && (Component instanceof Function || 'render' in Component)) {
-        fileContent = await emitCSS(name, createElement(Component, { styles, key: 0, steps: [], options: [], data: [], columns: [], include: [], name: '' }, ''), fileContent, outputPath, global);
-        // extra props to render correctly
-        // TODO: also fix missing context errors for Popover, Accordion
+        let reactElement: any = createElement(Component, { styles, key: 0, steps: [], options: [], data: [], columns: [], include: [], name: '' }, '');
+        if ('Root' in componentMap && name !== 'Root') reactElement = createElement(componentMap.Root, {}, reactElement);
+
+        fileContent = await emitCSS(name, reactElement, fileContent, outputPath, global);
     }
 
     fs.writeFileSync(outputPath + filename, fileContent);
@@ -141,19 +120,14 @@ export async function emitCSS(name: string, Component: React.ReactElement, conte
             // doesnt work when not defined using direct object (but variable reference)
             const to = matchBrackets(content, i + substyle[0].length);
 
-            const replacement = `styles:${JSON.stringify(filtered[substyleIndex++]?.selectors || {})}`;
+            const replacement = `styles:${JSON.stringify(filtered[substyleIndex++]?.selectors || {})}`; // substyleIndex is wrong when using context based components, or multiple subcomponent than don't get passed styles
             content = content.slice(0, i) + replacement + content.slice(to + 1);
             substyleOffset += replacement.length - (to - i);
         }
 
-        // if (global) {
-        // const path = config.cssOutput || 'app/fluid.css';
-        // fs.writeFileSync(path, rules.reduce((str, { rules }) => str + rules, ''));
-        // } else {
-        fs.writeFileSync(outputPath + `/${global ? 'globals' : name.toLowerCase()}.css`, (global ? rules : filtered).reduce((str, { rules }) => str + rules, ''));
-        // }
+        fs.writeFileSync(outputPath + `/${global ? 'globals' : name.toLowerCase()}.css`, (global ? rules : filtered).reduce((str, { rules }) => str + rules, '')); // only include styles that get passed in the above segment or are part of the current useStyles call
 
-        content = content.replace(/import\s*(?:"|')[^'"]*stylestore.*?(?:"|');/g, '');
+        content = content.replace(/import\s*(?:[^;,'"]+?\s*from\s*)?(?:"|')[^'"]*stylestore.*?(?:"|');/g, '');
         const useStyles = content.match(/import\s*([^"']+?)\s*from\s*(?:"|')[^'"]*use-styles.*?(?:"|');/);
         if (useStyles?.index) content = content.slice(0, useStyles.index) + content.slice(useStyles.index + useStyles[0].length);
         const match = content.match(new RegExp(`(=|,|;|\\s|:)${useStyles?.[1]}\\(`, 's'));
@@ -168,8 +142,9 @@ export async function emitCSS(name: string, Component: React.ReactElement, conte
             content = content.slice(0, match.index + 1) + `Object.assign(${JSON.stringify(filtered[0]?.selectors || {})}, ${stylesVar} || {})` + content.slice(to + 1);
         }
 
-        const useGlobalStyles = content.match(/import\s*([^"']+?)\s*from\s*(?:"|')[^'"]*use-global-styles.*?(?:"|');/)?.[1];
-        let matches = content.matchAll(new RegExp(`(=|,|;|\\s|:)${useGlobalStyles}\\(;`, 'gs')), globalStyle, globalStyleOffset = 0;
+        const useGlobalStyles = content.match(/import\s*([^"']+?)\s*from\s*(?:"|')[^'"]*use-global-styles.*?(?:"|');/);
+        if (useGlobalStyles?.index) content = content.slice(0, useGlobalStyles.index) + content.slice(useGlobalStyles.index + useGlobalStyles[0].length);
+        let matches = content.matchAll(new RegExp(`(=|,|;|\\s|:)${useGlobalStyles?.[1]}\\(`, 'gs')), globalStyle, globalStyleOffset = 0;
 
         while (globalStyle = matches.next().value) {
             const i = globalStyle.index + globalStyleOffset;
@@ -177,35 +152,11 @@ export async function emitCSS(name: string, Component: React.ReactElement, conte
             if (next === ';' || next === ',') to++;
 
             content = content.slice(0, i + 1) + content.slice(to + 1);
-            globalStyleOffset -= (to - (i + 1));
+            globalStyleOffset -= (to - i);
         }
-        // if (useGlobalStyles) {
-        //     content = content.replace(new RegExp(`${useGlobalStyles}\\(.+?\\);`, 'gs'), ''); // needs bracket matching!!!
-        // }
 
         FluidStyleStore.rules = {};
     }
 
     return content;
 }
-
-// export function insertCompilerConfig() {
-//     const [compilerConfig, compilerFile] = getCompilerConfig();
-
-//     const updatedConfig = {
-//         ...compilerConfig,
-//         compilerOptions: {
-//             baseUrl: COMPILER_CONFIG.compilerOptions.baseUrl,
-//             ...compilerConfig.compilerOptions,
-//             paths: {
-//                 ...COMPILER_CONFIG.compilerOptions.paths,
-//                 ...compilerConfig.compilerOptions?.paths
-//             }
-//         },
-//         exclude: COMPILER_CONFIG.exclude.concat(compilerConfig.exclude).filter((val, i, arr) => {
-//             return val !== undefined && arr.indexOf(val) === i;
-//         })
-//     };
-
-//     fs.writeFileSync(compilerFile, JSON.stringify(updatedConfig, null, '\t'));
-// }
