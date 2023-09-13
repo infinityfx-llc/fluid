@@ -1,13 +1,15 @@
+'use client';
+
 import { classes, combineClasses } from '../../../src/core/utils';
 import { FluidError, FluidSize, FluidStyles, Selectors } from '../../../src/types';
-import { forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 import Halo from '../feedback/halo';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { createStyles } from '../../core/style';
 
 // variant
 
-const Switch = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', round = true, iconOff, iconOn, ...props }:
+const Switch = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', round = true, iconOff, iconOn, checked, defaultChecked, ...props }:
     {
         cc?: Selectors<'wrapper' | 'input' | 'switch' | 'icons' | 'icon' | 'hanlde' | 'wrapper__xsm' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg' | 'wrapper__round' | 'halo'>;
         error?: FluidError;
@@ -132,6 +134,7 @@ const Switch = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-
     const style = combineClasses(styles, cc);
 
     const [split, rest] = useInputProps(props);
+    const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
 
     return <Halo hover={false} cc={{ halo: style.halo }}>
         <div ref={ref} {...rest} className={classes(
@@ -140,9 +143,12 @@ const Switch = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-
             round && style.wrapper__round,
             rest.className
         )} data-error={!!error}>
-            <input {...split} type="checkbox" className={style.input} aria-invalid={!!error} />
+            <input {...split} checked={state} type="checkbox" className={style.input} aria-invalid={!!error} onChange={e => {
+                setState?.(e.target.checked);
+                props.onChange?.(e);
+            }} />
 
-            <div className={style.switch} style={!split.disabled ? { backgroundColor: color } : undefined}> {/* and when checked */}
+            <div className={style.switch} style={(state && !split.disabled) ? { backgroundColor: color } : undefined}>
                 <div className={style.icons}>
                     <div className={style.icon}>
                         {iconOn}
