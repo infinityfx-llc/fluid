@@ -1,12 +1,12 @@
-import { classes } from "../../../src/core/utils";
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidStyles } from "../../../src/types";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef } from "react";
+import { createStyles } from "../../core/style";
 
 export type KeyStyles = FluidStyles<'.key' | '.key::after'>;
 
-const Key = forwardRef(({ children, styles = {}, ...props }: { children: string; styles?: KeyStyles; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+const Key = forwardRef(({ children, cc = {}, ...props }: { children: string; cc?: Selectors<'key'>; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const styles = createStyles('key', {
         '.key': {
             position: 'relative',
             fontWeight: 700,
@@ -17,7 +17,7 @@ const Key = forwardRef(({ children, styles = {}, ...props }: { children: string;
             padding: '.2em .5em .4em .5em',
             zIndex: 0
         },
-
+    
         '.key::after': {
             content: '""',
             position: 'absolute',
@@ -27,6 +27,7 @@ const Key = forwardRef(({ children, styles = {}, ...props }: { children: string;
             zIndex: -1
         }
     });
+    const style = combineClasses(styles, cc);
 
     return <div ref={ref} {...props} className={classes(style.key, props.className)}>
         {children}

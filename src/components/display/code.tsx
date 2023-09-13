@@ -1,16 +1,17 @@
 'use client';
 
-import { FluidStyles } from "../../../src/types";
+import { FluidStyles, Selectors } from "../../../src/types";
 import { Fragment, forwardRef, useId, useState } from "react";
 import Scrollarea from "../layout/scrollarea";
 import Toggle from "../input/toggle";
 import { MdCheck, MdCopyAll } from "react-icons/md";
-import { useStyles } from "../../../src/hooks";
+import { createStyles } from "../../core/style";
+import { combineClasses } from "../../core/utils";
 
 export type CodeStyles = FluidStyles<'.wrapper' | '.header' | '.code' | '.numbers' | '.tab' | '.content' | '.toggle'>;
 
-const Code = forwardRef(({ children, styles = {}, title, ...props }: { children: string; styles?: CodeStyles; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: any) => {
-    const style = useStyles(styles, {
+const Code = forwardRef(({ children, cc = {}, title, ...props }: { children: string; cc?: Selectors<'wrapper' | 'header' | 'code' | 'numbers' | 'tab' | 'content' | 'toggle'>; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: any) => {
+    const styles = createStyles('code', {
         '.wrapper': {
             fontSize: 'var(--f-font-size-sml)',
             borderRadius: 'var(--f-radius-sml)',
@@ -18,35 +19,35 @@ const Code = forwardRef(({ children, styles = {}, title, ...props }: { children:
             position: 'relative',
             color: 'var(--f-clr-text-100)'
         },
-
+    
         '.header': {
             backgroundColor: 'var(--f-clr-primary-500)',
             padding: '.8em 1em',
             fontWeight: 500
         },
-
+    
         '.code': {
             display: 'flex',
             padding: '1em',
             backgroundColor: 'var(--f-clr-fg-100)'
         },
-
+    
         '.numbers': {
             userSelect: 'none',
             textAlign: 'right',
             marginRight: 'var(--f-spacing-sml)',
             color: 'var(--f-clr-grey-500)'
         },
-
+    
         '.tab': {
             display: 'inline-block',
             minWidth: '2em'
         },
-
+    
         '.content': {
             width: 'max-content'
         },
-
+    
         '.button__align': {
             position: 'absolute',
             zIndex: '99',
@@ -55,8 +56,14 @@ const Code = forwardRef(({ children, styles = {}, title, ...props }: { children:
             display: 'flex',
             alignItems: 'center',
             maxHeight: '100%'
+        },
+    
+        '.toggle': {
+            backgroundColor: 'var(--f-clr-bg-100) !important',
+            marginBlock: '1em !important'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const id = useId();
     const [copied, setCopied] = useState(false);
@@ -84,12 +91,8 @@ const Code = forwardRef(({ children, styles = {}, title, ...props }: { children:
 
         <div className={style.button__align}>
             <Toggle checkedContent={<MdCheck />} checked={copied}
-                styles={{
-                    '.toggle': {
-                        backgroundColor: 'var(--f-clr-bg-100)',
-                        marginBlock: '1em',
-                        ...styles['.toggle']
-                    }
+                cc={{
+                    toggle: style.toggle
                 }}
                 onClick={() => {
                     const range = document.createRange(), el = document.getElementById(id) as HTMLDivElement;

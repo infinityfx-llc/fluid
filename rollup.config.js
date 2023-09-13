@@ -10,18 +10,14 @@ import json from '@rollup/plugin-json';
 const plugins = [
     resolve(),
     commonjs(),
+    json(),
     typescript({
         tsconfig: './tsconfig.json'
     }),
+    process.env.NODE_ENV === 'production' ? terser({ compress: { directives: false } }) : undefined,
+    preserveShebangs(),
     preserveDirectives()
 ];
-
-if (process.env.NODE_ENV === 'production') {
-    plugins.splice(3, 0, terser({ compress: { directives: false } }));
-    plugins.unshift(del({
-        targets: 'dist/**'
-    }));
-}
 
 const external = ['react', /react-dom/, 'react/jsx-runtime', /@infinityfx\/lively/]; // add focus-trap
 const onwarn = (msg, handler) => {
@@ -33,7 +29,7 @@ const onwarn = (msg, handler) => {
 
 export default [
     {
-        input: ['src/index.ts', 'src/hooks.ts', 'src/server.ts', 'src/utils.ts'],
+        input: ['src/index.ts', 'src/hooks.ts', 'src/utils.ts'],
         external,
         output: {
             dir: 'dist',
@@ -42,7 +38,12 @@ export default [
             preserveModules: true,
             preserveModulesRoot: 'src'
         },
-        plugins,
+        plugins: [
+            process.env.NODE_ENV === 'production' ? del({
+                targets: 'dist/**'
+            }) : undefined,
+            ...plugins
+        ],
         onwarn
     },
     {
@@ -53,14 +54,7 @@ export default [
             format: 'es',
             sourcemap: true
         },
-        plugins: [
-            resolve(),
-            commonjs(),
-            json(),
-            typescript({ tsconfig: './tsconfig.json' }),
-            preserveShebangs(),
-            terser()
-        ],
+        plugins,
         onwarn
     }
 ]

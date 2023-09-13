@@ -2,20 +2,23 @@
 
 import { forwardRef, useId } from 'react';
 import Overlay from './overlay';
-import useStyles from '../../../src/hooks/use-styles';
-import { FluidStyles } from '../../../src/types';
+import { FluidStyles, Selectors } from '../../../src/types';
 import Button from '../input/button';
 import { MdClose } from 'react-icons/md';
-import useFluid from '../../../src/hooks/use-fluid';
-import { classes } from '../../../src/core/utils';
+import { classes, combineClasses } from '../../../src/core/utils';
 import { Animatable } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
+import { createStyles } from '../../core/style';
 
 export type ModalStyles = FluidStyles<'.modal' | '.header'>;
 
-const Modal = forwardRef(({ children, styles = {}, show, onClose, title, ...props }: { children: React.ReactNode; styles?: ModalStyles; show: boolean; onClose: () => void; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const fluid = useFluid();
-    const style = useStyles(styles, {
+const Modal = forwardRef(({ children, cc = {}, show, onClose, title, ...props }:
+    {
+        cc?: Selectors<'modal' | 'header'>;
+        show: boolean;
+        onClose: () => void;
+    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const styles = createStyles('modal', (fluid) => ({
         '.modal': {
             position: 'absolute',
             background: 'var(--f-clr-bg-100)',
@@ -47,7 +50,8 @@ const Modal = forwardRef(({ children, styles = {}, show, onClose, title, ...prop
                 borderBottomLeftRadius: 0
             }
         }
-    });
+    }));
+    const style = combineClasses(styles, cc);
 
     const id = useId();
 

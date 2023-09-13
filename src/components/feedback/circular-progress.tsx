@@ -1,16 +1,24 @@
 'use client';
 
-import { classes } from "../../../src/core/utils";
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidSize, FluidStyles } from "../../../src/types";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { forwardRef, useEffect } from "react";
+import { createStyles } from "../../core/style";
 
 export type CircularProgressStyles = FluidStyles<'.wrapper' | '.track' | '.progress' | '.wrapper__xsm' | '.wrapper__sml' | '.wrapper__med' | '.wrapper__lrg'>;
 
-const CircularProgress = forwardRef(({ styles = {}, size = 'med', slice = 0, value, defaultValue = 0, color, ...props }: { styles?: CircularProgressStyles; size?: FluidSize; slice?: number; value?: number; defaultValue?: number; color?: string; } & Omit<React.HTMLAttributes<SVGSVGElement>, 'children' | 'defaultValue'>, ref: React.ForwardedRef<SVGSVGElement>) => {
-    const style = useStyles(styles, {
+const CircularProgress = forwardRef(({ cc = {}, size = 'med', slice = 0, value, defaultValue = 0, color, ...props }:
+    {
+        cc?: Selectors<'wrapper' | 'track' | 'progress' | 'wrapper__xsm' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg'>;
+        size?: FluidSize;
+        slice?: number;
+        value?: number;
+        defaultValue?: number;
+        color?: string;
+    } & Omit<React.HTMLAttributes<SVGSVGElement>, 'children' | 'defaultValue'>, ref: React.ForwardedRef<SVGSVGElement>) => {
+    const styles = createStyles('circular-progress', {
         '.wrapper': {
             width: '3.2em'
         },
@@ -45,6 +53,7 @@ const CircularProgress = forwardRef(({ styles = {}, size = 'med', slice = 0, val
             fontSize: 'var(--f-font-size-med)'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const state = value !== undefined ? value : defaultValue;
     const [link, setLink] = useLink(state);

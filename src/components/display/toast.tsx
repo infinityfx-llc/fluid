@@ -1,15 +1,15 @@
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidStyles } from "../../../src/types";
+import { FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef } from "react";
 import Button from "../input/button";
 import { MdClose } from "react-icons/md";
-import { classes } from "../../../src/core/utils";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { createStyles } from "../../core/style";
 
 export type ToastStyles = FluidStyles<'.toast' | '.icon' | '.background' | '.content' | '.text'>;
 
-const Toast = forwardRef(({ styles = {}, icon, color, title, text, round, onClose, ...props }:
+const Toast = forwardRef(({ cc = {}, icon, color, title, text, round, onClose, ...props }:
     {
-        styles?: ToastStyles;
+        cc?: Selectors<'toast' | 'icon' | 'background' | 'content' | 'text'>;
         icon: React.ReactNode;
         color: string;
         title: string;
@@ -17,7 +17,7 @@ const Toast = forwardRef(({ styles = {}, icon, color, title, text, round, onClos
         round?: boolean;
         onClose?: () => void;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('toast', {
         '.toast': {
             padding: '.4em',
             backgroundColor: 'var(--f-clr-fg-100)',
@@ -86,6 +86,7 @@ const Toast = forwardRef(({ styles = {}, icon, color, title, text, round, onClos
             marginRight: '.3em'
         }
     });
+    const style = combineClasses(styles, cc);
 
     return <div ref={ref} {...props}
         className={classes(

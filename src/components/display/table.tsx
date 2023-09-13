@@ -1,8 +1,7 @@
 'use client';
 
-import { classes } from "../../../src/core/utils";
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidStyles } from "../../../src/types";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Halo from "../feedback/halo";
 import Scrollarea from "../layout/scrollarea";
@@ -10,11 +9,12 @@ import Button from "../input/button";
 import Checkbox from "../input/checkbox";
 import { MdArrowDownward, MdArrowUpward, MdMoreVert, MdSort } from "react-icons/md";
 import ActionMenu, { ActionMenuOption } from "./action-menu";
+import { createStyles } from "../../core/style";
 
 export type TableStyles = FluidStyles<'.table' | '.rows' | '.row' | '.collapsed' | '.header' | '.label' | '.checkbox' | '.checkmark'>;
 
 type TableProps<T> = {
-    styles?: TableStyles;
+    cc?: Selectors<'table' | 'rows' | 'row' | 'collapsed' | 'header' | 'label' | 'checkbox' | 'checkmark'>;
     data: T[];
     columns: (keyof T)[];
     selectable?: boolean;
@@ -27,22 +27,21 @@ type TableProps<T> = {
     rowActions?: (row: T) => ActionMenuOption[];
 } & React.HTMLAttributes<HTMLDivElement>;
 
-function TableComponent<T extends { [key: string]: string | number | Date; }>({ styles = {}, data, columns, selectable, sortable, selected, onSelect, columnFormatters = {}, rowActions, ...props }: TableProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
-
-    const style = useStyles(styles, {
+function TableComponent<T extends { [key: string]: string | number | Date; }>({ cc = {}, data, columns, selectable, sortable, selected, onSelect, columnFormatters = {}, rowActions, ...props }: TableProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
+    const styles = createStyles('table', {
         '.table': {
             backgroundColor: 'var(--f-clr-fg-100)',
             borderRadius: 'var(--f-radius-sml)',
             overflow: 'hidden',
             border: 'solid 1px var(--f-clr-fg-200)'
         },
-
+    
         '.rows': {
             minWidth: 'max-content',
             display: 'flex',
             flexDirection: 'column'
         },
-
+    
         '.row': {
             position: 'relative',
             display: 'grid',
@@ -52,25 +51,25 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
             gap: 'var(--f-spacing-sml)',
             color: 'var(--f-clr-text-100)'
         },
-
+    
         '.row:not(:last-child)': {
             borderBottom: 'solid 1px var(--f-clr-fg-200)'
         },
-
+    
         '.row > *:not(.collapsed)': {
             whiteSpace: 'nowrap'
         },
-
+    
         '.collapsed': {
             minWidth: '2rem',
             display: 'flex'
         },
-
+    
         '.header': {
             fontSize: '.9em',
             fontWeight: 600
         },
-
+    
         '.label': {
             position: 'relative',
             borderRadius: 'var(--f-radius-sml)',
@@ -84,11 +83,20 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
             background: 'none',
             outline: 'none'
         },
-
+    
         '.label:enabled': {
             cursor: 'pointer'
+        },
+    
+        '.checkbox': {
+            border: 'solid 1px var(--f-clr-grey-300)'
+        },
+    
+        '.checkmark': {
+            stroke: 'var(--f-clr-text-200)'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const [column, setColumn] = useState<string>('');
     const [sorting, setSorting] = useState<'nil' | 'asc' | 'dsc'>('nil');
@@ -109,21 +117,11 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
 
     const gridTemplateColumns = `${selectable ? 'auto' : ''} repeat(${columns.length}, 1fr) ${rowActions ? 'auto' : ''}`;
 
-    const CheckboxStyles = { // merge with styles prop (also do for other components)
-        '.checkbox': {
-            border: 'solid 1px var(--f-clr-grey-300)'
-        },
-
-        '.checkmark': {
-            stroke: 'var(--f-clr-text-200)'
-        }
-    };
-
     return <Scrollarea {...props} ref={ref} horizontal role="grid" className={classes(style.table, props.className)}>
         <div role="rowgroup" className={style.rows}>
             <div role="rowheader" className={classes(style.row, style.header)} style={{ gridTemplateColumns }}>
                 {selectable && <div className={style.collapsed}>
-                    <Checkbox size="xsm" color="var(--f-clr-text-100)" styles={CheckboxStyles} checked={selectedIndices.length === rows.length} onChange={e => {
+                    <Checkbox size="xsm" color="var(--f-clr-text-100)" cc={{ checkbox: style.checkbox, checkmark: style.checkmark }} checked={selectedIndices.length === rows.length} onChange={e => {
                         if (!e.target.checked) return updateSelected([]);
 
                         updateSelected(new Array(rows.length).fill(0).map((_, i) => i));
@@ -165,7 +163,7 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
                 return <Halo key={i} disabled={!selectable}>
                     <div role="row" className={style.row} style={{ gridTemplateColumns }}>
                         {selectable && <div className={style.collapsed}>
-                            <Checkbox size="xsm" color="var(--f-clr-text-100)" styles={CheckboxStyles} checked={selectedIndices.includes(i)} onChange={e => {
+                            <Checkbox size="xsm" color="var(--f-clr-text-100)" cc={{ checkbox: style.checkbox, checkmark: style.checkmark }} checked={selectedIndices.includes(i)} onChange={e => {
                                 const updated = selectedIndices.slice();
                                 e.target.checked ? updated.push(i) : updated.splice(updated.indexOf(i), 1);
 

@@ -1,15 +1,15 @@
 'use client';
 
-import { classes } from "../../../src/core/utils";
+import { classes, combineClasses } from "../../../src/core/utils";
 import useInputProps from "../../../src/hooks/use-input-props";
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidError, FluidInputvalue, FluidSize, FluidStyles } from "../../../src/types";
+import { FluidError, FluidInputvalue, FluidSize, FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef, useId, useRef, useState } from "react";
+import { createStyles } from "../../core/style";
 
-const Pincode = forwardRef(({ styles = {}, length = 4, masked, size = 'med', round = false, label, value, error, onChange, defaultvalue, autoFocus, ...props }:
+const Pincode = forwardRef(({ cc = {}, length = 4, masked, size = 'med', round = false, label, value, error, onChange, defaultvalue, autoFocus, ...props }:
     {
         defaultvalue?: FluidInputvalue;
-        styles?: FluidStyles;
+        cc?: Selectors<'wrapper' | 'label' | 'pincode' | 'field' | 'input' | 'wrapper__xsm' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg' | 'wrapper__round'>;
         length?: number;
         masked?: boolean;
         size?: FluidSize;
@@ -19,7 +19,7 @@ const Pincode = forwardRef(({ styles = {}, length = 4, masked, size = 'med', rou
         error?: FluidError;
         onChange?: (value: string) => void;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'size' | 'value' | 'defaultValue' | 'onChange' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('pincode', {
         '.wrapper': {
             display: 'flex',
             flexDirection: 'column',
@@ -61,24 +61,28 @@ const Pincode = forwardRef(({ styles = {}, length = 4, masked, size = 'med', rou
             color: 'var(--f-clr-text-100)'
         },
 
-        '.wrapper[data-size="sml"]': {
+        '.wrapper__xsm': {
+            fontSize: 'var(--f-font-size-xxs)'
+        },
+
+        '.wrapper__sml': {
             fontSize: 'var(--f-font-size-xsm)'
         },
 
-        '.wrapper[data-size="med"]': {
+        '.wrapper__med': {
             fontSize: 'var(--f-font-size-sml)'
         },
 
-        '.wrapper[data-size="lrg"]': {
+        '.wrapper__lrg': {
             fontSize: 'var(--f-font-size-med)'
         },
 
-        '.pincode[data-round="true"] .field:first-child': {
+        '.wrapper__round .field:first-child': {
             borderTopLeftRadius: '999px',
             borderBottomLeftRadius: '999px'
         },
 
-        '.pincode[data-round="true"] .field:last-child': {
+        '.wrapper__round .field:last-child': {
             borderTopRightRadius: '999px',
             borderBottomRightRadius: '999px'
         },
@@ -98,8 +102,9 @@ const Pincode = forwardRef(({ styles = {}, length = 4, masked, size = 'med', rou
 
         '.pincode[data-error="true"] .input': {
             color: 'var(--f-clr-error-200)'
-        },
+        }
     });
+    const style = combineClasses(styles, cc);
 
     const id = useId();
     const refs = useRef<(HTMLInputElement | null)[]>([]);
@@ -146,10 +151,15 @@ const Pincode = forwardRef(({ styles = {}, length = 4, masked, size = 'med', rou
 
     const [split, rest] = useInputProps(props);
 
-    return <div ref={ref} {...rest} className={classes(style.wrapper, props.className)} data-size={size}>
+    return <div ref={ref} {...rest} className={classes(
+        style.wrapper,
+        style[`wrapper__${size}`],
+        round && style.wrapper__round,
+        props.className
+    )}>
         {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
 
-        <div className={style.pincode} data-error={!!error} data-disabled={props.disabled} data-round={round}>
+        <div className={style.pincode} data-error={!!error} data-disabled={props.disabled}>
             {new Array(length).fill(0).map((_, i) => {
                 return <div key={i} className={style.field}>
                     <input ref={el => refs.current[i] = el}

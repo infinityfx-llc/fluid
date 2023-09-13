@@ -1,25 +1,23 @@
 'use client';
 
-import useStyles from '../../../../src/hooks/use-styles';
-import { FluidStyles } from '../../../../src/types';
+import { FluidStyles, Selectors } from '../../../../src/types';
 import { forwardRef, useState } from 'react';
 import Toggle from '../../input/toggle';
 import { MdArrowBack, MdArrowForward } from 'react-icons/md';
 import Scrollarea from '../scrollarea';
-import useFluid from '../../../../src/hooks/use-fluid';
-import { classes } from '../../../../src/core/utils';
+import { classes, combineClasses } from '../../../../src/core/utils';
+import { createStyles } from '../../../core/style';
 
-const Root = forwardRef(({ children, styles = {}, size = '18rem', collapsed, onCollapse, ...props }:
+const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onCollapse, ...props }:
     {
-        styles?: FluidStyles;
+        cc?: Selectors<'sidebar' | 'button' | 'header' | 'content'>;
         size?: string;
         collapsed?: boolean;
         onCollapse?: (value: boolean) => void;
     } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
-    const fluid = useFluid();
     const [isCollapsed, setCollapsed] = collapsed !== undefined ? [collapsed] : useState(false);
 
-    const style = useStyles(styles, {
+    const styles = createStyles('sidebar.root', (fluid) => ({
         '.sidebar': {
             position: 'fixed',
             top: 0,
@@ -67,7 +65,8 @@ const Root = forwardRef(({ children, styles = {}, size = '18rem', collapsed, onC
                 translate: '-100% 0%'
             }
         },
-    });
+    }));
+    const style = combineClasses(styles, cc);
 
     return <aside ref={ref} {...props} className={classes(style.sidebar, props.className)} data-collapsed={isCollapsed}>
         <div className={style.header}>

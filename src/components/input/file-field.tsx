@@ -3,14 +3,14 @@
 import { forwardRef, useId, useRef, useState } from 'react';
 import Button from './button';
 import { MdUpload } from 'react-icons/md';
-import useStyles from '../../../src/hooks/use-styles';
 import useInputProps from '../../../src/hooks/use-input-props';
-import { FluidError, FluidSize, FluidStyles } from '../../../src/types';
-import { classes } from '../../../src/core/utils';
+import { FluidError, FluidSize, FluidStyles, Selectors } from '../../../src/types';
+import { classes, combineClasses } from '../../../src/core/utils';
+import { createStyles } from '../../core/style';
 
-const FileField = forwardRef(({ styles = {}, size = 'med', round, icon, label, error, showError, loading = false, ...props }:
+const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error, showError, loading = false, ...props }:
     {
-        styles?: FluidStyles;
+        cc?: Selectors<'wrapper' | 'input' | 'placeholder' | 'field' | 'content'  | 'label' | 'error' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg' | 'wrapper__round'>;
         round?: boolean;
         size?: FluidSize;
         error?: FluidError;
@@ -19,7 +19,7 @@ const FileField = forwardRef(({ styles = {}, size = 'med', round, icon, label, e
         icon?: React.ReactNode;
         label?: string;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('file-field', {
         '.wrapper': {
             display: 'flex',
             flexDirection: 'column',
@@ -98,22 +98,27 @@ const FileField = forwardRef(({ styles = {}, size = 'med', round, icon, label, e
             color: 'var(--f-clr-grey-500)'
         },
 
-        '.wrapper[data-size="sml"]': {
+        '.wrapper__xsm': {
+            fontSize: 'var(--f-font-size-xxs)'
+        },
+
+        '.wrapper__sml': {
             fontSize: 'var(--f-font-size-xsm)'
         },
 
-        '.wrapper[data-size="med"]': {
+        '.wrapper__med': {
             fontSize: 'var(--f-font-size-sml)'
         },
 
-        '.wrapper[data-size="lrg"]': {
+        '.wrapper__lrg': {
             fontSize: 'var(--f-font-size-med)'
         },
 
-        '.field[data-round="true"]': {
+        '.wrapper__round .field': {
             borderRadius: '999px'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const [files, setFiles] = useState<File[]>([]);
 
@@ -121,10 +126,15 @@ const FileField = forwardRef(({ styles = {}, size = 'med', round, icon, label, e
     const input = useRef<HTMLInputElement | null>(null);
     const [split, rest] = useInputProps(props);
 
-    return <div ref={ref} {...rest} className={classes(style.wrapper, props.className)} data-size={size}>
+    return <div ref={ref} {...rest} className={classes(
+        style.wrapper,
+        style[`wrapper__${size}`],
+        round && style.wrapper__round,
+        props.className
+    )}>
         {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
 
-        <label className={style.field} data-error={!!error} data-disabled={props.disabled} data-round={round}>
+        <label className={style.field} data-error={!!error} data-disabled={props.disabled}>
 
             <div className={style.content}>
                 {icon}

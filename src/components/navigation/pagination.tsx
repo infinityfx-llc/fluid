@@ -1,17 +1,17 @@
 'use client';
 
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidStyles } from "../../../src/types";
+import { FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Button from "../input/button";
 import { MdArrowBack, MdArrowForward, MdFirstPage, MdLastPage } from "react-icons/md";
-import { classes } from "../../../src/core/utils";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { createStyles } from "../../core/style";
 
 export type PaginationStyles = FluidStyles<'.pagination' | '.button'>;
 
-const Pagination = forwardRef(({ styles = {}, page, setPage, pages, compact, skipable, round, variant, ...props }:
+const Pagination = forwardRef(({ cc = {}, page, setPage, pages, compact, skipable, round, variant, ...props }:
     {
-        styles?: PaginationStyles;
+        cc?: Selectors<'pagination'>;
         page?: number;
         setPage?: (page: number) => void;
         pages: number;
@@ -20,7 +20,7 @@ const Pagination = forwardRef(({ styles = {}, page, setPage, pages, compact, ski
         round?: boolean;
         variant?: 'default' | 'neutral' | 'light';
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('pagination', {
         '.pagination': {
             display: 'flex',
             gap: 'var(--f-spacing-sml)'
@@ -31,8 +31,8 @@ const Pagination = forwardRef(({ styles = {}, page, setPage, pages, compact, ski
             minHeight: '2.4em'
         }
     });
+    const style = combineClasses(styles, cc);
 
-    const buttonStyles = { '.button': styles[".button"] };
     const [state, setState] = page !== undefined ? [page] : useState(0);
 
     function update(page: number) {
@@ -41,11 +41,11 @@ const Pagination = forwardRef(({ styles = {}, page, setPage, pages, compact, ski
     }
 
     return <div ref={ref} {...props} className={classes(style.pagination, props.className)}>
-        {compact && skipable && <Button styles={buttonStyles} round={round} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state < 1} onClick={() => update(0)}>
+        {compact && skipable && <Button round={round} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state < 1} onClick={() => update(0)}>
             <MdFirstPage />
         </Button>}
 
-        <Button styles={buttonStyles} round={round} variant={variant} disabled={state < 1} onClick={() => update(state - 1)}>
+        <Button round={round} variant={variant} disabled={state < 1} onClick={() => update(state - 1)}>
             <MdArrowBack />
         </Button>
 
@@ -55,15 +55,15 @@ const Pagination = forwardRef(({ styles = {}, page, setPage, pages, compact, ski
                 if (i !== 1 && state === idx && pages < 3) return null;
                 if (idx < 0 || idx >= pages) return null;
 
-                return <Button key={i} styles={buttonStyles} round={round} variant={idx === state ? variant : 'minimal'} onClick={() => update(idx)} aria-current={idx === state ? 'page' : undefined}>{idx + 1}</Button>;
+                return <Button key={i} round={round} variant={idx === state ? variant : 'minimal'} onClick={() => update(idx)} aria-current={idx === state ? 'page' : undefined}>{idx + 1}</Button>;
             })}
         </>}
 
-        <Button styles={buttonStyles} round={round} variant={variant} disabled={state >= pages - 1} onClick={() => update(state + 1)}>
+        <Button round={round} variant={variant} disabled={state >= pages - 1} onClick={() => update(state + 1)}>
             <MdArrowForward />
         </Button>
 
-        {compact && skipable && <Button styles={buttonStyles} round={round} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state >= pages - 1} onClick={() => update(pages - 1)}>
+        {compact && skipable && <Button round={round} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state >= pages - 1} onClick={() => update(pages - 1)}>
             <MdLastPage />
         </Button>}
     </div>;

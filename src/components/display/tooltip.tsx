@@ -1,24 +1,24 @@
 'use client';
 
-import { classes, combineRefs } from "../../../src/core/utils";
+import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import useDomEffect from "../../../src/hooks/use-dom-effect";
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidStyles } from "../../../src/types";
+import { FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef, cloneElement, useState, useRef, isValidElement, useId } from "react";
 import { createPortal } from "react-dom";
+import { createStyles } from "../../core/style";
 
 export type TooltipStyles = FluidStyles<'.tooltip'>;
 
-const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto', visibility = 'interact', delay = .3, ...props }:
+const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', visibility = 'interact', delay = .3, ...props }:
     {
         children: React.ReactElement;
         content?: React.ReactNode;
-        styles?: TooltipStyles;
+        cc?: Selectors<'tooltip'>;
         position?: 'auto' | 'top' | 'left' | 'bottom' | 'right';
         visibility?: 'never' | 'interact' | 'always';
         delay?: number;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('tooltip', {
         '.anchor': {
             position: 'absolute',
             pointerEvents: 'none'
@@ -74,6 +74,7 @@ const Tooltip = forwardRef(({ children, content, styles = {}, position = 'auto',
             translate: '-50% 0%'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const id = useId();
     const anchor = useRef<HTMLDivElement | null>(null);

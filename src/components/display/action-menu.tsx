@@ -1,14 +1,14 @@
 'use client';
 
-import { classes } from '../../../src/core/utils';
-import useStyles from '../../../src/hooks/use-styles';
-import { FluidStyles, PopoverRootReference } from '../../../src/types';
+import { classes, combineClasses } from '../../../src/core/utils';
+import { FluidStyles, PopoverRootReference, Selectors } from '../../../src/types';
 import { Animate } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
 import { forwardRef, useCallback, useRef, useId } from 'react';
 import Halo from '../feedback/halo';
 import Popover from '../layout/popover';
 import { MdChevronRight } from 'react-icons/md';
+import { createStyles } from '../../core/style';
 
 export type ActionMenuOption = {
     type: 'option';
@@ -24,14 +24,14 @@ export type ActionMenuOption = {
     type: 'divider'
 };
 
-const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, stretch, ...props }: {
+const ActionMenu = forwardRef(({ children, cc = {}, options, disabled, stretch, ...props }: {
     children: React.ReactElement;
-    styles?: FluidStyles;
+    cc?: Selectors;
     options: ActionMenuOption[];
     disabled?: boolean;
     stretch?: boolean;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('action-menu', {
         '.menu': {
             padding: '.3em',
             background: 'var(--f-clr-bg-100)',
@@ -101,6 +101,7 @@ const ActionMenu = forwardRef(({ children, styles = {}, options, disabled, stret
             translate: '0 0'
         }
     });
+    const style = combineClasses(styles, cc);
 
     // let refIndex = 0, lastIndex = -1;
     // const selection = useRef(-1);

@@ -1,14 +1,14 @@
 'use client';
 
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidError, FluidInputvalue, FluidSize, FluidStyles } from "../../../src/types";
+import { FluidError, FluidInputvalue, FluidSize, FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef, useId, useState } from "react";
 import { Morph } from '@infinityfx/lively/layout';
-import { classes } from "../../../src/core/utils";
+import { classes, combineClasses } from "../../../src/core/utils";
 import Halo from "../feedback/halo";
+import { createStyles } from "../../core/style";
 
 type SegmentedProps<T> = {
-    styles?: FluidStyles;
+    cc?: Selectors<'segmented' | 'segmented__sml' | 'segmented__med' | 'segmented__lrg' | 'segmented__round' | 'option' | 'content' | 'selection' | 'segmented__var__default' | 'segmented__var__neutral' | 'halo' | 'container'>;
     variant?: 'default' | 'neutral';
     size?: Omit<FluidSize, 'xsm'>;
     round?: boolean;
@@ -20,8 +20,8 @@ type SegmentedProps<T> = {
     error?: FluidError;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>;
 
-function SegmentedComponent<T extends FluidInputvalue>({ styles = {}, variant = 'default', size = 'med', round = false, options, name, value, defaultValue, onChange, error, ...props }: SegmentedProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
-    const style = useStyles(styles, {
+function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'default', size = 'med', round = false, options, name, value, defaultValue, onChange, error, ...props }: SegmentedProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
+    const styles = createStyles('segmented', {
         '.segmented': {
             padding: '.3em',
             borderRadius: 'calc(var(--f-radius-sml) + .3em)',
@@ -101,8 +101,17 @@ function SegmentedComponent<T extends FluidInputvalue>({ styles = {}, variant = 
 
         '.option[aria-checked="true"] .halo': {
             inset: '-.5em'
+        },
+
+        '.halo': {
+            zIndex: '0 !important'
+        },
+
+        '.container': {
+            zIndex: 'unset !important'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const [state, setState] = value !== undefined ? [value] : useState(defaultValue || options[0]?.value);
     const id = useId();
@@ -119,15 +128,7 @@ function SegmentedComponent<T extends FluidInputvalue>({ styles = {}, variant = 
         data-error={!!error}>
         {options.map(({ label, value: option, disabled = false }, i) => {
 
-            return <Halo key={i} hover={false} styles={{
-                [`:global(.${style.option})[aria-checked="true"] .halo`]: { inset: '-.5em' },
-                '.halo': {
-                    zIndex: 0
-                },
-                '.container': {
-                    zIndex: 'unset'
-                }
-            }}>
+            return <Halo key={i} hover={false} cc={{ halo: style.halo, container: style.container }}>
                 <button className={style.option} type="button" role="radio" aria-checked={state === option} disabled={disabled} onClick={() => {
                     setState?.(option);
                     onChange?.(option as T);

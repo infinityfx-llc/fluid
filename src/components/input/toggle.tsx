@@ -1,25 +1,25 @@
 'use client';
 
-import { FluidSize, FluidStyles } from "../../../src/types";
+import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Halo from "../feedback/halo";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { Animatable } from "@infinityfx/lively";
-import { classes } from "../../../src/core/utils";
-import { useStyles } from "../../../src/hooks";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { createStyles } from "../../core/style";
 
 export type ToggleStyles = FluidStyles<'.toggle' | '.content' | '.container' | '.toggle__xsm' | '.toggle__sml' | '.toggle__med' | '.toggle__lrg' | '.toggle__round' | '.toggle__var__default' | '.toggle__var__minimal' | '.toggle__var__neutral'>;
 
 export type ToggleProps = {
-    styles?: ToggleStyles;
+    cc?: Selectors<'toggle' | 'content' | 'container' | 'toggle__xsm' | 'toggle__sml' | 'toggle__med' | 'toggle__lrg' | 'toggle__round' | 'toggle__var__default' | 'toggle__var__minimal' | 'toggle__var__neutral'>;
     size?: FluidSize;
     round?: boolean;
     variant?: 'default' | 'minimal' | 'neutral';
     checkedContent?: React.ReactNode;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>;
 
-const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false, variant = 'default', checkedContent, ...props }: ToggleProps, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+const Toggle = forwardRef(({ children, cc = {}, size = 'med', round = false, variant = 'default', checkedContent, ...props }: ToggleProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const styles = createStyles('toggle', {
         '.input': {
             position: 'absolute',
             opacity: 0,
@@ -28,11 +28,11 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
             height: '100%',
             zIndex: 2
         },
-
+    
         '.input:enabled': {
             cursor: 'pointer'
         },
-
+    
         '.toggle': {
             position: 'relative',
             display: 'block',
@@ -42,32 +42,32 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
             borderRadius: 'var(--f-radius-sml)',
             transition: 'background-color .25s, color .25s'
         },
-
+    
         '.toggle__xsm': {
             fontSize: 'var(--f-font-size-xxs)'
         },
-
+    
         '.toggle__sml': {
             fontSize: 'var(--f-font-size-xsm)'
         },
-
+    
         '.toggle__med': {
             fontSize: 'var(--f-font-size-sml)'
         },
-
+    
         '.toggle__lrg': {
             fontSize: 'var(--f-font-size-med)'
         },
-
+    
         '.toggle__var__minimal': {
             backgroundColor: 'transparent'
         },
-
+    
         '.toggle__var__neutral': {
             backgroundColor: 'var(--f-clr-fg-100)',
             border: 'solid 1px var(--f-clr-fg-200)'
         },
-
+    
         '.content': {
             display: 'flex',
             alignItems: 'center',
@@ -75,38 +75,39 @@ const Toggle = forwardRef(({ children, styles = {}, size = 'med', round = false,
             gap: 'var(--f-spacing-xsm)',
             gridArea: '1 / 1 / 1 / 1'
         },
-
+    
         '.container': {
             display: 'grid',
             overflow: 'hidden'
         },
-
+    
         '.toggle[data-checked="true"]:not(.toggle__var__neutral)': {
             backgroundColor: 'var(--f-clr-primary-100)',
             color: 'var(--f-clr-text-200)'
         },
-
+    
         '.toggle__var__neutral[data-checked="true"]': {
             backgroundColor: 'var(--f-clr-fg-200)'
         },
-
+    
         '.toggle__var__minimal[data-checked="true"]': {
             backgroundColor: 'var(--f-clr-primary-300)'
         },
-
+    
         '.toggle[data-checked="false"][data-disabled="true"]': {
             color: 'var(--f-clr-grey-500)'
         },
-
+    
         '.toggle[data-checked="true"][data-disabled="true"]': {
             backgroundColor: 'var(--f-clr-grey-300)',
             color: 'var(--f-clr-grey-100)'
         },
-
+    
         '.toggle__round': {
             borderRadius: '999px'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const [state, setState] = props.checked !== undefined ? [props.checked] : useState(!!props.defaultChecked);
     const [split, rest] = useInputProps(props);

@@ -1,17 +1,18 @@
 'use client';
 
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidStyles } from "../../../src/types";
+import { FluidStyles, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { LayoutGroup } from "@infinityfx/lively/layout";
 // import { createFocusTrap, FocusTrap } from "focus-trap";
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from "react-dom";
+import { createStyles } from "../../core/style";
+import { combineClasses } from "../../core/utils";
 
 export type OverlayStyles = FluidStyles<'.tint'>;
 
-export default function Overlay({ children, styles = {}, show, onClose }: { children?: React.ReactNode; styles?: OverlayStyles; show: boolean; onClose: () => void; }) {
-    const style = useStyles(styles, {
+export default function Overlay({ children, cc = {}, show, onClose }: { children?: React.ReactNode; cc?: Selectors<'tint'>; show: boolean; onClose: () => void; }) {
+    const styles = createStyles('overlay', {
         '.overlay': {
             position: 'fixed',
             width: '100vw',
@@ -31,6 +32,7 @@ export default function Overlay({ children, styles = {}, show, onClose }: { chil
             backgroundColor: 'rgb(0, 0, 0, .35)'
         }
     });
+    const style = combineClasses(styles, cc);
 
     // const trap = useRef<FocusTrap>();
     const [mounted, setMounted] = useState(false);

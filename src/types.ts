@@ -11,12 +11,12 @@ export type Merged<T, P> = [T, P] extends [{ [key: string]: unknown }, { [key: s
 
 export type FluidStyles<T extends string = string> = {
     [key in (T | string & {})]?: React.CSSProperties | {
-        [key: string]: React.CSSProperties
+        [key: string]: React.CSSProperties | undefined
     }
 };
 
 export type Selectors<T extends string = string> = {
-    [key in T]: string;
+    [key in (T | string & {})]?: string;
 };
 
 export type FluidSize = 'xsm' | 'sml' | 'med' | 'lrg';
@@ -28,7 +28,6 @@ export type FluidInputvalue = string | number | readonly string[] | undefined;
 export type FluidError = null | boolean | string;
 
 export type FluidConfig = {
-    cssOutput?: string;
     theme?: PartialFluidTheme;
     components?: {
         Button?: ButtonStyles;

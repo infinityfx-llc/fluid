@@ -1,19 +1,19 @@
-import { classes } from "../../../src/core/utils";
-import { useStyles } from "../../../src/hooks";
-import { FluidSize, FluidStyles } from "../../../src/types";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef } from "react";
+import { createStyles } from "../../core/style";
 
-type FrameStyles = FluidStyles<'.frame' | '.frame__shadow' | '.frame__border' | '.frame__bg__light' | '.frame__bg__dark'>;
+export type FrameStyles = FluidStyles<'.frame' | '.frame__shadow' | '.frame__border' | '.frame__bg__light' | '.frame__bg__dark'>;
 
-const Frame = forwardRef(({ children, styles = {}, radius = 'sml', shadow, border, background = 'none', ...props }:
+const Frame = forwardRef(({ children, cc = {}, radius = 'sml', shadow, border, background = 'none', ...props }:
     {
-        styles?: FrameStyles;
+        cc?: Selectors<'frame' | 'frame__shadow' | 'frame__border' | 'frame__bg__light' | 'frame__bg__dark'>;
         radius?: FluidSize;
         shadow?: boolean;
         border?: boolean;
         background?: 'none' | 'dark' | 'light';
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('frame', {
         '.frame': {
             overflow: 'hidden',
             color: 'var(--f-clr-text-100)'
@@ -40,6 +40,7 @@ const Frame = forwardRef(({ children, styles = {}, radius = 'sml', shadow, borde
             display: 'block'
         }
     });
+    const style = combineClasses(styles, cc);
 
     return <div ref={ref} {...props}
         className={classes(

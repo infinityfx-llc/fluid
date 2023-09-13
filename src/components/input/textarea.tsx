@@ -1,23 +1,23 @@
 'use client';
 
-import { classes } from '../../../src/core/utils';
+import { classes, combineClasses } from '../../../src/core/utils';
 import useInputProps from '../../../src/hooks/use-input-props';
-import useStyles from '../../../src/hooks/use-styles';
-import { FluidError, FluidSize, FluidStyles } from '../../../src/types';
+import { FluidError, FluidSize, FluidStyles, Selectors } from '../../../src/types';
 import { forwardRef, useId, useState } from 'react';
 import Scrollarea from '../layout/scrollarea';
+import { createStyles } from '../../core/style';
 
-export type Textarea = FluidStyles<'.wrapper' | '.label' | '.textarea' | '.input' | '.wrapper__xsm' | '.wrapper__sml' | '.wrapper__med' | '.wrapper__lrg'>;
+export type TextareaStyles = FluidStyles<'.wrapper' | '.label' | '.textarea' | '.input' | '.wrapper__xsm' | '.wrapper__sml' | '.wrapper__med' | '.wrapper__lrg'>;
 
-const Textarea = forwardRef(({ styles = {}, label, error, size = 'med', resize = 'both', ...props }:
+const Textarea = forwardRef(({ cc = {}, label, error, size = 'med', resize = 'both', ...props }:
     {
-        styles?: FluidStyles;
+        cc?: Selectors<'wrapper' | 'label' | 'textarea' | 'input' | 'wrapper__xsm' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg'>;
         label?: string;
         error?: FluidError;
         size?: FluidSize;
         resize?: 'none' | 'vertical' | 'horizontal' | 'both';
     } & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('textarea', {
         '.wrapper': {
             display: 'flex',
             flexDirection: 'column',
@@ -88,6 +88,7 @@ const Textarea = forwardRef(({ styles = {}, label, error, size = 'med', resize =
             color: 'var(--f-clr-grey-500)'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const id = useId();
     const [split, rest] = useInputProps(props);

@@ -1,20 +1,20 @@
 'use client';
 
-import useStyles from '../../../src/hooks/use-styles';
-import { FluidStyles } from '../../../src/types';
+import { FluidStyles, Selectors } from '../../../src/types';
 import { forwardRef, useState, useId, useRef, useEffect } from 'react';
 import { Animatable } from '@infinityfx/lively';
 import { Morph } from '@infinityfx/lively/layout';
 import Halo from '../feedback/halo';
-import { classes } from '../../../src/core/utils';
+import { classes, combineClasses } from '../../../src/core/utils';
+import { createStyles } from '../../core/style';
 
 export type NavigationMenuStyles = FluidStyles<'.navigation' | '.link' | '.selection' | '.menu' | '.container'>;
 
 type AnchorLike<T extends React.HTMLAttributes<any> & { href: string; }> = React.JSXElementConstructor<T> | keyof React.ReactHTML;
 
-const NavigationMenu = forwardRef(({ styles = {}, links, selected = -1, Link = 'a', ...props }:
+const NavigationMenu = forwardRef(({ cc = {}, links, selected = -1, Link = 'a', ...props }:
     {
-        styles?: NavigationMenuStyles;
+        cc?: Selectors<'navigation' | 'link' | 'selection' | 'menu' | 'container'>;
         links?: {
             label: string;
             href: string;
@@ -26,7 +26,7 @@ const NavigationMenu = forwardRef(({ styles = {}, links, selected = -1, Link = '
         selected?: number;
         Link?: AnchorLike<any>;
     } & Omit<React.HTMLAttributes<HTMLElement>, 'children'>, ref: React.ForwardedRef<HTMLElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('navigation-menu', {
         '.navigation': {
             display: 'flex',
             alignItems: 'center',
@@ -82,6 +82,7 @@ const NavigationMenu = forwardRef(({ styles = {}, links, selected = -1, Link = '
             right: 0
         }
     });
+    const style = combineClasses(styles, cc);
 
     const id = useId();
     const prev = useRef(-1);

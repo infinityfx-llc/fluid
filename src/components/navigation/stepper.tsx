@@ -1,17 +1,17 @@
 'use client';
 
-import { classes } from "../../../src/core/utils";
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidStyles } from "../../../src/types";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { FluidStyles, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { forwardRef, useId } from "react";
 import { MdCheck } from "react-icons/md";
 import Halo from "../feedback/halo";
 import ProgressBar from "../feedback/progress-bar";
+import { createStyles } from "../../core/style";
 
-const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navigation = 'backwards', variant = 'default', ...props }:
+const Stepper = forwardRef(({ cc = {}, steps, completed, setCompleted, navigation = 'backwards', variant = 'default', ...props }:
     {
-        styles?: FluidStyles;
+        cc?: Selectors<'wrapper' | 'stepper' | 'step' | 'header' | 'button' | 'bullet' | 'icon' | 'icons' | 'progress' | 'label' | 'title' | 'halo' | 'track'>;
         steps: {
             title: string;
             label?: string;
@@ -23,7 +23,7 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
         navigation?: 'none' | 'forwards' | 'backwards' | 'both';
         variant?: 'default' | 'compact' | 'vertical';
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('stepper', {
         '.wrapper': {
             display: 'flex',
             flexDirection: 'column',
@@ -175,8 +175,17 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
             display: 'flex',
             flexDirection: 'column',
             gap: 'var(--f-spacing-xxs)'
+        },
+
+        '.halo': {
+            inset: '-.5em !important'
+        },
+
+        '.track': {
+            width: '100% !important'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const id = useId();
     const stepsArray = variant === 'compact' ? steps.slice(Math.min(completed, steps.length - 1), completed + 1) : steps;
@@ -193,7 +202,7 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
 
                 return <div key={i} className={style.step} data-completed={isCompleted} data-current={variant === 'compact' ? !isCompleted : i === completed} data-error={error}>
                     <div className={style.header}>
-                        <Halo disabled={!navigatable} styles={{ '.halo': { inset: '-.5em' } }}>
+                        <Halo disabled={!navigatable} cc={{ halo: style.halo }}>
                             <button type="button" className={style.button} disabled={!navigatable} onClick={() => setCompleted?.(i)} aria-labelledby={label ? stepId : undefined}>
                                 <div className={style.bullet}>
                                     <div className={style.icon}>
@@ -222,9 +231,7 @@ const Stepper = forwardRef(({ styles = {}, steps, completed, setCompleted, navig
             })}
         </div>
 
-        {variant === 'compact' && <ProgressBar value={completed / steps.length} styles={{
-            '.track': { width: '100%' }
-        }} />}
+        {variant === 'compact' && <ProgressBar value={completed / steps.length} cc={{ track: style.track }} />}
     </div>;
 });
 

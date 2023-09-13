@@ -1,18 +1,18 @@
 'use client';
 
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidSize, FluidStyles } from "../../../src/types";
+import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Button from "./button";
 import { MdArrowBack, MdArrowForward, MdExpandMore } from "react-icons/md";
-import { classes } from "../../../src/core/utils";
+import { classes, combineClasses } from "../../../src/core/utils";
 import { Combobox } from "../display";
+import { createStyles } from "../../core/style";
 
 export type CalendarStyles = FluidStyles<'.calendar' | '.header' | '.text' | '.years' | '.calendar__round' | '.calendar__xsm' | '.calendar__sml' | '.calendar__med' | '.calendar__lrg'>;
 
-const Calendar = forwardRef(({ styles = {}, locale, size = 'med', round, defaultValue = new Date(), value, onChange, disabled, ...props }:
+const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValue = new Date(), value, onChange, disabled, ...props }:
     {
-        styles?: FluidStyles;
+        cc?: Selectors<'calendar' | 'header' | 'text' | 'years' | 'calendar__round' | 'calendar__xsm' | 'calendar__sml' | 'calendar__med' | 'calendar__lrg'>;
         locale?: Intl.LocalesArgument;
         size?: FluidSize;
         round?: boolean;
@@ -21,7 +21,7 @@ const Calendar = forwardRef(({ styles = {}, locale, size = 'med', round, default
         onChange?: (value: Date) => void;
         disabled?: boolean | Date[];
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('calendar', {
         '.calendar': {
             backgroundColor: 'var(--f-clr-fg-100)',
             padding: '.6em',
@@ -114,6 +114,7 @@ const Calendar = forwardRef(({ styles = {}, locale, size = 'med', round, default
             color: 'var(--f-clr-text-100)'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const [date, setDate] = value !== undefined ? [value] : useState(defaultValue);
 

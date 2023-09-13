@@ -1,16 +1,24 @@
 'use client';
 
-import { classes, combineRefs } from "../../../src/core/utils";
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidStyles } from "../../../src/types";
+import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
+import { FluidStyles, Selectors } from "../../../src/types";
 import { Children, cloneElement, forwardRef, isValidElement } from "react";
+import { createStyles } from "../../core/style";
 
 // fix cloneElement issues!!
 
 export type IndicatorStyles = FluidStyles<'.indicator' | '.indicator__round'>;
 
-const Indicator = forwardRef(<T extends React.ReactElement>({ children, styles = {}, content, color, outline, round, ...props }: { children: T; styles?: IndicatorStyles; content?: number | string | boolean; color?: string; outline?: string; round?: boolean; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'>, ref: React.ForwardedRef<T>) => {
-    const style = useStyles(styles, {
+const Indicator = forwardRef(<T extends React.ReactElement>({ children, cc = {}, content, color, outline, round, ...props }:
+    {
+        children: T;
+        cc?: Selectors<'indicator' | 'indicator__round'>;
+        content?: number | string | boolean;
+        color?: string;
+        outline?: string;
+        round?: boolean;
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'>, ref: React.ForwardedRef<T>) => {
+    const styles = createStyles('indicator', {
         '.indicator': {
             position: 'absolute',
             top: 0,
@@ -34,6 +42,7 @@ const Indicator = forwardRef(<T extends React.ReactElement>({ children, styles =
             right: '14%'
         }
     });
+    const style = combineClasses(styles, cc);
 
     children = Array.isArray(children) ? children[0] : children;
     if (!isValidElement(children)) return children;

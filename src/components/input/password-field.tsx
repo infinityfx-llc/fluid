@@ -7,14 +7,18 @@ import { FluidInputvalue } from '../../../src/types';
 import Toggle from './toggle';
 import ProgressBar from '../feedback/progress-bar';
 import useInputProps from '../../../src/hooks/use-input-props';
-import { useStyles } from '../../../src/hooks';
-import { classes } from '../../../src/core/utils';
+import { classes, combineClasses } from '../../../src/core/utils';
+import { createStyles } from '../../core/style';
 
 const colors = ['#eb2a1c', '#eb2a1c', '#e8831e', '#f0d030', '#fff952', '#5aff54'];
 
 // optimize prop splitting
-const PasswordField = forwardRef(({ styles = {}, strengthBar = false, size = 'med', round, error, showError, icon, label, left, right, defaultValue, onEnter, ...props }: { strengthBar?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+const PasswordField = forwardRef(({ cc = {}, strengthBar = false, size = 'med', round, error, showError, icon, label, left, right, defaultValue, onEnter, ...props }: { strengthBar?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const styles = createStyles('password-field', {
+        '.wrapper': {
+            width: '100% !important'
+        },
+
         '.container': {
             minWidth: 'clamp(0px, 12em, 100vw)'
         },
@@ -23,8 +27,14 @@ const PasswordField = forwardRef(({ styles = {}, strengthBar = false, size = 'me
             fontSize: '.8em',
             fontWeight: 500,
             color: 'var(--f-clr-error-100)'
+        },
+
+        '.track': {
+            width: '100% !important',
+            marginTop: 'var(--f-spacing-xsm)'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(defaultValue || '');
     const [visible, setVisible] = useState(false);
@@ -44,10 +54,8 @@ const PasswordField = forwardRef(({ styles = {}, strengthBar = false, size = 'me
     return <div ref={ref} {...rest} className={classes(style.container, props.className)}>
         <Field {...split} type={visible ? 'text' : 'password'} round={round} size={size} error={error} icon={icon} label={label} left={left} value={value}
             onEnter={onEnter}
-            styles={{
-                '.wrapper': {
-                    width: '100%'
-                }
+            cc={{
+                wrapper: style.wrapper
             }}
             onChange={e => {
                 setValue?.(e.target.value);
@@ -59,12 +67,7 @@ const PasswordField = forwardRef(({ styles = {}, strengthBar = false, size = 'me
                 <MdVisibility />
             </Toggle>} />
 
-        {strengthBar && <ProgressBar value={strength / 5} color={colors[strength]} styles={{
-            '.track': {
-                width: '100%',
-                marginTop: 'var(--f-spacing-xsm)'
-            }
-        }} />}
+        {strengthBar && <ProgressBar value={strength / 5} color={colors[strength]} cc={{ track: style.track }} />}
 
         {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
     </div>;

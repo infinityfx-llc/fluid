@@ -1,17 +1,24 @@
 'use client';
 
-import { classes, combineRefs } from "../../../src/core/utils";
+import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import useDomEffect from "../../../src/hooks/use-dom-effect";
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidStyles } from "../../../src/types";
+import { FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef, useRef, useState, useId } from "react";
+import { createStyles } from "../../core/style";
 
 const speed = 100;
 
+// add __var
 export type ScrollareaStyles = FluidStyles<'.track' | '.handle'>;
 
-const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, variant = 'hover', disabled = false, ...props }: { styles?: ScrollareaStyles; horizontal?: boolean; variant?: 'hover' | 'permanent'; disabled?: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: any) => {
-    const style = useStyles(styles, {
+const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant = 'hover', disabled = false, ...props }:
+    {
+        cc?: Selectors<'track' | 'handle'>;
+        horizontal?: boolean;
+        variant?: 'hover' | 'permanent';
+        disabled?: boolean;
+    } & React.HTMLAttributes<HTMLDivElement>, ref: any) => {
+    const styles = createStyles('scrollarea', {
         '.area': {
             position: 'relative',
             overflow: 'hidden'
@@ -89,6 +96,7 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
             }
         }
     });
+    const style = combineClasses(styles, cc);
 
     const scrolled = useRef(false);
     const area = useRef<HTMLDivElement | null>(null);
@@ -110,7 +118,7 @@ const Scrollarea = forwardRef(({ children, styles = {}, horizontal = false, vari
             e.stopPropagation();
             e.preventDefault();
         }
-        
+
         scroll(amount);
     }
 

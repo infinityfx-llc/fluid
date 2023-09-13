@@ -1,27 +1,27 @@
 'use client';
 
-import { classes } from "../../../src/core/utils";
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidError, FluidSize, FluidStyles } from "../../../src/types";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { FluidError, FluidSize, FluidStyles, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { forwardRef, useState, useEffect } from "react";
 import Halo from "../feedback/halo";
 import useInputProps from "../../../src/hooks/use-input-props";
+import { createStyles } from "../../core/style";
 
 // variant
 // color (no react value)
 
-export type CheckboxStyles = FluidStyles<'.wrapper' | '.checkbox' | '.checkmark' | '.wrapper__xsm' | '.wrapper__sml' | '.wrapper__med' | '.wrapper__lrg'>;
+export type CheckboxStyles = FluidStyles<'.wrapper' | '.checkbox' | '.checkmark' | '.wrapper__xsm' | '.wrapper__sml' | '.wrapper__med' | '.wrapper__lrg' | '.halo'>;
 
-const Checkbox = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', checked, defaultChecked, ...props }:
+const Checkbox = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', checked, defaultChecked, ...props }:
     {
-        styles?: CheckboxStyles;
+        cc?: Selectors<'wrapper' | 'checkbox' | 'checkmark' | 'wrapper__xsm' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg' | 'halo'>;
         error?: FluidError;
         size?: FluidSize;
         color?: string;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('checkbox', {
         '.wrapper': {
             position: 'relative'
         },
@@ -93,8 +93,15 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--
 
         '.wrapper[data-error="true"] .input:checked:enabled + .checkbox': {
             backgroundColor: 'var(--f-clr-error-200)'
+        },
+
+        '.halo': {
+            borderRadius: 'var(--f-radius-sml) !important',
+            inset: '-.5em !important'
         }
     });
+    const style = combineClasses(styles, cc);
+
     const [link, setLink] = useLink(defaultChecked ? 1 : 0);
 
     const [split, rest] = useInputProps(props);
@@ -102,7 +109,7 @@ const Checkbox = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--
 
     useEffect(() => setLink(state ? 1 : 0, .25), [state]);
 
-    return <Halo hover={false} styles={{ '.halo': { borderRadius: 'var(--f-radius-sml)', inset: '-.5em' } }}>
+    return <Halo hover={false} cc={{ halo: style.halo }}>
         <div ref={ref} {...rest} className={classes(
             style.wrapper,
             style[`wrapper__${size}`],

@@ -1,23 +1,23 @@
 'use client';
 
 import { forwardRef } from 'react';
-import useStyles from '../../../../src/hooks/use-styles';
-import { FluidStyles } from '../../../../src/types';
-import { classes } from '../../../../src/core/utils';
+import { FluidStyles, Selectors } from '../../../../src/types';
+import { classes, combineClasses } from '../../../../src/core/utils';
 import Halo from '../../feedback/halo';
 import Indicator from '../../feedback/indicator';
 import { MdMoreVert } from 'react-icons/md';
+import { createStyles } from '../../../core/style';
 
-const User = forwardRef(({ children, styles = {}, name, status, indicator = false, round = false, icon = <MdMoreVert />, ...props }:
+const User = forwardRef(({ children, cc = {}, name, status, indicator = false, round = false, icon = <MdMoreVert />, ...props }:
     {
-        styles?: FluidStyles;
+        cc?: Selectors<'user' | 'avatar' | 'frame' | 'name' | 'status' | 'content' | 'icon'>;
         name: string;
         status?: string;
         indicator?: string | number | boolean;
         round?: boolean;
         icon?: React.ReactNode;
     } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('sidebar.user', {
         '.user': {
             position: 'relative',
             outline: 'none',
@@ -105,6 +105,7 @@ const User = forwardRef(({ children, styles = {}, name, status, indicator = fals
             opacity: 0
         }
     });
+    const style = combineClasses(styles, cc);
 
     return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
         <button ref={ref} {...props} type="button" className={classes(style.user, props.className)} data-round={round}>

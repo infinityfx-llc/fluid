@@ -1,14 +1,22 @@
-import { classes } from '../../../src/core/utils';
-import useStyles from '../../../src/hooks/use-styles';
-import { FluidStyles } from '../../../src/types';
+import { classes, combineClasses } from '../../../src/core/utils';
+import { FluidStyles, Selectors } from '../../../src/types';
 import { forwardRef, Children } from 'react';
+import { createStyles } from '../../core/style';
 
 // TODO
+export type TimelineStyles = FluidStyles<'.timeline' | '.event' | '.bullet' | '.progress'>;
 
-const Timeline = forwardRef(({ children, styles = {}, active, horizontal = false, uniform, reverse, ...props }: { styles?: FluidStyles; active: number; horizontal?: boolean; uniform?: boolean; reverse?: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Timeline = forwardRef(({ children, cc = {}, active, horizontal = false, uniform, reverse, ...props }:
+    {
+        cc?: Selectors<'timeline' | 'event' | 'bullet' | 'progress'>;
+        active: number;
+        horizontal?: boolean;
+        uniform?: boolean;
+        reverse?: boolean;
+    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const len = Children.count(children);
 
-    const style = useStyles(styles, {
+    const styles = createStyles('timeline', {
         '.timeline': {
             display: 'grid',
             color: 'var(--f-clr-text-100)',
@@ -106,6 +114,7 @@ const Timeline = forwardRef(({ children, styles = {}, active, horizontal = false
             backgroundColor: 'var(--f-clr-primary-100)'
         },
     });
+    const style = combineClasses(styles, cc);
 
     return <div ref={ref} {...props} className={classes(style.timeline, props.className)} data-uniform={uniform} data-horizontal={horizontal}>
         {Children.map(children, (child, i) => {

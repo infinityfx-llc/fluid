@@ -1,6 +1,6 @@
 {
 	"name": "@infinityfx/fluid",
-	"version": "0.1.0-beta.8",
+	"version": "0.1.0-beta.9",
 	"type": "module",
 	"description": "React UI library.",
 	"main": "dist/index.js",
@@ -9,16 +9,12 @@
 	"exports": {
 		".": "./dist/index.js",
 		"./hooks": "./dist/hooks.js",
-		"./server": "./dist/server.js",
 		"./utils": "./dist/utils.js"
 	},
 	"typesVersions": {
 		"*": {
 			"hooks": [
 				"./dist/types/src/hooks.d.ts"
-			],
-			"server": [
-				"./dist/types/src/server.d.ts"
 			],
 			"utils": [
 				"./dist/types/src/utils.d.ts"

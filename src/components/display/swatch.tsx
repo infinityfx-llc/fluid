@@ -1,12 +1,17 @@
-import { classes } from "../../../src/core/utils";
-import { useStyles } from "../../../src/hooks";
-import { FluidSize, FluidStyles } from "../../../src/types";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef } from "react";
+import { createStyles } from "../../core/style";
 
 export type SwatchStyles = FluidStyles<'.swatch' | '.swatch__round' | '.swatch__xsm' | '.swatch__sml' | '.swatch__med' | '.swatch__lrg'>;
 
-const Swatch = forwardRef(({ styles = {}, size = 'med', round = false, color, ...props }: { styles?: SwatchStyles; size?: FluidSize; round?: boolean; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+const Swatch = forwardRef(({ cc = {}, size = 'med', round = false, color, ...props }:
+    {
+        cc?: Selectors<'swatch' | 'swatch__round' | 'swatch__xsm' | 'swatch__sml' | 'swatch__med' | 'swatch__lrg'>;
+        size?: FluidSize;
+        round?: boolean;
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const styles = createStyles('swatch', {
         '.swatch': {
             position: 'relative',
             width: '2em',
@@ -47,6 +52,7 @@ const Swatch = forwardRef(({ styles = {}, size = 'med', round = false, color, ..
             fontSize: 'var(--f-font-size-med)'
         }
     });
+    const style = combineClasses(styles, cc);
 
     return <div ref={ref} {...props} className={classes(
         style.swatch,

@@ -1,17 +1,17 @@
 'use client';
 
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidStyles } from "../../../src/types";
+import { FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Halo from "../feedback/halo";
 import { Animatable } from "@infinityfx/lively";
-import { classes } from "../../../src/core/utils";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { createStyles } from "../../core/style";
 
 // sizes
 export type HamburgerStyles = FluidStyles<'.hamburger' | '.line' | '.cross'>;
 
-const Hamburger = forwardRef(({ styles = {}, open, ...props }: { styles?: HamburgerStyles; open?: boolean; } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
-    const style = useStyles(styles, {
+const Hamburger = forwardRef(({ cc = {}, open, ...props }: { cc?: Selectors<'hamburger' | 'line' | 'cross'>; open?: boolean; } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
+    const styles = createStyles('hamburger', {
         '.hamburger': {
             position: 'relative',
             border: 'none',
@@ -63,6 +63,7 @@ const Hamburger = forwardRef(({ styles = {}, open, ...props }: { styles?: Hambur
             width: '3px'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const [state, setState] = open !== undefined ? [open] : useState(false);
 

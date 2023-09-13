@@ -2,18 +2,24 @@
 
 import { forwardRef, useId, useRef } from 'react';
 import Overlay from './overlay';
-import useStyles from '../../../src/hooks/use-styles';
-import { FluidStyles } from '../../../src/types';
+import { FluidStyles, Selectors } from '../../../src/types';
 import Button from '../input/button';
 import { MdClose } from 'react-icons/md';
-import { classes } from '../../../src/core/utils';
+import { classes, combineClasses } from '../../../src/core/utils';
 import { Animatable } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
+import { createStyles } from '../../core/style';
 
-type DrawerStyles = FluidStyles<'.drawer' | '.header' | '.content'>;
+export type DrawerStyles = FluidStyles<'.drawer' | '.header' | '.content'>;
 
-const Drawer = forwardRef(({ children, styles = {}, show, onClose, position = 'right', title, ...props }: { styles?: DrawerStyles; show: boolean; onClose: () => void; position?: 'left' | 'right'; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+const Drawer = forwardRef(({ children, cc = {}, show, onClose, position = 'right', title, ...props }:
+    {
+        cc?: Selectors<'drawer' | 'header' | 'content'>;
+        show: boolean;
+        onClose: () => void;
+        position?: 'left' | 'right';
+    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const styles = createStyles('drawer', {
         '.drawer': {
             position: 'absolute',
             background: 'var(--f-clr-bg-100)',
@@ -64,6 +70,7 @@ const Drawer = forwardRef(({ children, styles = {}, show, onClose, position = 'r
             flexDirection: 'column'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const id = useId();
     const prev = useRef({ clientX: 0, clientY: 0 });

@@ -1,12 +1,12 @@
-import { classes } from "../../../src/core/utils";
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidStyles } from "../../../src/types";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { FluidStyles, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { LayoutGroup } from "@infinityfx/lively/layout";
 import { forwardRef } from "react";
+import { createStyles } from "../../core/style";
 
-const Collapsible = forwardRef(({ children, styles = {}, shown, ...props }: { styles?: FluidStyles; shown: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+const Collapsible = forwardRef(({ children, cc = {}, shown, ...props }: { cc?: Selectors<'content'>; shown: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const styles = createStyles('collapsible', {
         '.content': {
             transition: 'opacity .35s',
             overflow: 'hidden'
@@ -16,6 +16,7 @@ const Collapsible = forwardRef(({ children, styles = {}, shown, ...props }: { st
             opacity: 0
         }
     });
+    const style = combineClasses(styles, cc);
 
     return <LayoutGroup>
         <Animatable key="collapsible" cachable={['height']}>

@@ -1,12 +1,18 @@
-import { classes } from "../../../src/core/utils";
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidSize, FluidStyles } from "../../../src/types";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef } from "react";
+import { createStyles } from "../../core/style";
 
 export type SkeletonStyles = FluidStyles<'.skeleton' | '.skeleton__rad__xsm' | '.skeleton__rad__sml' | '.skeleton__rad__med' | '.skeleton__rad__lrg' | '.skeleton__rad__max'>;
 
-const Skeleton = forwardRef(({ styles = {}, w, h, radius = 'sml', ...props }: { styles?: SkeletonStyles; w?: number; h?: number; radius?: FluidSize | 'max'; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: any) => {
-    const style = useStyles(styles, {
+const Skeleton = forwardRef(({ cc = {}, w, h, radius = 'sml', ...props }:
+    {
+        cc?: Selectors<'skeleton' | 'skeleton__rad__xsm' | 'skeleton__rad__sml' | 'skeleton__rad__med' | 'skeleton__rad__lrg' | 'skeleton__rad__max'>;
+        w?: number;
+        h?: number;
+        radius?: FluidSize | 'max';
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: any) => {
+    const styles = createStyles('skeleton', {
         '@keyframes skeleton-loading': {
             '0%': {
                 backgroundPosition: '100% 100%'
@@ -42,6 +48,7 @@ const Skeleton = forwardRef(({ styles = {}, w, h, radius = 'sml', ...props }: { 
             borderRadius: '999px'
         }
     });
+    const style = combineClasses(styles, cc);
 
     return <div ref={ref} {...props} className={classes(
         style.skeleton,

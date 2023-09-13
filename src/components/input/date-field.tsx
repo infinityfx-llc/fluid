@@ -2,26 +2,28 @@
 
 import { forwardRef, useState } from 'react';
 import Field, { FieldProps } from './field';
-import useStyles from '../../../src/hooks/use-styles';
 import { Animatable } from '@infinityfx/lively';
 import { Move } from '@infinityfx/lively/animations';
 import Calendar from './calendar';
 import Popover from '../layout/popover';
+import { createStyles } from '../../core/style';
+import { combineClasses } from '../../core/utils';
 
-const DateField = forwardRef(({ styles = {}, value, defaultValue = new Date(), onChange, disabled, ...props }:
+const DateField = forwardRef(({ cc = {}, value, defaultValue = new Date(), onChange, disabled, ...props }:
     {
         value?: Date;
         defaultValue?: Date;
         onChange?: (value: Date) => void;
         disabled?: boolean | Date[];
     } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('date-field', {
         '.calendar': {
             boxShadow: '0 0 8px rgb(0, 0, 0, .06)',
             border: 'solid 1px var(--f-clr-grey-100)',
             backgroundColor: 'var(--f-clr-bg-100)'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const [state, setState] = value !== undefined ? [value] : useState(defaultValue);
     const [partial, setPartial] = useState<string | null>(null);

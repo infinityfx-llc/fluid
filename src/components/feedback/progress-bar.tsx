@@ -1,16 +1,23 @@
 'use client';
 
-import { classes } from "../../../src/core/utils";
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidSize, FluidStyles } from "../../../src/types";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { forwardRef, useEffect } from "react";
+import { createStyles } from "../../core/style";
 
 export type ProgressBarStyles = FluidStyles<'.track' | '.progress' | '.track__xsm' | '.track__sml' | '.track__med' | '.track__lrg'>;
 
-const ProgressBar = forwardRef(({ styles = {}, size = 'med', value, defaultValue = 0, color, ...props }: { styles?: ProgressBarStyles; size?: FluidSize; value?: number; defaultValue?: number; color?: string; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+const ProgressBar = forwardRef(({ cc = {}, size = 'med', value, defaultValue = 0, color, ...props }:
+    {
+        cc?: Selectors<'track' | 'progress' | 'track__xsm' | 'track__sml' | 'track__med' | 'track__lrg'>;
+        size?: FluidSize;
+        value?: number;
+        defaultValue?: number;
+        color?: string;
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const styles = createStyles('progress-bar', {
         '.track': {
             height: '.4em',
             width: 'clamp(0px, 12em, 100vw)',
@@ -43,6 +50,7 @@ const ProgressBar = forwardRef(({ styles = {}, size = 'med', value, defaultValue
             fontSize: 'var(--f-font-size-med)'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const state = value !== undefined ? value : defaultValue;
     const [link, setLink] = useLink(state);

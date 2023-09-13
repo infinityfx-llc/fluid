@@ -5,19 +5,20 @@ import { Halo } from "../../feedback";
 import Collapsible from "../collapsible";
 import { Animatable } from "@infinityfx/lively";
 import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
-import { useStyles } from "../../../../src/hooks";
-import { FluidStyles } from "../../../../src/types";
+import { FluidStyles, Selectors } from "../../../../src/types";
 import { useAccordion } from "./root";
 import { classes } from "../../../../src/utils";
+import { createStyles } from "../../../core/style";
+import { combineClasses } from "../../../core/utils";
 
-const Item = forwardRef(({ children, styles = {}, label, defaultOpen = false, disabled, ...props }:
+const Item = forwardRef(({ children, cc = {}, label, defaultOpen = false, disabled, ...props }:
     {
-        styles?: FluidStyles;
+        cc?: Selectors<'button' | 'content' | 'icon' | 'arrows'>;
         label: React.ReactNode;
         defaultOpen?: boolean;
         disabled?: boolean;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('accordion.item', {
         '.button': {
             position: 'relative',
             borderRadius: 'var(--f-radius-sml)',
@@ -55,30 +56,21 @@ const Item = forwardRef(({ children, styles = {}, label, defaultOpen = false, di
             flexDirection: 'column'
         }
     });
+    const style = combineClasses(styles, cc);
 
-    const mounted = useRef(false);
     const id = useId();
-    const { open, setOpen, multiple } = useAccordion();
-    const idx = open.indexOf(id);
-    const isOpen = mounted.current ? idx >= 0 : defaultOpen;
+    const { open, toggle } = useAccordion();
+    const mounted = useRef(false);
+    const isOpen = mounted.current ? open.indexOf(id) >= 0 : defaultOpen;
 
     useEffect(() => {
-        if (defaultOpen) toggle(true); // doesnt work for multiple (cause multiple state updates same tick)
+        if (defaultOpen) toggle(id, true);
         mounted.current = true;
     }, []);
 
-    function toggle(value: boolean) {
-        if (!multiple) return setOpen(value ? [id] : []);
-
-        const arr = open.slice();
-        value ? arr.push(id) : (idx >= 0 && arr.splice(idx, 1));
-
-        setOpen(arr);
-    }
-
     return <>
         <Halo disabled={disabled}>
-            <button disabled={disabled} className={style.button} type="button" aria-expanded={isOpen} aria-controls={id} onClick={() => toggle(!isOpen)}>
+            <button disabled={disabled} className={style.button} type="button" aria-expanded={isOpen} aria-controls={id} onClick={() => toggle(id, !isOpen)}>
                 {label}
 
                 <div className={style.icon}>

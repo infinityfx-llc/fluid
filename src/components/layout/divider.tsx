@@ -1,19 +1,19 @@
-import { classes } from "../../../src/core/utils";
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidSize, FluidStyles } from "../../../src/types";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef } from "react";
+import { createStyles } from "../../core/style";
 
 export type DividerStyles = FluidStyles<'.divider' | '.line'>;
 
-const Divider = forwardRef(({ styles = {}, vertical = false, label, labelPosition = 'center', size = 'med', ...props }:
+const Divider = forwardRef(({ cc = {}, vertical = false, label, labelPosition = 'center', size = 'med', ...props }:
     {
-        styles?: FluidStyles;
+        cc?: Selectors<'divider' | 'line'>;
         vertical?: boolean;
         label?: string;
         labelPosition?: 'start' | 'center' | 'end';
         size?: FluidSize;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('divider', {
         '.divider': {
             display: 'flex',
             alignItems: 'center',
@@ -41,6 +41,7 @@ const Divider = forwardRef(({ styles = {}, vertical = false, label, labelPositio
             width: '1px'
         },
     });
+    const style = combineClasses(styles, cc);
 
     return <div ref={ref} {...props} role="separator" aria-orientation={vertical ? 'vertical' : 'horizontal'}
         className={classes(style.divider, props.className)}

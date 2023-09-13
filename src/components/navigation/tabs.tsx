@@ -1,12 +1,12 @@
 'use client';
 
-import { FluidInputvalue, FluidStyles } from "../../../src/types";
+import { FluidInputvalue, FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef, useId, useState } from "react";
 import Halo from "../feedback/halo";
-import useStyles from "../../../src/hooks/use-styles";
 import { Morph } from "@infinityfx/lively/layout";
-import { classes } from "../../../src/core/utils";
+import { classes, combineClasses } from "../../../src/core/utils";
 import Scrollarea from "../layout/scrollarea";
+import { createStyles } from "../../core/style";
 
 export type TabsStyles = FluidStyles<'.wrapper' | '.tabs' | '.option' | '.selection' | '.button' | '.wrapper__var__default' | '.wrapper__var__minimal'>;
 
@@ -17,15 +17,15 @@ type TabsProps<T> = {
         disabled?: boolean;
         panelId?: string;
     }[];
-    styles?: TabsStyles;
+    cc?: Selectors<'wrapper' | 'tabs' | 'option' | 'selection' | 'button' | 'wrapper__var__default' | 'wrapper__var__minimal'>;
     variant?: 'default' | 'minimal';
     value?: T;
     defaultValue?: T;
     onChange?: (value: T) => void;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>;
 
-function TabsComponent<T extends FluidInputvalue>({ options, styles = {}, variant = 'default', value, defaultValue, onChange, ...props }: TabsProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
-    const style = useStyles(styles, {
+function TabsComponent<T extends FluidInputvalue>({ options, cc = {}, variant = 'default', value, defaultValue, onChange, ...props }: TabsProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
+    const styles = createStyles('tabs', {
         '.wrapper__var__default': {
             backgroundColor: 'var(--f-clr-fg-100)',
             borderRadius: 'var(--f-radius-sml)'
@@ -83,6 +83,7 @@ function TabsComponent<T extends FluidInputvalue>({ options, styles = {}, varian
             color: 'var(--f-clr-grey-500)'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const id = useId();
     const [state, setState] = value !== undefined ? [value] : useState<FluidInputvalue>(defaultValue || options[0]?.value);

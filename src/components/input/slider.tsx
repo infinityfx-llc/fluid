@@ -1,16 +1,16 @@
 'use client';
 
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidStyles } from "../../../src/types";
+import { FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef, useId, useRef, useState, useEffect } from "react";
 import Halo from "../feedback/halo";
-import { classes, round, toNumber } from "../../../src/core/utils";
+import { classes, combineClasses, round, toNumber } from "../../../src/core/utils";
 import Tooltip from "../display/tooltip";
 import useInputProps from "../../../src/hooks/use-input-props";
+import { createStyles } from "../../core/style";
 
-const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, tooltips = 'interact', formatTooltip, label, value, defaultValue, onChange, ...props }:
+const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 'interact', formatTooltip, label, value, defaultValue, onChange, ...props }:
     {
-        styles?: FluidStyles;
+        cc?: Selectors<'wrapper' | 'label' | 'slider' | 'track' | 'progress' | 'handle' | 'halo'>;
         handles?: number;
         vertical?: boolean;
         tooltips?: 'never' | 'interact' | 'always';
@@ -20,7 +20,7 @@ const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, tooltip
         defaultValue?: number[];
         onChange?: (values: number[]) => void;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<any>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('slider', {
         '.wrapper': {
             display: 'flex',
             flexDirection: 'column'
@@ -122,8 +122,13 @@ const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, tooltip
 
         '.slider[data-disabled="true"] .progress': {
             backgroundColor: 'var(--f-clr-grey-300)'
+        },
+
+        '.halo': {
+            inset: '-.5em !important'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const id = useId();
     const track = useRef<HTMLDivElement | null>(null);
@@ -229,7 +234,7 @@ const Slider = forwardRef(({ styles = {}, handles = 1, vertical = false, tooltip
                 const val = values[i];
 
                 return <Tooltip key={i} delay={0} content={formatTooltip ? formatTooltip(round(val, 2)) : round(val, 2)} visibility={tooltips} position={vertical ? 'right' : 'bottom'}>
-                    <Halo disabled={props.disabled} styles={{ '.halo': { inset: '-.5em' } }}>
+                    <Halo disabled={props.disabled} cc={{ halo: style.halo }}>
                         <div className={style.handle} role="slider" tabIndex={props.disabled ? -1 : 0} aria-disabled={!!props.disabled}
                             onMouseDown={e => {
                                 e.stopPropagation();

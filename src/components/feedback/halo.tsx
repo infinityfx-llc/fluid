@@ -1,23 +1,23 @@
 'use client';
 
-import { classes, combineRefs } from "../../../src/core/utils";
-import useStyles from "../../../src/hooks/use-styles";
-import { FluidStyles } from "../../../src/types";
+import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
+import { FluidStyles, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink, useTrigger } from "@infinityfx/lively/hooks";
 import { Children, cloneElement, forwardRef, isValidElement, useRef } from "react";
+import { createStyles } from "../../core/style";
 
-export type HaloStyles = FluidStyles<'.halo' | '.ring'>;
+export type HaloStyles = FluidStyles<'.container' | '.halo' | '.ring'>;
 
-const Halo = forwardRef(<T extends React.ReactElement>({ children, styles = {}, color, hover = true, disabled = false, ...props }:
+const Halo = forwardRef(<T extends React.ReactElement>({ children, cc = {}, color, hover = true, disabled = false, ...props }:
     {
         children: T;
-        styles?: HaloStyles;
+        cc?: Selectors<'container' | 'halo' | 'ring'>;
         color?: string;
         hover?: boolean;
         disabled?: boolean;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<T>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('halo', {
         '.container': {
             zIndex: 0
         },
@@ -66,6 +66,7 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, styles = {}, 
             zIndex: -1
         }
     });
+    const style = combineClasses(styles, cc);
 
     const container = useRef<HTMLElement>(null);
     const click = useTrigger();

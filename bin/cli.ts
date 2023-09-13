@@ -2,7 +2,6 @@
 
 import compile from "./compile.js";
 import packageJson from '../package.json';
-import unlink from "./unlink.js";
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -10,9 +9,6 @@ const command = args[0];
 switch (command) {
     case 'compile':
         compile();
-        break;
-    case 'unlink':
-        unlink();
         break;
     case 'help':
         console.log();

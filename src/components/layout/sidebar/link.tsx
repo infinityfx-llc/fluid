@@ -2,16 +2,16 @@
 
 import { Children, forwardRef, useState } from 'react';
 import Halo from '../../feedback/halo';
-import useStyles from '../../../../src/hooks/use-styles';
-import { FluidStyles } from '../../../../src/types';
-import { classes } from '../../../../src/core/utils';
+import { FluidStyles, Selectors } from '../../../../src/types';
+import { classes, combineClasses } from '../../../../src/core/utils';
 import Toggle from '../../input/toggle';
 import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import Collapsible from '../collapsible';
+import { createStyles } from '../../../core/style';
 
-const Link = forwardRef(({ children, styles = {}, label, icon, right, active = false, round = false, variant = 'default', disabled = false, ...props }:
+const Link = forwardRef(({ children, cc = {}, label, icon, right, active = false, round = false, variant = 'default', disabled = false, ...props }:
     {
-        styles?: FluidStyles;
+        cc?: Selectors<'link' | 'content' | 'sublinks'>;
         label: string;
         icon: React.ReactNode;
         right?: React.ReactNode;
@@ -19,7 +19,7 @@ const Link = forwardRef(({ children, styles = {}, label, icon, right, active = f
         variant?: 'default' | 'light',
         round?: boolean;
     } & React.ButtonHTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('sidebar.link', {
         '.link': {
             position: 'relative',
             outline: 'none',
@@ -91,6 +91,7 @@ const Link = forwardRef(({ children, styles = {}, label, icon, right, active = f
             flexShrink: 0
         }
     });
+    const style = combineClasses(styles, cc);
 
     const [open, setOpen] = useState(false);
     const count = Children.count(children);
@@ -105,7 +106,7 @@ const Link = forwardRef(({ children, styles = {}, label, icon, right, active = f
 
                     {count ? <Toggle size="sml" round={round} checked={open} checkedContent={<MdExpandLess />} onChange={e => {
                         e.stopPropagation();
-                        
+
                         setOpen(e.target.checked);
                     }} style={{ marginRight: '-.2em' }}>
                         <MdExpandMore />

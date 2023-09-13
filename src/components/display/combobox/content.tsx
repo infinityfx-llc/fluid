@@ -7,20 +7,20 @@ import Field from '../../input/field';
 import { MdSearch } from 'react-icons/md';
 import { Animatable } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
-import { classes } from '../../../../src/core/utils';
-import { FluidStyles } from '../../../../src/types';
-import { useStyles } from '../../../../src/hooks';
+import { classes, combineClasses } from '../../../../src/core/utils';
+import { FluidStyles, Selectors } from '../../../../src/types';
+import { createStyles } from '../../../core/style';
 
-type ComboboxContentStyles = FluidStyles<'.container' | '.content' | '.message'>;
+export type ComboboxContentStyles = FluidStyles<'.container' | '.content' | '.message' | '.wrapper' | '.field'>;
 
-const Content = forwardRef(({ children, styles = {}, searchable, placeholder = 'Search..', emptyMessage = 'Nothing found', ...props }:
+const Content = forwardRef(({ children, cc = {}, searchable, placeholder = 'Search..', emptyMessage = 'Nothing found', ...props }:
     {
-        styles?: ComboboxContentStyles;
+        cc?: Selectors<'container' | 'content' | 'message' | 'wrapper' | 'field'>;
         searchable?: boolean;
         placeholder?: string;
         emptyMessage?: string;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('combobox.content', {
         '.container': {
             background: 'var(--f-clr-bg-100)',
             border: 'solid 1px var(--f-clr-fg-200)',
@@ -48,8 +48,20 @@ const Content = forwardRef(({ children, styles = {}, searchable, placeholder = '
             alignItems: 'center',
             justifyContent: 'center',
             color: 'var(--f-clr-grey-500)'
+        },
+
+        '.field': {
+            border: 'none !important',
+            borderRadius: '0 !important',
+            borderBottom: 'solid 1px var(--f-clr-fg-200) !important',
+            backgroundColor: 'var(--f-clr-bg-100) !important'
+        },
+
+        '.wrapper': {
+            width: 'auto !important'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const selected = useRef(searchable ? 0 : -1);
     const options = useRef<HTMLElement[]>([]);
@@ -96,18 +108,7 @@ const Content = forwardRef(({ children, styles = {}, searchable, placeholder = '
                         setSearch(e.target.value);
                     }}
                     icon={<MdSearch />}
-                    styles={{ // merge with outer styles
-                        '.field': {
-                            border: 'none',
-                            borderRadius: 0,
-                            borderBottom: 'solid 1px var(--f-clr-fg-200) !important',
-                            backgroundColor: 'var(--f-clr-bg-100)'
-                        },
-
-                        '.wrapper': {
-                            width: 'auto'
-                        }
-                    }} />}
+                    cc={{ wrapper: style.wrapper, field: style.field }} />}
 
                 <Scrollarea className={style.content}>
                     <div className={style.options}>

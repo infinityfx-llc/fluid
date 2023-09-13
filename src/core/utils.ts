@@ -7,8 +7,6 @@ export const toNumber = (val: any, fallback: number): number => {
     return val === undefined || isNaN(val) ? fallback : val;
 }
 
-
-
 export function mergeRecursive<T = any, P = any>(a: T, b: P) {
     if (a === undefined) return b as Merged<T, P>;
     if (typeof a !== 'object' || Array.isArray(a)) return a as Merged<T, P>;
@@ -25,6 +23,16 @@ export function classes(...args: any[]) {
     return args.filter(val => typeof val === 'string').join(' ');
 }
 
+export function combineClasses(initial: Selectors, override: Selectors) {
+    const combined = Object.assign({}, initial);
+
+    for (const key in override) {
+        key in initial ? combined[key] += ` ${override[key]}` : combined[key] = override[key];
+    }
+
+    return combined;
+}
+
 export function combineRefs(...refs: React.Ref<any>[]) {
     return (el: any) => {
         refs.forEach(ref => {
@@ -32,6 +40,37 @@ export function combineRefs(...refs: React.Ref<any>[]) {
             if (ref instanceof Function) ref(el);
         });
     };
+}
+
+export function hashStyles(...styles: FluidStyles[]) {
+    const str = JSON.stringify(styles);
+
+    let l = 0xdeadbeef, r = 0x41c6ce57;
+    for (let i = 0, char; i < str.length; i++) {
+        char = str.charCodeAt(i);
+
+        l = Math.imul(l ^ char, 2654435761);
+        r = Math.imul(r ^ char, 1597334677);
+    }
+
+    l = Math.imul(l ^ (l >>> 16), 2246822507) ^ Math.imul(r ^ (r >>> 13), 3266489909);
+    r = Math.imul(r ^ (r >>> 16), 2246822507) ^ Math.imul(l ^ (l >>> 13), 3266489909);
+
+    l = 4294967296 * (2097151 & r) + (l >>> 0);
+    return l.toString(16).slice(-8).padStart(8, '0');
+}
+
+export function mergeStyles(...styles: FluidStyles[]) {
+    const merged: FluidStyles = {};
+
+    for (const ruleset of styles) {
+        for (const selector in ruleset) {
+            const value = mergeRecursive(merged[selector], ruleset[selector]);
+            if (value !== undefined) merged[selector] = value;
+        }
+    }
+
+    return merged;
 }
 
 export function rulesToString__EXP(ruleset: React.CSSProperties | { [key: string]: React.CSSProperties } | FluidStyles, postfix?: string, selectors: Selectors = {}): { rules: string; selectors: Selectors; } {
@@ -59,29 +98,6 @@ export function rulesToString__EXP(ruleset: React.CSSProperties | { [key: string
     }, '');
 
     return { rules, selectors };
-}
-
-export function ruleToString(selector: string, rules: React.CSSProperties | { [key: string]: React.CSSProperties }, selectors: Selectors, postfix?: string): string {
-    const prefixed = (postfix ?
-        selector.split(/((?::global\()?[.#][\w\-_][\w\d\-_]*)/gi)
-            .reduce((prefixed, seg) => {
-                if (/^[.#]/.test(seg)) {
-                    const name = seg.slice(1);
-                    selectors[name] = `${name}__${postfix}`;
-                    seg = `${seg}__${postfix}`;
-                }
-
-                return prefixed + seg;
-            }, '') :
-        selector)
-        .replace(/:global\((.+?)\)/g, '$1');
-
-    return `${prefixed}{${Object.entries(rules).reduce((str, [attr, value]) => {
-        if (typeof value === 'object') return str + ruleToString(attr, value, selectors, postfix);
-        if (value === undefined) return str;
-
-        return str + `${attr.replace(/(.?)([A-Z])/g, '$1-$2').toLowerCase()}:${value};`;
-    }, '')}}`;
 }
 
 export function cookies() {

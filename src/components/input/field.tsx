@@ -1,14 +1,14 @@
 'use client';
 
-import { classes } from '../../../src/core/utils';
+import { classes, combineClasses } from '../../../src/core/utils';
 import useInputProps from '../../../src/hooks/use-input-props';
-import useStyles from '../../../src/hooks/use-styles';
-import { FluidError, FluidInputvalue, FluidSize, FluidStyles } from '../../../src/types';
+import { FluidError, FluidInputvalue, FluidSize, FluidStyles, Selectors } from '../../../src/types';
 import { forwardRef, useId } from 'react';
+import { createStyles } from '../../core/style';
 
 export type FieldProps = {
     defaultValue?: FluidInputvalue;
-    styles?: FluidStyles;
+    cc?: Selectors<'wrapper' | 'input' | 'field' | 'content' | 'label' | 'error' | 'wrapper__xsm' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg' | 'wrapper__round'>;
     round?: boolean;
     size?: FluidSize;
     error?: FluidError;
@@ -21,8 +21,8 @@ export type FieldProps = {
     inputRef?: React.Ref<HTMLInputElement>;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>;
 
-const Field = forwardRef(({ styles = {}, round = false, size = 'med', error, showError, icon, label, left, right, onEnter, inputRef, ...props }: FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+const Field = forwardRef(({ cc = {}, round = false, size = 'med', error, showError, icon, label, left, right, onEnter, inputRef, ...props }: FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const styles = createStyles('field', {
         '.wrapper': {
             display: 'flex',
             flexDirection: 'column',
@@ -100,34 +100,40 @@ const Field = forwardRef(({ styles = {}, round = false, size = 'med', error, sho
             color: 'var(--f-clr-grey-500)'
         },
 
-        '.wrapper[data-size="xsm"]': {
+        '.wrapper__xsm': {
             fontSize: 'var(--f-font-size-xxs)'
         },
 
-        '.wrapper[data-size="sml"]': {
+        '.wrapper__sml': {
             fontSize: 'var(--f-font-size-xsm)'
         },
 
-        '.wrapper[data-size="med"]': {
+        '.wrapper__med': {
             fontSize: 'var(--f-font-size-sml)'
         },
 
-        '.wrapper[data-size="lrg"]': {
+        '.wrapper__lrg': {
             fontSize: 'var(--f-font-size-med)'
         },
 
-        '.field[data-round="true"]': {
+        '.wrapper__round .field': {
             borderRadius: '999px'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const id = useId();
     const [split, rest] = useInputProps(props);
 
-    return <div ref={ref} {...rest} className={classes(style.wrapper, props.className)} data-size={size}>
+    return <div ref={ref} {...rest} className={classes(
+        style.wrapper,
+        style[`wrapper__${size}`],
+        round && style.wrapper__round,
+        props.className
+    )}>
         {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
 
-        <div className={style.field} data-error={!!error} data-disabled={props.disabled} data-round={round}>
+        <div className={style.field} data-error={!!error} data-disabled={props.disabled}>
             {left}
 
             <label className={style.content}>

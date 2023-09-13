@@ -4,17 +4,17 @@ import { forwardRef, useRef, useState, useId } from 'react';
 import { FieldProps } from './field';
 import Button from './button';
 import { MdCheck, MdUnfoldMore } from 'react-icons/md';
-import { FluidInputvalue, FluidStyles, PopoverRootReference } from '../../../src/types';
-import { classes } from '../../../src/core/utils';
+import { FluidInputvalue, FluidStyles, PopoverRootReference, Selectors } from '../../../src/types';
+import { classes, combineClasses } from '../../../src/core/utils';
 import Badge from '../display/badge';
 import Combobox from '../display/combobox';
 import useInputProps from '../../../src/hooks/use-input-props';
-import { useStyles } from '../../../src/hooks';
+import { createStyles } from '../../core/style';
 
 export type SelectStyles = FluidStyles<'.wrapper' | '.label' | '.error' | '.field' | '.content' | '.placeholder' | '.badge'>;
 
 type SelectProps<T> = {
-    styles?: SelectStyles;
+    cc?: Selectors<'wrapper' | 'label' | 'error' | 'field' | 'content' | 'placeholder' | 'wrapper__xsm' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg' | 'wrapper__round' | 'badge'>;
     options: {
         label: string;
         value: FluidInputvalue;
@@ -30,7 +30,7 @@ type SelectProps<T> = {
 
 function SelectComponent<T extends FluidInputvalue>(
     {
-        styles = {},
+        cc = {},
         options,
         multiple = false,
         searchable,
@@ -49,7 +49,7 @@ function SelectComponent<T extends FluidInputvalue>(
         round,
         ...props
     }: SelectProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
-    const style = useStyles(styles, {
+    const styles = createStyles('select', {
         '.wrapper': {
             display: 'flex',
             flexDirection: 'column',
@@ -149,40 +149,39 @@ function SelectComponent<T extends FluidInputvalue>(
             width: 0
         },
 
-        '.wrapper[data-size="xsm"]': {
+        '.wrapper__xsm': {
             fontSize: 'var(--f-font-size-xxs)'
         },
 
-        '.wrapper[data-size="sml"]': {
+        '.wrapper__sml': {
             fontSize: 'var(--f-font-size-xsm)'
         },
 
-        '.wrapper[data-size="med"]': {
+        '.wrapper__med': {
             fontSize: 'var(--f-font-size-sml)'
         },
 
-        '.wrapper[data-size="lrg"]': {
+        '.wrapper__lrg': {
             fontSize: 'var(--f-font-size-med)'
         },
 
-        '.field[data-round="true"]': {
+        '.wrapper__round .field': {
             borderRadius: '999px'
+        },
+
+        '.badge': {
+            backgroundColor: 'var(--f-clr-fg-200) !important'
+        },
+
+        '.field[data-error="true"] .badge': {
+            backgroundColor: 'var(--f-clr-error-400) !important'
+        },
+
+        '.field[data-disabled="true"] .badge': {
+            backgroundColor: 'var(--f-clr-grey-200) !important'
         }
     });
-
-    const BadgeStyles = { // merge with select styles
-        '.badge': {
-            backgroundColor: 'var(--f-clr-fg-200)'
-        },
-
-        [`:global(.${style.field}[data-error="true"]) .badge`]: {
-            backgroundColor: 'var(--f-clr-error-400)'
-        },
-
-        [`:global(.${style.field}[data-disabled="true"]) .badge`]: {
-            backgroundColor: 'var(--f-clr-grey-200)'
-        }
-    };
+    const style = combineClasses(styles, cc);
 
     const id = useId();
     const popover = useRef<PopoverRootReference>(null);
@@ -190,11 +189,16 @@ function SelectComponent<T extends FluidInputvalue>(
     const [split, rest] = useInputProps(props);
 
     return <Combobox.Root ref={popover} stretch>
-        <div ref={ref} {...rest} className={classes(style.wrapper, props.className)} data-size={size} aria-haspopup="listbox">
+        <div ref={ref} {...rest} className={classes(
+            style.wrapper,
+            style[`wrapper__${size}`],
+            round && style.wrapper__round,
+            props.className
+        )} aria-haspopup="listbox">
             {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
 
             <Combobox.Trigger disabled={props.disabled || readOnly}>
-                <div className={style.field} data-error={!!error} data-disabled={props.disabled} data-round={round}>
+                <div className={style.field} data-error={!!error} data-disabled={props.disabled}>
                     <div className={style.content_wrapper}>
                         {icon}
 
@@ -203,10 +207,10 @@ function SelectComponent<T extends FluidInputvalue>(
 
                             {Array.isArray(state) ?
                                 (state.length < 3 ?
-                                    state.map((val, i) => <Badge key={i} round={round} styles={BadgeStyles}>{val}</Badge>) :
+                                    state.map((val, i) => <Badge key={i} round={round} cc={{ badge: style.badge }}>{val}</Badge>) :
                                     <>
-                                        <Badge round={round} styles={BadgeStyles}>{state[0]}</Badge>
-                                        <Badge round={round} styles={BadgeStyles}>+{state.length - 1} more</Badge>
+                                        <Badge round={round} cc={{ badge: style.badge }}>{state[0]}</Badge>
+                                        <Badge round={round} cc={{ badge: style.badge }}>+{state.length - 1} more</Badge>
                                     </>
                                 ) :
                                 options.find(option => option.value === state)?.label // TESTING!!

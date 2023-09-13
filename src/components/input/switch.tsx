@@ -1,15 +1,15 @@
-import { classes } from '../../../src/core/utils';
-import useStyles from '../../../src/hooks/use-styles';
-import { FluidError, FluidSize, FluidStyles } from '../../../src/types';
+import { classes, combineClasses } from '../../../src/core/utils';
+import { FluidError, FluidSize, FluidStyles, Selectors } from '../../../src/types';
 import { forwardRef } from 'react';
 import Halo from '../feedback/halo';
 import useInputProps from '../../../src/hooks/use-input-props';
+import { createStyles } from '../../core/style';
 
 // variant
 
-const Switch = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', round = true, iconOff, iconOn, ...props }:
+const Switch = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', round = true, iconOff, iconOn, ...props }:
     {
-        styles?: FluidStyles;
+        cc?: Selectors<'wrapper' | 'input' | 'switch' | 'icons' | 'icon' | 'hanlde' | 'wrapper__xsm' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg' | 'wrapper__round' | 'halo'>;
         error?: FluidError;
         size?: FluidSize;
         color?: string;
@@ -17,24 +17,24 @@ const Switch = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-
         iconOff?: React.ReactNode;
         iconOn?: React.ReactNode;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('switch', {
         '.wrapper': {
             position: 'relative'
         },
 
-        '.wrapper[data-size="xsm"]': {
+        '.wrapper__xsm': {
             fontSize: 'var(--f-font-size-xxs)'
         },
 
-        '.wrapper[data-size="sml"]': {
+        '.wrapper__sml': {
             fontSize: 'var(--f-font-size-xsm)'
         },
 
-        '.wrapper[data-size="med"]': {
+        '.wrapper__med': {
             fontSize: 'var(--f-font-size-sml)'
         },
 
-        '.wrapper[data-size="lrg"]': {
+        '.wrapper__lrg': {
             fontSize: 'var(--f-font-size-med)'
         },
 
@@ -100,11 +100,11 @@ const Switch = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-
             translate: '100% 0%'
         },
 
-        '.wrapper[data-round="true"] .switch': {
+        '.wrapper__round .switch': {
             borderRadius: '999px'
         },
 
-        '.wrapper[data-round="true"] .handle': {
+        '.wrapper__round .handle': {
             borderRadius: '999px'
         },
 
@@ -120,15 +120,26 @@ const Switch = forwardRef(({ styles = {}, error, size = 'med', color = 'var(--f-
             backgroundColor: 'var(--f-clr-grey-200)'
         },
 
-        '.wrapper[data-round="true"] .halo': {
+        '.wrapper__round .halo': {
             borderRadius: '999px'
+        },
+
+        '.halo': {
+            borderRadius: 'var(--f-radius-sml) !important',
+            inset: '-.5em !important'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const [split, rest] = useInputProps(props);
 
-    return <Halo hover={false} styles={{ '.halo': { borderRadius: 'var(--f-radius-sml)', inset: '-.5em' } }}>
-        <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-size={size} data-round={round} data-error={!!error}>
+    return <Halo hover={false} cc={{ halo: style.halo }}>
+        <div ref={ref} {...rest} className={classes(
+            style.wrapper,
+            style[`wrapper__${size}`],
+            round && style.wrapper__round,
+            rest.className
+        )} data-error={!!error}>
             <input {...split} type="checkbox" className={style.input} aria-invalid={!!error} />
 
             <div className={style.switch} style={!split.disabled ? { backgroundColor: color } : undefined}> {/* and when checked */}

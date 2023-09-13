@@ -1,21 +1,21 @@
-import useStyles from "../../../src/hooks/use-styles";
 import { forwardRef } from "react";
 import Halo from "../feedback/halo";
-import { classes } from "../../../src/core/utils";
-import { FluidSize, FluidStyles } from "../../../src/types";
+import { classes, combineClasses } from "../../../src/core/utils";
+import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
 import Spinner from "../feedback/spinner";
+import { createStyles } from "../../core/style";
 
 export type ButtonStyles = FluidStyles<'.button' | '.content' | '.loader' | '.button__round' | '.button__xsm' | '.button__sml' | '.button__med' | '.button__lrg' | '.button__var__default' | '.button__var__neutral' | '.button__var__light' | '.button__var__minimal'>;
 
-const Button = forwardRef(({ children, styles = {}, round = false, size = 'med', variant = 'default', loading = false, ...props }:
+const Button = forwardRef(({ children, cc = {}, round = false, size = 'med', variant = 'default', loading = false, ...props }:
     {
-        styles?: ButtonStyles;
+        cc?: Selectors<'button' | 'content' | 'loader' | 'button__round' | 'button__xsm' | 'button__sml' | 'button__med' | 'button__lrg' | 'button__var__default' | 'button__var__neutral' | 'button__var__light' | 'button__var__minimal'>;
         round?: boolean;
         size?: FluidSize;
         variant?: 'default' | 'neutral' | 'light' | 'minimal';
         loading?: boolean;
     } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('button', {
         '.button': {
             position: 'relative',
             border: 'none',
@@ -94,6 +94,7 @@ const Button = forwardRef(({ children, styles = {}, round = false, size = 'med',
             stroke: 'var(--f-clr-text-200) !important'
         }
     });
+    const style = combineClasses(styles, cc);
 
     return <Halo disabled={props.disabled || loading}>
         <button ref={ref} {...props} type={props.type || 'button'} disabled={props.disabled || loading}

@@ -1,13 +1,14 @@
 'use client';
 
-import { useStyles } from "../../../../src/hooks";
-import { FluidStyles } from "../../../../src/types";
+import { FluidStyles, Selectors } from "../../../../src/types";
 import { classes } from "../../../../src/utils";
-import { createContext, forwardRef, useContext, useState, Children, Fragment } from "react";
+import { createContext, forwardRef, useContext, useState, useRef, Children, Fragment } from "react";
+import { createStyles } from "../../../core/style";
+import { combineClasses } from "../../../core/utils";
 
 export const AccordionContext = createContext<{
     open: string[];
-    setOpen: (value: string[]) => void;
+    toggle: (id: string, open: boolean) => void;
     multiple: boolean;
 } | null>(null);
 
@@ -19,13 +20,13 @@ export function useAccordion() {
     return context;
 }
 
-const Root = forwardRef(({ children, styles = {}, multiple = false, variant = 'default', ...props }:
+const Root = forwardRef(({ children, cc = {}, multiple = false, variant = 'default', ...props }:
     {
-        styles?: FluidStyles;
+        cc?: Selectors<'accordion' | 'divider'>;
         multiple?: boolean;
         variant?: 'default' | 'minimal';
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('accordion.root', {
         '.accordion': {
             display: 'flex',
             flexDirection: 'column'
@@ -42,12 +43,26 @@ const Root = forwardRef(({ children, styles = {}, multiple = false, variant = 'd
             backgroundColor: 'var(--f-clr-fg-200)'
         }
     });
+    const style = combineClasses(styles, cc);
 
+    const openRef = useRef<string[]>([]);
     const [open, setOpen] = useState<string[]>([]);
     const arr = Children.toArray(children);
 
+    function toggle(id: string, open: boolean) {
+        if (!multiple) {
+            openRef.current = open ? [id] : [];
+        } else {
+
+            const idx = openRef.current.indexOf(id);
+            open ? (idx < 0 && openRef.current.push(id)) : (idx >= 0 && openRef.current.splice(idx, 1));
+        }
+
+        setOpen(openRef.current.slice());
+    }
+
     return <div ref={ref} {...props} className={classes(style.accordion, props.className)} data-variant={variant}>
-        <AccordionContext.Provider value={{ open, setOpen, multiple }}>
+        <AccordionContext.Provider value={{ open, toggle, multiple }}>
             {arr.map((child, i) => {
 
                 return <Fragment key={i}>

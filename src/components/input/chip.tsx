@@ -1,22 +1,24 @@
 'use client';
 
-import { classes } from '../../../src/core/utils';
+import { classes, combineClasses } from '../../../src/core/utils';
 import useInputProps from '../../../src/hooks/use-input-props';
-import useStyles from '../../../src/hooks/use-styles';
-import { FluidSize, FluidStyles } from '../../../src/types';
+import { FluidSize, FluidStyles, Selectors } from '../../../src/types';
 import { Animatable } from '@infinityfx/lively';
 import { useLink } from '@infinityfx/lively/hooks';
 import { forwardRef, useEffect, useState } from 'react';
 import { Halo } from '../feedback';
+import { createStyles } from '../../core/style';
 
-const Chip = forwardRef(({ children, styles = {}, round = false, size = 'med', variant = 'default', checked, defaultChecked, ...props }:
+// TODO
+
+const Chip = forwardRef(({ children, cc = {}, round = false, size = 'med', variant = 'default', checked, defaultChecked, ...props }:
     {
-        styles?: FluidStyles;
+        cc?: Selectors<'input' | 'wrapper' | 'chip' | 'content' | 'checkmark' | 'input'>;
         round?: boolean;
         size?: Exclude<FluidSize, 'xsm'>;
         variant?: 'default' | 'neutral'; // light variant
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'>, ref: React.ForwardedRef<HTMLLabelElement>) => {
-    const style = useStyles(styles, {
+    const styles = createStyles('chip', {
         '.input': {
             position: 'absolute',
             opacity: 0
@@ -121,8 +123,13 @@ const Chip = forwardRef(({ children, styles = {}, round = false, size = 'med', v
 
         '.wrapper[data-variant="neutral"] .input:disabled + .chip .checkmark': {
             stroke: 'var(--f-clr-grey-500)'
+        },
+
+        '.halo': {
+            inset: '-.5em !important'
         }
     });
+    const style = combineClasses(styles, cc);
 
     const [split, rest] = useInputProps(props);
     const [link, setLink] = useLink(defaultChecked ? 1 : 0);
@@ -130,7 +137,7 @@ const Chip = forwardRef(({ children, styles = {}, round = false, size = 'med', v
 
     useEffect(() => setLink(state ? 1 : 0, .25), [state]);
 
-    return <Halo hover={false} styles={{ '.halo': { inset: '-.5em' } }}>
+    return <Halo hover={false} cc={{ halo: style.halo }}>
         <label ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-round={round} data-size={size} data-variant={variant}>
             <input {...split} checked={state} type="checkbox" className={style.input} onChange={e => {
                 setState?.(e.target.checked);

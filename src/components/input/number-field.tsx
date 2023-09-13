@@ -4,10 +4,28 @@ import { useCallback, useState, forwardRef, useRef } from 'react';
 import Field, { FieldProps } from "./field";
 import { MdAdd, MdRemove } from 'react-icons/md';
 import Button from './button';
-import { round, toNumber } from '../../../src/core/utils';
+import { combineClasses, round, toNumber } from '../../../src/core/utils';
 import { FluidInputvalue } from '../../../src/types';
+import { createStyles } from '../../core/style';
 
-const NumberField = forwardRef(({ styles = {}, precision = 3, controls = true, defaultValue, ...props }: { precision?: number; controls?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const NumberField = forwardRef(({ cc = {}, precision = 3, controls = true, defaultValue, ...props }: { precision?: number; controls?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const styles = createStyles('number-field', {
+        '.button': {
+            borderRadius: '0 !important',
+            alignSelf: 'stretch !important'
+        },
+
+        '.input': {
+            MozAppearance: 'textfield'
+        },
+
+        '.input::-webkit-outer-spin-button, .input::-webkit-inner-spin-button': {
+            WebkitAppearance: 'none',
+            margin: 0
+        }
+    });
+    const style = combineClasses(styles, cc);
+
     const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(defaultValue || '');
 
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -28,14 +46,6 @@ const NumberField = forwardRef(({ styles = {}, precision = 3, controls = true, d
         return num === undefined ? '' : round(num, precision).toString();
     }, [precision]);
 
-    const buttonStyles = {
-        ...styles,
-        '.button': {
-            borderRadius: 0,
-            alignSelf: 'stretch'
-        }
-    };
-
     function increment(amount: number) {
         if (inputRef.current) {
             Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set?.call(inputRef.current, format(value, amount));
@@ -50,21 +60,13 @@ const NumberField = forwardRef(({ styles = {}, precision = 3, controls = true, d
 
             props.onChange?.(e);
         }}
-        styles={{
-            ...styles,
-            '.input': {
-                MozAppearance: 'textfield'
-            },
-
-            '.input::-webkit-outer-spin-button, .input::-webkit-inner-spin-button': {
-                WebkitAppearance: 'none',
-                margin: 0
-            }
+        cc={{
+            input: style.input
         }}
-        left={controls ? <Button variant="minimal" size={props.size} disabled={props.disabled} styles={buttonStyles} onClick={() => increment(-step)}>
+        left={controls ? <Button variant="minimal" size={props.size} disabled={props.disabled} cc={{ button: style.button }} onClick={() => increment(-step)}>
             <MdRemove />
         </Button> : null}
-        right={controls ? <Button variant="minimal" size={props.size} disabled={props.disabled} styles={buttonStyles} onClick={() => increment(step)}>
+        right={controls ? <Button variant="minimal" size={props.size} disabled={props.disabled} cc={{ button: style.button }} onClick={() => increment(step)}>
             <MdAdd />
         </Button> : null} />;
 });
