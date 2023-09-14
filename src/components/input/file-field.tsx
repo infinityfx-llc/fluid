@@ -10,7 +10,7 @@ import { createStyles } from '../../core/style';
 
 const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error, showError, loading = false, ...props }:
     {
-        cc?: Selectors<'wrapper' | 'input' | 'placeholder' | 'field' | 'content'  | 'label' | 'error' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg' | 'wrapper__round'>;
+        cc?: Selectors<'wrapper' | 'input' | 'placeholder' | 'field' | 'content' | 'label' | 'error' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg' | 'wrapper__round'>;
         round?: boolean;
         size?: FluidSize;
         error?: FluidError;
@@ -146,7 +146,7 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
                 <input className={style.placeholder} tabIndex={-1} role="none" value={files.map(file => file.name)} readOnly />
             </div>
 
-            <Button role="none" disabled={props.disabled} round={round} size={size} loading={loading} style={{
+            <Button aria-label={split['aria-label'] || label} disabled={props.disabled} round={round} size={size} loading={loading} style={{
                 marginRight: '.3em'
             }} onClick={() => input.current?.click()}>
                 <MdUpload />
