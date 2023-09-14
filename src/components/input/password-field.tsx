@@ -61,7 +61,7 @@ const PasswordField = forwardRef(({ cc = {}, strengthBar = false, size = 'med', 
                 setValue?.(e.target.value);
                 props.onChange?.(e);
             }}
-            right={<Toggle role="presentation" round={round} size={size} variant="minimal" disabled={props.disabled} checkedContent={<MdVisibilityOff />} checked={visible} onChange={e => setVisible(e.target.checked)} style={{
+            right={<Toggle role="none" round={round} size={size} variant="minimal" disabled={props.disabled} checkedContent={<MdVisibilityOff />} checked={visible} onChange={e => setVisible(e.target.checked)} style={{
                 marginRight: '.3em'
             }}>
                 <MdVisibility />
