@@ -9,16 +9,21 @@ export const STYLE_CONTEXT: {
             selectors: Selectors;
         };
     };
+    COMPONENTS: {
+        [key: string]: FluidStyles;
+    };
     THEME: FluidTheme;
 } = {
     STYLES: {},
+    COMPONENTS: {},
     THEME: DEFAULT_THEME
 };
 
 export function createStyles(key: string, styles: ((fluid: FluidTheme) => FluidStyles) | FluidStyles): Selectors {
     const ruleset = styles instanceof Function ? styles(STYLE_CONTEXT.THEME) : styles;
-    // merge with config file styles (from key)
-    STYLE_CONTEXT.STYLES[key] = rulesToString__EXP(mergeStyles(ruleset, {}), hashStyles(ruleset, {}));
+
+    const override = STYLE_CONTEXT.COMPONENTS[key] || {};
+    STYLE_CONTEXT.STYLES[key] = rulesToString__EXP(mergeStyles(ruleset, override), hashStyles(ruleset, override));
 
     return STYLE_CONTEXT.STYLES[key].selectors;
 }

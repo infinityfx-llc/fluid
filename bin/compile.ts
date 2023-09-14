@@ -17,7 +17,7 @@ export default async function () {
 
     const config = await getConfig();
     STYLE_CONTEXT.THEME = mergeRecursive(config.theme || {}, DEFAULT_THEME);
-    // set component styles from config
+    STYLE_CONTEXT.COMPONENTS = config.components || {};
 
     const entry = fs.readFileSync(DIST_ROOT + 'index.js', { encoding: 'ascii' });
     const components = entry.matchAll(/as\s*(.+?)\s*\}\s*from\s*(?:'|")(.+?)(?:'|");/g);

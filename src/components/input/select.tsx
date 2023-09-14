@@ -217,10 +217,10 @@ function SelectComponent<T extends FluidInputvalue>(
                             }
                         </div>
 
-                        <input {...split} value={state?.toString()} readOnly aria-labelledby={label ? id : undefined} aria-invalid={!!error} className={style.input} />
+                        <input {...split} value={state?.toString()} readOnly aria-labelledby={label ? id : rest['aria-label']} aria-invalid={!!error} className={style.input} />
                     </div>
 
-                    <Button round={round} size={size} disabled={props.disabled || readOnly} variant="minimal" style={{ marginRight: '.3em' }}>
+                    <Button role="presentation" round={round} size={size} disabled={props.disabled || readOnly} variant="minimal" style={{ marginRight: '.3em' }}>
                         <MdUnfoldMore />
                     </Button>
                 </div>

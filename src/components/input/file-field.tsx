@@ -146,7 +146,7 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
                 <input className={style.placeholder} tabIndex={-1} role="none" value={files.map(file => file.name)} readOnly />
             </div>
 
-            <Button disabled={props.disabled} round={round} size={size} loading={loading} style={{
+            <Button role="presentation" disabled={props.disabled} round={round} size={size} loading={loading} style={{
                 marginRight: '.3em'
             }} onClick={() => input.current?.click()}>
                 <MdUpload />
