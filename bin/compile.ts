@@ -19,8 +19,8 @@ export default async function () {
     STYLE_CONTEXT.THEME = mergeRecursive(config.theme || {}, DEFAULT_THEME);
     STYLE_CONTEXT.COMPONENTS = config.components || {};
 
-    const entry = fs.readFileSync(DIST_ROOT + 'index.js', { encoding: 'ascii' });
-    const components = entry.matchAll(/as\s*(.+?)\s*\}\s*from\s*(?:'|")(.+?)(?:'|");/g);
+    const components = fs.readFileSync(DIST_ROOT + 'index.js', { encoding: 'ascii' })
+        .matchAll(/as\s*(.+?)\s*\}\s*from\s*(?:'|")(.+?)(?:'|");/g);
 
     console.log();
 
@@ -35,11 +35,12 @@ export default async function () {
         process.stdout.write(`${(i / size * 100).toFixed(1)}% ` + new Array(Math.round(i / size * 40)).fill('=').join(''));
     }
 
-    const compiled = entry
-        .replace(/(from\s*(?:'|"))\.\/(.*?(?:'|");)/g, '$1../compiled/$2')
-        .replace(/throw.*?;/s, '');
+    for (const file of ['index.js', 'hooks.js']) {
+        const content = fs.readFileSync(DIST_ROOT + file, { encoding: 'ascii' })
+            .replace(/(from\s*(?:'|"))\.\/(.*?(?:'|");)/g, '$1../compiled/$2');
 
-    fs.writeFileSync(DIST_ROOT + 'index.js', compiled);
+        fs.writeFileSync(DIST_ROOT + file, content);
+    }
 
     console.log('\n');
 }

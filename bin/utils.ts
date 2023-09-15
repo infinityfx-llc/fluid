@@ -35,7 +35,7 @@ function matchBrackets(content: string, start: number, type: '{}' | '()' | '[]' 
 function insertTheme(content: string) {
     const context = content.match(/import\s*\{[^{]*(STYLE_CONTEXT(?:\s*as\s*([^\s},]+))?)[^}]*\}/s);
 
-    return content.replace(new RegExp(`${context?.[context.length - 1]}\\.THEME`, 's'), JSON.stringify(STYLE_CONTEXT.THEME));
+    return content.replace(new RegExp(`${context?.[2] || context?.[1]}\\.THEME`, 's'), JSON.stringify(STYLE_CONTEXT.THEME));
 }
 
 export async function processFile(root: string, path: string, name: string, componentMap: any) {
@@ -88,14 +88,14 @@ export async function emitCSS(name: string, Component: React.ReactElement, conte
 
     const createStyles = content.match(/import\s*\{[^{]*(createStyles(?:\s*as\s*([^\s},]+))?)[^}]*\}/);
 
-    const match = content.match(new RegExp(`(=|,|;|\\s|:)${createStyles?.[createStyles.length - 1]}\\(`, 's'));
+    const match = content.match(new RegExp(`(=|,|;|\\s|:)${createStyles?.[2] || createStyles?.[1]}\\(`, 's'));
     if (match?.index && rules) {
         const to = matchBrackets(content, match.index as number + match[0].length, '()');
         content = content.slice(0, match.index + 1) + JSON.stringify(selectors || {}) + content.slice(to + 1);
     }
 
     const createGlobalStyles = content.match(/import\s*\{[^{]*(createGlobalStyles(?:\s*as\s*([^\s},]+))?)[^}]*\}/);
-    let matches = content.matchAll(new RegExp(`(=|,|;|\\s|:)${createGlobalStyles?.[createGlobalStyles.length - 1]}\\(`, 'gs')), globalStyle, globalStyleOffset = 0;
+    let matches = content.matchAll(new RegExp(`(=|,|;|\\s|:)${createGlobalStyles?.[2] || createGlobalStyles?.[1]}\\(`, 'gs')), globalStyle, globalStyleOffset = 0;
 
     while (globalStyle = matches.next().value) {
         const i = globalStyle.index + globalStyleOffset;
