@@ -59,6 +59,10 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
         '.row > *:not(.collapsed)': {
             whiteSpace: 'nowrap'
         },
+
+        '.row > [role="gridcell"]': {
+            paddingInline: '.4rem'
+        },
     
         '.collapsed': {
             minWidth: '2rem',
@@ -78,7 +82,7 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
             alignItems: 'center',
             gap: 'var(--f-spacing-xxs)',
             width: 'max-content',
-            padding: '.2em .4em',
+            padding: '.2rem .4rem',
             border: 'none',
             background: 'none',
             outline: 'none'
