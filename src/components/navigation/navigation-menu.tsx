@@ -90,7 +90,6 @@ const NavigationMenu = forwardRef(({ cc = {}, links, selected = -1, Link = 'a', 
     const [menuVisible, setMenuVisible] = useState(false);
 
     function update(index: number) {
-        if (prev.current === -2) return prev.current = selection;
         prev.current = selection;
 
         if (index < 0) {
@@ -103,11 +102,15 @@ const NavigationMenu = forwardRef(({ cc = {}, links, selected = -1, Link = 'a', 
     }
 
     useEffect(() => {
-        const focus = () => prev.current = -2;
-        window.addEventListener('focus', focus);
+        function blur() {
+            (document.activeElement as any)?.blur();
+            update(-1);
+        }
+        
+        window.addEventListener('blur', blur);
 
-        return () => window.removeEventListener('focus', focus);
-    }, []);
+        return () => window.removeEventListener('blur', blur);
+    }, [selection, selected]);
 
     return <nav ref={ref} {...props} className={classes(style.navigation, props.className)}
         onMouseLeave={e => {
