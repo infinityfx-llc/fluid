@@ -1,7 +1,7 @@
 'use client';
 
 import { FluidStyles, Selectors } from '../../../src/types';
-import { forwardRef, useState, useId, useRef, useEffect } from 'react';
+import { forwardRef, useState, useId, useRef } from 'react';
 import { Animatable } from '@infinityfx/lively';
 import { Morph } from '@infinityfx/lively/layout';
 import Halo from '../feedback/halo';
@@ -101,17 +101,6 @@ const NavigationMenu = forwardRef(({ cc = {}, links, selected = -1, Link = 'a', 
         }
     }
 
-    useEffect(() => {
-        function blur() {
-            (document.activeElement as any)?.blur();
-            update(-1);
-        }
-        
-        window.addEventListener('blur', blur);
-
-        return () => window.removeEventListener('blur', blur);
-    }, [selection, selected]);
-
     return <nav ref={ref} {...props} className={classes(style.navigation, props.className)}
         onMouseLeave={e => {
             props.onMouseLeave?.(e);
@@ -127,7 +116,8 @@ const NavigationMenu = forwardRef(({ cc = {}, links, selected = -1, Link = 'a', 
                     aria-expanded={links ? showMenu : undefined}
                     aria-controls={links ? i + id : undefined}
                     onMouseEnter={() => update(i)}
-                    onFocus={() => update(i)}>
+                    onFocus={() => update(i)}
+                    onBlur={() => setTimeout(() => prev.current !== i && update(-1))}>
                     {label}
 
                     <Morph id={`fluid-header-navigation-selection-${id}`} shown={i === selection} include={['translate', 'scale']} deform={false} transition={{ duration: .35 }}>

@@ -19,35 +19,35 @@ const Code = forwardRef(({ children, cc = {}, title, ...props }: { children: str
             position: 'relative',
             color: 'var(--f-clr-text-100)'
         },
-    
+
         '.header': {
             backgroundColor: 'var(--f-clr-primary-500)',
             padding: '.8em 1em',
             fontWeight: 500
         },
-    
+
         '.code': {
             display: 'flex',
             padding: '1em',
             backgroundColor: 'var(--f-clr-fg-100)'
         },
-    
+
         '.numbers': {
             userSelect: 'none',
             textAlign: 'right',
             marginRight: 'var(--f-spacing-sml)',
             color: 'var(--f-clr-grey-500)'
         },
-    
+
         '.tab': {
             display: 'inline-block',
             minWidth: '2em'
         },
-    
+
         '.content': {
             width: 'max-content'
         },
-    
+
         '.button__align': {
             position: 'absolute',
             zIndex: '99',
@@ -57,10 +57,13 @@ const Code = forwardRef(({ children, cc = {}, title, ...props }: { children: str
             alignItems: 'center',
             maxHeight: '100%'
         },
-    
+
         '.toggle': {
-            backgroundColor: 'var(--f-clr-bg-100) !important',
             marginBlock: '1em !important'
+        },
+
+        '.toggle[data-checked="false"]': {
+            backgroundColor: 'var(--f-clr-bg-100) !important'
         }
     });
     const style = combineClasses(styles, cc);
@@ -68,10 +71,13 @@ const Code = forwardRef(({ children, cc = {}, title, ...props }: { children: str
     const id = useId();
     const [copied, setCopied] = useState(false);
 
-    const lines = children.split(/\n/).map(line => {
+    const lines = children.split(/\n/).map((line, i) => {
         const tabs = line.match(/^(?:\t|\s)+/)?.[0].split(/(?:\t|\s{4})/g).slice(1) || [];
 
-        return tabs.fill(`<span class="${style.tab}"></span>`).join('') + line + '<br>';
+        return <Fragment key={i}>
+            {tabs.map((_, i) => <span className={style.tab} key={i} />)}
+            {line} <br />
+        </Fragment>;
     });
 
     return <div ref={ref} {...props} className={style.wrapper}>
@@ -85,7 +91,9 @@ const Code = forwardRef(({ children, cc = {}, title, ...props }: { children: str
                 </Fragment>)}
             </div>
             <Scrollarea horizontal>
-                <div id={id} className={style.content} dangerouslySetInnerHTML={{ __html: lines.join('') }} />
+                <div id={id} className={style.content}>
+                    {lines}
+                </div>
             </Scrollarea>
         </code>
 
