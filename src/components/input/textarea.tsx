@@ -22,7 +22,7 @@ const Textarea = forwardRef(({ cc = {}, label, error, size = 'med', resize = 'bo
             display: 'flex',
             flexDirection: 'column',
             gap: 'var(--f-spacing-xxs)',
-            width: 'clamp(0px, 12em, 100vw)'
+            minWidth: 'clamp(0px, 12em, 100vw)'
         },
 
         '.wrapper__xsm': {
@@ -62,6 +62,8 @@ const Textarea = forwardRef(({ cc = {}, label, error, size = 'med', resize = 'bo
         },
 
         '.input': {
+            width: 'inherit',
+            minHeight: 'calc(100% - 3px)',
             resize: 'none',
             outline: 'none',
             border: 'none',
@@ -101,12 +103,11 @@ const Textarea = forwardRef(({ cc = {}, label, error, size = 'med', resize = 'bo
     )}>
         {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
 
-        <Scrollarea className={style.textarea} data-error={!!error} data-disabled={props.disabled}>
+        <Scrollarea className={style.textarea} style={{ resize }} data-error={!!error} data-disabled={props.disabled}>
             <textarea {...split} rows={rows}
                 className={style.input}
                 aria-labelledby={label ? id : undefined}
                 aria-invalid={!!error}
-                style={{ resize }}
                 onChange={e => {
                     split.onChange?.(e);
 

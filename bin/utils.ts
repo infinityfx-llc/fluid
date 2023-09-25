@@ -58,7 +58,7 @@ export async function processFile(root: string, path: string, name: string, comp
     }
 
     if (Component && (Component instanceof Function || 'render' in Component)) {
-        let reactElement: any = createElement(Component, { key: 0, steps: [], options: [], data: [], columns: [], include: [], name: '' }, '');
+        let reactElement: any = createElement(Component, { key: 0, pages: 1, steps: [], options: [], data: [], columns: [], include: [], name: '' }, '');
         if ('Root' in componentMap && !name.includes('Root')) reactElement = createElement(componentMap.Root, {}, reactElement);
 
         fileContent = await emitCSS(name.replace(/([a-z])([A-Z])/, '$1-$2').toLowerCase(), reactElement, fileContent, outputPath, global);
