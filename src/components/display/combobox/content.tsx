@@ -86,7 +86,7 @@ const Content = forwardRef(({ children, cc = {}, searchable, placeholder = 'Sear
     });
 
     return <Popover.Content>
-        <Animatable key="combobox-options-outer" animate={Move.unique({ duration: .2 })} unmount triggers={[{ on: 'mount' }]}>
+        <Animatable id="combobox-options-outer" animate={Move.unique({ duration: .2 })} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
             <div ref={ref} {...props} role="listbox" className={classes(style.container, props.className)}
                 onKeyDown={e => {
                     props.onKeyDown?.(e);
@@ -112,7 +112,7 @@ const Content = forwardRef(({ children, cc = {}, searchable, placeholder = 'Sear
 
                 <Scrollarea className={style.content}>
                     <div className={style.options}>
-                        <Animatable key="combobox-options-inner" animate={Pop.unique({ duration: .2 })} staggerLimit={4} stagger={.06}>
+                        <Animatable inherit animate={Pop.unique({ duration: .2 })} staggerLimit={4} stagger={.06}>
                             {filtered}
                         </Animatable>
 

@@ -53,9 +53,9 @@ const ProgressBar = forwardRef(({ cc = {}, size = 'med', value, defaultValue = 0
     const style = combineClasses(styles, cc);
 
     const state = value !== undefined ? value : defaultValue;
-    const [link, setLink] = useLink(state);
+    const link = useLink(state);
 
-    useEffect(() => setLink(state, .3), [state]);
+    useEffect(() => link.set(state, .3), [state]);
 
     return <div ref={ref} {...props} role="progressbar" aria-valuenow={state * 100} className={classes(
         style.track,

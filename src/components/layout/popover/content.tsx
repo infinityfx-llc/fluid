@@ -16,7 +16,7 @@ const Content = forwardRef((props: React.HTMLAttributes<HTMLDivElement>, ref: Re
 
     if (!mounted) return null;
 
-    return createPortal(<LayoutGroup adaptive={false}>
+    return createPortal(<LayoutGroup>
         {opened && <div ref={combineRefs(menu, ref)} {...props} id={id} style={{ ...props.style, position: 'fixed', zIndex: 999, ...opened }}>
             {props.children}
         </div>}

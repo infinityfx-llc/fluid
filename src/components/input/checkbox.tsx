@@ -102,12 +102,12 @@ const Checkbox = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-cl
     });
     const style = combineClasses(styles, cc);
 
-    const [link, setLink] = useLink(defaultChecked ? 1 : 0);
+    const link = useLink(defaultChecked ? 1 : 0);
 
     const [split, rest] = useInputProps(props);
     const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
 
-    useEffect(() => setLink(state ? 1 : 0, .25), [state]);
+    useEffect(() => link.set(state ? 1 : 0, .25), [state]);
 
     return <Halo hover={false} cc={{ halo: style.halo }}>
         <div ref={ref} {...rest} className={classes(

@@ -56,9 +56,9 @@ const CircularProgress = forwardRef(({ cc = {}, size = 'med', slice = 0, value, 
     const style = combineClasses(styles, cc);
 
     const state = value !== undefined ? value : defaultValue;
-    const [link, setLink] = useLink(state);
+    const link = useLink(state);
 
-    useEffect(() => setLink(state, .3), [state]);
+    useEffect(() => link.set(state, .3), [state]);
 
     return <svg ref={ref} {...props} viewBox="0 0 100 100" role="progressbar" aria-valuenow={state * 100} className={classes(
         style.wrapper,

@@ -70,7 +70,7 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, cc = {}, colo
 
     const container = useRef<HTMLElement>(null);
     const click = useTrigger();
-    const [translate, setTranslate] = useLink('0px 0px');
+    const translate = useLink('0px 0px');
 
     children = Array.isArray(children) ? children[0] : children;
     if (!isValidElement(children)) return children;
@@ -92,7 +92,7 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, cc = {}, colo
 
             const { x, y, width, height } = container.current?.getBoundingClientRect() || { x: 0, y: 0, width: 0, height: 0 };
 
-            if (e.clientX || e.clientY) setTranslate(`${e.clientX - (x + width / 2)}px ${e.clientY - (y + height / 2)}px`);
+            if (e.clientX || e.clientY) translate.set(`${e.clientX - (x + width / 2)}px ${e.clientY - (y + height / 2)}px`);
             click();
         }
     }, arr);

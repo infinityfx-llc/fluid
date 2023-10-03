@@ -19,7 +19,7 @@ const Collapsible = forwardRef(({ children, cc = {}, shown, ...props }: { cc?: S
     const style = combineClasses(styles, cc);
 
     return <LayoutGroup>
-        <Animatable key="collapsible" cachable={['height']}>
+        <Animatable id="collapsible" cachable={['height']} adaptive>
             <div ref={ref} {...props} className={classes(style.content, props.className)} aria-hidden={!shown} style={{ height: shown ? undefined : '0px' }}>
                 {children}
             </div>

@@ -107,7 +107,7 @@ function TabsComponent<T extends FluidInputvalue>({ options, cc = {}, variant = 
                             </button>
                         </Halo>
 
-                        <Morph id={`tabs-selection-${id}`} shown={state === value} deform={false}>
+                        <Morph group={`tabs-selection-${id}`} show={state === value} deform={false}>
                             <div className={style.selection} />
                         </Morph>
                     </div>;

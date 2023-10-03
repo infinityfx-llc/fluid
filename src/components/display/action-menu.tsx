@@ -148,7 +148,7 @@ const ActionMenu = forwardRef(({ children, cc = {}, options, disabled, stretch, 
         </Popover.Trigger>
 
         <Popover.Content role="menu" aria-labelledby={id}>
-            <Animate key="menu" animations={[Move.unique({ duration: .2 }), Pop.unique({ duration: .2 })]} unmount triggers={[{ on: 'mount' }]} levels={2} stagger={.06}>
+            <Animate id="menu" animations={[Move.unique({ duration: .2 }), Pop.unique({ duration: .2 })]} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]} levels={2} stagger={.06}>
                 <div ref={ref} {...props} className={classes(style.menu, props.className)} role="group">
                     {options.map(getOption)}
                 </div>

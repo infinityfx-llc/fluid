@@ -132,10 +132,10 @@ const Chip = forwardRef(({ children, cc = {}, round = false, size = 'med', varia
     const style = combineClasses(styles, cc);
 
     const [split, rest] = useInputProps(props);
-    const [link, setLink] = useLink(defaultChecked ? 1 : 0);
+    const link = useLink(defaultChecked ? 1 : 0);
     const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
 
-    useEffect(() => setLink(state ? 1 : 0, .25), [state]);
+    useEffect(() => link.set(state ? 1 : 0, .25), [state]);
 
     return <Halo hover={false} cc={{ halo: style.halo }}>
         <label ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-round={round} data-size={size} data-variant={variant}>

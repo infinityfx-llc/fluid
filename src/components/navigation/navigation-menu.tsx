@@ -120,23 +120,36 @@ const NavigationMenu = forwardRef(({ cc = {}, links, selected = -1, Link = 'a', 
                     onBlur={() => setTimeout(() => prev.current !== i && update(-1))}>
                     {label}
 
-                    <Morph id={`fluid-header-navigation-selection-${id}`} shown={i === selection} include={['translate', 'scale']} deform={false} transition={{ duration: .35 }}>
+                    <Morph
+                        show={i === selection}
+                        group={`fluid-header-navigation-selection-${id}`}
+                        cachable={['translate', 'scale']}
+                        deform={false}
+                        transition={{ duration: .35 }}
+                        animate={{ opacity: [1, 0], duration: .25 }}
+                        triggers={[{ on: 'mount', reverse: true }, { on: 'unmount' }]}>
                         <div className={style.selection} />
                     </Morph>
                 </Link>
 
-                {links && <Morph id={`fluid-header-navigation-menu-${id}`} shown={showMenu} include={['translate', 'scale']} deform={false} transition={{ duration: .35 }}>
+                {links && <Morph
+                    show={showMenu}
+                    group={`fluid-header-navigation-menu-${id}`}
+                    cachable={['translate', 'scale']}
+                    deform={false}
+                    transition={{ duration: .35 }}
+                    animate={{ opacity: [1, 0], translate: ['0px 0px', '0px 16px'], duration: .25 }}
+                    triggers={[{ on: 'mount', reverse: true }, { on: 'unmount' }]}>
                     <div className={style.menu} id={i + id}>
-                        <Animatable noInherit
+                        <Animatable
                             stagger={.06}
-                            animations={{
-                                left: { opacity: [0, 1], translate: ['32px 0px', '0px 0px'], duration: .3, delay: .15 },
-                                right: { opacity: [0, 1], translate: ['-32px 0px', '0px 0px'], duration: .3, delay: .15 }
+                            animate={{
+                                opacity: [0, 1],
+                                translate: left ? ['32px 0px', '0px 0px'] : ['-32px 0px', '0px 0px'],
+                                duration: .3,
+                                delay: .15
                             }}
-                            triggers={[
-                                { on: showMenu && left, immediate: true, name: 'left' },
-                                { on: showMenu && !left, immediate: true, name: 'right' }
-                            ]}>
+                            triggers={[{ on: 'mount' }]}>
                             {links?.map(({ label, href }, i) => {
                                 return <Halo key={i}>
                                     <Link href={href} className={style.link}>

@@ -57,7 +57,7 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
         return () => window.removeEventListener('keydown', keypress);
     }, [show]);
 
-    return mounted ? createPortal(<LayoutGroup adaptive={false}>
+    return mounted ? createPortal(<LayoutGroup>
         {/* {show && <div ref={el => {
             if (el && !trap.current) {
                 trap.current = createFocusTrap(el);
@@ -72,7 +72,7 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
         {show && <div className={style.overlay}>
             {children}
 
-            <Animatable key="overlay" animate={{ opacity: [0, 1], duration: .25 }} unmount triggers={[{ on: 'mount' }]}>
+            <Animatable id="overlay" animate={{ opacity: [0, 1], duration: .25 }} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
                 <div className={style.tint} onClick={onClose} />
             </Animatable>
         </div>}

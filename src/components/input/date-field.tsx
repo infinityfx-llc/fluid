@@ -65,7 +65,7 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue = new Date(), onCha
         </Popover.Trigger>
 
         <Popover.Content role="listbox" aria-multiselectable={false}>
-            <Animatable key="date-field-calendar" animate={Move.unique({ duration: .2 })} unmount triggers={[{ on: 'mount' }]}>
+            <Animatable id="date-field-calendar" animate={Move.unique({ duration: .2 })} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
                 <Calendar
                     className={style.calendar}
                     round={props.round}

@@ -85,7 +85,7 @@ const Drawer = forwardRef(({ children, cc = {}, show, onClose, position = 'right
     }
 
     return <Overlay show={show} onClose={onClose}>
-        <Animatable key="drawer" animate={{ translate: [`${position === 'right' ? 100 : -100}% 0%`, '0% 0%'], duration: .25 }} unmount triggers={[{ on: 'mount' }]}>
+        <Animatable id="drawer" animate={{ translate: [`${position === 'right' ? 100 : -100}% 0%`, '0% 0%'], duration: .25 }} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
             <div ref={ref} {...props} className={classes(style.drawer, props.className)} role="dialog" aria-modal aria-labelledby={id} data-position={position} onTouchStart={touch} onTouchMove={touch}>
                 <div className={style.header}>
                     <span id={id} className={style.title}>{title}</span>

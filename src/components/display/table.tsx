@@ -27,6 +27,8 @@ type TableProps<T> = {
     rowActions?: (row: T) => ActionMenuOption[];
 } & React.HTMLAttributes<HTMLDivElement>;
 
+// variants: default | minimal/light mabye?
+
 function TableComponent<T extends { [key: string]: string | number | Date; }>({ cc = {}, data, columns, selectable, sortable, selected, onSelect, columnFormatters = {}, rowActions, ...props }: TableProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
     const styles = createStyles('table', {
         '.table': {

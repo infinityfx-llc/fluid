@@ -136,7 +136,7 @@ function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'def
                     <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
                     <span className={style.content}>{label}</span>
 
-                    <Morph id={`segmented-selection-${id}`} shown={state === option} include={['translate', 'scale']} deform={false} transition={{ duration: .4 }}>
+                    <Morph group={`segmented-selection-${id}`} show={state === option} cachable={['translate', 'scale']} deform={false} transition={{ duration: .4 }}>
                         <div className={style.selection} />
                     </Morph>
                 </button>
