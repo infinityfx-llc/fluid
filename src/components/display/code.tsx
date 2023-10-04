@@ -6,7 +6,7 @@ import Scrollarea from "../layout/scrollarea";
 import Toggle from "../input/toggle";
 import { MdCheck, MdCopyAll } from "react-icons/md";
 import { createStyles } from "../../core/style";
-import { combineClasses } from "../../core/utils";
+import { classes, combineClasses } from "../../core/utils";
 
 export type CodeStyles = FluidStyles<'.wrapper' | '.header' | '.code' | '.numbers' | '.tab' | '.content' | '.toggle'>;
 
@@ -80,7 +80,7 @@ const Code = forwardRef(({ children, cc = {}, title, ...props }: { children: str
         </Fragment>;
     });
 
-    return <div ref={ref} {...props} className={style.wrapper}>
+    return <div ref={ref} {...props} className={classes(style.wrapper, props.className)}>
         {title && <div className={style.header}>
             {title}
         </div>}
