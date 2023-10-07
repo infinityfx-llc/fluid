@@ -8,19 +8,14 @@ import { createStyles } from "../../core/style";
 const Collapsible = forwardRef(({ children, cc = {}, shown, ...props }: { cc?: Selectors<'content'>; shown: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('collapsible', {
         '.content': {
-            transition: 'opacity .35s',
             overflow: 'hidden'
-        },
-
-        '.content[aria-hidden="true"]': {
-            opacity: 0
         }
     });
     const style = combineClasses(styles, cc);
 
     return <LayoutGroup>
-        <Animatable id="collapsible" cachable={['height']} adaptive>
-            <div ref={ref} {...props} className={classes(style.content, props.className)} aria-hidden={!shown} style={{ height: shown ? undefined : '0px' }}>
+        <Animatable id="collapsible" cachable={['height', 'opacity']} adaptive>
+            <div ref={ref} {...props} className={classes(style.content, props.className)} style={{ height: shown ? undefined : '0px', opacity: shown ? 1 : 0 }}>
                 {children}
             </div>
         </Animatable>

@@ -27,12 +27,65 @@ export type FluidInputvalue = string | number | readonly string[] | undefined;
 
 export type FluidError = null | boolean | string;
 
+export type FluidComponents = {
+    'combobox.content'?: FluidStyles;
+    'combobox.option'?: FluidStyles;
+    'action-menu'?: FluidStyles;
+    badge?: FluidStyles;
+    code?: FluidStyles;
+    frame?: FluidStyles;
+    key?: FluidStyles;
+    swatch?: FluidStyles;
+    table?: FluidStyles;
+    timeline?: FluidStyles;
+    toast?: FluidStyles;
+    tooltip?: FluidStyles;
+    'circular-progress'?: FluidStyles;
+    halo?: FluidStyles;
+    indicator?: FluidStyles;
+    'progress-bar'?: FluidStyles;
+    skeleton?: FluidStyles;
+    spinner?: FluidStyles;
+    button?: ButtonStyles;
+    calendar?: FluidStyles;
+    checkbox?: FluidStyles;
+    chip?: FluidStyles;
+    'date-field'?: FluidStyles;
+    field?: FluidStyles;
+    'file-field'?: FluidStyles;
+    hamburger?: FluidStyles;
+    'number-field'?: FluidStyles;
+    'password-field'?: FluidStyles;
+    pincode?: FluidStyles;
+    radio?: RadioStyles;
+    segmented?: FluidStyles;
+    select?: FluidStyles;
+    slider?: FluidStyles;
+    switch?: FluidStyles;
+    textarea?: FluidStyles;
+    toggle?: FluidStyles;
+    'accordion.item'?: FluidStyles;
+    'accordion.root'?: FluidStyles;
+    'sidebar.heading'?: FluidStyles;
+    'sidebar.link'?: FluidStyles;
+    'sidebar.root'?: FluidStyles;
+    'sidebar.user'?: FluidStyles;
+    collapsible?: FluidStyles;
+    cull?: FluidStyles;
+    divider?: FluidStyles;
+    drawer?: FluidStyles;
+    modal?: FluidStyles;
+    overlay?: FluidStyles;
+    scrollarea?: FluidStyles;
+    'navigation-menu'?: FluidStyles;
+    pagination?: FluidStyles;
+    stepper?: FluidStyles;
+    tabs?: FluidStyles;
+}
+
 export type FluidConfig = {
     theme?: PartialFluidTheme;
-    components?: {
-        Button?: ButtonStyles;
-        Radio?: RadioStyles;
-    }
+    components?: FluidComponents;
 }
 
 export {

@@ -1,4 +1,4 @@
-import { FluidStyles, Selectors } from "../types";
+import { FluidComponents, FluidStyles, Selectors } from "../types";
 import { DEFAULT_THEME, FluidTheme } from "./theme";
 import { hashStyles, mergeStyles, rulesToString__EXP } from "./utils";
 
@@ -9,9 +9,7 @@ export const STYLE_CONTEXT: {
             selectors: Selectors;
         };
     };
-    COMPONENTS: {
-        [key: string]: FluidStyles;
-    };
+    COMPONENTS: FluidComponents;
     THEME: FluidTheme;
 } = {
     STYLES: {},
@@ -19,7 +17,7 @@ export const STYLE_CONTEXT: {
     THEME: DEFAULT_THEME
 };
 
-export function createStyles(key: string, styles: ((fluid: FluidTheme) => FluidStyles) | FluidStyles): Selectors {
+export function createStyles(key: keyof FluidComponents, styles: ((fluid: FluidTheme) => FluidStyles) | FluidStyles): Selectors {
     const ruleset = styles instanceof Function ? styles(STYLE_CONTEXT.THEME) : styles;
 
     const override = STYLE_CONTEXT.COMPONENTS[key] || {};
