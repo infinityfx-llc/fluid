@@ -9,6 +9,11 @@ import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
 import { combineClasses } from "../../core/utils";
 
+const setBodyOverflow = (value: string) => {
+    document.body.style.overflow = value;
+    document.documentElement.style.overflow = value;
+}
+
 export type OverlayStyles = FluidStyles<'.tint'>;
 
 export default function Overlay({ children, cc = {}, show, onClose }: { children?: React.ReactNode; cc?: Selectors<'tint'>; show: boolean; onClose: () => void; }) {
@@ -39,13 +44,9 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
 
     useEffect(() => {
         if (mounted && show) {
-            document.body.style.overflow = 'hidden';
-            document.documentElement.style.overflow = 'hidden';
+            setBodyOverflow('hidden');
         } else
-            if (!show) {
-                document.body.style.overflow = '';
-                document.documentElement.style.overflow = '';
-            }
+            if (!show) setBodyOverflow('');
         setMounted(true);
 
         function keypress(e: KeyboardEvent) {
@@ -54,7 +55,10 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
 
         window.addEventListener('keydown', keypress);
 
-        return () => window.removeEventListener('keydown', keypress);
+        return () => {
+            window.removeEventListener('keydown', keypress);
+            setBodyOverflow('');
+        }
     }, [show]);
 
     return mounted ? createPortal(<LayoutGroup>

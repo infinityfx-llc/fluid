@@ -12,6 +12,7 @@ type SegmentedProps<T> = {
     variant?: 'default' | 'neutral';
     size?: Omit<FluidSize, 'xsm'>;
     round?: boolean;
+    uniform?: boolean;
     options: { label: React.ReactNode; value: FluidInputvalue; disabled?: boolean; }[];
     name?: string;
     value?: T;
@@ -20,7 +21,7 @@ type SegmentedProps<T> = {
     error?: FluidError;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>;
 
-function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'default', size = 'med', round = false, options, name, value, defaultValue, onChange, error, ...props }: SegmentedProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
+function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'default', size = 'med', round = false, uniform, options, name, value, defaultValue, onChange, error, ...props }: SegmentedProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
     const styles = createStyles('segmented', {
         '.segmented': {
             padding: '.3em',
@@ -43,6 +44,12 @@ function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'def
 
         '.segmented__round': {
             borderRadius: '999px'
+        },
+
+        '.segmented__uniform': {
+            display: 'grid',
+            gridAutoColumns: '1fr',
+            gridAutoFlow: 'column'
         },
 
         '.option': {
@@ -123,16 +130,18 @@ function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'def
             style[`segmented__${size}`],
             style[`segmented__var__${variant}`],
             round && style.segmented__round,
+            uniform && style.segmented__uniform,
             props.className
         )}
         data-error={!!error}>
         {options.map(({ label, value: option, disabled = false }, i) => {
 
             return <Halo key={i} hover={false} cc={{ halo: style.halo, container: style.container }}>
-                <button className={style.option} type="button" role="radio" aria-checked={state === option} disabled={disabled} onClick={() => {
-                    setState?.(option);
-                    onChange?.(option as T);
-                }}>
+                <button className={style.option} type="button" role="radio" aria-checked={state === option} disabled={disabled}
+                    onClick={() => {
+                        setState?.(option);
+                        onChange?.(option as T);
+                    }}>
                     <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
                     <span className={style.content}>{label}</span>
 

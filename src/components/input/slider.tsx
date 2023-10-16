@@ -140,7 +140,7 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
     const toOffset = (val: number) => (val - min) / (max - min);
     const toValue = (val: number) => min + val * (max - min);
 
-    const [values, setValues] = value !== undefined ? [value] : useState(() => {
+    function fromHandles() {
         const arr = new Array(handles).fill(1).map((_, i) => toValue(i / Math.max(handles - 1, 1)));
 
         if (defaultValue) defaultValue.forEach((val, i) => {
@@ -149,7 +149,10 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
         });
 
         return arr;
-    });
+    }
+    const [values, setValues] = value !== undefined ? [value] : useState(fromHandles);
+
+    useEffect(() => setValues?.(fromHandles()), [handles]);
 
     function change(e: MouseEvent | TouchEvent) {
         if (!track.current || props.disabled) return;
@@ -198,7 +201,7 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
             window.removeEventListener('touchmove', drag);
             window.removeEventListener('mouseup', cancel);
         }
-    }, [values]);
+    }, [values, props.disabled]);
 
     const [split, rest] = useInputProps(props);
 
