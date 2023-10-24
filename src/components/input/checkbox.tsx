@@ -67,9 +67,9 @@ const Checkbox = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-cl
         },
 
         '.checkmark': {
-            width: '1.1em',
+            width: '1em',
             stroke: 'white',
-            strokeWidth: 2,
+            strokeWidth: 3,
             strokeLinecap: 'round',
             strokeLinejoin: 'round'
         },

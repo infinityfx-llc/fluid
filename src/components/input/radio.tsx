@@ -51,7 +51,7 @@ const Radio = forwardRef(({ cc = {}, error, size = 'med', ...props }:
             width: '1.5em',
             height: '1.5em',
             borderRadius: '999px',
-            border: 'solid 2px var(--f-clr-fg-200)',
+            border: 'solid 1px var(--f-clr-fg-200)',
             transition: 'background-color .25s, border-color .25s',
             display: 'flex',
             alignItems: 'center',
@@ -69,7 +69,7 @@ const Radio = forwardRef(({ cc = {}, error, size = 'med', ...props }:
 
         '.selection': {
             position: 'absolute',
-            inset: '2px',
+            inset: '4px',
             borderRadius: '999px',
             backgroundColor: 'white',
             scale: 0,
