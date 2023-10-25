@@ -1,12 +1,24 @@
 'use client';
 
 import { FluidStyles, Selectors } from '../../../../src/types';
-import { forwardRef, useState } from 'react';
+import { forwardRef, useState, createContext, useContext } from 'react';
 import Toggle from '../../input/toggle';
 import { MdArrowBack, MdArrowForward } from 'react-icons/md';
 import Scrollarea from '../scrollarea';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import { createStyles } from '../../../core/style';
+
+export const SidebarContext = createContext<{
+    collapsed: boolean;
+} | null>(null);
+
+export function useSidebar() {
+    const context = useContext(SidebarContext);
+
+    if (!context) throw new Error('Unable to access SidebarRoot context');
+
+    return context;
+}
 
 const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onCollapse, ...props }:
     {
@@ -14,7 +26,7 @@ const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onColla
         size?: string;
         collapsed?: boolean;
         onCollapse?: (value: boolean) => void;
-    } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
+    } & React.HTMLAttributes<any>, ref: React.ForwardedRef<HTMLElement>) => {
     const [isCollapsed, setCollapsed] = collapsed !== undefined ? [collapsed] : useState(false);
 
     const styles = createStyles('sidebar.root', (fluid) => ({
@@ -32,12 +44,7 @@ const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onColla
             display: 'flex',
             flexDirection: 'column',
             paddingBottom: '1em',
-            width: size,
-            transition: 'width .3s, translate .3s'
-        },
-
-        '.sidebar[data-collapsed="true"]': {
-            width: 'calc(3rem + 2em)'
+            transition: 'width .3s, translate .3s, opacity .3s'
         },
 
         '.button': {
@@ -60,6 +67,12 @@ const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onColla
             overflow: 'hidden'
         },
 
+        [`@media (min-width: ${fluid.breakpoints.tab + 1}px)`]: {
+            '.sidebar[data-collapsed="true"]': {
+                width: 'calc(3rem + 2em) !important'
+            }
+        },
+
         [`@media (max-width: ${fluid.breakpoints.tab}px)`]: {
             '.sidebar[data-collapsed="true"]': {
                 translate: '-100% 0%'
@@ -68,22 +81,24 @@ const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onColla
     }));
     const style = combineClasses(styles, cc);
 
-    return <aside ref={ref} {...props} className={classes(style.sidebar, props.className)} data-collapsed={isCollapsed}>
-        <div className={style.header}>
-            <Toggle variant="neutral" checkedContent={<MdArrowBack />} checked={!isCollapsed} onChange={e => {
-                setCollapsed?.(!e.target.checked);
-                onCollapse?.(!e.target.checked);
-            }} className={style.button}>
-                <MdArrowForward />
-            </Toggle>
-        </div>
-
-        <Scrollarea style={{ flexGrow: 1 }}>
-            <div className={style.content}>
-                {children}
+    return <SidebarContext.Provider value={{ collapsed: isCollapsed }}>
+        <aside ref={ref} {...props} className={classes(style.sidebar, props.className)} style={{ ...props.style, width: size }} data-collapsed={isCollapsed}>
+            <div className={style.header}>
+                <Toggle variant="neutral" checkedContent={<MdArrowBack />} checked={!isCollapsed} onChange={e => {
+                    setCollapsed?.(!e.target.checked);
+                    onCollapse?.(!e.target.checked);
+                }} className={style.button}>
+                    <MdArrowForward />
+                </Toggle>
             </div>
-        </Scrollarea>
-    </aside>;
+
+            <Scrollarea style={{ flexGrow: 1 }}>
+                <div className={style.content}>
+                    {children}
+                </div>
+            </Scrollarea>
+        </aside>
+    </SidebarContext.Provider>;
 });
 
 Root.displayName = 'Sidebar.Root';

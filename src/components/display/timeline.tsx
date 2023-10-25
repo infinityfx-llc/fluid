@@ -95,19 +95,20 @@ const Timeline = forwardRef(({ children, cc = {}, active, horizontal = false, un
             position: 'absolute',
             flexGrow: 1,
             backgroundColor: 'var(--f-clr-grey-200)',
-            transition: 'background-color .25s'
+            transition: 'background-color .25s',
+            borderRadius: '99px'
         },
 
         '.timeline[data-horizontal="false"] .progress': {
-            height: 'calc(100% - 1.5em + 2px)',
+            height: 'calc(100% - 1.5em - 6px)',
             width: '3px',
-            bottom: '-2px'
+            bottom: '3px'
         },
 
         '.timeline[data-horizontal="true"] .progress': {
-            width: 'calc(100% - 1.5em + 2px)',
+            width: 'calc(100% - 1.5em - 6px)',
             height: '3px',
-            right: '-2px'
+            right: '3px'
         },
 
         '.progress[data-active="true"]': {

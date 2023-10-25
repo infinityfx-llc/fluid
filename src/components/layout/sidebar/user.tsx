@@ -34,7 +34,7 @@ const User = forwardRef(({ children, cc = {}, name, status, indicator = false, r
             fontSize: 'var(--f-font-size-sml)'
         },
 
-        '.user[data-round="true"]': {
+        '.user__round': {
             borderRadius: '999px'
         },
 
@@ -63,7 +63,7 @@ const User = forwardRef(({ children, cc = {}, name, status, indicator = false, r
             justifyContent: 'center'
         },
 
-        '.user[data-round="true"] .frame': {
+        '.user__round .frame': {
             borderRadius: '999px'
         },
 
@@ -108,7 +108,11 @@ const User = forwardRef(({ children, cc = {}, name, status, indicator = false, r
     const style = combineClasses(styles, cc);
 
     return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
-        <button ref={ref} {...props} type="button" className={classes(style.user, props.className)} data-round={round}>
+        <button ref={ref} {...props} type="button" className={classes(
+            style.user,
+            round && style.user__round,
+            props.className
+        )}>
             <Indicator outline="var(--f-clr-bg-100)" content={indicator} round={round}>
                 <div className={style.avatar}>
                     <div className={style.frame}>

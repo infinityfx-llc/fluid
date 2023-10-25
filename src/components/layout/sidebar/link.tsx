@@ -2,18 +2,20 @@
 
 import { Children, forwardRef, useState } from 'react';
 import Halo from '../../feedback/halo';
-import { FluidStyles, Selectors } from '../../../../src/types';
+import { FluidSize, FluidStyles, Selectors } from '../../../../src/types';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import Toggle from '../../input/toggle';
 import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import Collapsible from '../collapsible';
 import { createStyles } from '../../../core/style';
+import { useSidebar } from './root';
 
-const Link = forwardRef(({ children, cc = {}, label, icon, right, active = false, round = false, variant = 'default', disabled = false, ...props }:
+const Link = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, active = false, round = false, variant = 'default', disabled = false, ...props }:
     {
-        cc?: Selectors<'link' | 'content' | 'sublinks'>;
+        cc?: Selectors<'link' | 'link__sml' | 'link__med' | 'content' | 'sublinks'>;
         label: string;
-        icon: React.ReactNode;
+        size?: Omit<FluidSize, 'xsm' | 'lrg'>;
+        icon?: React.ReactNode;
         right?: React.ReactNode;
         active?: boolean;
         variant?: 'default' | 'light',
@@ -25,7 +27,6 @@ const Link = forwardRef(({ children, cc = {}, label, icon, right, active = false
             outline: 'none',
             border: 'none',
             background: 'none',
-            fontSize: 'var(--f-font-size-sml)',
             fontWeight: 600,
             borderRadius: 'var(--f-radius-sml)',
             color: 'var(--f-clr-text-100)',
@@ -37,6 +38,14 @@ const Link = forwardRef(({ children, cc = {}, label, icon, right, active = false
             transition: 'background-color .25s, color .25s'
         },
 
+        '.link__sml': {
+            fontSize: 'var(--f-font-size-xsm)'
+        },
+
+        '.link__med': {
+            fontSize: 'var(--f-font-size-sml)'
+        },
+
         '.link > *': {
             flexShrink: 0
         },
@@ -45,7 +54,7 @@ const Link = forwardRef(({ children, cc = {}, label, icon, right, active = false
             cursor: 'pointer'
         },
 
-        '.link[data-round="true"]': {
+        '.link__round': {
             borderRadius: '999px'
         },
 
@@ -72,19 +81,11 @@ const Link = forwardRef(({ children, cc = {}, label, icon, right, active = false
             flexGrow: 1
         },
 
-        'aside[data-collapsed="true"] .content': {
-            opacity: 0
-        },
-
         '.sublinks': {
             display: 'flex',
             flexDirection: 'column',
             gap: 'var(--f-spacing-xsm)',
             transition: 'padding-left .3s, opacity .35s !important'
-        },
-
-        'aside[data-collapsed="false"] .sublinks': {
-            paddingLeft: '1.5em'
         },
 
         '.sublinks > *': {
@@ -95,27 +96,33 @@ const Link = forwardRef(({ children, cc = {}, label, icon, right, active = false
 
     const [open, setOpen] = useState(false);
     const count = Children.count(children);
+    const { collapsed } = useSidebar();
 
     return <>
         <Halo color="var(--f-clr-primary-200)" disabled={disabled}>
-            <div ref={ref} {...props} className={classes(style.link, props.className)} data-disabled={disabled} data-variant={variant} data-round={round} data-active={active}>
+            <div ref={ref} {...props} className={classes(
+                style.link,
+                style[`link__${size}`],
+                round && style.link__round,
+                props.className
+            )} data-disabled={disabled} data-variant={variant} data-active={active}>
                 {icon}
 
-                <span className={style.content}>
+                <span className={style.content} style={{ opacity: collapsed ? 0 : 1 }}>
                     {label}
 
-                    {count ? <Toggle size="sml" round={round} checked={open} checkedContent={<MdExpandLess />} onChange={e => {
+                    {count ? <Toggle variant="minimal" size="sml" round={round} checked={open} checkedContent={<MdExpandLess />} onChange={e => {
                         e.stopPropagation();
 
                         setOpen(e.target.checked);
-                    }} style={{ marginRight: '-.2em' }}>
+                    }} style={{ marginRight: '-.2em', color: active ? 'var(--f-clr-text-200)' : undefined }}>
                         <MdExpandMore />
                     </Toggle> : right}
                 </span>
             </div>
         </Halo>
 
-        {count ? <Collapsible shown={open} className={style.sublinks}>
+        {count ? <Collapsible shown={open && !collapsed} className={style.sublinks} style={{ paddingLeft: collapsed ? undefined : '1.5em' }}>
             {children}
         </Collapsible> : null}
     </>;

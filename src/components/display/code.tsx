@@ -29,7 +29,8 @@ const Code = forwardRef(({ children, cc = {}, title, ...props }: { children: str
         '.code': {
             display: 'flex',
             padding: '1em',
-            backgroundColor: 'var(--f-clr-fg-100)'
+            backgroundColor: 'var(--f-clr-fg-100)',
+            height: '100%'
         },
 
         '.numbers': {

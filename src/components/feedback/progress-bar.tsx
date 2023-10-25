@@ -35,19 +35,19 @@ const ProgressBar = forwardRef(({ cc = {}, size = 'med', value, defaultValue = 0
         },
 
         '.track__xsm': {
-            fontSize: 'var(--f-font-size-xxs)'
-        },
-
-        '.track__sml': {
             fontSize: 'var(--f-font-size-xsm)'
         },
 
-        '.track__med': {
+        '.track__sml': {
             fontSize: 'var(--f-font-size-sml)'
         },
 
-        '.track__lrg': {
+        '.track__med': {
             fontSize: 'var(--f-font-size-med)'
+        },
+
+        '.track__lrg': {
+            fontSize: 'var(--f-font-size-lrg)'
         }
     });
     const style = combineClasses(styles, cc);
