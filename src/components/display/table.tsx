@@ -73,13 +73,14 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
     
         '.header': {
             fontSize: '.9em',
-            fontWeight: 600
+            fontWeight: 700,
+            background: 'var(--f-clr-fg-200)'
         },
     
         '.label': {
             position: 'relative',
             borderRadius: 'var(--f-radius-sml)',
-            color: 'var(--f-clr-grey-600)',
+            color: 'var(--f-clr-grey-700)',
             display: 'flex',
             alignItems: 'center',
             gap: 'var(--f-spacing-xxs)',
@@ -94,11 +95,11 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
             cursor: 'pointer'
         },
     
-        '.checkbox': {
-            border: 'solid 1px var(--f-clr-grey-300)'
+        '.row .checkbox': {
+            borderColor: 'var(--f-clr-grey-300)'
         },
     
-        '.checkmark': {
+        '.row .checkmark': {
             stroke: 'var(--f-clr-text-200)'
         }
     });

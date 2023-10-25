@@ -1,9 +1,8 @@
 'use client';
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
-import useDomEffect from "../../../src/hooks/use-dom-effect";
 import { FluidStyles, Selectors } from "../../../src/types";
-import { forwardRef, cloneElement, useState, useRef, isValidElement, useId } from "react";
+import { forwardRef, cloneElement, useState, useRef, isValidElement, useId, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
 
@@ -55,23 +54,13 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
             padding: '.2em .3em',
             borderRadius: 'var(--f-radius-sml)',
             pointerEvents: 'none',
-            border: 'solid 1px var(--f-clr-fg-200)'
+            border: 'solid 1px var(--f-clr-fg-200)',
+            transition: 'opacity .2s, translate .2s'
         },
 
-        '.tooltip[data-position="top"]': {
-            translate: '-50% -100%'
-        },
-
-        '.tooltip[data-position="left"]': {
-            translate: '-100% -50%'
-        },
-
-        '.tooltip[data-position="right"]': {
-            translate: '0% -50%'
-        },
-
-        '.tooltip[data-position="bottom"]': {
-            translate: '-50% 0%'
+        '.tooltip[aria-hidden="true"]': {
+            opacity: 0,
+            translate: '0px 4px'
         }
     });
     const style = combineClasses(styles, cc);
@@ -86,9 +75,8 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
     const timeout = useRef<any>();
     function show(value: boolean, delay = 0) {
         clearTimeout(timeout.current);
-        if (!element.current || !value || visibility === 'never') return setVisible(visibility === 'always');
 
-        if (position === 'auto') {
+        if (position === 'auto' && element.current) {
             let { left, top, right, bottom } = element.current.getBoundingClientRect();
             right = window.innerWidth - right;
             bottom = window.innerHeight - bottom;
@@ -97,6 +85,8 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
 
             setComputed(max[1] as string);
         }
+
+        if (!value || visibility === 'never') return setVisible(visibility === 'always');
 
         timeout.current = setTimeout(() => {
             setVisible(true);
@@ -107,18 +97,31 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
     function update() {
         if (anchor.current && tooltip.current) {
             const { x, y } = anchor.current.getBoundingClientRect();
-            tooltip.current.style.transform = `translate(${x}px, ${y}px)`;
+            let offset = '-50%, -100%';
+
+            switch (computed) {
+                case 'left': offset = '-100%, -50%';
+                    break;
+                case 'right': offset = '0%, -50%';
+                    break;
+                case 'bottom': offset = '-50%, 0%';
+                    break;
+            }
+
+            tooltip.current.style.transform = `translate(${x}px, ${y}px) translate(${offset})`;
         }
 
         frame = requestAnimationFrame(update);
     }
 
-    useDomEffect(() => {
-        show(visibility === 'always');
+    useEffect(() => {
+        cancelAnimationFrame(frame);
         frame = requestAnimationFrame(update);
 
         return () => cancelAnimationFrame(frame);
-    }, [visibility]);
+    }, [computed]);
+
+    useEffect(() => show(visibility === 'always'), [visibility]);
 
     children = Array.isArray(children) ? children[0] : children;
     if (!isValidElement(children)) return children;
@@ -147,7 +150,7 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
 
         {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={computed} />, element.current)}
 
-        {visible && element.current && createPortal(<div ref={combineRefs(ref, tooltip)} {...props} id={id} role="tooltip" className={classes(style.tooltip, props.className)} data-position={computed}>
+        {element.current && createPortal(<div ref={combineRefs(ref, tooltip)} {...props} id={id} role="tooltip" className={classes(style.tooltip, props.className)} aria-hidden={!visible}>
             {content}
         </div>, document.getElementById('__fluid') as HTMLElement)}
     </>;
