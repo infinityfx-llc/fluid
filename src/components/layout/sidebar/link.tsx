@@ -100,7 +100,7 @@ const Link = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, 
 
     return <>
         <Halo color="var(--f-clr-primary-200)" disabled={disabled}>
-            <div ref={ref} {...props} className={classes(
+            <div ref={ref} {...props} tabIndex={0} className={classes(
                 style.link,
                 style[`link__${size}`],
                 round && style.link__round,

@@ -67,7 +67,7 @@ const PasswordField = forwardRef(({ cc = {}, strengthBar = false, size = 'med', 
                 <MdVisibility />
             </Toggle>} />
 
-        {strengthBar && <ProgressBar value={strength / 5} color={colors[strength]} cc={{ track: style.track }} />}
+        {strengthBar && <ProgressBar size="sml" value={strength / 5} color={colors[strength]} cc={{ track: style.track }} />}
 
         {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
     </div>;

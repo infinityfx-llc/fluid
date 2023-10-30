@@ -111,7 +111,11 @@ const Radio = forwardRef(({ cc = {}, error, size = 'med', ...props }:
     const [split, rest] = useInputProps(props);
 
     return <Halo hover={false} cc={{ halo: style.halo }}>
-        <div ref={ref} {...rest} className={classes(style.wrapper, rest.className)} data-size={size} data-error={!!error}>
+        <div ref={ref} {...rest} className={classes(
+            style.wrapper,
+            style[`wrapper__${size}`],
+            rest.className
+        )} data-error={!!error}>
             <input {...split} type="radio" className={style.input} aria-invalid={!!error} />
 
             <div className={style.radio}>
