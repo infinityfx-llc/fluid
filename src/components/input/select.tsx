@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useRef, useState, useId } from 'react';
+import { forwardRef, useRef, useState, useId, useEffect } from 'react';
 import { FieldProps } from './field';
 import Button from './button';
 import { MdCheck, MdUnfoldMore } from 'react-icons/md';
@@ -187,6 +187,10 @@ function SelectComponent<T extends FluidInputvalue>(
     const popover = useRef<PopoverRootReference>(null);
     const [state, setState] = value !== undefined ? [value] : useState<FluidInputvalue | FluidInputvalue[]>(defaultValue || (multiple ? [] : ''));
     const [split, rest] = useInputProps(props);
+
+    useEffect(() => {
+        if (multiple && value === undefined && !Array.isArray(state)) setState?.([]);
+    }, [multiple]);
 
     return <Combobox.Root ref={popover} stretch>
         <div ref={ref} {...rest} className={classes(

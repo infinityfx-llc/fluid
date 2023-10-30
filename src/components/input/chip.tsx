@@ -42,7 +42,7 @@ const Chip = forwardRef(({ children, cc = {}, round = false, size = 'med', varia
         },
 
         '.chip': {
-            backgroundColor: 'var(--f-clr-fg-100)',
+            backgroundColor: 'var(--f-clr-fg-200)',
             color: 'var(--f-clr-text-100)',
             fontWeight: 600,
             padding: '.5em',
@@ -72,9 +72,9 @@ const Chip = forwardRef(({ children, cc = {}, round = false, size = 'med', varia
         },
 
         '.checkmark': {
-            width: '1.1em',
+            width: '1em',
             stroke: 'var(--f-clr-text-200)',
-            strokeWidth: 2,
+            strokeWidth: 3,
             strokeLinecap: 'round',
             strokeLinejoin: 'round'
         },
@@ -112,7 +112,7 @@ const Chip = forwardRef(({ children, cc = {}, round = false, size = 'med', varia
             stroke: 'var(--f-clr-grey-100)'
         },
 
-        '.input:checked:disabled + .chip': {
+        '.wrapper[data-variant="default"] .input:checked:disabled + .chip': {
             color: 'var(--f-clr-grey-100)',
             backgroundColor: 'var(--f-clr-grey-300)'
         },

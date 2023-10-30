@@ -72,7 +72,9 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
     const [visible, setVisible] = useState(false);
     const [computed, setComputed] = useState<string>(position);
 
+    const displayPosition = position === 'auto' ? computed : position;
     const timeout = useRef<any>();
+    
     function show(value: boolean, delay = 0) {
         clearTimeout(timeout.current);
 
@@ -99,7 +101,7 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
             const { x, y } = anchor.current.getBoundingClientRect();
             let offset = '-50%, -100%';
 
-            switch (computed) {
+            switch (displayPosition) {
                 case 'left': offset = '-100%, -50%';
                     break;
                 case 'right': offset = '0%, -50%';
@@ -119,7 +121,7 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
         frame = requestAnimationFrame(update);
 
         return () => cancelAnimationFrame(frame);
-    }, [computed]);
+    }, [displayPosition]);
 
     useEffect(() => show(visibility === 'always'), [visibility]);
 
@@ -148,7 +150,7 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
             }
         })}
 
-        {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={computed} />, element.current)}
+        {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={displayPosition} />, element.current)}
 
         {element.current && createPortal(<div ref={combineRefs(ref, tooltip)} {...props} id={id} role="tooltip" className={classes(style.tooltip, props.className)} aria-hidden={!visible}>
             {content}

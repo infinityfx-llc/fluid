@@ -55,7 +55,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
             marginBottom: '.6em'
         },
 
-        '.header > *': {
+        '.header .button': {
             fontSize: '1em !important'
         },
 
@@ -65,7 +65,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
             gap: 'var(--f-spacing-xsm)',
             color: 'var(--f-clr-text-100)',
             fontWeight: 700,
-            fontSize: 'var(--f-font-size-xsm) !important'
+            fontSize: '.85em'
         },
 
         '.years': {
@@ -105,13 +105,13 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
             fontWeight: 400
         },
 
-        '.date[data-variant="minimal"]:disabled': {
-            background: 'none'
+        '.date__var__minimal:disabled': {
+            background: 'none !important'
         },
 
-        '.date[data-variant="default"]:disabled': {
-            backgroundColor: 'var(--f-clr-grey-200)',
-            color: 'var(--f-clr-text-100)'
+        '.date__var__default:disabled': {
+            backgroundColor: 'var(--f-clr-grey-200) !important',
+            color: 'var(--f-clr-text-100) !important'
         }
     });
     const style = combineClasses(styles, cc);
@@ -131,6 +131,12 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
     function isEqual(a: Date, b: Date) {
         return a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
     }
+    
+    try {
+        new Intl.Locale(locale as any);
+    } catch (ex) {
+        locale = 'en';
+    }
 
     return <div ref={ref} {...props} className={classes(
         style.calendar,
@@ -139,7 +145,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
         props.className
     )}>
         <div className={style.header}>
-            <Button disabled={disabled === true} variant="minimal" round={round} onClick={() => {
+            <Button className={style.button} disabled={disabled === true} variant="minimal" round={round} onClick={() => {
                 const updated = new Date(date);
                 updated.setMonth(date.getMonth() - 1);
                 update(updated);
@@ -151,8 +157,8 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
                 {date.toLocaleString(locale, { month: 'long' })}
 
                 <Combobox.Root position="center">
-                    <Combobox.Trigger>
-                        <Button size="sml" variant="minimal">
+                    <Combobox.Trigger disabled={disabled === true}>
+                        <Button className={style.button} variant="minimal" round={round} disabled={disabled === true}>
                             {date.toLocaleString(locale, { year: 'numeric' })}
 
                             <MdExpandMore />
@@ -172,7 +178,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
                 </Combobox.Root>
             </div>
 
-            <Button disabled={disabled === true} variant="minimal" round={round} onClick={() => {
+            <Button className={style.button} disabled={disabled === true} variant="minimal" round={round} onClick={() => {
                 const updated = new Date(date);
                 updated.setMonth(date.getMonth() + 1);
                 update(updated);
@@ -198,7 +204,11 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
 
                 const isDisabled = Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled;
 
-                return <Button disabled={isDisabled} key={i} round={round} className={style.date} data-present={isMonth} variant={isEqual(date, day) ? 'default' : 'minimal'} onClick={() => update(day)}>
+                return <Button disabled={isDisabled} key={i} round={round} cc={{
+                    button: style.date,
+                    button__var__default: style.date__var__default,
+                    button__var__minimal: style.date__var__minimal
+                }} data-present={isMonth} variant={isEqual(date, day) ? 'default' : 'minimal'} onClick={() => update(day)}>
                     {day.getDate()}
                 </Button>;
             })}

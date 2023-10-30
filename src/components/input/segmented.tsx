@@ -26,7 +26,7 @@ function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'def
         '.segmented': {
             padding: '.3em',
             borderRadius: 'calc(var(--f-radius-sml) + .3em)',
-            backgroundColor: 'var(--f-clr-fg-100)',
+            backgroundColor: 'var(--f-clr-fg-200)',
             display: 'flex'
         },
 
@@ -94,8 +94,7 @@ function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'def
         },
 
         '.segmented__var__neutral .selection': {
-            backgroundColor: 'var(--f-clr-bg-100)',
-            border: 'solid 1px var(--f-clr-fg-200)'
+            backgroundColor: 'var(--f-clr-bg-100)'
         },
 
         '.segmented__round .selection': {

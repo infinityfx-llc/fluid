@@ -146,7 +146,7 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
 
         const wKey = horizontal ? 'offsetWidth' : 'offsetHeight';
         const sKey = horizontal ? 'scrollLeft' : 'scrollTop';
-        const max = el[horizontal ? 'scrollWidth' : 'scrollHeight'] - el[wKey];
+        const max = Math.max(el[horizontal ? 'scrollWidth' : 'scrollHeight'] - el[wKey], 1);
         const updated = Math.max(Math.min(el[sKey] + Math.round(value), max), 0);
 
         if (el[sKey] !== updated) {
@@ -166,6 +166,7 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
 
         const size = horizontal ? el.offsetWidth / el.scrollWidth : el.offsetHeight / el.scrollHeight;
         handle.current.style[horizontal ? 'width' : 'height'] = size * 100 + '%';
+        handle.current.style[horizontal ? 'height' : 'width'] = '';
         handle.current.style.translate = '0px 0px';
         setScrollable(size < 1);
 
@@ -175,14 +176,13 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
     useDomEffect(() => {
         resize();
 
-        const observer = new ResizeObserver(resize);
-        if (area.current) {
-            observer.observe(area.current);
-            if (area.current.children.length) observer.observe(area.current.children[0]);
+        const observer = new ResizeObserver(resize), areaRef = area.current;
+        if (!areaRef) return;
 
-            area.current.addEventListener('wheel', wheel);
-        }
+        observer.observe(areaRef);
+        if (areaRef.children.length) observer.observe(areaRef.children[0]);
 
+        areaRef.addEventListener('wheel', wheel);
         window.addEventListener('mousemove', drag);
         window.addEventListener('mouseup', drag);
 
@@ -190,9 +190,9 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
             observer.disconnect();
             window.removeEventListener('mousemove', drag);
             window.removeEventListener('mouseup', drag);
-            area.current?.removeEventListener('wheel', wheel);
+            areaRef.removeEventListener('wheel', wheel);
         }
-    }, []);
+    }, [disabled, horizontal]);
 
     const id = useId();
 

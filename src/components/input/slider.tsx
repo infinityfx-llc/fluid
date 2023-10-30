@@ -27,7 +27,7 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
         },
 
         '.wrapper[data-vertical="false"]': {
-            width: 'clamp(0px, 12em, 100vw)',
+            minWidth: 'clamp(0px, 12em, 100vw)',
             gap: 'var(--f-spacing-xsm)'
         },
 
@@ -63,7 +63,7 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
             width: '100%',
             height: '.4em',
             borderRadius: '999px',
-            backgroundColor: 'var(--f-clr-fg-100)',
+            backgroundColor: 'var(--f-clr-fg-200)',
             overflow: 'hidden'
         },
 
