@@ -48,17 +48,18 @@ const Textarea = forwardRef(({ cc = {}, label, error, size = 'med', resize = 'bo
         },
 
         '.textarea': {
-            outline: 'none',
+            outline: 'solid 3px transparent',
             backgroundColor: 'var(--f-clr-fg-100)',
             border: 'solid 1px var(--f-clr-fg-200)',
             borderRadius: 'var(--f-radius-sml)',
-            transition: 'border-color .2s',
+            transition: 'border-color .2s, outline-color .2s',
             width: '100%',
             height: '4em'
         },
 
         '.textarea:focus-within': {
-            borderColor: 'var(--f-clr-primary-100)'
+            borderColor: 'var(--f-clr-primary-100)',
+            outlineColor: 'var(--f-clr-primary-500)'
         },
 
         '.input': {

@@ -189,7 +189,7 @@ function SelectComponent<T extends FluidInputvalue>(
     const [split, rest] = useInputProps(props);
 
     useEffect(() => {
-        if (multiple && value === undefined && !Array.isArray(state)) setState?.([]);
+        if (value === undefined) setState?.(multiple ? [] : '');
     }, [multiple]);
 
     return <Combobox.Root ref={popover} stretch>

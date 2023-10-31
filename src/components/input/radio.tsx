@@ -18,7 +18,8 @@ const Radio = forwardRef(({ cc = {}, error, size = 'med', ...props }:
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('radio', {
         '.wrapper': {
-            position: 'relative'
+            position: 'relative',
+            width: 'max-content'
         },
 
         '.wrapper__xsm': {

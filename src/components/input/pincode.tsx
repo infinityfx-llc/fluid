@@ -38,17 +38,19 @@ const Pincode = forwardRef(({ cc = {}, length = 4, masked, size = 'med', round =
         },
 
         '.field': {
+            outline: 'solid 3px transparent',
             backgroundColor: 'var(--f-clr-fg-100)',
             border: 'solid 1px var(--f-clr-fg-200)',
             borderRadius: 'var(--f-radius-sml)',
-            transition: 'border-color .2s',
+            transition: 'border-color .2s, outline-color .2s',
             padding: '.6em',
             display: 'flex',
             flexGrow: 1
         },
 
         '.field:focus-within': {
-            borderColor: 'var(--f-clr-primary-100)'
+            borderColor: 'var(--f-clr-primary-100)',
+            outlineColor: 'var(--f-clr-primary-500)'
         },
 
         '.input': {

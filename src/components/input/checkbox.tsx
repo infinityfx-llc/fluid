@@ -23,7 +23,8 @@ const Checkbox = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-cl
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('checkbox', {
         '.wrapper': {
-            position: 'relative'
+            position: 'relative',
+            width: 'max-content'
         },
 
         '.wrapper__xsm': {
@@ -55,6 +56,7 @@ const Checkbox = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-cl
             width: '1.5em',
             height: '1.5em',
             borderRadius: 'var(--f-radius-sml)',
+            backgroundColor: 'var(--f-clr-bg-100)',
             border: 'solid 1px var(--f-clr-fg-200)',
             transition: 'background-color .25s, border-color .25s',
             display: 'flex',

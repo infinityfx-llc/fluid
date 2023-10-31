@@ -22,7 +22,7 @@ const Content = forwardRef(({ children, cc = {}, searchable, placeholder = 'Sear
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('combobox.content', {
         '.container': {
-            background: 'var(--f-clr-bg-100)',
+            background: 'var(--f-clr-fg-100)',
             border: 'solid 1px var(--f-clr-fg-200)',
             borderRadius: 'calc(.3em + var(--f-radius-sml))',
             boxShadow: '0 0 8px rgb(0, 0, 0, 0.06)',
@@ -54,7 +54,7 @@ const Content = forwardRef(({ children, cc = {}, searchable, placeholder = 'Sear
             border: 'none !important',
             borderRadius: '0 !important',
             borderBottom: 'solid 1px var(--f-clr-fg-200) !important',
-            backgroundColor: 'var(--f-clr-bg-100) !important'
+            outline: 'none !important'
         },
 
         '.wrapper': {

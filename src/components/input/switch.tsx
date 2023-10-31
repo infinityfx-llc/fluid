@@ -21,7 +21,8 @@ const Switch = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('switch', {
         '.wrapper': {
-            position: 'relative'
+            position: 'relative',
+            width: 'max-content'
         },
 
         '.wrapper__xsm': {

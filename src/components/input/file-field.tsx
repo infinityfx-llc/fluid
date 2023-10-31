@@ -46,10 +46,11 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
             border: 'solid 1px var(--f-clr-fg-200)',
             borderRadius: 'var(--f-radius-sml)',
             color: 'var(--f-clr-grey-200)',
-            transition: 'border-color .2s, color .2s',
+            transition: 'border-color .2s, color .2s, outline-color .2s',
             display: 'flex',
             alignItems: 'center',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            outline: 'solid 3px transparent',
         },
 
         '.content': {
@@ -74,7 +75,8 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
 
         '.field:focus-within': {
             borderColor: 'var(--f-clr-primary-100)',
-            color: 'var(--f-clr-primary-100)'
+            color: 'var(--f-clr-primary-100)',
+            outlineColor: 'var(--f-clr-primary-500)'
         },
 
         '.field[data-error="true"]': {
