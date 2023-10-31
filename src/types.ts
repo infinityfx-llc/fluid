@@ -71,6 +71,8 @@ export type FluidComponents = {
     'sidebar.root'?: FluidStyles;
     'sidebar.user'?: FluidStyles;
     collapsible?: FluidStyles;
+    container?: FluidStyles;
+    'container-item'?: FluidStyles;
     cull?: FluidStyles;
     divider?: FluidStyles;
     drawer?: FluidStyles;

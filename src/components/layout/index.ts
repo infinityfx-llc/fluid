@@ -3,8 +3,9 @@ import Modal from "./modal";
 import Drawer from "./drawer";
 import Scrollarea from "./scrollarea";
 import Collapsible from "./collapsible";
+import Container from "./container";
+import ContainerItem from "./container-item";
 import Accordion from "./accordion";
-// import Grid from "./grid";
 import Sidebar from "./sidebar";
 import Cull from "./cull";
 import Popover from "./popover";
@@ -16,8 +17,9 @@ export {
     Drawer,
     Scrollarea,
     Collapsible,
+    Container,
+    ContainerItem,
     Accordion,
-    // Grid,
     Sidebar,
     Cull,
     Popover,

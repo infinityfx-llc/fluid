@@ -52,10 +52,10 @@ const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onColla
         },
 
         '.header': {
-            height: '5rem',
             display: 'flex',
             alignItems: 'center',
-            paddingInline: '1em'
+            padding: '1em',
+            flexShrink: 0
         },
 
         '.content': {

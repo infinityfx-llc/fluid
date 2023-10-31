@@ -78,7 +78,8 @@ const Toggle = forwardRef(({ children, cc = {}, size = 'med', round = false, var
     
         '.container': {
             display: 'grid',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            height: '100%'
         },
     
         '.toggle[data-checked="true"]:not(.toggle__var__neutral)': {
