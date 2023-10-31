@@ -84,9 +84,9 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
             right = window.innerWidth - right;
             bottom = window.innerHeight - bottom;
 
-            const max = [[left, 'left'], [top, 'top'], [right, 'right'], [bottom, 'bottom']].sort((a: any, b: any) => b[0] - a[0])[0];
+            const max = [[left, 'left'], [top, 'top'], [right, 'right'], [bottom, 'bottom']].sort((a: any, b: any) => b[0] - a[0])[0][1] as string;
 
-            setComputed(max[1] as string);
+            setComputed(max);
         }
 
         if (!value || visibility === 'never') return setVisible(visibility === 'always');

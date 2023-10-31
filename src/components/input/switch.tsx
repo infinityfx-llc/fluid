@@ -124,7 +124,7 @@ const Switch = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-
         },
 
         '.wrapper__round .halo': {
-            borderRadius: '999px'
+            borderRadius: '999px !important'
         },
 
         '.halo': {
