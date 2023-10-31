@@ -85,6 +85,10 @@ const Field = forwardRef(({ cc = {}, round = false, size = 'med', error, showErr
             borderColor: 'var(--f-clr-error-100)'
         },
 
+        '.field[data-error="true"]:focus-within': {
+            outlineColor: 'var(--f-clr-error-400)'
+        },
+
         '.field[data-error="true"] .content': {
             color: 'var(--f-clr-error-200)'
         },

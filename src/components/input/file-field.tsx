@@ -83,6 +83,10 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
             borderColor: 'var(--f-clr-error-100)'
         },
 
+        '.field[data-error="true"]:focus-within': {
+            outlineColor: 'var(--f-clr-error-400)'
+        },
+
         '.field[data-error="true"] .content': {
             color: 'var(--f-clr-error-200)'
         },

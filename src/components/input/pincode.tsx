@@ -102,6 +102,10 @@ const Pincode = forwardRef(({ cc = {}, length = 4, masked, size = 'med', round =
             borderColor: 'var(--f-clr-error-100)'
         },
 
+        '.pincode[data-error="true"] .field:focus-within': {
+            outlineColor: 'var(--f-clr-error-400)'
+        },
+
         '.pincode[data-error="true"] .input': {
             color: 'var(--f-clr-error-200)'
         }

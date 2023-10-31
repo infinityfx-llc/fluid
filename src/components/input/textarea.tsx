@@ -78,6 +78,10 @@ const Textarea = forwardRef(({ cc = {}, label, error, size = 'med', resize = 'bo
             borderColor: 'var(--f-clr-error-100)'
         },
 
+        '.textarea[data-error="true"]:focus-within': {
+            outlineColor: 'var(--f-clr-error-400)'
+        },
+
         '.textarea[data-error="true"] .input': {
             color: 'var(--f-clr-error-200)'
         },
