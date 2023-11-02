@@ -8,7 +8,7 @@ import { createPortal } from 'react-dom';
 import { usePopover } from './root';
 
 const Content = forwardRef((props: React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const { id, mounted, trigger, opened, toggle } = usePopover();
+    const { id, mounted, trigger, content, opened, toggle } = usePopover();
 
     const menu = useClickOutside<HTMLDivElement>(e => {
         if (trigger.current && !trigger.current.contains(e.target as HTMLElement)) toggle(false);
@@ -17,9 +17,9 @@ const Content = forwardRef((props: React.HTMLAttributes<HTMLDivElement>, ref: Re
     if (!mounted) return null;
 
     return createPortal(<LayoutGroup>
-        {opened && <div ref={combineRefs(menu, ref)} {...props} id={id} style={{ ...props.style, position: 'fixed', zIndex: 999, ...opened }}>
-            {props.children}
-        </div>}
+        <div ref={combineRefs(menu, content, ref)} {...props} id={id} style={{ ...props.style, position: 'fixed', zIndex: 999 }}>
+            {opened && props.children}
+        </div>
     </LayoutGroup>, document.getElementById('__fluid') as HTMLElement);
 });
 

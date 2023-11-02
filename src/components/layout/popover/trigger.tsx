@@ -20,7 +20,7 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
 
     return cloneElement(children, {
         ...props,
-        'aria-expanded': !!opened,
+        'aria-expanded': opened,
         'aria-controls': id,
         'aria-disabled': disabled,
         ref: combineRefs(trigger, (children as any).ref),

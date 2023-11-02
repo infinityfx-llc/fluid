@@ -9,6 +9,7 @@ import Code from "./code";
 import Toast from "./toast";
 import Table from "./table";
 import Frame from "./frame";
+// import Counter from "./counter";
 
 export {
     Key,
@@ -21,5 +22,6 @@ export {
     Code,
     Toast,
     Table,
-    Frame
+    Frame,
+    // Counter
 }

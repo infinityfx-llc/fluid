@@ -6,7 +6,8 @@ export const PopoverContext = createContext<{
     id: string;
     mounted: boolean;
     trigger: React.RefObject<HTMLElement>;
-    opened?: { left?: string; right?: string; top?: string; bottom?: string; minWidth?: string; transform?: string; } | null;
+    content: React.RefObject<HTMLElement>;
+    opened: boolean;
     toggle: (value: boolean) => void;
 } | null>(null);
 
@@ -32,30 +33,30 @@ export type PopoverRoot = {
 const Root = forwardRef(({ children, position = 'auto', stretch, onClose }: PopoverRoot, ref: React.ForwardedRef<PopoverRootReference>) => {
     const id = useId();
     const trigger = useRef<HTMLElement>(null);
+    const content = useRef<HTMLElement>(null);
     const [mounted, setMounted] = useState(false);
-    const [opened, setOpened] = useState<{ left?: string; right?: string; top?: string; bottom?: string; minWidth?: string; transform?: string; } | null>(null);
+    const [opened, setOpened] = useState(false);
 
     const toggle = useCallback((value: boolean) => {
-        if (!value || !trigger.current) return setOpened(null);
+        if (!value || !trigger.current || !content.current) return setOpened(false);
 
         const { x, y, right, width, height } = trigger.current.getBoundingClientRect();
         const bottom = window.innerHeight - height - y;
         const isLeft = x + width / 2 < window.innerWidth / 2;
         const isTop = y > bottom;
-        const left = (position === 'auto' ?
+
+        content.current.style.left = (position === 'auto' ?
             isLeft ? x : right :
             x + width / 2) + 'px';
-        const transform = position === 'center' ?
+        content.current.style.transform = position === 'center' ?
             'translateX(-50%)' :
-            isLeft ? undefined : 'translateX(-100%)';
+            isLeft ? '' : 'translateX(-100%)';
+        content.current.style.minWidth = stretch ? `${width}px` : '';
+        content.current.style[isTop ? 'bottom' : 'top'] = `calc(${isTop ? bottom + height : y + height}px + var(--f-spacing-xsm))`;
+        content.current.style[isTop ? 'top' : 'bottom'] = '';
 
-        return setOpened({
-            left,
-            transform,
-            [isTop ? 'bottom' : 'top']: `calc(${isTop ? bottom + height : y + height}px + var(--f-spacing-xsm))`,
-            minWidth: stretch ? `${width}px` : undefined
-        });
-    }, []);
+        return setOpened(value);
+    }, [position, stretch]);
 
     useImperativeHandle(ref, () => ({
         close: toggle.bind({}, false)
@@ -63,15 +64,19 @@ const Root = forwardRef(({ children, position = 'auto', stretch, onClose }: Popo
 
     useEffect(() => {
         setMounted(true);
-        const resize = () => toggle(!!opened);
+        const resize = () => toggle(opened);
         window.addEventListener('resize', resize);
+        window.addEventListener('scroll', resize);
 
         if (mounted && !opened) onClose?.();
 
-        return () => window.removeEventListener('resize', resize);
+        return () => {
+            window.removeEventListener('resize', resize);
+            window.removeEventListener('scroll', resize);
+        }
     }, [opened]);
 
-    return <PopoverContext.Provider value={{ id, mounted, trigger, opened, toggle }}>
+    return <PopoverContext.Provider value={{ id, mounted, trigger, content, opened, toggle }}>
         {children}
     </PopoverContext.Provider>;
 });

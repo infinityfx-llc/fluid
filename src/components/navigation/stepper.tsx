@@ -110,7 +110,7 @@ const Stepper = forwardRef(({ cc = {}, steps, completed, setCompleted, navigatio
 
         '.step[data-current="true"] .bullet': {
             outlineColor: 'var(--f-clr-primary-400)',
-            color: 'var(--f-clr-pirmary-400)'
+            color: 'var(--f-clr-primary-200)'
         },
 
         '.step[data-error="true"][data-completed="false"] .bullet': {

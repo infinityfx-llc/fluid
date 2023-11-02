@@ -157,7 +157,7 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
         const offset = updated / max * (el[wKey] - handle.current[wKey]);
         handle.current.style.translate = horizontal ? `${offset}px 0px` : `0px ${offset}px`;
         handle.current.setAttribute('aria-valuenow', (updated / max * 100).toString());
-        track.current.style.translate = horizontal ? `${updated}px 0px` : `0px ${updated}px`;
+        track.current.style.translate = `${horizontal ? updated : el.scrollLeft}px ${horizontal ? el.scrollTop : updated}px`;
     }
 
     function resize() {
