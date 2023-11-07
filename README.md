@@ -7,3 +7,6 @@
 ![NPM downloads](https://img.shields.io/npm/dt/@infinityfx/fluid)
 
 A React UI library.
+
+## Documentation
+[infinityfx.dev/fluid](https://infinityfx.dev/fluid)

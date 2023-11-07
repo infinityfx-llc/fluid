@@ -100,11 +100,13 @@ export const DEFAULT_THEME = {
             grey: ['#e6e6e6', '#cccccc', '#b3b3b3', '#999999', '#808080', '#666666', '#4d4d4d', '#333333', '#191919'],
             text: ['#000', '#fff'],
             bg: ['#fff'],
-            fg: ['#f0f7f7', '#d8e3e3'],
+            // fg: ['#f0f7f7', '#d8e3e3'],
+            fg: ['#f5fafa', '#e6f0f0'],
             error: ['#ff1f1f', '#ff5454', '#ff8c8c', '#ffbdbd']
         },
         dark: {
-            primary: ['#1dddf2', '#1ac4d6', '#1bb2c2', '#1298a6', '#10707a', '#0d545c'],
+            // primary: ['#1dddf2', '#1ac4d6', '#1bb2c2', '#1298a6', '#10707a', '#0d545c'], 
+            primary: ['#1dddf2', '#1ac4d6', '#15a1b0', '#0e838f', '#064f57', '#043136'],
             accent: ['#22e39f'],
             grey: ['#191919', '#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#b3b3b3', '#cccccc', '#e6e6e6'],
             text: ['#fff', '#000'],
