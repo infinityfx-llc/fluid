@@ -216,7 +216,7 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
 
         <div className={style.slider} data-disabled={!!props.disabled}>
             <div ref={track} className={style.track}
-                onTouchEnd={() => dragging.current = -1}
+                onTouchEnd={() => dragging.current = null}
                 onMouseDown={e => {
                     e.stopPropagation();
                     dragging.current = -1;
@@ -247,7 +247,7 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
                                 e.stopPropagation();
                                 dragging.current = i;
                             }}
-                            onTouchEnd={() => dragging.current = -1}
+                            onTouchEnd={() => dragging.current = null}
                             onKeyDown={e => {
                                 switch (e.key) {
                                     case 'ArrowUp':
