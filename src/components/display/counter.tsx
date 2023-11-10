@@ -7,10 +7,14 @@ import { createStyles } from '../../core/style';
 import { useTrigger } from '@infinityfx/lively/hooks';
 import { Animatable } from '@infinityfx/lively';
 
-const Counter = forwardRef(({ children, cc = {}, align = 'right', ...props }: {
+// rename this!!!
+// replace magic 1.36em and .68em values!!!
+
+const Counter = forwardRef(({ children, cc = {}, align = 'right', selective, ...props }: {
     children: number | string;
     cc?: Selectors;
     align?: 'left' | 'right';
+    selective?: boolean;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('counter', {
         '.counter': {
@@ -32,19 +36,21 @@ const Counter = forwardRef(({ children, cc = {}, align = 'right', ...props }: {
 
     const duration = .7, stagger = .1;
     const trigger = useTrigger();
-    const timeout = useRef<any>();
     const prev = useRef(children.toString());
-    const [state, setState] = useState(children.toString().split('').map(char => [char]));
+    const mutable = useRef(children.toString().split('').map(char => [char]));
+    const prevLastRow = useRef<string[]>([]);
+    const [state, setState] = useState(mutable.current);
 
-    function trim(array: string[][]) {
+    function trim() {
         const trimmed = [];
 
-        for (let i = 0; i < array.length; i++) {
-            const chars = array[i].slice(-1);
+        for (let i = 0; i < mutable.current.length; i++) {
+            const chars = mutable.current[i].slice(1);
 
-            if (chars[0] !== ' ') trimmed.push(chars);
+            if (chars[0] !== ' ' || chars.length > 1) trimmed.push(chars);
         }
 
+        mutable.current = trimmed;
         setState(trimmed);
     }
 
@@ -52,24 +58,23 @@ const Counter = forwardRef(({ children, cc = {}, align = 'right', ...props }: {
         if (prev.current === children.toString()) return;
 
         prev.current = children.toString();
-        const arr = prev.current.split('');
-        const mutated = state.slice();
-        const len = mutated.length,
-            diff = len - arr.length;
+        const arr = prev.current.split(''), updated = mutable.current;
+        const len = updated.length, diff = len - arr.length;
+
+        prevLastRow.current = updated.map(col => col[col.length - 1]);
 
         if (diff > 0) arr[align === 'right' ? 'unshift' : 'push'](...new Array(diff).fill(' '));
 
         for (let i = arr.length - 1; i >= 0; i--) {
             if (i < len) {
-                mutated[i].push(arr[i]);
+                updated[i].push(arr[i]);
             } else {
-                mutated[align === 'right' ? 'unshift' : 'push']([arr[i]]);
+                updated[align === 'right' ? 'unshift' : 'push']([arr[i]]);
             }
         }
 
-        clearTimeout(timeout.current);
-        timeout.current = setTimeout(() => trim(mutated), (duration + (mutated.length - 1) * stagger) * 1000);
-        setState(mutated);
+        setTimeout(trim, (duration + (updated.length - 1) * stagger) * 1000);
+        setState(updated.slice());
         trigger();
     }, [children]);
 
@@ -77,8 +82,8 @@ const Counter = forwardRef(({ children, cc = {}, align = 'right', ...props }: {
         {state.map((column, i) => {
             return <Animatable key={i}
                 initial={{ translate: '0em 0em' }}
-                animate={{ translate: ['0em 1.35em', '0em 0em'], composite: 'combine', duration, delay: i * stagger }}
-                triggers={[{ on: trigger }]}>
+                animate={{ translate: ['0em 1.36em', '0em 0em'], composite: 'combine', duration, delay: i * stagger }}
+                triggers={[{ on: trigger, name: !selective || prevLastRow.current[i] !== column[column.length - 1] ? 'animate' : 'undefined' }]}>
 
                 <div className={style.column}>
                     {column.map((char, i) => {
