@@ -9,7 +9,7 @@ import Code from "./code";
 import Toast from "./toast";
 import Table from "./table";
 import Frame from "./frame";
-import Counter from "./counter";
+import Text from "./text";
 
 export {
     Key,
@@ -23,5 +23,5 @@ export {
     Toast,
     Table,
     Frame,
-    Counter
+    Text
 }

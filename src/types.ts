@@ -33,11 +33,11 @@ export type FluidComponents = {
     'action-menu'?: FluidStyles;
     badge?: FluidStyles;
     code?: FluidStyles;
-    counter?: FluidStyles;
     frame?: FluidStyles;
     key?: FluidStyles;
     swatch?: FluidStyles;
     table?: FluidStyles;
+    text?: FluidStyles;
     timeline?: FluidStyles;
     toast?: FluidStyles;
     tooltip?: FluidStyles;

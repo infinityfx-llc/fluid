@@ -7,16 +7,13 @@ import { createStyles } from '../../core/style';
 import { useTrigger } from '@infinityfx/lively/hooks';
 import { Animatable } from '@infinityfx/lively';
 
-// rename this!!!
-// replace magic 1.36em and .68em values!!!
-
-const Counter = forwardRef(({ children, cc = {}, align = 'right', selective, ...props }: {
+const Text = forwardRef(({ children, cc = {}, align = 'right', selective, ...props }: {
     children: number | string;
     cc?: Selectors;
     align?: 'left' | 'right';
     selective?: boolean;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('counter', {
+    const styles = createStyles('text', {
         '.counter': {
             display: 'flex',
             alignItems: 'flex-end',
@@ -29,7 +26,11 @@ const Counter = forwardRef(({ children, cc = {}, align = 'right', selective, ...
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            minWidth: '.68em'
+            minWidth: '1ch'
+        },
+
+        '.column > *': {
+            lineHeight: 1.2
         }
     });
     const style = combineClasses(styles, cc);
@@ -82,7 +83,7 @@ const Counter = forwardRef(({ children, cc = {}, align = 'right', selective, ...
         {state.map((column, i) => {
             return <Animatable key={i}
                 initial={{ translate: '0em 0em' }}
-                animate={{ translate: ['0em 1.36em', '0em 0em'], composite: 'combine', duration, delay: i * stagger }}
+                animate={{ translate: ['0em 1.2em', '0em 0em'], composite: 'combine', duration, delay: i * stagger }}
                 triggers={[{ on: trigger, name: !selective || prevLastRow.current[i] !== column[column.length - 1] ? 'animate' : 'undefined' }]}>
 
                 <div className={style.column}>
@@ -97,6 +98,6 @@ const Counter = forwardRef(({ children, cc = {}, align = 'right', selective, ...
     </div>;
 });
 
-Counter.displayName = 'Counter';
+Text.displayName = 'Text';
 
-export default Counter;
+export default Text;
