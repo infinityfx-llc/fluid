@@ -14,7 +14,7 @@ const Text = forwardRef(({ children, cc = {}, align = 'right', selective, ...pro
     selective?: boolean;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('text', {
-        '.counter': {
+        '.text': {
             display: 'flex',
             alignItems: 'flex-end',
             color: 'var(--f-clr-text-100)',
@@ -79,7 +79,7 @@ const Text = forwardRef(({ children, cc = {}, align = 'right', selective, ...pro
         trigger();
     }, [children]);
 
-    return <div ref={ref} {...props} className={classes(style.counter, props.className)}>
+    return <div ref={ref} {...props} className={classes(style.text, props.className)}>
         {state.map((column, i) => {
             return <Animatable key={i}
                 initial={{ translate: '0em 0em' }}

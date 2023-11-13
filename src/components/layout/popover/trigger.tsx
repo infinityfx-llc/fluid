@@ -26,21 +26,28 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
         ref: combineRefs(trigger, (children as any).ref),
         onMouseDown: (e: React.MouseEvent) => {
             children.props.onMouseDown?.(e);
+            props.onMouseDown?.(e);
+
             if (longpress) timeout.current = setTimeout(action, 400);
         },
         onMouseUp: (e: React.MouseEvent) => {
             children.props.onMouseUp?.(e);
+            props.onMouseUp?.(e);
 
             clearTimeout(timeout.current);
             if (!longpress) action();
         },
         onTouchStart: (e: React.TouchEvent) => {
             children.props.onTouchStart?.(e);
+            props.onTouchStart?.(e);
+
             touch.current = e.changedTouches[0];
             if (longpress) timeout.current = setTimeout(action, 400);
         },
         onTouchEnd: (e: React.TouchEvent) => {
             children.props.onTouchEnd?.(e);
+            props.onTouchEnd?.(e);
+
             const { clientX, clientY } = e.changedTouches[0];
             const distance = Math.abs(touch.current.clientX - clientX) + Math.abs(touch.current.clientY - clientY);
 
@@ -52,6 +59,8 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
         },
         onKeyDown: (e: React.KeyboardEvent) => {
             children.props.onKeyDown?.(e);
+            props.onKeyDown?.(e);
+
             if ((e.key === 'Enter' || e.key === ' ') && longpress && !pressed.current) {
                 pressed.current = true;
                 timeout.current = setTimeout(action, 400);
@@ -59,6 +68,7 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
         },
         onKeyUp: (e: React.KeyboardEvent) => {
             children.props.onKeyUp?.(e);
+            props.onKeyUp?.(e);
 
             pressed.current = false;
             clearTimeout(timeout.current);

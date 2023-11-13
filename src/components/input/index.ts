@@ -1,3 +1,4 @@
+import Autocomplete from "./autocomplete";
 import Button from "./button";
 import Hamburger from "./hamburger";
 import Switch from "./switch";
@@ -19,6 +20,7 @@ import DateField from "./date-field";
 import Textarea from "./textarea";
 
 export {
+    Autocomplete,
     Button,
     Hamburger,
     Switch,

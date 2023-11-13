@@ -135,3 +135,9 @@ export function formatCookie(key: string, value: string, options: CookieOptions 
 
     return `${key}=${value}; ${config}`;
 }
+
+export function getFocusable(element: HTMLElement | null) {
+    if (!element) return undefined;
+    
+    return element.querySelector('button:not([disabled]), input:not([disabled])') as HTMLElement | undefined;
+}

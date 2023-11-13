@@ -7,15 +7,17 @@ import Field from '../../input/field';
 import { MdSearch } from 'react-icons/md';
 import { Animatable } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
-import { classes, combineClasses } from '../../../../src/core/utils';
+import { classes, combineClasses, getFocusable } from '../../../../src/core/utils';
 import { FluidStyles, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
+import { usePopover } from '../../layout/popover/root';
 
 export type ComboboxContentStyles = FluidStyles<'.container' | '.content' | '.message' | '.wrapper' | '.field'>;
 
-const Content = forwardRef(({ children, cc = {}, searchable, placeholder = 'Search..', emptyMessage = 'Nothing found', ...props }:
+const Content = forwardRef(({ children, cc = {}, autoFocus = true, searchable, placeholder = 'Search..', emptyMessage = 'Nothing found', ...props }:
     {
         cc?: Selectors<'container' | 'content' | 'message' | 'wrapper' | 'field'>;
+        autoFocus?: boolean;
         searchable?: boolean;
         placeholder?: string;
         emptyMessage?: string;
@@ -63,11 +65,12 @@ const Content = forwardRef(({ children, cc = {}, searchable, placeholder = 'Sear
     });
     const style = combineClasses(styles, cc);
 
+    const { trigger } = usePopover();
     const selected = useRef(searchable ? 0 : -1);
     const options = useRef<HTMLElement[]>([]);
     const [search, setSearch] = useState<string>('');
 
-    let optionIndex = 0, focused = false;
+    let optionIndex = 0;
     const filtered = Children.map(children, child => {
         if (isValidElement(child) && child.props.value.toString().toLowerCase().includes(search.toLowerCase())) {
             if (child.props.disabled) return child;
@@ -75,11 +78,12 @@ const Content = forwardRef(({ children, cc = {}, searchable, placeholder = 'Sear
             const i = (searchable ? 1 : 0) + optionIndex++;
 
             const clone = cloneElement(child as React.ReactElement, {
-                autoFocus: !focused && !searchable,
+                autoFocus: autoFocus && optionIndex === 1 && !searchable,
+                onFocus: () => selected.current = i,
                 ref: (el: HTMLElement) => options.current[i] = el
             });
 
-            return (focused = true, clone);
+            return clone;
         }
 
         return null;
@@ -91,16 +95,23 @@ const Content = forwardRef(({ children, cc = {}, searchable, placeholder = 'Sear
                 onKeyDown={e => {
                     props.onKeyDown?.(e);
 
-                    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-                        e.preventDefault();
+                    let reverse = e.key === 'ArrowUp' || e.shiftKey,
+                        selection = reverse ? Math.max(selected.current - 1, -1) : Math.min(selected.current + 1, options.current.length - 1);
 
-                        selected.current = e.key === 'ArrowDown' ? Math.min(selected.current + 1, options.current.length - 1) : Math.max(selected.current - 1, 0);
-                        options.current[selected.current]?.focus();
+                    if (e.key === 'Tab' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                        let child: HTMLElement | undefined = options.current[selected.current = selection];
+
+                        if (selected.current < 0) {
+                            child = getFocusable(trigger.current);
+                        }
+
+                        if (child) child.focus();
+                        if (child || e.key !== 'Tab') e.preventDefault();
                     }
                 }}>
                 {searchable && <Field
                     inputRef={(el: any) => options.current[0] = el}
-                    autoFocus
+                    autoFocus={autoFocus}
                     placeholder={placeholder}
                     value={search}
                     onChange={e => {

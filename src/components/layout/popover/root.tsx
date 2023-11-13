@@ -20,6 +20,7 @@ export function usePopover() {
 }
 
 export type PopoverRootReference = {
+    open: () => void;
     close: () => void;
 }
 
@@ -59,6 +60,7 @@ const Root = forwardRef(({ children, position = 'auto', stretch, onClose }: Popo
     }, [position, stretch]);
 
     useImperativeHandle(ref, () => ({
+        open: toggle.bind({}, true),
         close: toggle.bind({}, false)
     }), []);
 
