@@ -5,7 +5,7 @@ import { FieldProps } from './field';
 import Button from './button';
 import { MdCheck, MdUnfoldMore } from 'react-icons/md';
 import { FluidInputvalue, FluidStyles, PopoverRootReference, Selectors } from '../../../src/types';
-import { classes, combineClasses } from '../../../src/core/utils';
+import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import Badge from '../display/badge';
 import Combobox from '../display/combobox';
 import useInputProps from '../../../src/hooks/use-input-props';
@@ -26,7 +26,7 @@ type SelectProps<T> = {
     value?: T;
     defaultValue?: T;
     onChange?: (value: T) => void;
-} & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'styles'>;
+} & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'onEnter'>;
 
 function SelectComponent<T extends FluidInputvalue>(
     {
@@ -47,6 +47,7 @@ function SelectComponent<T extends FluidInputvalue>(
         icon,
         size = 'med',
         round,
+        inputRef,
         ...props
     }: SelectProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
     const styles = createStyles('select', {
@@ -184,6 +185,7 @@ function SelectComponent<T extends FluidInputvalue>(
     const style = combineClasses(styles, cc);
 
     const id = useId();
+    const selfInputRef = useRef<HTMLInputElement>(null);
     const popover = useRef<PopoverRootReference>(null);
     const [state, setState] = value !== undefined ? [value] : useState<FluidInputvalue | FluidInputvalue[]>(defaultValue || (multiple ? [] : ''));
     const [split, rest] = useInputProps(props);
@@ -221,7 +223,7 @@ function SelectComponent<T extends FluidInputvalue>(
                             }
                         </div>
 
-                        <input {...split} value={state?.toString()} readOnly aria-labelledby={label ? id : undefined} aria-invalid={!!error} className={style.input} />
+                        <input ref={combineRefs(inputRef, selfInputRef)} {...split} value={state?.toString()} readOnly aria-labelledby={label ? id : undefined} aria-invalid={!!error} className={style.input} />
                     </div>
 
                     <Button aria-label={split['aria-label'] || label} round={round} size={size} disabled={props.disabled || readOnly} variant="minimal" style={{ marginRight: '.3em' }}>
@@ -240,6 +242,8 @@ function SelectComponent<T extends FluidInputvalue>(
                 return <Combobox.Option key={i} value={label} disabled={disabled} aria-selected={selected} onSelect={() => {
                     if (!Array.isArray(state)) {
                         popover.current?.close();
+                        selfInputRef.current?.focus();
+
                         setState?.(value);
                         onChange?.(value as T);
                     } else {

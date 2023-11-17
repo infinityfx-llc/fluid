@@ -33,7 +33,7 @@ export function combineClasses(initial: Selectors, override: Selectors) {
     return combined;
 }
 
-export function combineRefs(...refs: React.Ref<any>[]) {
+export function combineRefs(...refs: (React.Ref<any> | undefined)[]) {
     return (el: any) => {
         refs.forEach(ref => {
             if (ref && 'current' in ref) (ref as React.MutableRefObject<any>).current = el;
