@@ -20,15 +20,19 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, ...props }:
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('modal', (fluid) => ({
         '.modal': {
-            position: 'absolute',
             background: 'var(--f-clr-bg-100)',
             borderRadius: 'var(--f-radius-med)',
             display: 'flex',
             flexDirection: 'column',
-            padding: 'var(--f-spacing-med)',
+            paddingBlock: 'var(--f-spacing-med)',
             width: 'clamp(0px, 16rem, 100vw)',
             border: 'solid 1px var(--f-clr-fg-200)',
-            margin: 'var(--f-spacing-lrg)'
+            margin: 'var(--f-spacing-lrg)',
+            maxHeight: 'calc(100% - var(--f-spacing-lrg) * 2)'
+        },
+
+        '.scrollarea': {
+            paddingInline: 'var(--f-spacing-med)'
         },
 
         '.header': {
@@ -36,6 +40,7 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, ...props }:
             justifyContent: 'space-between',
             alignItems: 'center',
             fontWeight: 700,
+            paddingInline: 'var(--f-spacing-med)',
             marginBottom: 'var(--f-spacing-med)',
             color: 'var(--f-clr-text-100)'
         },
@@ -43,8 +48,8 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, ...props }:
         [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {
             '.modal': {
                 width: '100vw',
-                bottom: 0,
-                marginBottom: 0,
+                alignSelf: 'flex-end',
+                margin: 0,
                 borderRadius: 'var(--f-radius-lrg)',
                 borderBottomRightRadius: 0,
                 borderBottomLeftRadius: 0
@@ -66,7 +71,7 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, ...props }:
                     </Button>
                 </div>
 
-                <Scrollarea>
+                <Scrollarea className={style.scrollarea}>
                     {children}
                 </Scrollarea>
             </div>
