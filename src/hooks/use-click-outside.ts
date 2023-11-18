@@ -1,3 +1,5 @@
+'use client';
+
 import { useRef, useEffect } from 'react';
 
 export default function useClickOutside<T extends HTMLElement>(cb: (e: MouseEvent) => void, dependencies: React.DependencyList = []) {

@@ -6,9 +6,9 @@ import Toggle, { ToggleProps } from "./toggle";
 import useFluid from "../../../src/hooks/use-fluid";
 
 const ThemeToggle = forwardRef((props: Omit<ToggleProps, 'checkedContent' | 'checked'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const { colorScheme, setColorScheme } = useFluid();
+    const { appliedColorScheme, setColorScheme } = useFluid();
 
-    return <Toggle ref={ref} {...props} checked={colorScheme === 'dark'} onChange={e => {
+    return <Toggle ref={ref} {...props} checked={appliedColorScheme === 'dark'} onChange={e => {
         setColorScheme(e.target.checked ? 'dark' : 'light');
         props.onChange?.(e);
     }} checkedContent={<MdDarkMode />}>

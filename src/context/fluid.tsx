@@ -5,9 +5,11 @@ import { FluidTheme, parseCSSVariables, parseColorPalettes } from "../../src/cor
 import global from "../../src/styles/global";
 import useColorScheme, { ColorScheme } from "../../src/hooks/use-color-scheme";
 import { STYLE_CONTEXT, createGlobalStyles } from "../core/style";
+import { usePreferredColorScheme } from "../hooks";
 
 type FluidContext = FluidTheme & {
     colorScheme: string;
+    appliedColorScheme: string;
     setColorScheme: (scheme: ColorScheme<any>) => void;
 }
 
@@ -17,8 +19,10 @@ const fluid = STYLE_CONTEXT.THEME;
 
 export default function FluidProvider({ children, initialColorScheme }: { children: React.ReactElement; initialColorScheme?: ColorScheme<typeof fluid>; }) {
 
-    const colorSchemes = Object.keys(fluid.palettes).concat('system');
+    const colorSchemes = Object.keys(fluid.palettes).concat('system'); // type infer not working when compiled
     const { colorScheme, setColorScheme } = useColorScheme<typeof fluid>(initialColorScheme as ColorScheme<typeof fluid>, colorSchemes);
+    const preferred = usePreferredColorScheme();
+    const systemColorScheme = preferred in fluid.palettes ? preferred : fluid.defaultColorScheme;
 
     createGlobalStyles(() => {
         const __fluid = STYLE_CONTEXT.THEME;
@@ -30,7 +34,12 @@ export default function FluidProvider({ children, initialColorScheme }: { childr
     });
     createGlobalStyles(global);
 
-    return <FluidContext.Provider value={{ ...fluid, colorScheme, setColorScheme }}>
+    return <FluidContext.Provider value={{
+        ...fluid,
+        colorScheme,
+        appliedColorScheme: colorScheme === 'system' ? systemColorScheme : colorScheme,
+        setColorScheme
+    }}>
         {cloneElement(children, {
             id: '__fluid',
             className: `scheme-${colorScheme}`

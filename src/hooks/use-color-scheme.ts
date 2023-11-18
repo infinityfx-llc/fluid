@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from "react";
 import { cookies, formatCookie } from "../core/utils";
 import { COLOR_SCHEME_COOKIE, FluidTheme } from "../core/theme";
