@@ -136,8 +136,12 @@ export function formatCookie(key: string, value: string, options: CookieOptions 
     return `${key}=${value}; ${config}`;
 }
 
-export function getFocusable(element: HTMLElement | null) {
-    if (!element) return undefined;
-    
-    return element.querySelector('button:not([disabled]), input:not([disabled])') as HTMLElement | undefined;
+export function getFocusable<T extends boolean = true>(element: HTMLElement | null, list: T = true as T): T extends true | undefined ? NodeListOf<HTMLElement> : HTMLElement | null {
+    if (!element) return list ? [] : null as any;
+
+    const selector = 'a:not([tabindex="-1"]), button:not([disabled]):not([tabindex="-1"]), input:not([disabled]):not([tabindex="-1"]), textarea:not([disabled]):not([tabindex="-1"])';
+
+    return list ?
+        element.querySelectorAll(selector) :
+        element.querySelector(selector) as any;
 }

@@ -3,11 +3,11 @@
 import { FluidStyles, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { LayoutGroup } from "@infinityfx/lively/layout";
-// import { createFocusTrap, FocusTrap } from "focus-trap";
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
 import { combineClasses } from "../../core/utils";
+import useFocusTrap from "../../hooks/use-focus-trap";
 
 const setBodyOverflow = (value: string) => {
     document.body.style.overflow = value;
@@ -18,16 +18,22 @@ export type OverlayStyles = FluidStyles<'.tint'>;
 
 export default function Overlay({ children, cc = {}, show, onClose }: { children?: React.ReactNode; cc?: Selectors<'tint'>; show: boolean; onClose: () => void; }) {
     const styles = createStyles('overlay', {
-        '.overlay': {
+        '.wrapper': {
             position: 'fixed',
-            width: '100vw',
-            height: '100dvh',
             top: 0,
             left: 0,
+            zIndex: 999,
+            pointerEvents: 'none'
+        },
+
+        '.overlay': {
+            position: 'absolute',
+            width: '100vw',
+            height: '100dvh',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            zIndex: 999
+            pointerEvents: 'all'
         },
 
         '.tint': {
@@ -39,7 +45,7 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
     });
     const style = combineClasses(styles, cc);
 
-    // const trap = useRef<FocusTrap>();
+    const trap = useFocusTrap<HTMLDivElement>(show);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -62,23 +68,14 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
     }, [show]);
 
     return mounted ? createPortal(<LayoutGroup>
-        {/* {show && <div ref={el => {
-            if (el && !trap.current) {
-                trap.current = createFocusTrap(el);
-                trap.current.activate();
-            }
+        <div ref={trap} className={style.wrapper}>
+            {show && <div className={style.overlay}>
+                {children}
 
-            if (!el && trap.current) {
-                trap.current.deactivate();
-                trap.current = undefined;
-            }
-        }} className={style.overlay}> */}
-        {show && <div className={style.overlay}>
-            {children}
-
-            <Animatable id="overlay" animate={{ opacity: [0, 1], duration: .25 }} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
-                <div className={style.tint} onClick={onClose} />
-            </Animatable>
-        </div>}
+                <Animatable id="overlay" animate={{ opacity: [0, 1], duration: .25 }} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
+                    <div className={style.tint} onClick={onClose} />
+                </Animatable>
+            </div>}
+        </div>
     </LayoutGroup>, document.getElementById('__fluid') as HTMLElement) : null;
 }

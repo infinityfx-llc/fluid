@@ -5,7 +5,7 @@ import { FluidTheme, parseCSSVariables, parseColorPalettes } from "../../src/cor
 import global from "../../src/styles/global";
 import useColorScheme, { ColorScheme } from "../../src/hooks/use-color-scheme";
 import { STYLE_CONTEXT, createGlobalStyles } from "../core/style";
-import { usePreferredColorScheme } from "../hooks";
+import useMediaQuery from "../hooks/use-media-query";
 
 type FluidContext = FluidTheme & {
     colorScheme: string;
@@ -21,7 +21,7 @@ export default function FluidProvider({ children, initialColorScheme }: { childr
 
     const colorSchemes = Object.keys(fluid.palettes).concat('system'); // type infer not working when compiled
     const { colorScheme, setColorScheme } = useColorScheme<typeof fluid>(initialColorScheme as ColorScheme<typeof fluid>, colorSchemes);
-    const preferred = usePreferredColorScheme();
+    const preferred = useMediaQuery('(prefers-color-scheme: dark)') ? 'dark' : 'light';
     const systemColorScheme = preferred in fluid.palettes ? preferred : fluid.defaultColorScheme;
 
     createGlobalStyles(() => {

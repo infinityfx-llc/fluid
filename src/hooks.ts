@@ -1,11 +1,13 @@
 'use client';
 
 import useClickOutside from "./hooks/use-click-outside";
-import usePreferredColorScheme from "./hooks/use-preferred-color-scheme";
+import useMediaQuery from "./hooks/use-media-query";
 import useFluid from "./hooks/use-fluid";
+import useFocusTrap from "./hooks/use-focus-trap";
 
 export {
     useClickOutside,
-    usePreferredColorScheme,
-    useFluid
+    useMediaQuery,
+    useFluid,
+    useFocusTrap
 }

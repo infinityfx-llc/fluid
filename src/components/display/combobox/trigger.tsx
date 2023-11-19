@@ -13,7 +13,7 @@ export default function Trigger(props: PopoverTrigger) {
         props.onKeyDown?.(e);
 
         if ((e.key === 'Tab' && !e.shiftKey) || e.key === 'ArrowDown') {
-            const child = getFocusable(content.current);
+            const child = getFocusable(content.current, false);
             if (child) {
                 e.preventDefault();
                 child.focus();

@@ -1,6 +1,6 @@
 {
 	"name": "@infinityfx/fluid",
-	"version": "0.1.0-beta.43",
+	"version": "0.1.0-beta.44",
 	"type": "module",
 	"description": "React UI library.",
 	"main": "dist/index.js",
@@ -41,9 +41,6 @@
 	"bin": {
 		"@infinityfx/fluid": "dist/cli.js",
 		"fluid": "dist/cli.js"
-	},
-	"dependencies": {
-		"focus-trap": "^7.5.2"
 	},
 	"peerDependencies": {
 		"@infinityfx/lively": "^3.2.7",

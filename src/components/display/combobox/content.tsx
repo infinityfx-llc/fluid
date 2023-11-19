@@ -99,10 +99,10 @@ const Content = forwardRef(({ children, cc = {}, autoFocus = true, searchable, p
                         selection = reverse ? Math.max(selected.current - 1, -1) : Math.min(selected.current + 1, options.current.length - 1);
 
                     if (e.key === 'Tab' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-                        let child: HTMLElement | undefined = options.current[selected.current = selection];
+                        let child: HTMLElement | null = options.current[selected.current = selection];
 
                         if (selected.current < 0) {
-                            child = getFocusable(trigger.current);
+                            child = getFocusable(trigger.current, false);
                         }
 
                         if (child) child.focus();
