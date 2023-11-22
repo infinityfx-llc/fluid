@@ -4,7 +4,7 @@ import { useCallback, useState, forwardRef, useRef } from 'react';
 import Field, { FieldProps } from "./field";
 import { MdAdd, MdRemove } from 'react-icons/md';
 import Button from './button';
-import { combineClasses, round, toNumber } from '../../../src/core/utils';
+import { changeInputValue, combineClasses, round, toNumber } from '../../../src/core/utils';
 import { FluidInputvalue } from '../../../src/types';
 import { createStyles } from '../../core/style';
 
@@ -47,10 +47,7 @@ const NumberField = forwardRef(({ cc = {}, precision = 3, controls = true, defau
     }, [precision]);
 
     function increment(amount: number) {
-        if (inputRef.current) {
-            Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set?.call(inputRef.current, format(value, amount));
-            inputRef.current.dispatchEvent(new Event('input', { bubbles: true }));
-        }
+        if (inputRef.current) changeInputValue(inputRef.current, format(value, amount));
     }
 
     return <Field ref={ref} inputRef={inputRef} {...props} type="number" value={value}

@@ -4,6 +4,7 @@ import { useEffect, forwardRef, useRef, useState } from 'react';
 import Field, { FieldProps } from "./field";
 import { FluidInputvalue, PopoverRootReference } from '../../../src/types';
 import { Combobox } from '../display';
+import { changeInputValue } from '../../core/utils';
 
 const Autocomplete = forwardRef(({ cc = {}, completions, emptyMessage, value, defaultValue, ...props }: {
     completions: string[] | { label: string; value: string; }[];
@@ -47,9 +48,7 @@ const Autocomplete = forwardRef(({ cc = {}, completions, emptyMessage, value, de
                 return <Combobox.Option key={value} value={value} onSelect={val => {
                     if (!field.current) return;
 
-                    Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set?.call(field.current, val);
-                    field.current.dispatchEvent(new Event('input', { bubbles: true }));
-
+                    changeInputValue(field.current, val);
                     field.current.focus();
                 }}>
                     {label}

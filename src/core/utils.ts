@@ -1,10 +1,15 @@
-import type { FluidStyles, Merged, Selectors } from "../types";
+import type { FluidInputvalue, FluidStyles, Merged, Selectors } from "../types";
 
 export const round = (val: number, n = 2) => Math.round(val * Math.pow(10, n)) / Math.pow(10, n);
 
 export const toNumber = (val: any, fallback: number): number => {
     val = typeof val === 'string' ? parseFloat(val) : val;
     return val === undefined || isNaN(val) ? fallback : val;
+}
+
+export function changeInputValue(input: HTMLInputElement, value: FluidInputvalue) {
+    Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set?.call(input, value);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
 }
 
 export function mergeRecursive<T = any, P = any>(a: T, b: P) {

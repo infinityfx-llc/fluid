@@ -1,6 +1,6 @@
 {
 	"name": "@infinityfx/fluid",
-	"version": "0.1.0-beta.44",
+	"version": "0.1.0-beta.45",
 	"type": "module",
 	"description": "React UI library.",
 	"main": "dist/index.js",
@@ -25,7 +25,7 @@
 		}
 	},
 	"repository": "infinityfx-llc/fluid",
-	"author": "InfinityFX <contact@infinity-fx.com> (https://infinity-fx.com)",
+	"author": "InfinityFX <contact@infinity-fx.com> (https://infinityfx.dev)",
 	"license": "GPL-3.0",
 	"bugs": "https://github.com/infinityfx-llc/fluid/issues",
 	"homepage": "https://github.com/infinityfx-llc/fluid#readme",
