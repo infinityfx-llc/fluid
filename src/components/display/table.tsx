@@ -34,7 +34,6 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
         '.table': {
             backgroundColor: 'var(--f-clr-fg-100)',
             borderRadius: 'var(--f-radius-sml)',
-            overflow: 'hidden',
             border: 'solid 1px var(--f-clr-fg-200)'
         },
     

@@ -10,7 +10,11 @@ import { classes, combineClasses } from "../../core/utils";
 
 export type CodeStyles = FluidStyles<'.wrapper' | '.header' | '.code' | '.numbers' | '.tab' | '.content' | '.toggle'>;
 
-const Code = forwardRef(({ children, cc = {}, title, ...props }: { children: string; cc?: Selectors<'wrapper' | 'header' | 'code' | 'numbers' | 'tab' | 'content' | 'toggle'>; } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: any) => {
+const Code = forwardRef(({ children, cc = {}, title, dangerouslyInject, ...props }: {
+    children: string;
+    cc?: Selectors<'wrapper' | 'header' | 'code' | 'numbers' | 'tab' | 'content' | 'toggle'>;
+    dangerouslyInject?: boolean;
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: any) => {
     const styles = createStyles('code', {
         '.wrapper': {
             fontSize: 'var(--f-font-size-sml)',
@@ -72,29 +76,20 @@ const Code = forwardRef(({ children, cc = {}, title, ...props }: { children: str
     const id = useId();
     const [copied, setCopied] = useState(false);
 
-    const lines = children.split(/\n/).map((line, i) => {
-        const tabs = line.match(/^(?:\t|\s)+/)?.[0].split(/(?:\t|\s{4})/g).slice(1) || [];
-
-        return <Fragment key={i}>
-            {tabs.map((_, i) => <span className={style.tab} key={i} />)}
-            {line} <br />
-        </Fragment>;
-    });
-
     return <div ref={ref} {...props} className={classes(style.wrapper, props.className)}>
         {title && <div className={style.header}>
             {title}
         </div>}
         <code className={style.code}>
             <div className={style.numbers}>
-                {lines.map((_, i) => <Fragment key={i}>
+                {children.split(/\n/).map((_, i) => <Fragment key={i}>
                     {i + 1} <br />
                 </Fragment>)}
             </div>
             <Scrollarea horizontal>
-                <div id={id} className={style.content}>
-                    {lines}
-                </div>
+                <pre id={id} className={style.content} dangerouslySetInnerHTML={dangerouslyInject ? { __html: children } : undefined}>
+                    {dangerouslyInject ? undefined : children}
+                </pre>
             </Scrollarea>
         </code>
 
