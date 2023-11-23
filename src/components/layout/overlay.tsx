@@ -40,7 +40,8 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
             zIndex: -1,
             position: 'absolute',
             inset: 0,
-            backgroundColor: 'rgb(0, 0, 0, .35)'
+            backgroundColor: 'rgb(0, 0, 0, .35)',
+            pointerEvents: 'all'
         }
     });
     const style = combineClasses(styles, cc);

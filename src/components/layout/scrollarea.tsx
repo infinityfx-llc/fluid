@@ -31,11 +31,11 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
             transition: 'opacity .2s'
         },
 
-        '.area[data-variant="hover"] .track': {
+        '.area[data-variant="hover"] > .track': {
             opacity: 0
         },
 
-        '.area[data-variant="hover"]:hover .track': {
+        '.area[data-variant="hover"]:hover > .track': {
             opacity: 1
         },
 
@@ -52,24 +52,24 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
             opacity: .8
         },
 
-        '.area[data-horizontal="false"] .track': {
+        '.area[data-horizontal="false"] > .track': {
             top: 0,
             right: 0,
             height: '100%'
         },
 
-        '.area[data-horizontal="true"] .track': {
+        '.area[data-horizontal="true"] > .track': {
             bottom: 0,
             left: 0,
             width: '100%'
         },
 
-        '.area[data-variant="permanent"][data-horizontal="false"] .track': {
+        '.area[data-variant="permanent"][data-horizontal="false"] > .track': {
             backgroundColor: 'var(--f-clr-fg-100)',
             paddingInline: '2px'
         },
 
-        '.area[data-variant="permanent"][data-horizontal="true"] .track': {
+        '.area[data-variant="permanent"][data-horizontal="true"] > .track': {
             backgroundColor: 'var(--f-clr-fg-100)',
             paddingBlock: '2px'
         },
@@ -82,7 +82,7 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
             paddingBottom: 'calc(.5rem + 4px)'
         },
 
-        '.area[data-scrollable="false"] .track, .area[data-disabled="true"] .track': {
+        '.area[data-scrollable="false"] > .track, .area[data-disabled="true"] > .track': {
             display: 'none'
         },
 
