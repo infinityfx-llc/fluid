@@ -24,7 +24,7 @@ type TableProps<T> = {
     columnFormatters?: {
         [column in keyof T]?: (value: T[column]) => React.ReactNode;
     };
-    rowActions?: (row: T) => ActionMenuOption[];
+    rowActions?: (row: T, index: number) => ActionMenuOption[];
 } & React.HTMLAttributes<HTMLDivElement>;
 
 // variants: default | minimal/light mabye?
@@ -187,7 +187,7 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
                         })}
 
                         {rowActions ? <div className={style.collapsed}>
-                            <ActionMenu options={rowActions(rows[i])}>
+                            <ActionMenu options={rowActions(rows[i], i)}>
                                 <Button variant="minimal" style={{ marginLeft: 'auto' }}>
                                     <MdMoreVert />
                                 </Button>

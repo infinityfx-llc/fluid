@@ -7,15 +7,15 @@ import useColorScheme, { ColorScheme } from "../../src/hooks/use-color-scheme";
 import { STYLE_CONTEXT, createGlobalStyles } from "../core/style";
 import useMediaQuery from "../hooks/use-media-query";
 
+const fluid = STYLE_CONTEXT.THEME;
+
 type FluidContext = FluidTheme & {
     colorScheme: string;
     appliedColorScheme: string;
-    setColorScheme: (scheme: ColorScheme<any>) => void;
+    setColorScheme: (scheme: ColorScheme<typeof fluid>) => void;
 }
 
 export const FluidContext = createContext<FluidContext | null>(null);
-
-const fluid = STYLE_CONTEXT.THEME;
 
 export default function FluidProvider({ children, initialColorScheme }: { children: React.ReactElement; initialColorScheme?: ColorScheme<typeof fluid>; }) {
 
