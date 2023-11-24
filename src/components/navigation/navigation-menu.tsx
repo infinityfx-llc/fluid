@@ -8,6 +8,8 @@ import Halo from '../feedback/halo';
 import { classes, combineClasses } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
 
+// split into subcomponents for more options
+
 export type NavigationMenuStyles = FluidStyles<'.navigation' | '.link' | '.selection' | '.menu' | '.container'>;
 
 type AnchorLike<T extends React.HTMLAttributes<any> & { href: string; }> = React.JSXElementConstructor<T> | keyof React.ReactHTML;
@@ -55,10 +57,10 @@ const NavigationMenu = forwardRef(({ cc = {}, links, selected = -1, Link = 'a', 
         '.menu': {
             position: 'absolute',
             top: 'calc(100% + var(--f-spacing-sml))',
-            borderRadius: 'calc(.3em + var(--f-radius-sml))',
+            borderRadius: 'calc(.25em + var(--f-radius-sml))',
             display: 'flex',
             flexDirection: 'column',
-            padding: '.3em',
+            padding: '.25em',
             minWidth: '8em',
             width: 'max-content',
             backgroundColor: 'var(--f-clr-fg-100)',
@@ -138,7 +140,7 @@ const NavigationMenu = forwardRef(({ cc = {}, links, selected = -1, Link = 'a', 
                     cachable={['translate', 'scale']}
                     deform={false}
                     transition={{ duration: .35 }}
-                    animate={{ opacity: [1, 0], translate: ['0px 0px', '0px 16px'], duration: .25 }}
+                    animate={{ opacity: [1, 0], translate: ['0px 0px', '0px -8px'], duration: .25 }}
                     triggers={[{ on: 'mount', reverse: true }, { on: 'unmount' }]}>
                     <div className={style.menu} id={i + id}>
                         <Animatable

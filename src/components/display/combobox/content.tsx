@@ -26,7 +26,7 @@ const Content = forwardRef(({ children, cc = {}, autoFocus = true, searchable, p
         '.container': {
             background: 'var(--f-clr-fg-100)',
             border: 'solid 1px var(--f-clr-fg-200)',
-            borderRadius: 'calc(.3em + var(--f-radius-sml))',
+            borderRadius: 'calc(.25em + var(--f-radius-sml))',
             boxShadow: '0 0 8px rgb(0, 0, 0, 0.06)',
             minWidth: 'clamp(0px, 10em, 100vw)',
             width: '100%',
@@ -34,8 +34,8 @@ const Content = forwardRef(({ children, cc = {}, autoFocus = true, searchable, p
         },
 
         '.content': {
-            padding: '.3em',
-            maxHeight: '10.3em'
+            padding: '.25em',
+            maxHeight: '10em'
         },
 
         '.message': {

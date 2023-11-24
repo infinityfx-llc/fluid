@@ -9,9 +9,6 @@ import Halo from "../feedback/halo";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { createStyles } from "../../core/style";
 
-// variant
-// color (no react value)
-
 export type CheckboxStyles = FluidStyles<'.wrapper' | '.checkbox' | '.checkmark' | '.wrapper__xsm' | '.wrapper__sml' | '.wrapper__med' | '.wrapper__lrg' | '.halo'>;
 
 const Checkbox = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', checked, defaultChecked, ...props }:

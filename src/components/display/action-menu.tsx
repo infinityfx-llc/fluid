@@ -33,10 +33,10 @@ const ActionMenu = forwardRef(({ children, cc = {}, options, disabled, stretch, 
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('action-menu', {
         '.menu': {
-            padding: '.3em',
+            padding: '.25em',
             background: 'var(--f-clr-fg-100)',
             border: 'solid 1px var(--f-clr-fg-200)',
-            borderRadius: 'calc(.3em + var(--f-radius-sml))',
+            borderRadius: 'calc(.25em + var(--f-radius-sml))',
             boxShadow: '0 0 8px rgb(0, 0, 0, 0.06)',
             fontSize: 'var(--f-font-size-sml)',
             minWidth: 'clamp(0px, 10em, 100vw)',
@@ -68,23 +68,23 @@ const ActionMenu = forwardRef(({ children, cc = {}, options, disabled, stretch, 
         },
 
         '.heading': {
-            padding: '.5rem .8rem .3rem .8rem',
+            padding: '.6rem .8rem .2rem .8rem',
             fontWeight: 700,
-            fontSize: '.85em',
-            color: 'var(--f-clr-text-100)'
+            fontSize: '.8em',
+            color: 'var(--f-clr-grey-600)'
         },
 
         '.divider': {
             height: '1px',
             width: '100%',
             backgroundColor: 'var(--f-clr-grey-100)',
-            marginBlock: '.3em'
+            marginBlock: '.25em'
         },
 
         '.submenu': {
             position: 'absolute',
             left: '100%',
-            top: 'calc(-1px - .3em)',
+            top: 'calc(-1px - .25em)',
             opacity: 0,
             visibility: 'hidden',
             translate: '-12px 0',

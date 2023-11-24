@@ -113,7 +113,7 @@ const User = forwardRef(({ children, cc = {}, name, status, indicator = false, r
             round && style.user__round,
             props.className
         )}>
-            <Indicator outline="var(--f-clr-bg-100)" content={indicator} round={round}>
+            <Indicator outline="var(--f-clr-bg-100)" content={indicator}>
                 <div className={style.avatar}>
                     <div className={style.frame}>
                         {children ? children : name.slice(0, 2)}

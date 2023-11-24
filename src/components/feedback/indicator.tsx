@@ -2,27 +2,23 @@
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import { FluidStyles, Selectors } from "../../../src/types";
-import { Children, cloneElement, forwardRef, isValidElement } from "react";
+import { cloneElement, forwardRef, isValidElement, useEffect, useRef, useState } from "react";
 import { createStyles } from "../../core/style";
-
-// fix cloneElement issues!!
+import { createPortal } from "react-dom";
 
 export type IndicatorStyles = FluidStyles<'.indicator' | '.indicator__round'>;
 
-const Indicator = forwardRef(<T extends React.ReactElement>({ children, cc = {}, content, color, outline, round, ...props }:
+const Indicator = forwardRef(<T extends React.ReactElement>({ children, cc = {}, content, color, outline, ...props }:
     {
         children: T;
         cc?: Selectors<'indicator' | 'indicator__round'>;
         content?: number | string | boolean;
         color?: string;
         outline?: string;
-        round?: boolean;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'>, ref: React.ForwardedRef<T>) => {
     const styles = createStyles('indicator', {
         '.indicator': {
             position: 'absolute',
-            top: 0,
-            right: 0,
             minWidth: '1.4em',
             minHeight: '1.4em',
             borderRadius: '99px',
@@ -35,37 +31,47 @@ const Indicator = forwardRef(<T extends React.ReactElement>({ children, cc = {},
             color: 'var(--f-clr-text-200)',
             padding: '.1em .4em',
             zIndex: 99
-        },
-
-        '.indicator__round': {
-            top: '14%',
-            right: '14%'
         }
     });
     const style = combineClasses(styles, cc);
+    const container = useRef<any>();
+    const [radius, setRadius] = useState(-1);
+
+    useEffect(() => {
+        if (container.current instanceof HTMLElement) {
+            const radius = parseFloat(getComputedStyle(container.current).borderTopRightRadius) || 0;
+            const max = Math.min(container.current.offsetWidth, container.current.offsetHeight) / 2;
+
+            setRadius(Math.min(radius, max));
+        }
+    }, []);
 
     children = Array.isArray(children) ? children[0] : children;
     if (!isValidElement(children)) return children;
 
-    const arr = Children.toArray(children.props.children);
-    if (content !== false) arr.push(<div {...props}
-        key="indicator"
-        className={classes(
-            style.indicator,
-            round && style.indicator__round,
-            props.className
-        )}
-        style={{
-            ...props.style,
-            backgroundColor: color,
-            borderColor: outline
-        }}>
-        {typeof content !== 'boolean' ? content : null}
-    </div>);
+    const offset = Math.max(Math.SQRT2 * radius - radius - 1, 0);
 
-    return cloneElement(children, {
-        ref: combineRefs(ref, (children as any).ref)
-    }, arr);
+    return <>
+        {cloneElement(children, {
+            ref: combineRefs(ref, (children as any).ref, container)
+        })}
+
+        {radius >= 0 && content !== false && createPortal(<div {...props}
+            key="indicator"
+            className={classes(
+                style.indicator,
+                props.className
+            )}
+            style={{
+                ...props.style,
+                backgroundColor: color,
+                borderColor: outline,
+                top: offset,
+                right: offset
+            }}>
+            {typeof content !== 'boolean' ? content : null}
+        </div>, container.current)}
+    </>;
 });
 
 Indicator.displayName = 'Indicator';

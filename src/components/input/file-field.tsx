@@ -153,7 +153,7 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
             </div>
 
             <Button aria-label={split['aria-label'] || label} disabled={props.disabled} round={round} size={size} loading={loading} style={{
-                marginRight: '.3em'
+                marginRight: '.25em'
             }} onClick={() => input.current?.click()}>
                 <MdUpload />
             </Button>

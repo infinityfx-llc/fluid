@@ -8,6 +8,8 @@ import { classes, combineClasses } from "../../../src/core/utils";
 import { Combobox } from "../display";
 import { createStyles } from "../../core/style";
 
+// add arrow key support for focus
+
 export type CalendarStyles = FluidStyles<'.calendar' | '.header' | '.text' | '.years' | '.calendar__round' | '.calendar__xsm' | '.calendar__sml' | '.calendar__med' | '.calendar__lrg'>;
 
 const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValue = new Date(), value, onChange, disabled, ...props }:

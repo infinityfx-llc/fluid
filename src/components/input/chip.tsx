@@ -9,8 +9,6 @@ import { forwardRef, useEffect, useState } from 'react';
 import { Halo } from '../feedback';
 import { createStyles } from '../../core/style';
 
-// TODO
-
 const Chip = forwardRef(({ children, cc = {}, round = false, size = 'med', variant = 'default', checked, defaultChecked, ...props }:
     {
         cc?: Selectors<'input' | 'wrapper' | 'chip' | 'content' | 'checkmark' | 'input'>;
