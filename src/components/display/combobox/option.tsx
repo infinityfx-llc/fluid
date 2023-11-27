@@ -39,7 +39,7 @@ const Option = forwardRef(<T extends FluidInputvalue>({ children, cc = {}, value
     });
     const style = combineClasses(styles, cc);
 
-    return <Halo disabled={props.disabled}>
+    return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
         <button ref={ref} {...props} type="button" role="option" className={style.option} onClick={e => {
             props.onClick?.(e);
 

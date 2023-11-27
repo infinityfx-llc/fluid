@@ -68,9 +68,9 @@ const ActionMenu = forwardRef(({ children, cc = {}, options, disabled, stretch, 
         },
 
         '.heading': {
-            padding: '.6rem .8rem .2rem .8rem',
-            fontWeight: 700,
-            fontSize: '.8em',
+            padding: '.5rem .8rem .2rem .8rem',
+            fontWeight: 800,
+            fontSize: '.75em',
             color: 'var(--f-clr-grey-600)'
         },
 
@@ -117,7 +117,7 @@ const ActionMenu = forwardRef(({ children, cc = {}, options, disabled, stretch, 
         const subOptions = options && options.map(getOption);
 
         return <div key={i} className={style.wrapper} data-disabled={disabled}>
-            <Halo disabled={disabled}>
+            <Halo disabled={disabled} color="var(--f-clr-primary-400)">
                 <button role="menuitem" className={style.option} disabled={disabled} onClick={() => {
                     if (shouldClose) popover.current?.close();
                     onClick?.();

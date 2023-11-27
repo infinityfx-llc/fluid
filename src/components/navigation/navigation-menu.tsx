@@ -153,7 +153,7 @@ const NavigationMenu = forwardRef(({ cc = {}, links, selected = -1, Link = 'a', 
                             }}
                             triggers={[{ on: 'mount' }]}>
                             {links?.map(({ label, href }, i) => {
-                                return <Halo key={i}>
+                                return <Halo key={i} color="var(--f-clr-primary-400)">
                                     <Link href={href} className={style.link}>
                                         {label}
                                     </Link>
