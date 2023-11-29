@@ -11,6 +11,7 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
     const timeout = useRef<any>();
     const touch = useRef({ clientX: 0, clientY: 0 });
     const pressed = useRef(false);
+    const timestamp = useRef(0);
 
     function action() {
         if (disabled || children.props.disabled) return;
@@ -35,7 +36,7 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
             props.onMouseUp?.(e);
 
             clearTimeout(timeout.current);
-            if (!longpress) action();
+            if (!longpress && e.timeStamp !== timestamp.current) action();
         },
         onTouchStart: (e: React.TouchEvent) => {
             children.props.onTouchStart?.(e);
@@ -53,7 +54,7 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
 
             clearTimeout(timeout.current);
             if (!longpress && distance < 8) {
-                e.preventDefault();
+                timestamp.current = e.timeStamp;
                 action();
             }
         },

@@ -1,6 +1,6 @@
 {
 	"name": "@infinityfx/fluid",
-	"version": "0.1.0-beta.50",
+	"version": "0.1.0-beta.51",
 	"type": "module",
 	"description": "React UI library.",
 	"main": "dist/index.js",
@@ -43,13 +43,13 @@
 		"fluid": "dist/cli.js"
 	},
 	"peerDependencies": {
-		"@infinityfx/lively": "^3.2.7",
+		"@infinityfx/lively": "^3.2.9",
 		"react": ">=16.0.0",
 		"react-dom": ">=16.0.0",
 		"react-icons": "^4.10.1"
 	},
 	"devDependencies": {
-		"@infinityfx/lively": "^3.2.7",
+		"@infinityfx/lively": "^3.2.9",
 		"@rollup/plugin-commonjs": "^25.0.4",
 		"@rollup/plugin-json": "^6.0.0",
 		"@rollup/plugin-node-resolve": "^15.1.0",
