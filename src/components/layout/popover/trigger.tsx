@@ -30,8 +30,7 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
             children.props.onMouseDown?.(e);
             props.onMouseDown?.(e);
 
-            touchOnly.current = false;
-            if (longpress) action(400);
+            if (longpress && !touchOnly.current) action(400);
         },
         onMouseUp: (e: React.MouseEvent) => {
             children.props.onMouseUp?.(e);
@@ -39,11 +38,13 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
 
             clearTimeout(timeout.current);
             if (!longpress && !touchOnly.current) action();
+            touchOnly.current = false;
         },
         onTouchStart: (e: React.TouchEvent) => {
             children.props.onTouchStart?.(e);
             props.onTouchStart?.(e);
 
+            touchOnly.current = true;
             touch.current = e.changedTouches[0];
             if (longpress) action(400);
         },
@@ -56,7 +57,6 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
 
             clearTimeout(timeout.current);
             if (!longpress && distance < 8) {
-                touchOnly.current = true;
                 action();
             }
         },

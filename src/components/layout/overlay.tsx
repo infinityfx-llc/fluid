@@ -22,8 +22,7 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
             position: 'fixed',
             top: 0,
             left: 0,
-            zIndex: 999,
-            pointerEvents: 'none'
+            zIndex: 999
         },
 
         '.overlay': {
@@ -32,16 +31,13 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
             height: '100dvh',
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center',
-            pointerEvents: 'all'
+            alignItems: 'center'
         },
 
         '.tint': {
-            zIndex: -1,
             position: 'absolute',
             inset: 0,
-            backgroundColor: 'rgb(0, 0, 0, .35)',
-            pointerEvents: 'all'
+            backgroundColor: 'rgb(0, 0, 0, .35)'
         }
     });
     const style = combineClasses(styles, cc);
@@ -71,11 +67,11 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
     return mounted ? createPortal(<LayoutGroup>
         <div ref={trap} className={style.wrapper}>
             {show && <div className={style.overlay}>
-                {children}
-
                 <Animatable id="overlay" animate={{ opacity: [0, 1], duration: .25 }} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
                     <div className={style.tint} onClick={onClose} />
                 </Animatable>
+
+                {children}
             </div>}
         </div>
     </LayoutGroup>, document.getElementById('__fluid') as HTMLElement) : null;
