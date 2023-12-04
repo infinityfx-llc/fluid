@@ -11,12 +11,13 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
     const timeout = useRef<any>();
     const touch = useRef({ clientX: 0, clientY: 0 });
     const pressed = useRef(false);
-    const timestamp = useRef(0);
+    const touchOnly = useRef(false);
 
-    function action() {
+    function action(delay?: number) {
         if (disabled || children.props.disabled) return;
 
-        toggle(!opened);
+        clearTimeout(timeout.current);
+        delay ? timeout.current = setTimeout(action, delay) : toggle(!opened);
     }
 
     return cloneElement(children, {
@@ -29,21 +30,22 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
             children.props.onMouseDown?.(e);
             props.onMouseDown?.(e);
 
-            if (longpress) timeout.current = setTimeout(action, 400);
+            touchOnly.current = false;
+            if (longpress) action(400);
         },
         onMouseUp: (e: React.MouseEvent) => {
             children.props.onMouseUp?.(e);
             props.onMouseUp?.(e);
 
             clearTimeout(timeout.current);
-            if (!longpress && e.timeStamp !== timestamp.current) action();
+            if (!longpress && !touchOnly.current) action();
         },
         onTouchStart: (e: React.TouchEvent) => {
             children.props.onTouchStart?.(e);
             props.onTouchStart?.(e);
 
             touch.current = e.changedTouches[0];
-            if (longpress) timeout.current = setTimeout(action, 400);
+            if (longpress) action(400);
         },
         onTouchEnd: (e: React.TouchEvent) => {
             children.props.onTouchEnd?.(e);
@@ -54,7 +56,7 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
 
             clearTimeout(timeout.current);
             if (!longpress && distance < 8) {
-                timestamp.current = e.timeStamp;
+                touchOnly.current = true;
                 action();
             }
         },
@@ -64,7 +66,7 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
 
             if ((e.key === 'Enter' || e.key === ' ') && longpress && !pressed.current) {
                 pressed.current = true;
-                timeout.current = setTimeout(action, 400);
+                action(400);
             }
         },
         onKeyUp: (e: React.KeyboardEvent) => {

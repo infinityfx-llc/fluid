@@ -8,7 +8,7 @@ import { useTrigger } from '@infinityfx/lively/hooks';
 import { Animatable } from '@infinityfx/lively';
 
 const Text = forwardRef(({ children, cc = {}, align = 'right', selective, ...props }: {
-    children: number | string;
+    children: number | string | (number | string)[];
     cc?: Selectors;
     align?: 'left' | 'right';
     selective?: boolean;
