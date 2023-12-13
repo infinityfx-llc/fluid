@@ -17,6 +17,7 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, ...props }:
         cc?: Selectors<'modal' | 'header'>;
         show: boolean;
         onClose: () => void;
+        title?: React.ReactNode;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('modal', (fluid) => ({
         '.modal': {
@@ -37,12 +38,15 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, ...props }:
 
         '.header': {
             display: 'flex',
-            justifyContent: 'space-between',
             alignItems: 'center',
             fontWeight: 700,
             paddingInline: 'var(--f-spacing-med)',
             marginBottom: 'var(--f-spacing-med)',
             color: 'var(--f-clr-text-100)'
+        },
+
+        '.title': {
+            flexGrow: 1
         },
 
         [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {
@@ -64,7 +68,7 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, ...props }:
         <Animatable id="modal" animate={{ translate: ['0px 20px', '0px 0px'], opacity: [0, 1], duration: .25 }} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
             <div ref={ref} {...props} className={classes(style.modal, props.className)} role="dialog" aria-modal aria-labelledby={id}>
                 <div className={style.header}>
-                    <span id={id}>{title}</span>
+                    <span id={id} className={styles.title}>{title}</span>
 
                     <Button variant="minimal" onClick={onClose}>
                         <MdClose />

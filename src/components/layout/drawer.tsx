@@ -18,6 +18,7 @@ const Drawer = forwardRef(({ children, cc = {}, show, onClose, position = 'right
         show: boolean;
         onClose: () => void;
         position?: 'left' | 'right';
+        title?: React.ReactNode;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('drawer', {
         '.drawer': {
@@ -48,7 +49,6 @@ const Drawer = forwardRef(({ children, cc = {}, show, onClose, position = 'right
 
         '.header': {
             display: 'flex',
-            justifyContent: 'space-between',
             gap: 'var(--f-spacing-sml)',
             alignItems: 'center',
             marginBottom: 'var(--f-spacing-med)',
@@ -56,8 +56,8 @@ const Drawer = forwardRef(({ children, cc = {}, show, onClose, position = 'right
             fontWeight: 700,
         },
 
-        '.drawer[data-position="right"] .header': {
-            justifyContent: 'flex-start'
+        '.title': {
+            flexGrow: 1
         },
 
         '.drawer[data-position="right"] .title': {
