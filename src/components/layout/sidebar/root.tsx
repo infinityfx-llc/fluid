@@ -10,14 +10,10 @@ import { createStyles } from '../../../core/style';
 
 export const SidebarContext = createContext<{
     collapsed: boolean;
-} | null>(null);
+}>({ collapsed: false });
 
 export function useSidebar() {
-    const context = useContext(SidebarContext);
-
-    if (!context) throw new Error('Unable to access SidebarRoot context');
-
-    return context;
+    return useContext(SidebarContext);
 }
 
 const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onCollapse, ...props }:
