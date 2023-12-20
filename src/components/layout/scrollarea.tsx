@@ -162,11 +162,12 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
 
     function resize() {
         const el = area.current;
-        if (!el || !handle.current) return;
+        if (!el || !handle.current || !track.current) return;
 
         const size = horizontal ? el.offsetWidth / el.scrollWidth : el.offsetHeight / el.scrollHeight;
         handle.current.style[horizontal ? 'width' : 'height'] = size * 100 + '%';
         handle.current.style[horizontal ? 'height' : 'width'] = '';
+        track.current.style.translate = '0px 0px';
         handle.current.style.translate = '0px 0px';
         setScrollable(size < 1);
 
