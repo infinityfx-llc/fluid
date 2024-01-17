@@ -25,22 +25,25 @@ type TableProps<T> = {
         [column in keyof T]?: (value: T[column]) => React.ReactNode;
     };
     rowActions?: (row: T, index: number) => ActionMenuOption[];
+    emptyMessage?: string;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 // variants: default | minimal/light mabye?
 
-function TableComponent<T extends { [key: string]: string | number | Date; }>({ cc = {}, data, columns, selectable, sortable, selected, onSelect, columnFormatters = {}, rowActions, ...props }: TableProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
+function TableComponent<T extends { [key: string]: string | number | Date; }>({ cc = {}, data, columns, selectable, sortable, selected, onSelect, columnFormatters = {}, rowActions, emptyMessage = 'Nothing to display', ...props }: TableProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
     const styles = createStyles('table', {
         '.table': {
             backgroundColor: 'var(--f-clr-fg-100)',
             borderRadius: 'var(--f-radius-sml)',
-            border: 'solid 1px var(--f-clr-fg-200)'
+            border: 'solid 1px var(--f-clr-fg-200)',
+            display: 'flex'
         },
     
         '.rows': {
             minWidth: 'max-content',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            flexGrow: 1
         },
     
         '.row': {
@@ -100,6 +103,14 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
     
         '.row .checkmark': {
             stroke: 'var(--f-clr-text-200)'
+        },
+
+        '.empty': {
+            alignSelf: 'center',
+            marginBlock: 'auto',
+            padding: '.6em',
+            color: 'var(--f-clr-grey-700)',
+            fontWeight: 600
         }
     });
     const style = combineClasses(styles, cc);
@@ -195,6 +206,8 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
                     </div>
                 </Halo>;
             })}
+
+            {!rows.length && <div className={style.empty}>{emptyMessage}</div>}
         </div>
     </Scrollarea>;
 }
