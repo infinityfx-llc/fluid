@@ -19,7 +19,6 @@ const Divider = forwardRef(({ cc = {}, vertical = false, label, labelPosition = 
             alignItems: 'center',
             gap: 'var(--f-spacing-xsm)',
             fontSize: 'var(--f-font-size-xsm)',
-            textTransform: 'uppercase',
             fontWeight: 600,
             color: 'var(--f-clr-grey-300)'
         },

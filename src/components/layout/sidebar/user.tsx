@@ -132,6 +132,6 @@ const User = forwardRef(({ children, cc = {}, name, status, indicator = false, r
     </Halo>;
 });
 
-User.displayName = 'User';
+User.displayName = 'Sidebar.User';
 
 export default User;

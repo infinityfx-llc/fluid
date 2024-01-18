@@ -74,7 +74,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
             backgroundColor: 'var(--f-clr-bg-100)',
             border: 'solid 1px var(--f-clr-grey-100)',
             borderRadius: 'var(--f-radius-sml)',
-            boxShadow: '0 0 8px rgb(0, 0, 0, .06)',
+            boxShadow: 'var(--f-shadow-med)',
             height: '100px',
             width: '200px'
         },

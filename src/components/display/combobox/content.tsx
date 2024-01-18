@@ -27,7 +27,7 @@ const Content = forwardRef(({ children, cc = {}, autoFocus = true, searchable, p
             background: 'var(--f-clr-fg-100)',
             border: 'solid 1px var(--f-clr-fg-200)',
             borderRadius: 'calc(.25em + var(--f-radius-sml))',
-            boxShadow: '0 0 8px rgb(0, 0, 0, 0.06)',
+            boxShadow: 'var(--f-shadow-med)',
             minWidth: 'clamp(0px, 10em, 100vw)',
             width: '100%',
             overflow: 'hidden'

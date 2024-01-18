@@ -27,6 +27,6 @@ const Heading = forwardRef(({ children, cc = {}, ...props }:
     return <div ref={ref} {...props} className={classes(style.heading, props.className)} style={{ ...props.style, opacity: collapsed ? 0 : 1 }}>{children}</div>;
 });
 
-Heading.displayName = 'Heading';
+Heading.displayName = 'Sidebar.Heading';
 
 export default Heading;

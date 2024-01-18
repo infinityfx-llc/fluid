@@ -18,7 +18,7 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue = new Date(), onCha
     } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('date-field', {
         '.calendar': {
-            boxShadow: '0 0 8px rgb(0, 0, 0, .06)',
+            boxShadow: 'var(--f-shadow-med)',
             border: 'solid 1px var(--f-clr-grey-100)'
         }
     });

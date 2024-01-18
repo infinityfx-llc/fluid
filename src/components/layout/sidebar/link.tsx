@@ -128,6 +128,6 @@ const Link = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, 
     </>;
 });
 
-Link.displayName = 'Link';
+Link.displayName = 'Sidebar.Link';
 
 export default Link;

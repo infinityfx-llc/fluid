@@ -100,7 +100,7 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
             height: '100%',
             borderRadius: '99px',
             backgroundColor: 'white',
-            boxShadow: '0 0 8px rgb(0, 0, 0, 0.12)',
+            boxShadow: 'var(--f-shadow-med)'
         },
 
         '.slider[data-disabled="false"] .track': {

@@ -90,7 +90,7 @@ function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'def
             inset: '0',
             backgroundColor: 'var(--f-clr-primary-200)',
             borderRadius: 'var(--f-radius-sml)',
-            boxShadow: '0 0 8px rgb(0, 0, 0, .06)'
+            boxShadow: 'var(--f-shadow-sml)'
         },
 
         '.segmented__var__neutral .selection': {

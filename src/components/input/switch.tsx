@@ -96,7 +96,7 @@ const Switch = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-
             backgroundColor: 'white',
             transition: 'translate .25s',
             zIndex: 1,
-            boxShadow: '0 0 6px rgb(0, 0, 0, .06)'
+            boxShadow: 'var(--f-shadow-sml)'
         },
 
         '.input:checked + .switch .handle': {

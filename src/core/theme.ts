@@ -136,9 +136,9 @@ export const DEFAULT_THEME = {
         family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
         size: {
             xxs: '.7rem',
-            xsm: '.85rem',
+            xsm: '.825rem',
             sml: '1rem',
-            med: '1.25rem',
+            med: '1.2rem',
             lrg: '1.7rem',
             xlg: '2.5rem',
             xxl: '4rem'

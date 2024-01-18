@@ -35,7 +35,7 @@ const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onColla
             backgroundColor: 'var(--f-clr-bg-100)',
             borderTopRightRadius: 'var(--f-radius-lrg)',
             borderBottomRightRadius: 'var(--f-radius-lrg)',
-            boxShadow: '0 0 12px rgb(0, 0, 0, .05)',
+            boxShadow: 'var(--f-shadow-med)',
             borderRight: 'solid 1px var(--f-clr-grey-100)',
             display: 'flex',
             flexDirection: 'column',

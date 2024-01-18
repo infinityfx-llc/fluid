@@ -48,14 +48,13 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
             left: 0,
             top: 0,
             zIndex: 999,
-            backgroundColor: 'var(--f-clr-fg-100)',
+            backgroundColor: 'var(--f-clr-fg-200)',
             color: 'var(--f-clr-text-100)',
-            boxShadow: '0 0 8px rgb(0, 0, 0, 0.04)',
-            fontSize: 'var(--f-font-size-xsm)',
-            padding: '.2em .3em',
+            fontSize: '.8rem',
+            fontWeight: 600,
+            padding: '.3em .5em',
             borderRadius: 'var(--f-radius-sml)',
             pointerEvents: 'none',
-            border: 'solid 1px var(--f-clr-fg-200)',
             transition: 'opacity .2s, translate .2s'
         },
 

@@ -20,7 +20,7 @@ const Frame = forwardRef(({ children, cc = {}, radius = 'sml', shadow, border, b
         },
 
         '.frame__shadow': {
-            boxShadow: '0 0 8px rgb(0, 0, 0, 0.08)'
+            boxShadow: 'var(--f-shadow-med)'
         },
 
         '.frame__border': {

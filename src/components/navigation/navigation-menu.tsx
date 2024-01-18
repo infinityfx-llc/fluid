@@ -65,7 +65,7 @@ const NavigationMenu = forwardRef(({ cc = {}, links, selected = -1, Link = 'a', 
             width: 'max-content',
             backgroundColor: 'var(--f-clr-fg-100)',
             border: 'solid 1px var(--f-clr-fg-200)',
-            boxShadow: '0 0 8px rgb(0, 0, 0, .06)',
+            boxShadow: 'var(--f-shadow-med)',
             zIndex: 999,
             overflow: 'hidden'
         },
