@@ -150,10 +150,10 @@ const CSS_COLORS: { [key: string]: number[]; } = {
 
 function strToRgb(str: string) {
     const hex = str.match(/^#([\da-f]{1,2})([\da-f]{1,2})([\da-f]{1,2})([\da-f]{2})?$/i);
-    if (hex) return hex.slice(1, 3).map(val => parseInt(val.padStart(2, val), 16));
+    if (hex) return hex.slice(1, 4).map(val => parseInt(val.padStart(2, val), 16));
 
     const rgb = str.match(/^rgba?\((\d+)\D+(\d+)\D+(\d+)\D*(\d+)?\)$/i);
-    if (rgb) return rgb.slice(1, 3).map(val => parseInt(val));
+    if (rgb) return rgb.slice(1, 4).map(val => parseInt(val));
 
     if (str in CSS_COLORS) return CSS_COLORS[str];
 

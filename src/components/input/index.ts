@@ -4,6 +4,7 @@ import Hamburger from "./hamburger";
 import Switch from "./switch";
 import Checkbox from "./checkbox";
 import Chip from "./chip";
+import ColorPicker from "./color-picker";
 import Toggle from "./toggle";
 import Radio from "./radio";
 import Segmented from "./segmented";
@@ -26,6 +27,7 @@ export {
     Switch,
     Checkbox,
     Chip,
+    ColorPicker,
     Toggle,
     Radio,
     Segmented,

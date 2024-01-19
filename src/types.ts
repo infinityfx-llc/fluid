@@ -51,6 +51,7 @@ export type FluidComponents = {
     calendar?: FluidStyles;
     checkbox?: FluidStyles;
     chip?: FluidStyles;
+    'color-picker'?: FluidStyles;
     'date-field'?: FluidStyles;
     field?: FluidStyles;
     'file-field'?: FluidStyles;
