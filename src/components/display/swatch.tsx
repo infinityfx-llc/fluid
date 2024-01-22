@@ -18,18 +18,17 @@ const Swatch = forwardRef(({ cc = {}, size = 'med', round = false, color, ...pro
             height: '2em',
             border: 'solid 1px var(--f-clr-fg-200)',
             borderRadius: 'var(--f-radius-sml)',
-            overflow: 'hidden'
-        },
-
-        '.swatch::before': {
-            content: '""',
-            position: 'absolute',
-            inset: 0,
+            overflow: 'hidden',
             background: 'linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%),linear-gradient(45deg, #eee 25%, #fff 25%, #fff 75%, #eee 75%, #eee 100%)',
             backgroundPosition: '0 0, 1em 1em',
             backgroundSize: '2em 2em',
-            backgroundRepeat: 'repeat',
-            zIndex: -1
+            backgroundRepeat: 'repeat'
+        },
+
+        '.color': {
+            content: '""',
+            position: 'absolute',
+            inset: 0
         },
 
         '.swatch__round': {
@@ -54,12 +53,15 @@ const Swatch = forwardRef(({ cc = {}, size = 'med', round = false, color, ...pro
     });
     const style = combineClasses(styles, cc);
 
-    return <div ref={ref} {...props} className={classes(
-        style.swatch,
-        style[`swatch__${size}`],
-        round && style.swatch__round,
-        props.className
-    )} style={{ backgroundColor: color, ...props.style }} />;
+    return <div ref={ref} {...props}
+        className={classes(
+            style.swatch,
+            style[`swatch__${size}`],
+            round && style.swatch__round,
+            props.className
+        )}>
+        <div className={style.color} style={{ backgroundColor: color }} />
+    </div>;
 });
 
 Swatch.displayName = 'Swatch';

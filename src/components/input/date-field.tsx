@@ -19,7 +19,7 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue = new Date(), onCha
     const styles = createStyles('date-field', {
         '.calendar': {
             boxShadow: 'var(--f-shadow-med)',
-            border: 'solid 1px var(--f-clr-grey-100)'
+            border: 'solid 1px var(--f-clr-fg-200)'
         }
     });
     const style = combineClasses(styles, cc);

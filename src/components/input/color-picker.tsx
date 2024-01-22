@@ -52,6 +52,10 @@ function hexToRgb(str: string): color {
     return hex.slice(1, 4).map(val => parseInt(val.padStart(2, val), 16)) as color;
 }
 
+export function parsePartialHex(str: string) {    
+    return rgbToHex(hexToRgb(str.replace(/[^\da-f]/g, '').slice(0, 6)))
+}
+
 // maybe sizes?
 
 type ColorPickerProps<T> = {
