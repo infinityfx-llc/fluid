@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from 'react';
 
+// NOT USED INTERNALLY
 export default function useClickOutside<T extends HTMLElement>(cb: (e: MouseEvent) => void, dependencies: React.DependencyList = []) {
     const ref = useRef<T | null>(null);
 

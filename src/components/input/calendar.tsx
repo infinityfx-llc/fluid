@@ -1,7 +1,7 @@
 'use client';
 
-import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
-import { forwardRef, useState } from "react";
+import { FluidSize, FluidStyles, PopoverRootReference, Selectors } from "../../../src/types";
+import { forwardRef, useRef, useState } from "react";
 import Button from "./button";
 import { MdArrowBack, MdArrowForward, MdExpandMore } from "react-icons/md";
 import { classes, combineClasses } from "../../../src/core/utils";
@@ -118,6 +118,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
     });
     const style = combineClasses(styles, cc);
 
+    const yearPopover = useRef<PopoverRootReference>(null);
     const [date, setDate] = value !== undefined ? [value] : useState(defaultValue);
 
     const first = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -158,7 +159,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
             <div className={style.text}>
                 {date.toLocaleString(locale, { month: 'long' })}
 
-                <Combobox.Root position="center">
+                <Combobox.Root position="center" ref={yearPopover}>
                     <Combobox.Trigger disabled={disabled === true}>
                         <Button className={style.button} variant="minimal" round={round} disabled={disabled === true}>
                             {date.toLocaleString(locale, { year: 'numeric' })}
@@ -174,6 +175,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
                                 updated.setFullYear(value as number);
 
                                 update(updated);
+                                yearPopover.current?.close();
                             }}>{year + 10 - i}</Combobox.Option>;
                         })}
                     </Combobox.Content>

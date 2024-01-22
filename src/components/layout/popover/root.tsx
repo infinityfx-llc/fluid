@@ -2,21 +2,24 @@
 
 import { createContext, useContext, useEffect, useId, useRef, useState, forwardRef, useImperativeHandle, useCallback } from "react";
 
-export const PopoverContext = createContext<{
+type PopoverContext = {
     id: string;
     mounted: boolean;
     trigger: React.RefObject<HTMLElement>;
     content: React.RefObject<HTMLElement>;
     opened: boolean;
     toggle: (value: boolean) => void;
-} | null>(null);
+    children: React.MutableRefObject<React.RefObject<HTMLElement>[]>;
+};
 
-export function usePopover() {
+export const PopoverContext = createContext<PopoverContext | null>(null);
+
+export function usePopover<T extends boolean = false>(nullable?: T): T extends true ? PopoverContext | null : PopoverContext {
     const context = useContext(PopoverContext);
 
-    if (!context) throw new Error('Unable to access PopoverRoot context');
+    if (!nullable && !context) throw new Error('Unable to access PopoverRoot context');
 
-    return context;
+    return context as any;
 }
 
 export type PopoverRootReference = {
@@ -33,10 +36,12 @@ export type PopoverRoot = {
 
 const Root = forwardRef(({ children, position = 'auto', stretch, onClose }: PopoverRoot, ref: React.ForwardedRef<PopoverRootReference>) => {
     const id = useId();
+    const childrenRef = useRef<React.RefObject<HTMLElement>[]>([]);
     const trigger = useRef<HTMLElement>(null);
     const content = useRef<HTMLElement>(null);
     const [mounted, setMounted] = useState(false);
     const [opened, setOpened] = useState(false);
+    const parent = usePopover(true);
 
     const toggle = useCallback((value: boolean) => {
         if (!value || !trigger.current || !content.current) return setOpened(false);
@@ -71,6 +76,7 @@ const Root = forwardRef(({ children, position = 'auto', stretch, onClose }: Popo
         window.addEventListener('scroll', resize);
 
         if (mounted && !opened) onClose?.();
+        if (!mounted && parent) parent.children.current.push(content);
 
         return () => {
             window.removeEventListener('resize', resize);
@@ -78,7 +84,19 @@ const Root = forwardRef(({ children, position = 'auto', stretch, onClose }: Popo
         }
     }, [opened]);
 
-    return <PopoverContext.Provider value={{ id, mounted, trigger, content, opened, toggle }}>
+    useEffect(() => {
+        function click(e: MouseEvent) {
+            if (!content.current?.contains(e.target as HTMLElement) &&
+                !trigger.current?.contains(e.target as HTMLElement) &&
+                !childrenRef.current.some(child => child.current?.contains(e.target as HTMLElement))) toggle(false);
+        }
+
+        window.addEventListener('click', click);
+
+        return () => window.removeEventListener('click', click);
+    }, []);
+
+    return <PopoverContext.Provider value={{ id, mounted, trigger, content, opened, toggle, children: childrenRef }}>
         {children}
     </PopoverContext.Provider>;
 });
