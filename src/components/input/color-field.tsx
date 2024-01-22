@@ -41,7 +41,7 @@ const ColorField = forwardRef(({ cc = {}, value, defaultValue, onChange, disable
     return <Popover.Root position="center">
         <Popover.Trigger disabled={disabled}>
             <Field ref={ref} {...props}
-                left={<Swatch size={props.size} color={state} style={{ marginLeft: '.25em' }} />}
+                left={<Swatch size={props.size} round={props.round} color={state} style={{ marginLeft: '.25em' }} />}
                 role="combobox"
                 aria-haspopup="listbox"
                 type="text"
