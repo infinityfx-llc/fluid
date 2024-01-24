@@ -48,7 +48,8 @@ const Item = forwardRef(({ children, cc = {}, label, defaultOpen = false, disabl
 
         '.icon': {
             height: '1em',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            flexShrink: 0
         },
 
         '.arrows': {
