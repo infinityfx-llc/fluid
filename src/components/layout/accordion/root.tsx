@@ -9,7 +9,6 @@ import { combineClasses } from "../../../core/utils";
 export const AccordionContext = createContext<{
     open: string[];
     toggle: (id: string, open: boolean) => void;
-    multiple: boolean;
 } | null>(null);
 
 export function useAccordion() {
@@ -62,7 +61,7 @@ const Root = forwardRef(({ children, cc = {}, multiple = false, variant = 'defau
     }
 
     return <div ref={ref} {...props} className={classes(style.accordion, props.className)} data-variant={variant}>
-        <AccordionContext.Provider value={{ open, toggle, multiple }}>
+        <AccordionContext.Provider value={{ open, toggle }}>
             {arr.map((child, i) => {
 
                 return <Fragment key={i}>
