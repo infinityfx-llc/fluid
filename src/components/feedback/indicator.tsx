@@ -19,8 +19,9 @@ const Indicator = forwardRef(<T extends React.ReactElement>({ children, cc = {},
     const styles = createStyles('indicator', {
         '.indicator': {
             position: 'absolute',
-            minWidth: '1.4em',
-            minHeight: '1.4em',
+            minWidth: '1.5em',
+            minHeight: '1.5em',
+            lineHeight: 1,
             borderRadius: '99px',
             backgroundColor: 'var(--f-clr-accent-100)',
             border: 'solid 2px transparent',
@@ -29,7 +30,10 @@ const Indicator = forwardRef(<T extends React.ReactElement>({ children, cc = {},
             fontSize: 'var(--f-font-size-xxs)',
             fontWeight: 600,
             color: 'var(--f-clr-text-200)',
-            padding: '.1em .4em',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '.1em .3em',
             zIndex: 99
         }
     });
