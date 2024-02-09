@@ -59,7 +59,7 @@ const Button = forwardRef(({ children, cc = {}, round = false, size = 'med', var
         },
 
         '.button__var__neutral': {
-            backgroundColor: 'var(--f-clr-bg-100)',
+            backgroundColor: 'var(--f-clr-fg-100)',
             border: 'solid 1px var(--f-clr-fg-200)'
         },
 
