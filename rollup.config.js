@@ -19,7 +19,7 @@ const plugins = [
     preserveDirectives()
 ];
 
-const external = ['react', /react-dom/, 'react/jsx-runtime', /@infinityfx\/lively/];
+const external = ['react', 'react-dom', 'react/jsx-runtime', /@infinityfx\/lively/, 'tslib'];
 const onwarn = (msg, handler) => {
     if (msg.code === 'THIS_IS_UNDEFINED') return;
     if (msg.code === 'MODULE_LEVEL_DIRECTIVE') return;
