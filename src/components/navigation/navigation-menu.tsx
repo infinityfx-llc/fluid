@@ -125,7 +125,7 @@ const NavigationMenu = forwardRef(({ cc = {}, links, selected = -1, Link = 'a', 
                     <Morph
                         show={i === selection}
                         group={`fluid-header-navigation-selection-${id}`}
-                        cachable={['translate', 'scale']}
+                        cachable={['x', 'sx']}
                         deform={false}
                         transition={{ duration: .35 }}
                         animate={{ opacity: [1, 0], duration: .25 }}
@@ -137,7 +137,7 @@ const NavigationMenu = forwardRef(({ cc = {}, links, selected = -1, Link = 'a', 
                 {links && <Morph
                     show={showMenu}
                     group={`fluid-header-navigation-menu-${id}`}
-                    cachable={['translate', 'scale']}
+                    cachable={['x', 'y', 'sx', 'sy']}
                     deform={false}
                     transition={{ duration: .35 }}
                     animate={{ opacity: [1, 0], translate: ['0px 0px', '0px -8px'], duration: .25 }}
