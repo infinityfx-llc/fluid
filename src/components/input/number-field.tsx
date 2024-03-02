@@ -44,7 +44,7 @@ const NumberField = forwardRef(({ cc = {}, precision = 3, controls = true, defau
         }
 
         return num === undefined ? '' : round(num, precision).toString();
-    }, [precision]);
+    }, [precision, min, max]);
 
     function increment(amount: number) {
         if (inputRef.current) changeInputValue(inputRef.current, format(value, amount));
