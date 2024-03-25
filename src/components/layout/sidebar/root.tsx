@@ -1,16 +1,19 @@
 'use client';
 
 import { FluidStyles, Selectors } from '../../../../src/types';
-import { forwardRef, useState, createContext, useContext } from 'react';
-import Toggle from '../../input/toggle';
-import { MdArrowBack, MdArrowForward } from 'react-icons/md';
+import { forwardRef, createContext, useContext, Children, isValidElement } from 'react';
 import Scrollarea from '../scrollarea';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import { createStyles } from '../../../core/style';
+import Header from './header';
 
 export const SidebarContext = createContext<{
     collapsed: boolean;
-}>({ collapsed: false });
+    onCollapse: (value: boolean) => void;
+}>({
+    collapsed: false,
+    onCollapse: () => {}
+});
 
 export function useSidebar() {
     return useContext(SidebarContext);
@@ -18,12 +21,11 @@ export function useSidebar() {
 
 const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onCollapse, ...props }:
     {
-        cc?: Selectors<'sidebar' | 'button' | 'header' | 'content'>;
+        cc?: Selectors<'sidebar' | 'button' | 'content'>;
         size?: string;
-        collapsed?: boolean;
-        onCollapse?: (value: boolean) => void;
+        collapsed: boolean;
+        onCollapse: (value: boolean) => void;
     } & React.HTMLAttributes<any>, ref: React.ForwardedRef<HTMLElement>) => {
-    const [isCollapsed, setCollapsed] = collapsed !== undefined ? [collapsed] : useState(false);
 
     const styles = createStyles('sidebar.root', (fluid) => ({
         '.sidebar': {
@@ -36,7 +38,7 @@ const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onColla
             borderTopRightRadius: 'var(--f-radius-lrg)',
             borderBottomRightRadius: 'var(--f-radius-lrg)',
             boxShadow: 'var(--f-shadow-med)',
-            borderRight: 'solid 1px var(--f-clr-grey-100)',
+            borderRight: 'solid 1px var(--f-clr-fg-200)',
             display: 'flex',
             flexDirection: 'column',
             paddingBottom: '1em',
@@ -45,13 +47,6 @@ const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onColla
 
         '.button': {
             marginLeft: 'auto'
-        },
-
-        '.header': {
-            display: 'flex',
-            alignItems: 'center',
-            padding: '1em',
-            flexShrink: 0
         },
 
         '.content': {
@@ -76,21 +71,15 @@ const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onColla
         },
     }));
     const style = combineClasses(styles, cc);
+    const header = Children.toArray(children).find(child => isValidElement(child) && child.type === Header);
 
-    return <SidebarContext.Provider value={{ collapsed: isCollapsed }}>
-        <aside ref={ref} {...props} className={classes(style.sidebar, props.className)} style={{ ...props.style, width: size }} data-collapsed={isCollapsed}>
-            <div className={style.header}>
-                <Toggle variant="neutral" checkedContent={<MdArrowBack />} checked={!isCollapsed} onChange={e => {
-                    setCollapsed?.(!e.target.checked);
-                    onCollapse?.(!e.target.checked);
-                }} className={style.button}>
-                    <MdArrowForward />
-                </Toggle>
-            </div>
+    return <SidebarContext.Provider value={{ collapsed, onCollapse }}>
+        <aside ref={ref} {...props} className={classes(style.sidebar, props.className)} style={{ ...props.style, width: size }} data-collapsed={collapsed}>
+            {header}
 
             <Scrollarea style={{ flexGrow: 1 }}>
                 <div className={style.content}>
-                    {children}
+                    {Children.map(children, child => !isValidElement(child) || child.type !== Header ? child : null)}
                 </div>
             </Scrollarea>
         </aside>

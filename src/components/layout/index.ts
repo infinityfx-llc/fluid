@@ -8,6 +8,7 @@ import Sidebar from "./sidebar";
 import Cull from "./cull";
 import Popover from "./popover";
 import Divider from "./divider";
+import Panel from "./panel";
 
 export {
     Overlay,
@@ -19,5 +20,6 @@ export {
     Sidebar,
     Cull,
     Popover,
-    Divider
+    Divider,
+    Panel
 }

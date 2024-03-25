@@ -12,13 +12,13 @@ const Heading = forwardRef(({ children, cc = {}, ...props }:
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('sidebar.heading', {
         '.heading': {
-            color: 'var(--f-clr-grey-500)',
+            color: 'var(--f-clr-text-100)',
             fontSize: 'var(--f-font-size-xsm)',
-            fontWeight: 700,
+            fontWeight: 800,
             width: 'max-content',
             transition: 'opacity .3s',
             padding: '0 1em',
-            marginTop: 'var(--f-spacing-med)'
+            marginTop: 'var(--f-spacing-lrg)'
         }
     });
     const style = combineClasses(styles, cc);

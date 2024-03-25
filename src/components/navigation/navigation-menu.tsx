@@ -9,6 +9,7 @@ import { classes, combineClasses } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
 
 // split into subcomponents for more options
+// arrow focus navigation
 
 export type NavigationMenuStyles = FluidStyles<'.navigation' | '.link' | '.selection' | '.menu' | '.container'>;
 
@@ -152,9 +153,9 @@ const NavigationMenu = forwardRef(({ cc = {}, links, selected = -1, Link = 'a', 
                                 delay: .15
                             }}
                             triggers={[{ on: 'mount' }]}>
-                            {links?.map(({ label, href }, i) => {
-                                return <Halo key={i} color="var(--f-clr-primary-400)">
-                                    <Link href={href} className={style.link}>
+                            {links?.map(({ label, href }, si) => {
+                                return <Halo key={si} color="var(--f-clr-primary-400)">
+                                    <Link href={href} className={style.link} onFocus={() => prev.current = i}>
                                         {label}
                                     </Link>
                                 </Halo>;

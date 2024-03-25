@@ -69,6 +69,7 @@ export type FluidComponents = {
     toggle?: FluidStyles;
     'accordion.item'?: FluidStyles;
     'accordion.root'?: FluidStyles;
+    'sidebar.header'?: FluidStyles;
     'sidebar.heading'?: FluidStyles;
     'sidebar.link'?: FluidStyles;
     'sidebar.root'?: FluidStyles;
@@ -81,6 +82,7 @@ export type FluidComponents = {
     drawer?: FluidStyles;
     modal?: FluidStyles;
     overlay?: FluidStyles;
+    panel?: FluidStyles;
     scrollarea?: FluidStyles;
     'navigation-menu'?: FluidStyles;
     pagination?: FluidStyles;

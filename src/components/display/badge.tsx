@@ -16,13 +16,16 @@ const Badge = forwardRef(({ children, cc = {}, variant = 'default', round = fals
         '.badge': {
             fontWeight: 700,
             color: 'var(--f-clr-text-100)',
-            backgroundColor: 'var(--f-clr-primary-300)',
             borderRadius: 'var(--f-radius-sml)',
             padding: '.2em .6em'
         },
 
+        '.badge__var__default': {
+            backgroundColor: 'var(--f-clr-primary-300)'
+        },
+
         '.badge__var__neutral': {
-            backgroundColor: 'var(--f-clr-fg-100) !important',
+            backgroundColor: 'var(--f-clr-fg-100)',
             border: 'solid 1px var(--f-clr-fg-200)'
         },
 
