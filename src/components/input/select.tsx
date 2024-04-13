@@ -5,7 +5,7 @@ import { FieldProps } from './field';
 import Button from './button';
 import { MdCheck, MdUnfoldMore } from 'react-icons/md';
 import { FluidInputvalue, FluidStyles, PopoverRootReference, Selectors } from '../../../src/types';
-import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
+import { classes, combineClasses, combineRefs, isControlled } from '../../../src/core/utils';
 import Badge from '../display/badge';
 import Combobox from '../display/combobox';
 import useInputProps from '../../../src/hooks/use-input-props';
@@ -28,7 +28,7 @@ type SelectProps<T> = {
     onChange?: (value: T) => void;
 } & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'onEnter'>;
 
-function SelectComponent<T extends FluidInputvalue>(
+function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
     {
         cc = {},
         options,
@@ -187,11 +187,11 @@ function SelectComponent<T extends FluidInputvalue>(
     const id = useId();
     const selfInputRef = useRef<HTMLInputElement>(null);
     const popover = useRef<PopoverRootReference>(null);
-    const [state, setState] = value !== undefined ? [value] : useState<FluidInputvalue | FluidInputvalue[]>(defaultValue || (multiple ? [] : ''));
+    const [state, setState] = isControlled({ value, onChange }) ? [value, onChange] : useState<T>(defaultValue || (multiple ? [] as any : '' as T));
     const [split, rest] = useInputProps(props);
 
     useEffect(() => {
-        if (value === undefined) setState?.(multiple ? [] : '');
+        if (value === undefined) setState?.(multiple ? [] as any : '' as T);
     }, [multiple]);
 
     return <Combobox.Root ref={popover} stretch>
@@ -244,8 +244,7 @@ function SelectComponent<T extends FluidInputvalue>(
                         popover.current?.close();
                         selfInputRef.current?.focus();
 
-                        setState?.(value);
-                        onChange?.(value as T);
+                        setState?.(value as any);
                     } else {
                         const updated = state.slice();
                         const idx = updated.indexOf(value);
@@ -253,8 +252,7 @@ function SelectComponent<T extends FluidInputvalue>(
                             if (!limit || updated.length < limit) updated.push(value);
                         } else updated.splice(idx, 1);
 
-                        setState?.(updated);
-                        onChange?.(updated as any);
+                        setState?.(updated as any);
                     }
                 }}>
                     {label}

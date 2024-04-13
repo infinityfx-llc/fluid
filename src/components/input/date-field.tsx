@@ -7,9 +7,9 @@ import { Move } from '@infinityfx/lively/animations';
 import Calendar from './calendar';
 import Popover from '../layout/popover';
 import { createStyles } from '../../core/style';
-import { combineClasses } from '../../core/utils';
+import { combineClasses, isControlled } from '../../core/utils';
 
-const DateField = forwardRef(({ cc = {}, value, defaultValue = new Date(), onChange, disabled, ...props }:
+const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled, ...props }:
     {
         value?: Date;
         defaultValue?: Date;
@@ -24,10 +24,12 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue = new Date(), onCha
     });
     const style = combineClasses(styles, cc);
 
-    const [state, setState] = value !== undefined ? [value] : useState(defaultValue);
+    const [state, setState] = isControlled({ value, onChange }) ? [value, onChange] : useState(defaultValue);
     const [partial, setPartial] = useState<string | null>(null);
 
-    function toString(date: Date) {
+    function toString(date: Date | undefined) {
+        if (!date) return '';
+
         return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
     }
 
@@ -52,10 +54,7 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue = new Date(), onCha
                 onBlur={() => {
                     if (partial) {
                         const date = new Date(partial);
-                        if (!isNaN(date.getTime())) {
-                            setState?.(date);
-                            onChange?.(date);
-                        }
+                        if (!isNaN(date.getTime())) setState?.(date);
                     }
 
                     setPartial(null);
@@ -71,10 +70,7 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue = new Date(), onCha
                     size={props.size}
                     disabled={disabled}
                     value={state}
-                    onChange={date => {
-                        setState?.(date);
-                        onChange?.(date);
-                    }} />
+                    onChange={date => setState?.(date)} />
             </Animatable>
         </Popover.Content>
     </Popover.Root>

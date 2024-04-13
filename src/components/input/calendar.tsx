@@ -4,7 +4,7 @@ import { FluidSize, FluidStyles, PopoverRootReference, Selectors } from "../../.
 import { forwardRef, useRef, useState } from "react";
 import Button from "./button";
 import { MdArrowBack, MdArrowForward, MdExpandMore } from "react-icons/md";
-import { classes, combineClasses } from "../../../src/core/utils";
+import { classes, combineClasses, isControlled } from "../../../src/core/utils";
 import { Combobox } from "../display";
 import { createStyles } from "../../core/style";
 
@@ -12,7 +12,7 @@ import { createStyles } from "../../core/style";
 
 export type CalendarStyles = FluidStyles<'.calendar' | '.header' | '.text' | '.years' | '.calendar__round' | '.calendar__xsm' | '.calendar__sml' | '.calendar__med' | '.calendar__lrg'>;
 
-const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValue = new Date(), value, onChange, disabled, ...props }:
+const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValue, value, onChange, disabled, ...props }:
     {
         cc?: Selectors<'calendar' | 'header' | 'text' | 'years' | 'calendar__round' | 'calendar__xsm' | 'calendar__sml' | 'calendar__med' | 'calendar__lrg'>;
         locale?: Intl.LocalesArgument;
@@ -119,17 +119,13 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
     const style = combineClasses(styles, cc);
 
     const yearPopover = useRef<PopoverRootReference>(null);
-    const [date, setDate] = value !== undefined ? [value] : useState(defaultValue);
+    const [dateState, setDate] = isControlled({ value, onChange }) ? [value, onChange] : useState(defaultValue);
+    const date = dateState || new Date();
 
     const first = new Date(date.getFullYear(), date.getMonth(), 1);
     const monday = new Date(first), day = first.getDay();
     monday.setDate(first.getDate() - (day || 7) + 1);
     const year = date.getFullYear();
-
-    function update(value: Date) {
-        setDate?.(value);
-        onChange?.(value);
-    }
 
     function isEqual(a: Date, b: Date) {
         return a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -151,7 +147,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
             <Button className={style.button} disabled={disabled === true} variant="minimal" round={round} onClick={() => {
                 const updated = new Date(date);
                 updated.setMonth(date.getMonth() - 1);
-                update(updated);
+                setDate?.(updated);
             }}>
                 <MdArrowBack />
             </Button>
@@ -174,7 +170,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
                                 const updated = new Date(date);
                                 updated.setFullYear(value as number);
 
-                                update(updated);
+                                setDate?.(updated);
                                 yearPopover.current?.close();
                             }}>{year + 10 - i}</Combobox.Option>;
                         })}
@@ -185,7 +181,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
             <Button className={style.button} disabled={disabled === true} variant="minimal" round={round} onClick={() => {
                 const updated = new Date(date);
                 updated.setMonth(date.getMonth() + 1);
-                update(updated);
+                setDate?.(updated);
             }}>
                 <MdArrowForward />
             </Button>
@@ -212,7 +208,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
                     button: style.date,
                     button__var__default: style.date__var__default,
                     button__var__minimal: style.date__var__minimal
-                }} data-present={isMonth} variant={isEqual(date, day) ? 'default' : 'minimal'} onClick={() => update(day)}>
+                }} data-present={isMonth} variant={isEqual(date, day) ? 'default' : 'minimal'} onClick={() => setDate?.(day)}>
                     {day.getDate()}
                 </Button>;
             })}

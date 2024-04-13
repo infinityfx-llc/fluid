@@ -7,10 +7,11 @@ import { createStyles } from "../../core/style";
 
 export type ButtonStyles = FluidStyles<'.button' | '.content' | '.loader' | '.button__round' | '.button__xsm' | '.button__sml' | '.button__med' | '.button__lrg' | '.button__var__default' | '.button__var__neutral' | '.button__var__light' | '.button__var__minimal'>;
 
-const Button = forwardRef(({ children, cc = {}, round = false, size = 'med', variant = 'default', loading = false, ...props }:
+const Button = forwardRef(({ children, cc = {}, round = false, slim = false, size = 'med', variant = 'default', loading = false, ...props }:
     {
         cc?: Selectors<'button' | 'content' | 'loader' | 'button__round' | 'button__xsm' | 'button__sml' | 'button__med' | 'button__lrg' | 'button__var__default' | 'button__var__neutral' | 'button__var__light' | 'button__var__minimal'>;
         round?: boolean;
+        slim?: boolean;
         size?: FluidSize;
         variant?: 'default' | 'neutral' | 'light' | 'minimal';
         loading?: boolean;
@@ -21,13 +22,17 @@ const Button = forwardRef(({ children, cc = {}, round = false, size = 'med', var
             border: 'none',
             outline: 'none',
             borderRadius: 'var(--f-radius-sml)',
-            padding: '.6em',
+            padding: '.8em',
             backgroundColor: 'var(--f-clr-primary-100)',
             color: 'var(--f-clr-text-100)',
             fontWeight: 600,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
+        },
+
+        '.button__slim': {
+            padding: '.6em'
         },
 
         '.button__round': {
@@ -79,7 +84,8 @@ const Button = forwardRef(({ children, cc = {}, round = false, size = 'med', var
         '.content': {
             display: 'flex',
             alignItems: 'center',
-            gap: 'var(--f-spacing-xsm)'
+            gap: 'var(--f-spacing-xsm)',
+            lineHeight: 1
         },
 
         '.button[data-loading="true"] .content': {
@@ -101,6 +107,7 @@ const Button = forwardRef(({ children, cc = {}, round = false, size = 'med', var
             className={classes(
                 style.button,
                 round && style.button__round,
+                slim && style.button__slim,
                 style[`button__${size}`],
                 style[`button__var__${variant}`],
                 props.className

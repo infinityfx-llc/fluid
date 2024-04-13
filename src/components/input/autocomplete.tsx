@@ -6,7 +6,7 @@ import { FluidInputvalue, PopoverRootReference } from '../../../src/types';
 import { Combobox } from '../display';
 import { changeInputValue } from '../../core/utils';
 
-const Autocomplete = forwardRef(({ cc = {}, completions, emptyMessage, value, defaultValue, ...props }: {
+const Autocomplete = forwardRef(({ cc = {}, completions, emptyMessage, value, defaultValue, onChange, ...props }: {
     completions: string[] | { label: string; value: string; }[];
     emptyMessage?: string;
 } & FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
@@ -30,7 +30,7 @@ const Autocomplete = forwardRef(({ cc = {}, completions, emptyMessage, value, de
                 aria-autocomplete="list"
                 value={state}
                 onChange={e => {
-                    props.onChange?.(e);
+                    onChange?.(e);
                     setState?.(e.target.value);
                 }}
                 onFocus={e => {

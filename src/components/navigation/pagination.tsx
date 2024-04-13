@@ -1,6 +1,6 @@
 'use client';
 
-import { FluidStyles, Selectors } from "../../../src/types";
+import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Button from "../input/button";
 import { MdArrowBack, MdArrowForward, MdFirstPage, MdLastPage } from "react-icons/md";
@@ -9,7 +9,7 @@ import { createStyles } from "../../core/style";
 
 export type PaginationStyles = FluidStyles<'.pagination' | '.button'>;
 
-const Pagination = forwardRef(({ cc = {}, page, setPage, pages, compact, skipable, round, variant, ...props }:
+const Pagination = forwardRef(({ cc = {}, page, setPage, pages, compact, skipable, round, size, variant, ...props }:
     {
         cc?: Selectors<'pagination'>;
         page?: number;
@@ -18,6 +18,7 @@ const Pagination = forwardRef(({ cc = {}, page, setPage, pages, compact, skipabl
         compact?: boolean;
         skipable?: boolean;
         round?: boolean;
+        size?: FluidSize;
         variant?: 'default' | 'neutral' | 'light';
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('pagination', {
@@ -27,8 +28,8 @@ const Pagination = forwardRef(({ cc = {}, page, setPage, pages, compact, skipabl
         },
 
         '.pagination > *': {
-            minWidth: '2.4em',
-            minHeight: '2.4em'
+            minWidth: '2.6em',
+            minHeight: '2.6em'
         }
     });
     const style = combineClasses(styles, cc);
@@ -41,11 +42,11 @@ const Pagination = forwardRef(({ cc = {}, page, setPage, pages, compact, skipabl
     }
 
     return <div ref={ref} {...props} className={classes(style.pagination, props.className)}>
-        {compact && skipable && <Button round={round} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state < 1} onClick={() => update(0)}>
+        {compact && skipable && <Button round={round} size={size} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state < 1} onClick={() => update(0)}>
             <MdFirstPage />
         </Button>}
 
-        <Button round={round} variant={variant} disabled={state < 1} onClick={() => update(state - 1)}>
+        <Button round={round} size={size} variant={variant} disabled={state < 1} onClick={() => update(state - 1)}>
             <MdArrowBack />
         </Button>
 
@@ -55,15 +56,15 @@ const Pagination = forwardRef(({ cc = {}, page, setPage, pages, compact, skipabl
                 if (i !== 1 && state === idx && pages < 3) return null;
                 if (idx < 0 || idx >= pages) return null;
 
-                return <Button key={i} round={round} variant={idx === state ? variant : 'minimal'} onClick={() => update(idx)} aria-current={idx === state ? 'page' : undefined}>{idx + 1}</Button>;
+                return <Button key={i} round={round} size={size} variant={idx === state ? variant : 'minimal'} onClick={() => update(idx)} aria-current={idx === state ? 'page' : undefined}>{idx + 1}</Button>;
             })}
         </>}
 
-        <Button round={round} variant={variant} disabled={state >= pages - 1} onClick={() => update(state + 1)}>
+        <Button round={round} size={size} variant={variant} disabled={state >= pages - 1} onClick={() => update(state + 1)}>
             <MdArrowForward />
         </Button>
 
-        {compact && skipable && <Button round={round} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state >= pages - 1} onClick={() => update(pages - 1)}>
+        {compact && skipable && <Button round={round} size={size} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state >= pages - 1} onClick={() => update(pages - 1)}>
             <MdLastPage />
         </Button>}
     </div>;

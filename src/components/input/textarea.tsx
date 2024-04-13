@@ -16,7 +16,7 @@ const Textarea = forwardRef(({ cc = {}, label, error, size = 'med', resize = 'bo
         error?: FluidError;
         size?: FluidSize;
         resize?: 'none' | 'vertical' | 'horizontal' | 'both';
-    } & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'children' | 'cols'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('textarea', {
         '.wrapper': {
             display: 'flex',
@@ -53,8 +53,7 @@ const Textarea = forwardRef(({ cc = {}, label, error, size = 'med', resize = 'bo
             border: 'solid 1px var(--f-clr-fg-200)',
             borderRadius: 'var(--f-radius-sml)',
             transition: 'border-color .2s, outline-color .2s',
-            width: '100%',
-            height: '4em'
+            width: '100%'
         },
 
         '.textarea:focus-within': {
@@ -108,7 +107,7 @@ const Textarea = forwardRef(({ cc = {}, label, error, size = 'med', resize = 'bo
     )}>
         {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
 
-        <Scrollarea className={style.textarea} style={{ resize }} data-error={!!error} data-disabled={props.disabled}>
+        <Scrollarea className={style.textarea} style={{ resize, height: `${(props.rows || 2) * 2}em` }} data-error={!!error} data-disabled={props.disabled}>
             <textarea {...split} rows={rows}
                 className={style.input}
                 aria-labelledby={label ? id : undefined}
