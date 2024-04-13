@@ -38,7 +38,8 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
             flexGrow: 1,
             background: 'none',
             border: 'none',
-            width: 0
+            width: 0,
+            pointerEvents: 'none'
         },
 
         '.field': {
@@ -152,9 +153,12 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
                 <input className={style.placeholder} tabIndex={-1} role="none" value={files.map(file => file.name)} readOnly />
             </div>
 
-            <Button aria-label={split['aria-label'] || label} disabled={props.disabled} round={round} size={size} loading={loading} style={{
-                marginRight: '.25em'
-            }} onClick={() => input.current?.click()}>
+            <Button aria-label={split['aria-label'] || label} disabled={props.disabled} round={round} size={size} loading={loading}
+                style={{
+                    padding: '.6em',
+                    marginRight: '.2em'
+                }}
+                onClick={() => input.current?.click()}>
                 <MdUpload />
             </Button>
         </label>

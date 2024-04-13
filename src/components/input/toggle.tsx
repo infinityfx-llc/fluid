@@ -38,7 +38,7 @@ const Toggle = forwardRef(({ children, cc = {}, size = 'med', round = false, var
             display: 'block',
             backgroundColor: 'var(--f-clr-fg-100)',
             color: 'var(--f-clr-text-100)',
-            padding: '.6em',
+            padding: '.8em',
             borderRadius: 'var(--f-radius-sml)',
             transition: 'background-color .25s, color .25s'
         },
@@ -73,7 +73,8 @@ const Toggle = forwardRef(({ children, cc = {}, size = 'med', round = false, var
             alignItems: 'center',
             justifyContent: 'center',
             gap: 'var(--f-spacing-xsm)',
-            gridArea: '1 / 1 / 1 / 1'
+            gridArea: '1 / 1 / 1 / 1',
+            lineHeight: 1
         },
     
         '.container': {
