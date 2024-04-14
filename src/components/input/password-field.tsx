@@ -13,7 +13,7 @@ import { createStyles } from '../../core/style';
 const colors = ['#eb2a1c', '#eb2a1c', '#e8831e', '#f0d030', '#fff952', '#5aff54'];
 
 // optimize prop splitting
-const PasswordField = forwardRef(({ cc = {}, strengthBar = false, size = 'med', round, error, showError, icon, label, left, right, defaultValue, onEnter, ...props }: { strengthBar?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const PasswordField = forwardRef(({ cc = {}, strengthBar = false, size = 'med', round, error, showError, icon, label, left, right, defaultValue, onEnter, inputRef, ...props }: { strengthBar?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('password-field', {
         '.wrapper': {
             width: '100% !important'
@@ -52,7 +52,16 @@ const PasswordField = forwardRef(({ cc = {}, strengthBar = false, size = 'med', 
     const [split, rest] = useInputProps(props);
 
     return <div ref={ref} {...rest} className={classes(style.container, props.className)}>
-        <Field {...split} type={visible ? 'text' : 'password'} round={round} size={size} error={error} icon={icon} label={label} left={left} value={value}
+        <Field {...split}
+            inputRef={inputRef}
+            type={visible ? 'text' : 'password'}
+            round={round}
+            size={size}
+            error={error}
+            icon={icon}
+            label={label}
+            left={left}
+            value={value}
             onEnter={onEnter}
             cc={{
                 wrapper: style.wrapper

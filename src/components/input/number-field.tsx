@@ -4,7 +4,7 @@ import { useCallback, useState, forwardRef, useRef } from 'react';
 import Field, { FieldProps } from "./field";
 import { MdAdd, MdRemove } from 'react-icons/md';
 import Button from './button';
-import { changeInputValue, combineClasses, round, toNumber } from '../../../src/core/utils';
+import { changeInputValue, combineClasses, combineRefs, round, toNumber } from '../../../src/core/utils';
 import { FluidInputvalue } from '../../../src/types';
 import { createStyles } from '../../core/style';
 
@@ -50,7 +50,10 @@ const NumberField = forwardRef(({ cc = {}, precision = 3, controls = true, defau
         if (inputRef.current) changeInputValue(inputRef.current, format(value, amount));
     }
 
-    return <Field ref={ref} inputRef={inputRef} {...props} type="number" value={value}
+    return <Field ref={ref} {...props}
+        inputRef={combineRefs(inputRef, props.inputRef)}
+        type="number"
+        value={value}
         onChange={e => {
             e.target.value = format(e.target.value); // maybe only do on blur??
             setValue?.(e.target.value);

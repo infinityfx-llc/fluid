@@ -5,10 +5,10 @@ import Button from './button';
 import { MdUpload } from 'react-icons/md';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { FluidError, FluidSize, FluidStyles, Selectors } from '../../../src/types';
-import { classes, combineClasses } from '../../../src/core/utils';
+import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
 
-const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error, showError, loading = false, ...props }:
+const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error, showError, loading = false, inputRef, ...props }:
     {
         cc?: Selectors<'wrapper' | 'input' | 'placeholder' | 'field' | 'content' | 'label' | 'error' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg' | 'wrapper__round'>;
         round?: boolean;
@@ -18,6 +18,7 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
         loading?: boolean;
         icon?: React.ReactNode;
         label?: string;
+        inputRef?: React.Ref<HTMLInputElement>;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('file-field', {
         '.wrapper': {
@@ -146,7 +147,7 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
             <div className={style.content}>
                 {icon}
 
-                <input ref={input} {...split} disabled={props.disabled || loading} type="file" aria-labelledby={label ? id : undefined} aria-invalid={!!error} className={style.input} onChange={e => {
+                <input ref={combineRefs(input, inputRef)} {...split} disabled={props.disabled || loading} type="file" aria-labelledby={label ? id : undefined} aria-invalid={!!error} className={style.input} onChange={e => {
                     setFiles?.(Array.from(e.target.files || []));
                     props.onChange?.(e);
                 }} />
