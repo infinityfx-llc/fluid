@@ -18,7 +18,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
         locale?: Intl.LocalesArgument;
         size?: FluidSize;
         round?: boolean;
-        value?: Date;
+        value?: Date | null;
         defaultValue?: Date;
         onChange?: (value: Date) => void;
         disabled?: boolean | Date[];

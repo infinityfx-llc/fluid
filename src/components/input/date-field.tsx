@@ -8,13 +8,16 @@ import Calendar from './calendar';
 import Popover from '../layout/popover';
 import { createStyles } from '../../core/style';
 import { combineClasses, isControlled } from '../../core/utils';
+import Button from './button';
+import { MdClose } from 'react-icons/md';
 
-const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled, ...props }:
+const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled, clearable, ...props }:
     {
-        value?: Date;
+        value?: Date | null;
         defaultValue?: Date;
-        onChange?: (value: Date) => void;
+        onChange?: (value: Date | null) => void;
         disabled?: boolean | Date[];
+        clearable?: boolean;
     } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('date-field', {
         '.calendar': {
@@ -24,10 +27,10 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled
     });
     const style = combineClasses(styles, cc);
 
-    const [state, setState] = isControlled({ value, onChange }) ? [value, onChange] : useState(defaultValue);
+    const [state, setState] = isControlled({ value, onChange }) ? [value, onChange] : useState<Date | null>(defaultValue || null);
     const [partial, setPartial] = useState<string | null>(null);
 
-    function toString(date: Date | undefined) {
+    function toString(date?: Date | null) {
         if (!date) return '';
 
         return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
@@ -59,6 +62,15 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled
 
                     setPartial(null);
                 }}
+                right={clearable && <Button
+                    variant="minimal"
+                    style={{
+                        padding: '.6em',
+                        marginRight: '.2em'
+                    }}
+                    onClick={() => setState?.(null)}>
+                    <MdClose />
+                </Button>}
             />
         </Popover.Trigger>
 
