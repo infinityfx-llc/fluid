@@ -84,7 +84,9 @@ export type FluidComponents = {
     overlay?: FluidStyles;
     panel?: FluidStyles;
     scrollarea?: FluidStyles;
-    'navigation-menu'?: FluidStyles;
+    'navigation-menu.root'?: FluidStyles;
+    'navigation-menu.group'?: FluidStyles;
+    'navigation-menu.link'?: FluidStyles;
     pagination?: FluidStyles;
     stepper?: FluidStyles;
     tabs?: FluidStyles;
