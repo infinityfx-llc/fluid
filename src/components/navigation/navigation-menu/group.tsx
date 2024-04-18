@@ -10,11 +10,12 @@ import { Animatable } from '@infinityfx/lively';
 
 type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a';
 
-const Group = forwardRef(({ children, cc = {}, label, href, active = false, position = 'center', Link = 'a', ...props }:
+const Group = forwardRef(({ children, cc = {}, label, href, target, active = false, position = 'center', Link = 'a', ...props }:
     {
         cc?: Selectors<'link' | 'selection' | 'menu'>;
         label: React.ReactNode;
-        href: string;
+        href?: string;
+        target?: '_blank' | '_parent' | '_self' | '_top';
         active?: boolean;
         position?: 'start' | 'center' | 'end';
         Link?: AnchorLike<any>;
@@ -49,7 +50,6 @@ const Group = forwardRef(({ children, cc = {}, label, href, active = false, posi
             top: 'calc(100% + var(--f-spacing-sml))',
             borderRadius: 'calc(.25em + var(--f-radius-sml))',
             padding: '.25em',
-            width: 'max-content',
             backgroundColor: 'var(--f-clr-fg-100)',
             border: 'solid 1px var(--f-clr-fg-200)',
             boxShadow: 'var(--f-shadow-med)',
@@ -66,6 +66,7 @@ const Group = forwardRef(({ children, cc = {}, label, href, active = false, posi
     return <div className={style.group}>
         <Link className={style.link}
             href={href}
+            target={target}
             aria-expanded={hasLinks ? linkId === selection : undefined}
             aria-controls={hasLinks ? id + linkId : undefined}
             onMouseEnter={() => select(linkId)}

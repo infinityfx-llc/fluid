@@ -1,23 +1,26 @@
 'use client';
 
-import { forwardRef, useId } from 'react';
+import { forwardRef, useId, useRef, useEffect } from 'react';
 import Overlay from './overlay';
 import { FluidStyles, Selectors } from '../../../src/types';
 import Button from '../input/button';
 import { MdClose } from 'react-icons/md';
-import { classes, combineClasses } from '../../../src/core/utils';
+import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { Animatable } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
 import { createStyles } from '../../core/style';
+import { useFluid, useMediaQuery } from '../../hooks';
+import { useLink } from '@infinityfx/lively/hooks';
 
 export type ModalStyles = FluidStyles<'.modal' | '.header'>;
 
-const Modal = forwardRef(({ children, cc = {}, show, onClose, title, ...props }:
+const Modal = forwardRef(({ children, cc = {}, show, onClose, title, mobileClosing = 'handle', ...props }:
     {
         cc?: Selectors<'modal' | 'header'>;
         show: boolean;
         onClose: () => void;
         title?: React.ReactNode;
+        mobileClosing?: 'button' | 'handle';
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('modal', (fluid) => ({
         '.modal': {
@@ -45,6 +48,17 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, ...props }:
             color: 'var(--f-clr-text-100)'
         },
 
+        '.handle': {
+            position: 'relative',
+            height: '5px',
+            width: '48px',
+            backgroundColor: 'var(--f-clr-grey-200)',
+            borderRadius: '99px',
+            alignSelf: 'center',
+            display: 'none',
+            touchAction: 'none'
+        },
+
         '.title': {
             flexGrow: 1
         },
@@ -57,22 +71,99 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, ...props }:
                 borderRadius: 'var(--f-radius-lrg)',
                 borderBottomRightRadius: 0,
                 borderBottomLeftRadius: 0
+            },
+
+            '.handle': {
+                display: 'block'
             }
         }
     }));
     const style = combineClasses(styles, cc);
 
+    const modalRef = useRef<HTMLDivElement>(null);
+    const touch = useRef<{ clientY: number; } | null>(null);
+    const offset = useLink(0);
+
     const id = useId();
+    const fluid = useFluid();
+    const isMobile = useMediaQuery(`(max-width: ${fluid.breakpoints.mob}px)`);
+
+    useEffect(() => {
+        function update(e: TouchEvent) {
+            if (!touch.current || !modalRef.current) return;
+
+            if (!e.touches.length) {
+                const py = offset() / modalRef.current.clientHeight;
+
+                if (py > 0.35) {
+                    onClose();
+                } else {
+                    offset.set(0, .25);
+                }
+
+                return touch.current = null;
+            }
+
+            const { clientY } = e.touches[0];
+            const dy = Math.max(clientY - touch.current.clientY, 0);
+
+            offset.set(dy);
+        }
+
+        window.addEventListener('touchmove', update);
+        window.addEventListener('touchend', update);
+
+        return () => {
+            window.removeEventListener('touchmove', update);
+            window.removeEventListener('touchend', update);
+        }
+    }, []);
 
     return <Overlay show={show} onClose={onClose}>
-        <Animatable id="modal" animate={{ translate: ['0px 20px', '0px 0px'], opacity: [0, 1], duration: .25 }} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
-            <div ref={ref} {...props} className={classes(style.modal, props.className)} role="dialog" aria-modal aria-labelledby={id}>
+        <Animatable id="modal"
+            onAnimationEnd={() => offset.set(0)}
+            initial={isMobile ? {
+                translate: '0% 100%'
+            } : {
+                translate: '0px 20px',
+                opacity: 0
+            }}
+            animate={{
+                translate: offset(val => `0px ${val}px`)
+            }}
+            animations={{
+                mob: {
+                    translate: ['0% 100%', '0% 0%'],
+                    duration: .25,
+                    composite: 'combine'
+                },
+                dsk: {
+                    translate: ['0px 20px', '0px 0px'],
+                    opacity: [0, 1],
+                    duration: .25
+                }
+            }} triggers={[{
+                on: 'mount',
+                name: isMobile ? 'mob' : 'dsk'
+            }, {
+                on: 'unmount',
+                reverse: true,
+                name: isMobile ? 'mob' : 'dsk'
+            }]}>
+            <div ref={combineRefs(ref, modalRef)} {...props}
+                className={classes(style.modal, props.className)}
+                role="dialog"
+                aria-modal
+                aria-labelledby={id}
+                onTouchStart={e => touch.current = e.touches[0]}>
+                {isMobile && mobileClosing === 'handle' && <div className={style.handle} />}
+
                 <div className={style.header}>
                     <span id={id} className={styles.title}>{title}</span>
 
-                    <Button variant="minimal" onClick={onClose}>
+                    {mobileClosing === 'button' || !isMobile && <Button variant="minimal" onClick={onClose}>
                         <MdClose />
-                    </Button>
+                    </Button>}
                 </div>
 
                 <Scrollarea className={style.scrollarea}>

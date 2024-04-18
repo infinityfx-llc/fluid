@@ -5,9 +5,10 @@ import { LayoutGroup } from '@infinityfx/lively/layout';
 import { forwardRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopover } from './root';
+import Modal from '../modal';
 
-const Content = forwardRef((props: React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const { id, mounted, trigger, content, opened } = usePopover();
+const Content = forwardRef(({ children, ...props }: React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const { id, mounted, isModal, trigger, content, opened, toggle } = usePopover();
 
     const zIndex = useMemo(() => {
         if (!mounted || !trigger.current) return 1;
@@ -25,9 +26,13 @@ const Content = forwardRef((props: React.HTMLAttributes<HTMLDivElement>, ref: Re
 
     if (!mounted) return null;
 
+    if (isModal) return <Modal ref={ref} {...props} id={id} show={opened} onClose={() => toggle(false)}>
+        {children}
+    </Modal>;
+
     return createPortal(<LayoutGroup>
         <div ref={combineRefs(content, ref)} {...props} id={id} style={{ ...props.style, position: 'fixed', zIndex }}>
-            {opened && props.children}
+            {opened && children}
         </div>
     </LayoutGroup>, document.getElementById('__fluid') as HTMLElement);
 });

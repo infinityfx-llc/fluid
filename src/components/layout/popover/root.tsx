@@ -1,10 +1,12 @@
 'use client';
 
 import { createContext, useContext, useEffect, useId, useRef, useState, forwardRef, useImperativeHandle, useCallback } from "react";
+import { useFluid, useMediaQuery } from "../../../hooks";
 
 type PopoverContext = {
     id: string;
     mounted: boolean;
+    isModal: boolean;
     trigger: React.RefObject<HTMLElement>;
     content: React.RefObject<HTMLElement>;
     opened: boolean;
@@ -30,20 +32,25 @@ export type PopoverRootReference = {
 export type PopoverRoot = {
     children: React.ReactNode;
     position?: 'auto' | 'center';
+    mobileContainer?: 'popover' | 'modal';
     stretch?: boolean;
     onClose?: () => void;
 };
 
-const Root = forwardRef(({ children, position = 'auto', stretch, onClose }: PopoverRoot, ref: React.ForwardedRef<PopoverRootReference>) => {
+const Root = forwardRef(({ children, position = 'auto', mobileContainer = 'popover', stretch, onClose }: PopoverRoot, ref: React.ForwardedRef<PopoverRootReference>) => {
     const id = useId();
+    const fluid = useFluid();
     const childrenRef = useRef<React.RefObject<HTMLElement>[]>([]);
     const trigger = useRef<HTMLElement>(null);
     const content = useRef<HTMLElement>(null);
     const [mounted, setMounted] = useState(false);
     const [opened, setOpened] = useState(false);
     const parent = usePopover(true);
+    const isMobile = useMediaQuery(`(max-width: ${fluid.breakpoints.mob}px)`);
+    const isModal = mobileContainer === 'modal' && isMobile;
 
     const toggle = useCallback((value: boolean) => {
+        if (isModal) return setOpened(value);
         if (!value || !trigger.current || !content.current) return setOpened(false);
 
         const { x, y, right, width, height } = trigger.current.getBoundingClientRect();
@@ -62,7 +69,7 @@ const Root = forwardRef(({ children, position = 'auto', stretch, onClose }: Popo
         content.current.style[isTop ? 'top' : 'bottom'] = '';
 
         return setOpened(value);
-    }, [position, stretch]);
+    }, [position, stretch, isModal]);
 
     useImperativeHandle(ref, () => ({
         open: toggle.bind({}, true),
@@ -86,7 +93,8 @@ const Root = forwardRef(({ children, position = 'auto', stretch, onClose }: Popo
 
     useEffect(() => {
         function click(e: MouseEvent) {
-            if (!content.current?.contains(e.target as HTMLElement) &&
+            if (!isModal &&
+                !content.current?.contains(e.target as HTMLElement) &&
                 !trigger.current?.contains(e.target as HTMLElement) &&
                 !childrenRef.current.some(child => child.current?.contains(e.target as HTMLElement))) toggle(false);
         }
@@ -94,9 +102,9 @@ const Root = forwardRef(({ children, position = 'auto', stretch, onClose }: Popo
         window.addEventListener('click', click);
 
         return () => window.removeEventListener('click', click);
-    }, []);
+    }, [isModal]);
 
-    return <PopoverContext.Provider value={{ id, mounted, trigger, content, opened, toggle, children: childrenRef }}>
+    return <PopoverContext.Provider value={{ id, mounted, isModal, trigger, content, opened, toggle, children: childrenRef }}>
         {children}
     </PopoverContext.Provider>;
 });

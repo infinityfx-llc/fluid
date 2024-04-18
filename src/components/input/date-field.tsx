@@ -19,12 +19,14 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled
         disabled?: boolean | Date[];
         clearable?: boolean;
     } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('date-field', {
-        '.calendar': {
-            boxShadow: 'var(--f-shadow-med)',
-            border: 'solid 1px var(--f-clr-fg-200)'
+    const styles = createStyles('date-field', fluid => ({
+        [`@media(min-width: ${fluid.breakpoints.mob + 1}px)`]: {
+            '.calendar': {
+                boxShadow: 'var(--f-shadow-med)',
+                border: 'solid 1px var(--f-clr-fg-200)'
+            }
         }
-    });
+    }));
     const style = combineClasses(styles, cc);
 
     const [state, setState] = isControlled({ value, onChange }) ? [value, onChange] : useState<Date | null>(defaultValue || null);
@@ -42,9 +44,10 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled
         return [nums.slice(0, 4), nums.slice(4, 6), nums.slice(6, 8)].filter(val => val.length).join('-');
     }
 
-    return <Popover.Root position="center">
+    return <Popover.Root position="center" mobileContainer="modal">
         <Popover.Trigger disabled={disabled === true || props.readOnly}>
             <Field ref={ref} {...props}
+                inputMode="none"
                 role="combobox"
                 aria-haspopup="listbox"
                 aria-disabled={props.readOnly || disabled === true || false}
@@ -63,8 +66,13 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled
                     setPartial(null);
                 }}
                 right={clearable && <Button
+                    aria-label="Clear date"
+                    round={props.round}
+                    size={props.size}
+                    disabled={disabled === true || props.readOnly}
                     variant="minimal"
                     style={{
+                        fontSize: '1em',
                         padding: '.6em',
                         marginRight: '.2em'
                     }}
@@ -74,7 +82,7 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled
             />
         </Popover.Trigger>
 
-        <Popover.Content role="listbox" aria-multiselectable={false}>
+        <Popover.Content role="listbox">
             <Animatable id="date-field-calendar" animate={Move.unique({ duration: .2 })} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
                 <Calendar
                     className={style.calendar}

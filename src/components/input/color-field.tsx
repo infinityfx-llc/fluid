@@ -17,15 +17,20 @@ const ColorField = forwardRef(({ cc = {}, value, defaultValue, onChange, disable
         onChange?: (value: string) => void;
         disabled?: boolean;
     } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('color-field', {
+    const styles = createStyles('color-field', fluid => ({
         '.picker': {
-            boxShadow: 'var(--f-shadow-med)',
-            backgroundColor: 'var(--f-clr-fg-100)',
-            border: 'solid 1px var(--f-clr-fg-200)',
             padding: 'var(--f-spacing-sml)',
             borderRadius: 'var(--f-radius-sml)'
+        },
+
+        [`@media(min-width: ${fluid.breakpoints.mob + 1}px)`]: {
+            '.picker': {
+                boxShadow: 'var(--f-shadow-med)',
+                backgroundColor: 'var(--f-clr-fg-100)',
+                border: 'solid 1px var(--f-clr-fg-200)',
+            }
         }
-    });
+    }));
     const style = combineClasses(styles, cc);
 
     const [state, setState] = isControlled({ value, onChange }) ? [value, onChange] : useState(defaultValue);
@@ -37,9 +42,10 @@ const ColorField = forwardRef(({ cc = {}, value, defaultValue, onChange, disable
         setState?.(value);
     }
 
-    return <Popover.Root position="center">
+    return <Popover.Root position="center" mobileContainer="modal">
         <Popover.Trigger disabled={disabled}>
             <Field ref={ref} {...props}
+                inputMode="none"
                 left={<Swatch size={props.size} round={props.round} color={state} style={{ marginLeft: '.25em' }} />}
                 role="combobox"
                 aria-haspopup="listbox"

@@ -5,11 +5,12 @@ import { createStyles } from "../../core/style";
 
 export type SkeletonStyles = FluidStyles<'.skeleton' | '.skeleton__rad__xsm' | '.skeleton__rad__sml' | '.skeleton__rad__med' | '.skeleton__rad__lrg' | '.skeleton__rad__max'>;
 
-const Skeleton = forwardRef(({ cc = {}, w, h, radius = 'sml', ...props }:
+const Skeleton = forwardRef(({ cc = {}, w, h, ar, radius = 'sml', ...props }:
     {
         cc?: Selectors<'skeleton' | 'skeleton__rad__xsm' | 'skeleton__rad__sml' | 'skeleton__rad__med' | 'skeleton__rad__lrg' | 'skeleton__rad__max'>;
-        w?: number;
-        h?: number;
+        w?: number | string;
+        h?: number | string;
+        ar?: number;
         radius?: FluidSize | 'max';
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: any) => {
     const styles = createStyles('skeleton', {
@@ -54,7 +55,7 @@ const Skeleton = forwardRef(({ cc = {}, w, h, radius = 'sml', ...props }:
         style.skeleton,
         style[`skeleton__rad__${radius}`],
         props.className
-    )} style={{ width: w, height: h, ...props.style }} />
+    )} style={{ width: w, height: h, aspectRatio: ar, ...props.style }} />
 });
 
 Skeleton.displayName = 'Skeleton';

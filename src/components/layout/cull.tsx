@@ -5,7 +5,11 @@ import { FluidBreakpoint, Selectors } from '../../../src/types';
 import { cloneElement, forwardRef } from 'react';
 import { createStyles } from '../../core/style';
 
-const Cull = forwardRef(({ children, cc = {}, include, ...props }: { children: React.ReactElement; cc?: Selectors; include: FluidBreakpoint[]; } & React.HTMLAttributes<any>, ref: React.ForwardedRef<any>) => {
+const Cull = forwardRef(({ children, cc = {}, include, ...props }: {
+    children: React.ReactElement;
+    cc?: Selectors;
+    include: FluidBreakpoint[];
+} & Omit<React.HTMLAttributes<any>, 'children'>, ref: React.ForwardedRef<any>) => {
     const styles = createStyles('cull', (fluid) => ({
         [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {
             '.cull__mob': {

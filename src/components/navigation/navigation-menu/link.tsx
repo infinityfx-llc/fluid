@@ -16,9 +16,11 @@ const Link = forwardRef(({ children, cc = {}, Link = 'a', ...props }:
     } & React.AnchorHTMLAttributes<HTMLAnchorElement>, ref: React.ForwardedRef<HTMLAnchorElement>) => {
     const styles = createStyles('navigation-menu.link', {
         '.link': {
+            position: 'relative',
             padding: '.4em',
             borderRadius: 'var(--f-radius-sml)',
             fontWeight: 600,
+            color: 'var(--f-clr-text-100)',
             outline: 'none'
         }
     });
