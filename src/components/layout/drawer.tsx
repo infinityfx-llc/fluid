@@ -90,7 +90,7 @@ const Drawer = forwardRef(({ children, cc = {}, show, onClose, position = 'right
                 <div className={style.header}>
                     <span id={id} className={style.title}>{title}</span>
 
-                    <Button variant="minimal" onClick={onClose}>
+                    <Button compact variant="minimal" onClick={onClose}>
                         <MdClose />
                     </Button>
                 </div>

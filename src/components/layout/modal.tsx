@@ -161,7 +161,7 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, mobileClosi
                 <div className={style.header}>
                     <span id={id} className={styles.title}>{title}</span>
 
-                    {mobileClosing === 'button' || !isMobile && <Button variant="minimal" onClick={onClose}>
+                    {(mobileClosing === 'button' || !isMobile) && <Button compact variant="minimal" onClick={onClose}>
                         <MdClose />
                     </Button>}
                 </div>

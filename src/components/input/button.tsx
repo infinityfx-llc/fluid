@@ -7,11 +7,11 @@ import { createStyles } from "../../core/style";
 
 export type ButtonStyles = FluidStyles<'.button' | '.content' | '.loader' | '.button__round' | '.button__xsm' | '.button__sml' | '.button__med' | '.button__lrg' | '.button__var__default' | '.button__var__neutral' | '.button__var__light' | '.button__var__minimal'>;
 
-const Button = forwardRef(({ children, cc = {}, round = false, slim = false, size = 'med', variant = 'default', loading = false, ...props }:
+const Button = forwardRef(({ children, cc = {}, round = false, compact = false, size = 'med', variant = 'default', loading = false, ...props }:
     {
         cc?: Selectors<'button' | 'content' | 'loader' | 'button__round' | 'button__xsm' | 'button__sml' | 'button__med' | 'button__lrg' | 'button__var__default' | 'button__var__neutral' | 'button__var__light' | 'button__var__minimal'>;
         round?: boolean;
-        slim?: boolean;
+        compact?: boolean;
         size?: FluidSize;
         variant?: 'default' | 'neutral' | 'light' | 'minimal';
         loading?: boolean;
@@ -31,7 +31,7 @@ const Button = forwardRef(({ children, cc = {}, round = false, slim = false, siz
             justifyContent: 'center'
         },
 
-        '.button__slim': {
+        '.button__compact': {
             padding: '.6em'
         },
 
@@ -107,7 +107,7 @@ const Button = forwardRef(({ children, cc = {}, round = false, slim = false, siz
             className={classes(
                 style.button,
                 round && style.button__round,
-                slim && style.button__slim,
+                compact && style.button__compact,
                 style[`button__${size}`],
                 style[`button__var__${variant}`],
                 props.className

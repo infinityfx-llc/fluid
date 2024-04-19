@@ -66,14 +66,13 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled
                     setPartial(null);
                 }}
                 right={clearable && <Button
+                    compact
                     aria-label="Clear date"
                     round={props.round}
                     size={props.size}
                     disabled={disabled === true || props.readOnly}
                     variant="minimal"
                     style={{
-                        fontSize: '1em',
-                        padding: '.6em',
                         marginRight: '.2em'
                     }}
                     onClick={() => setState?.(null)}>

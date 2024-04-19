@@ -13,12 +13,13 @@ export type ToggleStyles = FluidStyles<'.toggle' | '.content' | '.container' | '
 export type ToggleProps = {
     cc?: Selectors<'toggle' | 'content' | 'container' | 'toggle__xsm' | 'toggle__sml' | 'toggle__med' | 'toggle__lrg' | 'toggle__round' | 'toggle__var__default' | 'toggle__var__minimal' | 'toggle__var__neutral'>;
     size?: FluidSize;
+    compact?: boolean;
     round?: boolean;
     variant?: 'default' | 'minimal' | 'neutral';
     checkedContent?: React.ReactNode;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>;
 
-const Toggle = forwardRef(({ children, cc = {}, size = 'med', round = false, variant = 'default', checkedContent, ...props }: ToggleProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Toggle = forwardRef(({ children, cc = {}, size = 'med', compact = false, round = false, variant = 'default', checkedContent, ...props }: ToggleProps, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('toggle', {
         '.input': {
             position: 'absolute',
@@ -41,6 +42,10 @@ const Toggle = forwardRef(({ children, cc = {}, size = 'med', round = false, var
             padding: '.8em',
             borderRadius: 'var(--f-radius-sml)',
             transition: 'background-color .25s, color .25s'
+        },
+
+        '.toggle__compact': {
+            padding: '.6em'
         },
     
         '.toggle__xsm': {
@@ -124,6 +129,7 @@ const Toggle = forwardRef(({ children, cc = {}, size = 'med', round = false, var
             className={classes(
                 style.toggle,
                 round && style.toggle__round,
+                compact && style.toggle__compact,
                 style[`toggle__${size}`],
                 style[`toggle__var__${variant}`],
                 props.className

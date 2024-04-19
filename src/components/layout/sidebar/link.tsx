@@ -111,7 +111,7 @@ const Link = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, 
                 <span className={style.content} style={{ opacity: collapsed ? 0 : 1 }}>
                     {label}
 
-                    {count ? <Toggle variant="minimal" size="sml" round={round} checked={open} checkedContent={<MdExpandLess />} onChange={e => {
+                    {count ? <Toggle compact variant="minimal" size="sml" round={round} checked={open} checkedContent={<MdExpandLess />} onChange={e => {
                         e.stopPropagation();
 
                         setOpen(e.target.checked);
