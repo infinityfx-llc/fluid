@@ -64,6 +64,7 @@ const PasswordField = forwardRef(({ cc = {}, strengthBar = false, size = 'med', 
             value={value}
             onEnter={onEnter}
             cc={{
+                ...cc,
                 wrapper: style.wrapper
             }}
             onChange={e => {

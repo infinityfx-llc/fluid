@@ -1,7 +1,7 @@
 'use client';
 
 import { forwardRef, useEffect, useId, useRef } from "react";
-import { Halo } from "../../feedback";
+import Halo from "../../feedback/halo";
 import Collapsible from "../collapsible";
 import { Animatable } from "@infinityfx/lively";
 import { MdArrowDownward, MdArrowUpward } from "react-icons/md";

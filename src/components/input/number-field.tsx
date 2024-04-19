@@ -61,12 +61,13 @@ const NumberField = forwardRef(({ cc = {}, precision = 3, controls = true, defau
             props.onChange?.(e);
         }}
         cc={{
+            ...cc,
             input: style.input
         }}
-        left={controls ? <Button aria-label="Decrement" variant="minimal" size={props.size} disabled={props.disabled} cc={{ button: style.button }} onClick={() => increment(-step)}>
+        left={controls ? <Button compact aria-label="Decrement" variant="minimal" size={props.size} disabled={props.disabled} cc={{ button: style.button }} onClick={() => increment(-step)}>
             <MdRemove />
         </Button> : null}
-        right={controls ? <Button aria-label="Increment" variant="minimal" size={props.size} disabled={props.disabled} cc={{ button: style.button }} onClick={() => increment(step)}>
+        right={controls ? <Button compact aria-label="Increment" variant="minimal" size={props.size} disabled={props.disabled} cc={{ button: style.button }} onClick={() => increment(step)}>
             <MdAdd />
         </Button> : null} />;
 });

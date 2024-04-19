@@ -3,7 +3,7 @@
 import { useEffect, forwardRef, useRef, useState } from 'react';
 import Field, { FieldProps } from "./field";
 import { FluidInputvalue, PopoverRootReference } from '../../../src/types';
-import { Combobox } from '../display';
+import Combobox from '../display/combobox';
 import { changeInputValue } from '../../core/utils';
 
 const Autocomplete = forwardRef(({ cc = {}, completions, emptyMessage, value, defaultValue, onChange, ...props }: {

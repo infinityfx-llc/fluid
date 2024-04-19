@@ -1,12 +1,12 @@
 'use client';
 
-import { FluidSize, FluidStyles, PopoverRootReference, Selectors } from "../../../src/types";
-import { forwardRef, useRef, useState } from "react";
+import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
+import { forwardRef, useState } from "react";
 import Button from "./button";
-import { MdArrowBack, MdArrowForward, MdExpandMore } from "react-icons/md";
+import { MdArrowBack, MdArrowForward } from "react-icons/md";
 import { classes, combineClasses, isControlled } from "../../../src/core/utils";
-import { Combobox } from "../display";
 import { createStyles } from "../../core/style";
+import NumberField from "./number-field";
 
 // add arrow key support for focus
 
@@ -52,31 +52,18 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
 
         '.header': {
             display: 'flex',
-            justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: '.6em'
+            marginBottom: '.6em',
+            gap: '.6em'
         },
 
-        '.header .button': {
-            fontSize: '1em !important'
+        '.year': {
+            minWidth: 'auto !important',
+            flexGrow: 1
         },
 
-        '.text': {
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--f-spacing-xsm)',
-            color: 'var(--f-clr-text-100)',
-            fontWeight: 700,
-            fontSize: '.85em'
-        },
-
-        '.years': {
-            backgroundColor: 'var(--f-clr-bg-100)',
-            border: 'solid 1px var(--f-clr-grey-100)',
-            borderRadius: 'var(--f-radius-sml)',
-            boxShadow: 'var(--f-shadow-med)',
-            height: '100px',
-            width: '200px'
+        '.year .field': {
+            padding: 'calc(.5em - 1px) !important'
         },
 
         '.grid': {
@@ -118,19 +105,18 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
     });
     const style = combineClasses(styles, cc);
 
-    const yearPopover = useRef<PopoverRootReference>(null);
+    const [partialYear, setPartialYear] = useState<null | string>(null);
     const [dateState, setDate] = isControlled({ value, onChange }) ? [value, onChange] : useState(defaultValue);
     const date = dateState || new Date();
 
     const first = new Date(date.getFullYear(), date.getMonth(), 1);
     const monday = new Date(first), day = first.getDay();
     monday.setDate(first.getDate() - (day || 7) + 1);
-    const year = date.getFullYear();
 
     function isEqual(a: Date, b: Date) {
         return a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
     }
-    
+
     try {
         new Intl.Locale(locale as any);
     } catch (ex) {
@@ -144,7 +130,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
         props.className
     )}>
         <div className={style.header}>
-            <Button className={style.button} disabled={disabled === true} variant="minimal" round={round} onClick={() => {
+            <Button compact size={size} disabled={disabled === true} variant="minimal" round={round} onClick={() => {
                 const updated = new Date(date);
                 updated.setMonth(date.getMonth() - 1);
                 setDate?.(updated);
@@ -152,33 +138,28 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
                 <MdArrowBack />
             </Button>
 
-            <div className={style.text}>
-                {date.toLocaleString(locale, { month: 'long' })}
+            <NumberField
+                size={size}
+                round={round}
+                precision={0}
+                controls={false}
+                cc={{
+                    wrapper: style.year,
+                    content: style.field
+                }}
+                disabled={disabled === true}
+                icon={date.toLocaleString(locale, { month: 'long' })} 
+                value={partialYear !== null ? partialYear : date.toLocaleString(locale, { year: 'numeric' })}
+                onChange={e => {
+                    setPartialYear(e.target.value);
+                    const updated = new Date(date);
+                    updated.setFullYear(parseInt(e.target.value));
 
-                <Combobox.Root position="center" ref={yearPopover}>
-                    <Combobox.Trigger disabled={disabled === true}>
-                        <Button className={style.button} variant="minimal" round={round} disabled={disabled === true}>
-                            {date.toLocaleString(locale, { year: 'numeric' })}
+                    if (!isNaN(updated.getTime()) && setDate) setDate(updated);
+                }}
+                onBlur={() => setPartialYear(null)} />
 
-                            <MdExpandMore />
-                        </Button>
-                    </Combobox.Trigger>
-
-                    <Combobox.Content>
-                        {new Array(21).fill(0).map((_, i) => {
-                            return <Combobox.Option key={i} value={year + 10 - i} onSelect={value => {
-                                const updated = new Date(date);
-                                updated.setFullYear(value as number);
-
-                                setDate?.(updated);
-                                yearPopover.current?.close();
-                            }}>{year + 10 - i}</Combobox.Option>;
-                        })}
-                    </Combobox.Content>
-                </Combobox.Root>
-            </div>
-
-            <Button className={style.button} disabled={disabled === true} variant="minimal" round={round} onClick={() => {
+            <Button compact size={size} disabled={disabled === true} variant="minimal" round={round} onClick={() => {
                 const updated = new Date(date);
                 updated.setMonth(date.getMonth() + 1);
                 setDate?.(updated);

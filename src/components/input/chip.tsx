@@ -6,7 +6,7 @@ import { FluidSize, FluidStyles, Selectors } from '../../../src/types';
 import { Animatable } from '@infinityfx/lively';
 import { useLink } from '@infinityfx/lively/hooks';
 import { forwardRef, useEffect, useState } from 'react';
-import { Halo } from '../feedback';
+import Halo from '../feedback/halo';
 import { createStyles } from '../../core/style';
 
 const Chip = forwardRef(({ children, cc = {}, round = false, size = 'med', variant = 'default', checked, defaultChecked, ...props }:

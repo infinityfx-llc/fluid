@@ -9,7 +9,8 @@ import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { Animatable } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
 import { createStyles } from '../../core/style';
-import { useFluid, useMediaQuery } from '../../hooks';
+import useFluid from '../../hooks/use-fluid';
+import useMediaQuery from '../../hooks/use-media-query';
 import { useLink } from '@infinityfx/lively/hooks';
 
 export type ModalStyles = FluidStyles<'.modal' | '.header'>;

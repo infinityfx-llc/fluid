@@ -4,7 +4,7 @@ import { forwardRef } from 'react';
 import { FluidStyles, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses } from '../../../core/utils';
-import { Halo } from '../../feedback';
+import Halo from '../../feedback/halo';
 import { useNavigationMenu } from './root';
 
 type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a';

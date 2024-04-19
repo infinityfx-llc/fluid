@@ -5,7 +5,7 @@ import { FluidStyles, Selectors } from '../../../../src/types';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import { createStyles } from '../../../core/style';
 import { useSidebar } from './root';
-import { Toggle } from '../../input';
+import Toggle from '../../input/toggle';
 import { MdArrowBack, MdArrowForward } from 'react-icons/md';
 
 const Header = forwardRef(({ children, cc = {}, toggle = true, ...props }:

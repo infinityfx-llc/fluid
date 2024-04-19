@@ -1,7 +1,8 @@
 'use client';
 
 import { createContext, useContext, useEffect, useId, useRef, useState, forwardRef, useImperativeHandle, useCallback } from "react";
-import { useFluid, useMediaQuery } from "../../../hooks";
+import useFluid from "../../../hooks/use-fluid";
+import useMediaQuery from "../../../hooks/use-media-query";
 
 type PopoverContext = {
     id: string;

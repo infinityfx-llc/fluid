@@ -8,7 +8,7 @@ import Popover from '../layout/popover';
 import { createStyles } from '../../core/style';
 import { combineClasses, isControlled } from '../../core/utils';
 import ColorPicker, { parsePartialHex } from './color-picker';
-import { Swatch } from '../display';
+import Swatch from '../display/swatch';
 
 const ColorField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled, ...props }:
     {
@@ -45,6 +45,7 @@ const ColorField = forwardRef(({ cc = {}, value, defaultValue, onChange, disable
     return <Popover.Root position="center" mobileContainer="modal">
         <Popover.Trigger disabled={disabled}>
             <Field ref={ref} {...props}
+                cc={cc}
                 inputMode="none"
                 left={<Swatch size={props.size} round={props.round} color={state} style={{ marginLeft: '.25em' }} />}
                 role="combobox"

@@ -47,6 +47,7 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled
     return <Popover.Root position="center" mobileContainer="modal">
         <Popover.Trigger disabled={disabled === true || props.readOnly}>
             <Field ref={ref} {...props}
+                cc={cc}
                 inputMode="none"
                 role="combobox"
                 aria-haspopup="listbox"
