@@ -5,7 +5,10 @@ import { LayoutGroup } from "@infinityfx/lively/layout";
 import { forwardRef } from "react";
 import { createStyles } from "../../core/style";
 
-const Collapsible = forwardRef(({ children, cc = {}, shown, ...props }: { cc?: Selectors<'content'>; shown: boolean; } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const Collapsible = forwardRef(({ children, cc = {}, shown, ...props }: {
+    cc?: Selectors<'content'>; 
+    shown: boolean;
+} & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('collapsible', {
         '.content': {
             overflow: 'hidden'

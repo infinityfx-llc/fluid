@@ -6,11 +6,11 @@ import { FluidError, FluidInputvalue, FluidSize, FluidStyles, Selectors } from "
 import { forwardRef, useId, useRef, useState } from "react";
 import { createStyles } from "../../core/style";
 
-const Pincode = forwardRef(({ cc = {}, length = 4, masked, size = 'med', round = false, label, value, error, onChange, defaultvalue, autoFocus, ...props }:
+const Pincode = forwardRef(({ cc = {}, format = [1, 1, 1, 1], masked, size = 'med', round = false, label, value, error, onChange, defaultvalue, autoFocus, ...props }:
     {
         defaultvalue?: FluidInputvalue;
         cc?: Selectors<'wrapper' | 'label' | 'pincode' | 'field' | 'input' | 'wrapper__xsm' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg' | 'wrapper__round'>;
-        length?: number;
+        format?: number[];
         masked?: boolean;
         size?: FluidSize;
         round?: boolean;
@@ -37,6 +37,10 @@ const Pincode = forwardRef(({ cc = {}, length = 4, masked, size = 'med', round =
             gap: 'var(--f-spacing-xsm)'
         },
 
+        '.group': {
+            display: 'flex'
+        },
+
         '.field': {
             outline: 'solid 3px transparent',
             backgroundColor: 'var(--f-clr-fg-100)',
@@ -48,9 +52,21 @@ const Pincode = forwardRef(({ cc = {}, length = 4, masked, size = 'med', round =
             flexGrow: 1
         },
 
+        '.group .field + .field': {
+            borderLeft: 'none',
+            borderTopLeftRadius: 0,
+            borderBottomLeftRadius: 0
+        },
+
+        '.group .field:not(:last-child)': {
+            borderTopRightRadius: 0,
+            borderBottomRightRadius: 0
+        },
+
         '.field:focus-within': {
             borderColor: 'var(--f-clr-primary-100)',
-            outlineColor: 'var(--f-clr-primary-500)'
+            outlineColor: 'var(--f-clr-primary-500)',
+            zIndex: 1
         },
 
         '.input': {
@@ -114,6 +130,8 @@ const Pincode = forwardRef(({ cc = {}, length = 4, masked, size = 'med', round =
 
     const id = useId();
     const refs = useRef<(HTMLInputElement | null)[]>([]);
+
+    const length = format.reduce((len, val) => len + val, 0);
     const [state, setState] = value !== undefined ? [value] : useState(defaultvalue?.toString().slice(0, length) || '');
 
     function handleKey(e: React.KeyboardEvent<HTMLInputElement>, index: number) {
@@ -166,18 +184,26 @@ const Pincode = forwardRef(({ cc = {}, length = 4, masked, size = 'med', round =
         {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
 
         <div className={style.pincode} data-error={!!error} data-disabled={props.disabled}>
-            {new Array(length).fill(0).map((_, i) => {
-                return <div key={i} className={style.field}>
-                    <input ref={el => refs.current[i] = el}
-                        autoFocus={i === 0 && autoFocus}
-                        disabled={props.disabled}
-                        className={style.input}
-                        aria-invalid={!!error}
-                        inputMode="numeric"
-                        type={masked ? 'password' : 'text'}
-                        value={state.charAt(i)}
-                        onChange={handleChange}
-                        onKeyDown={e => handleKey(e, i)} />
+            {format.map((count, i) => {
+                const min = format.slice(0, i).reduce((len, val) => len + val, 0);
+
+                return <div key={i} className={style.group}>
+                    {new Array(count).fill(0).map((_, i) => {
+                        i += min;
+
+                        return <div key={i} className={style.field}>
+                            <input ref={el => refs.current[i] = el}
+                                autoFocus={i === 0 && autoFocus}
+                                disabled={props.disabled}
+                                className={style.input}
+                                aria-invalid={!!error}
+                                inputMode="numeric"
+                                type={masked ? 'password' : 'text'}
+                                value={state.charAt(i)}
+                                onChange={handleChange}
+                                onKeyDown={e => handleKey(e, i)} />
+                        </div>;
+                    })}
                 </div>;
             })}
         </div>

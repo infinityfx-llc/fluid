@@ -25,28 +25,22 @@ const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onColla
         size?: string;
         collapsed: boolean;
         onCollapse: (value: boolean) => void;
-    } & React.HTMLAttributes<any>, ref: React.ForwardedRef<HTMLElement>) => {
+    } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
 
-    const styles = createStyles('sidebar.root', (fluid) => ({
+    const styles = createStyles('sidebar.root', fluid => ({
         '.sidebar': {
             position: 'fixed',
-            top: 0,
-            left: 0,
-            height: '100dvh',
+            inset: 'var(--f-spacing-med)',
+            right: 'auto',
             zIndex: 500,
-            backgroundColor: 'var(--f-clr-bg-100)',
-            borderTopRightRadius: 'var(--f-radius-lrg)',
-            borderBottomRightRadius: 'var(--f-radius-lrg)',
-            boxShadow: 'var(--f-shadow-med)',
-            borderRight: 'solid 1px var(--f-clr-fg-200)',
+            backgroundColor: 'var(--f-clr-fg-100)',
+            boxShadow: 'var(--f-shadow-sml)',
+            border: 'solid 1px var(--f-clr-fg-200)',
+            borderRadius: 'var(--f-radius-lrg)',
             display: 'flex',
             flexDirection: 'column',
             paddingBottom: '1em',
             transition: 'width .3s, translate .3s, opacity .3s'
-        },
-
-        '.button': {
-            marginLeft: 'auto'
         },
 
         '.content': {
@@ -58,19 +52,20 @@ const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onColla
             overflow: 'hidden'
         },
 
-        [`@media (min-width: ${fluid.breakpoints.tab + 1}px)`]: {
+        [`@media (min-width: ${fluid.breakpoints.mob + 1}px)`]: {
             '.sidebar[data-collapsed="true"]': {
                 width: 'calc(3rem + 2em) !important'
             }
         },
 
-        [`@media (max-width: ${fluid.breakpoints.tab}px)`]: {
+        [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {
             '.sidebar[data-collapsed="true"]': {
-                translate: '-100% 0%'
+                translate: 'calc(-100% - 1em) 0%'
             }
-        },
+        }
     }));
     const style = combineClasses(styles, cc);
+
     const header = Children.toArray(children).find(child => isValidElement(child) && child.type === Header);
 
     return <SidebarContext.Provider value={{ collapsed, onCollapse }}>

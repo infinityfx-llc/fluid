@@ -69,14 +69,17 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
     const anchor = useRef<HTMLDivElement | null>(null);
     const tooltip = useRef<HTMLDivElement | null>(null);
     const element = useRef<HTMLElement | null>(null);
+
+    const touchOnly = useRef(false);
     const [visible, setVisible] = useState(false);
     const [computed, setComputed] = useState<string>(position);
 
     const displayPosition = position === 'auto' ? computed : position;
     const timeout = useRef<any>();
-    
-    function show(value: boolean, delay = 0) {
+
+    function show(value: boolean | null, delay = 0) {
         clearTimeout(timeout.current);
+        if (value === null) return;
 
         if (position === 'auto' && element.current) {
             let { left, top, right, bottom } = element.current.getBoundingClientRect();
@@ -134,19 +137,34 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
             ref: combineRefs(element, (children as any).ref),
             onMouseEnter: (e: React.MouseEvent) => {
                 children.props.onMouseEnter?.(e);
-                show(true, delay);
+                if (!touchOnly.current) show(true, delay);
             },
             onMouseLeave: (e: React.MouseEvent) => {
                 children.props.onMouseLeave?.(e);
                 show(false);
+
+                touchOnly.current = false;
             },
             onFocus: (e: React.FocusEvent) => {
                 children.props.onFocus?.(e);
-                show(true, delay);
+                if (!touchOnly.current) show(true, delay);
             },
             onBlur: (e: React.FocusEvent) => {
                 children.props.onBlur?.(e);
                 show(false);
+
+                touchOnly.current = false;
+            },
+            onTouchStart: (e: React.TouchEvent) => {
+                children.props.onTouchStart?.(e);
+                touchOnly.current = true;
+
+                show(true, delay + 0.25);
+            },
+            onTouchEnd: (e: React.TouchEvent) => {
+                children.props.onTouchEnd?.(e);
+
+                show(null);
             }
         })}
 

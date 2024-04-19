@@ -7,30 +7,30 @@ import { createStyles } from "../../core/style";
 
 export type ToastStyles = FluidStyles<'.toast' | '.icon' | '.background' | '.content' | '.text'>;
 
-const Toast = forwardRef(({ cc = {}, icon, color, title, text, round, onClose, ...props }:
+const Toast = forwardRef(({ children, cc = {}, icon, color, title, round, closeable = true, onClose, ...props }:
     {
         cc?: Selectors<'toast' | 'icon' | 'background' | 'content' | 'text'>;
         icon: React.ReactNode;
         color: string;
         title: string;
-        text?: string;
+        closeable?: boolean;
         round?: boolean;
         onClose?: () => void;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const styles = createStyles('toast', {
         '.toast': {
             padding: '.4em',
             backgroundColor: 'var(--f-clr-fg-100)',
-            borderRadius: 'var(--f-radius-sml)',
+            borderRadius: 'var(--f-radius-med)',
             border: 'solid 1px var(--f-clr-fg-200)',
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             gap: 'var(--f-spacing-med)',
             minWidth: 'clamp(0px, 16rem, 100%)'
         },
 
         '.toast__round': {
-            borderRadius: '999px'
+            borderRadius: 'calc(1.4em + 1px)'
         },
 
         '.icon': {
@@ -38,12 +38,9 @@ const Toast = forwardRef(({ cc = {}, icon, color, title, text, round, onClose, .
             padding: '.4em',
             display: 'flex',
             fontSize: '1.2em',
+            lineHeight: 1,
             color: 'white',
             zIndex: 1
-        },
-
-        '.toast[data-hastext="true"] .icon': {
-            marginLeft: '.3em'
         },
 
         '.background': {
@@ -62,28 +59,15 @@ const Toast = forwardRef(({ cc = {}, icon, color, title, text, round, onClose, .
             display: 'flex',
             flexDirection: 'column',
             gap: 'var(--f-spacing-xxs)',
-            overflow: 'hidden'
+            color: 'var(--f-clr-grey-700)',
+            alignSelf: 'center',
+            flexGrow: 1
         },
 
         '.title': {
             fontWeight: 700,
             fontSize: '.9em',
             color: 'var(--f-clr-text-100)'
-        },
-
-        '.text': {
-            color: 'var(--f-clr-grey-700)',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            overflow: 'hidden'
-        },
-
-        '.button': {
-            marginLeft: 'auto'
-        },
-
-        '.toast[data-hastext="true"] .button': {
-            marginRight: '.3em'
         }
     });
     const style = combineClasses(styles, cc);
@@ -93,8 +77,7 @@ const Toast = forwardRef(({ cc = {}, icon, color, title, text, round, onClose, .
             style.toast,
             round && style.toast__round,
             props.className
-        )}
-        data-hastext={!!text}>
+        )}>
         <div className={style.icon}>
             <div className={style.background} style={{ backgroundColor: color }} />
 
@@ -104,12 +87,12 @@ const Toast = forwardRef(({ cc = {}, icon, color, title, text, round, onClose, .
         <div className={style.content}>
             <div className={style.title}>{title}</div>
 
-            {text && <div className={style.text}>{text}</div>}
+            {children}
         </div>
 
-        <Button variant="minimal" className={style.button} round={round} onClick={onClose}>
+        {closeable && <Button compact variant="minimal" round={round} onClick={onClose}>
             <MdClose />
-        </Button>
+        </Button>}
     </div>;
 });
 

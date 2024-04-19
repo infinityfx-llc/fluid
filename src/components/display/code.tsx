@@ -94,7 +94,10 @@ const Code = forwardRef(({ children, cc = {}, title, dangerouslyInject, ...props
         </code>
 
         <div className={style.button__align}>
-            <Toggle checkedContent={<MdCheck />} checked={copied}
+            <Toggle
+                compact
+                checkedContent={<MdCheck />}
+                checked={copied}
                 cc={{
                     toggle: style.toggle
                 }}

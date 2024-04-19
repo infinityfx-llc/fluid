@@ -3,10 +3,10 @@
 import { FluidStyles, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { LayoutGroup } from "@infinityfx/lively/layout";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
-import { combineClasses } from "../../core/utils";
+import { classes, combineClasses } from "../../core/utils";
 import useFocusTrap from "../../hooks/use-focus-trap";
 
 const setBodyOverflow = (value: string) => {
@@ -21,8 +21,7 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
         '.wrapper': {
             position: 'fixed',
             top: 0,
-            left: 0,
-            zIndex: 999
+            left: 0
         },
 
         '.overlay': {
@@ -42,14 +41,19 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
     });
     const style = combineClasses(styles, cc);
 
+    const index = useRef(0);
     const trap = useFocusTrap<HTMLDivElement>(show);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         if (mounted && show) {
             setBodyOverflow('hidden');
+
+            index.current = document.getElementsByClassName('__fluid__overlay').length;
+            
+            if (trap.current) trap.current.style.zIndex = (index.current + 999).toString();
         } else
-            if (!show) setBodyOverflow('');
+            if (!show && !index.current) setBodyOverflow('');
         setMounted(true);
 
         function keypress(e: KeyboardEvent) {
@@ -60,13 +64,13 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
 
         return () => {
             window.removeEventListener('keydown', keypress);
-            setBodyOverflow('');
+            if (!index.current) setBodyOverflow('');
         }
     }, [show]);
 
     return mounted ? createPortal(<LayoutGroup>
         <div ref={trap} className={style.wrapper}>
-            {show && <div className={style.overlay}>
+            {show && <div className={classes(style.overlay, '__fluid__overlay')}>
                 <Animatable id="overlay" animate={{ opacity: [0, 1], duration: .25 }} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
                     <div className={style.tint} onClick={onClose} />
                 </Animatable>

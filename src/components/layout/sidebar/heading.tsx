@@ -10,7 +10,7 @@ const Heading = forwardRef(({ children, cc = {}, ...props }:
     {
         cc?: Selectors<'heading'>;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('sidebar.heading', {
+    const styles = createStyles('sidebar.heading', fluid => ({
         '.heading': {
             color: 'var(--f-clr-text-100)',
             fontSize: 'var(--f-font-size-xsm)',
@@ -19,12 +19,26 @@ const Heading = forwardRef(({ children, cc = {}, ...props }:
             transition: 'opacity .3s',
             padding: '0 1em',
             marginTop: 'var(--f-spacing-lrg)'
+        },
+
+        [`@media (min-width: ${fluid.breakpoints.mob + 1}px)`]: {
+            '.heading.collapsed': {
+                opacity: 0
+            }
         }
-    });
+    }));
     const style = combineClasses(styles, cc);
+    
     const { collapsed } = useSidebar();
 
-    return <div ref={ref} {...props} className={classes(style.heading, props.className)} style={{ ...props.style, opacity: collapsed ? 0 : 1 }}>{children}</div>;
+    return <div ref={ref} {...props}
+        className={classes(
+            style.heading,
+            collapsed && style.collapsed,
+            props.className
+        )}>
+        {children}
+    </div>;
 });
 
 Heading.displayName = 'Sidebar.Heading';

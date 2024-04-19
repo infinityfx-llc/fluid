@@ -16,30 +16,22 @@ const Combine = forwardRef(({ children, cc = {}, direction = 'horizontal', ...pr
             flexDirection: 'column'
         },
 
-        '.combine > *:not(:first-child, :last-child) .nested': {
-            borderRadius: '0 !important'
-        },
-
-        '.combine .direct:not(:first-child, :last-child)': {
-            borderRadius: '0 !important'
-        },
-
-        '.combine__dir__horizontal .direct:first-child, .combine__dir__horizontal > *:first-child .nested': {
+        '.combine__dir__horizontal .direct:not(:last-child), .combine__dir__horizontal > *:not(:last-child) .nested': {
             borderTopRightRadius: '0 !important',
             borderBottomRightRadius: '0 !important'
         },
 
-        '.combine__dir__horizontal .direct:last-child, .combine__dir__horizontal > *:last-child .nested': {
+        '.combine__dir__horizontal .direct:not(:first-child), .combine__dir__horizontal > *:not(:first-child) .nested': {
             borderTopLeftRadius: '0 !important',
             borderBottomLeftRadius: '0 !important'
         },
 
-        '.combine__dir__vertical .direct:first-child, .combine__dir__vertical > *:first-child .nested': {
+        '.combine__dir__vertical .direct:not(:last-child), .combine__dir__vertical > *:not(:last-child) .nested': {
             borderBottomLeftRadius: '0 !important',
             borderBottomRightRadius: '0 !important'
         },
 
-        '.combine__dir__vertical .direct:last-child, .combine__dir__vertical > *:last-child .nested': {
+        '.combine__dir__vertical .direct:not(:first-child), .combine__dir__vertical > *:not(:first-child) .nested': {
             borderTopLeftRadius: '0 !important',
             borderTopRightRadius: '0 !important'
         },

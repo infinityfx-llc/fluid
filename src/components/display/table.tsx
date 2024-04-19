@@ -198,7 +198,7 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
 
                         {rowActions ? <div className={style.collapsed}>
                             <ActionMenu options={rowActions(rows[i], i)}>
-                                <Button variant="minimal" style={{ marginLeft: 'auto' }}>
+                                <Button compact variant="minimal" style={{ marginLeft: 'auto' }}>
                                     <MdMoreVert />
                                 </Button>
                             </ActionMenu>

@@ -9,6 +9,8 @@ import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import Collapsible from '../collapsible';
 import { createStyles } from '../../../core/style';
 import { useSidebar } from './root';
+import useFluid from '../../../hooks/use-fluid';
+import useMediaQuery from '../../../hooks/use-media-query';
 
 const Link = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, active = false, round = false, variant = 'default', disabled = false, ...props }:
     {
@@ -21,7 +23,7 @@ const Link = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, 
         variant?: 'default' | 'light',
         round?: boolean;
     } & React.ButtonHTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('sidebar.link', {
+    const styles = createStyles('sidebar.link', fluid => ({
         '.link': {
             position: 'relative',
             outline: 'none',
@@ -85,30 +87,49 @@ const Link = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, 
             display: 'flex',
             flexDirection: 'column',
             gap: 'var(--f-spacing-xsm)',
+            paddingLeft: '1.5em',
             transition: 'padding-left .3s, opacity .35s !important'
         },
 
         '.sublinks > *': {
             flexShrink: 0
+        },
+
+        [`@media (min-width: ${fluid.breakpoints.mob + 1}px)`]: {
+            '.link[data-collapsed="true"] .content': {
+                opacity: 0
+            },
+
+            '.sublinks[data-collapsed="true"]': {
+                paddingLeft: '0em'
+            }
         }
-    });
+    }));
     const style = combineClasses(styles, cc);
 
     const [open, setOpen] = useState(false);
     const count = Children.count(children);
     const { collapsed } = useSidebar();
 
+    const fluid = useFluid();
+    const isMobile = useMediaQuery(`(max-width: ${fluid.breakpoints.mob}px)`);
+
     return <>
         <Halo color="var(--f-clr-primary-200)" disabled={disabled}>
-            <div ref={ref} {...props} tabIndex={0} className={classes(
-                style.link,
-                style[`link__${size}`],
-                round && style.link__round,
-                props.className
-            )} data-disabled={disabled} data-variant={variant} data-active={active}>
+            <div ref={ref} {...props} tabIndex={0}
+                className={classes(
+                    style.link,
+                    style[`link__${size}`],
+                    round && style.link__round,
+                    props.className
+                )}
+                data-disabled={disabled}
+                data-variant={variant}
+                data-active={active}
+                data-collapsed={collapsed}>
                 {icon}
 
-                <span className={style.content} style={{ opacity: collapsed ? 0 : 1 }}>
+                <span className={style.content}>
                     {label}
 
                     {count ? <Toggle compact variant="minimal" size="sml" round={round} checked={open} checkedContent={<MdExpandLess />} onChange={e => {
@@ -122,7 +143,7 @@ const Link = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, 
             </div>
         </Halo>
 
-        {count ? <Collapsible shown={open && !collapsed} className={style.sublinks} style={{ paddingLeft: collapsed ? undefined : '1.5em' }}>
+        {count ? <Collapsible shown={open && (isMobile || !collapsed)} className={style.sublinks} data-collapsed={collapsed}>
             {children}
         </Collapsible> : null}
     </>;
