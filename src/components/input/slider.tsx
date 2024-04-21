@@ -64,7 +64,8 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
             height: '.4em',
             borderRadius: '999px',
             backgroundColor: 'var(--f-clr-fg-200)',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            touchAction: 'none'
         },
 
         '.wrapper[data-vertical="true"] .track': {
@@ -86,7 +87,8 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
             width: '1.1em',
             height: '1.1em',
             outline: 'none',
-            borderRadius: '99px'
+            borderRadius: '99px',
+            touchAction: 'none'
         },
 
         '.wrapper[data-vertical="true"] .handle': {
@@ -218,12 +220,10 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
             <div ref={track} className={style.track}
                 onTouchEnd={() => dragging.current = null}
                 onMouseDown={e => {
-                    e.stopPropagation();
                     dragging.current = -1;
                     change(e.nativeEvent);
                 }}
                 onTouchStart={e => {
-                    e.stopPropagation();
                     dragging.current = -1;
                     change(e.nativeEvent);
                 }}>
@@ -239,14 +239,8 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
                 return <Tooltip key={i} delay={0} content={formatTooltip ? formatTooltip(round(val, 2)) : round(val, 2)} visibility={tooltips} position={vertical ? 'right' : 'bottom'}>
                     <Halo disabled={props.disabled} cc={{ halo: style.halo }}>
                         <div className={style.handle} role="slider" tabIndex={props.disabled ? -1 : 0} aria-disabled={!!props.disabled}
-                            onMouseDown={e => {
-                                e.stopPropagation();
-                                dragging.current = i;
-                            }}
-                            onTouchStart={e => {
-                                e.stopPropagation();
-                                dragging.current = i;
-                            }}
+                            onMouseDown={() => dragging.current = i}
+                            onTouchStart={() => dragging.current = i}
                             onTouchEnd={() => dragging.current = null}
                             onKeyDown={e => {
                                 switch (e.key) {

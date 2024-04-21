@@ -77,7 +77,7 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
     const displayPosition = position === 'auto' ? computed : position;
     const timeout = useRef<any>();
 
-    function show(value: boolean | null, delay = 0) {
+    function toggle(value: boolean | null, delay = 0) {
         clearTimeout(timeout.current);
         if (value === null) return;
 
@@ -102,16 +102,12 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
     function update() {
         if (anchor.current && tooltip.current) {
             const { x, y } = anchor.current.getBoundingClientRect();
-            let offset = '-50%, -100%';
-
-            switch (displayPosition) {
-                case 'left': offset = '-100%, -50%';
-                    break;
-                case 'right': offset = '0%, -50%';
-                    break;
-                case 'bottom': offset = '-50%, 0%';
-                    break;
-            }
+            const offset = {
+                top: '-50%, 100%',
+                left: '-100%, -50%',
+                right: '0%, -50%',
+                bottom: '-50%, 0%'
+            }[displayPosition];
 
             tooltip.current.style.transform = `translate(${x}px, ${y}px) translate(${offset})`;
         }
@@ -120,13 +116,47 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
     }
 
     useEffect(() => {
+        const el = element.current;
+        if (!el) return;
+
         cancelAnimationFrame(frame);
         frame = requestAnimationFrame(update);
 
-        return () => cancelAnimationFrame(frame);
-    }, [displayPosition]);
+        const hide = () => {
+            toggle(false);
+            touchOnly.current = false;
+        }
+        const show = () => !touchOnly.current && toggle(true, delay);
+        const lift = () => toggle(null);
+        const touch = (e: TouchEvent) => {
+            if (e.target === el || el.contains(e.target as HTMLElement)) { // Needs more testing
+                touchOnly.current = true;
+                toggle(true, delay + 0.25);
+            } else {
+                toggle(false);
+            }
+        }
 
-    useEffect(() => show(visibility === 'always'), [visibility]);
+        window.addEventListener('touchstart', touch);
+        el.addEventListener('mouseenter', show);
+        el.addEventListener('focus', show);
+        el.addEventListener('mouseleave', hide);
+        el.addEventListener('blur', hide);
+        el.addEventListener('touchend', lift);
+
+        return () => {
+            cancelAnimationFrame(frame);
+
+            window.removeEventListener('touchstart', touch);
+            el.removeEventListener('mouseenter', show);
+            el.removeEventListener('focus', show);
+            el.removeEventListener('mouseleave', hide);
+            el.removeEventListener('blur', hide);
+            el.removeEventListener('touchend', lift);
+        }
+    }, [displayPosition, delay]);
+
+    useEffect(() => toggle(visibility === 'always'), [visibility]);
 
     children = Array.isArray(children) ? children[0] : children;
     if (!isValidElement(children)) return children;
@@ -134,38 +164,7 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
     return <>
         {cloneElement(children as React.ReactElement, {
             'aria-describedby': id,
-            ref: combineRefs(element, (children as any).ref),
-            onMouseEnter: (e: React.MouseEvent) => {
-                children.props.onMouseEnter?.(e);
-                if (!touchOnly.current) show(true, delay);
-            },
-            onMouseLeave: (e: React.MouseEvent) => {
-                children.props.onMouseLeave?.(e);
-                show(false);
-
-                touchOnly.current = false;
-            },
-            onFocus: (e: React.FocusEvent) => {
-                children.props.onFocus?.(e);
-                if (!touchOnly.current) show(true, delay);
-            },
-            onBlur: (e: React.FocusEvent) => {
-                children.props.onBlur?.(e);
-                show(false);
-
-                touchOnly.current = false;
-            },
-            onTouchStart: (e: React.TouchEvent) => {
-                children.props.onTouchStart?.(e);
-                touchOnly.current = true;
-
-                show(true, delay + 0.25);
-            },
-            onTouchEnd: (e: React.TouchEvent) => {
-                children.props.onTouchEnd?.(e);
-
-                show(null);
-            }
+            ref: combineRefs(element, (children as any).ref)
         })}
 
         {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={displayPosition} />, element.current)}

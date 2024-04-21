@@ -4,7 +4,7 @@ import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import { FluidStyles, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink, useTrigger } from "@infinityfx/lively/hooks";
-import { Children, cloneElement, forwardRef, isValidElement, useRef } from "react";
+import { Children, cloneElement, forwardRef, isValidElement, useRef, useEffect } from "react";
 import { createStyles } from "../../core/style";
 
 export type HaloStyles = FluidStyles<'.container' | '.halo' | '.ring'>;
@@ -72,6 +72,24 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, cc = {}, colo
     const click = useTrigger();
     const translate = useLink('0px 0px');
 
+    useEffect(() => {
+        const el = container.current;
+        if (!el) return;
+
+        const handleClick = (e: MouseEvent) => {
+            if (container.current && (e.clientX || e.clientY)) {
+                const { x, y, width, height } = container.current.getBoundingClientRect();
+                translate.set(`${e.clientX - (x + width / 2)}px ${e.clientY - (y + height / 2)}px`);
+            }
+
+            click();
+        }
+
+        el.addEventListener('click', handleClick);
+
+        return () => el.removeEventListener('click', handleClick);
+    }, [click]);
+
     children = Array.isArray(children) ? children[0] : children;
     if (!isValidElement(children)) return children;
 
@@ -85,16 +103,7 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, cc = {}, colo
     return cloneElement(children, {
         ...props,
         ref: combineRefs(container, ref, (children as any).ref),
-        className: classes(children.props.className, style.container),
-        onClick: (e: React.MouseEvent<HTMLDivElement>) => {
-            children.props.onClick?.(e);
-            props.onClick?.(e);
-
-            const { x, y, width, height } = container.current?.getBoundingClientRect() || { x: 0, y: 0, width: 0, height: 0 };
-
-            if (e.clientX || e.clientY) translate.set(`${e.clientX - (x + width / 2)}px ${e.clientY - (y + height / 2)}px`);
-            click();
-        }
+        className: classes(children.props.className, style.container)
     }, arr);
 });
 
