@@ -30,7 +30,8 @@ const Root = forwardRef(({ children, cc = {}, ...props }:
             display: 'flex',
             alignItems: 'center',
             gap: 'var(--f-spacing-sml)',
-            height: '100%'
+            height: '100%',
+            isolation: 'isolate'
         }
     });
     const style = combineClasses(styles, cc);
