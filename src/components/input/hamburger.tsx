@@ -18,16 +18,17 @@ const Hamburger = forwardRef(({ cc = {}, open, ...props }: { cc?: Selectors<'ham
             background: 'none',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between',
+            justifyContent: 'space-around',
             alignItems: 'center',
-            height: '2.2em',
+            height: '2.5em',
+            width: '2.5em',
             padding: '.5em',
             borderRadius: 'var(--f-radius-sml)',
             outline: 'none'
         },
 
         '.line': {
-            width: '1.6em',
+            width: '100%',
             height: '3px',
             backgroundColor: 'var(--f-clr-text-100)',
             transformOrigin: 'bottom right',
@@ -43,23 +44,17 @@ const Hamburger = forwardRef(({ cc = {}, open, ...props }: { cc?: Selectors<'ham
         },
 
         '.cross': {
-            top: 0,
+            inset: '.2em',
             position: 'absolute',
             rotate: '-45deg',
-            height: '100%',
-            width: '1.7em',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
         },
 
-        '.cross > *': {
-            position: 'absolute',
-            width: '100%'
-        },
-
         '.cross > *:last-child': {
-            height: '1.7em',
+            position: 'absolute',
+            height: '100%',
             width: '3px'
         }
     });
