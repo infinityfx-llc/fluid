@@ -7,8 +7,6 @@ export const toNumber = (val: any, fallback: number): number => {
     return val === undefined || isNaN(val) ? fallback : val;
 }
 
-export const isControlled = ({ value, onChange }: { value?: any; onChange?: any; }) => onChange !== undefined || value !== undefined;
-
 export function changeInputValue(input: HTMLInputElement, value: FluidInputvalue) {
     Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set?.call(input, value);
     input.dispatchEvent(new Event('input', { bubbles: true }));

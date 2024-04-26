@@ -7,7 +7,7 @@ import { Move } from '@infinityfx/lively/animations';
 import Calendar from './calendar';
 import Popover from '../layout/popover';
 import { createStyles } from '../../core/style';
-import { combineClasses, isControlled } from '../../core/utils';
+import { combineClasses } from '../../core/utils';
 import Button from './button';
 import { MdClose } from 'react-icons/md';
 
@@ -29,7 +29,7 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled
     }));
     const style = combineClasses(styles, cc);
 
-    const [state, setState] = isControlled({ value, onChange }) ? [value, onChange] : useState<Date | null>(defaultValue || null);
+    const [state, setState] = value !== undefined ? [value, onChange] : useState<Date | null>(defaultValue || null);
     const [partial, setPartial] = useState<string | null>(null);
 
     function toString(date?: Date | null) {

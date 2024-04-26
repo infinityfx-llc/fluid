@@ -59,7 +59,7 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
             display: 'flex',
             alignItems: 'center',
             gap: 'var(--f-spacing-xsm)',
-            padding: '.6em',
+            padding: '.675em',
             flexGrow: 1
         },
 

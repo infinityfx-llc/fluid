@@ -51,12 +51,6 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, cc = {}, colo
             opacity: .25
         },
 
-        '@supports not selector(:focus-visible)': {
-            '.container:focus-within > .halo': {
-                opacity: .25
-            }
-        },
-
         '.ring': {
             minWidth: '241%',
             minHeight: '241%',

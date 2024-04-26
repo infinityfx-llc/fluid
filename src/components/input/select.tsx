@@ -5,7 +5,7 @@ import { FieldProps } from './field';
 import Button from './button';
 import { MdCheck, MdUnfoldMore } from 'react-icons/md';
 import { FluidInputvalue, FluidStyles, PopoverRootReference, Selectors } from '../../../src/types';
-import { classes, combineClasses, combineRefs, isControlled } from '../../../src/core/utils';
+import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import Badge from '../display/badge';
 import Combobox from '../display/combobox';
 import useInputProps from '../../../src/hooks/use-input-props';
@@ -23,7 +23,7 @@ type SelectProps<T> = {
     searchable?: boolean;
     limit?: number;
     emptyMessage?: string;
-    value?: T;
+    value?: T | null;
     defaultValue?: T;
     onChange?: (value: T) => void;
 } & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'onEnter'>;
@@ -104,8 +104,7 @@ function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
         },
 
         '.content_wrapper': {
-            height: '2.64em',
-            padding: '.6em',
+            padding: '.675em',
             display: 'flex',
             alignItems: 'center',
             gap: 'var(--f-spacing-xsm)',
@@ -187,7 +186,7 @@ function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
     const id = useId();
     const selfInputRef = useRef<HTMLInputElement>(null);
     const popover = useRef<PopoverRootReference>(null);
-    const [state, setState] = isControlled({ value, onChange }) ? [value, onChange] : useState<T>(defaultValue || (multiple ? [] as any : '' as T));
+    const [state, setState] = value !== undefined ? [value, onChange] : useState<T>(defaultValue || (multiple ? [] as any : '' as T));
     const [split, rest] = useInputProps(props);
 
     useEffect(() => {

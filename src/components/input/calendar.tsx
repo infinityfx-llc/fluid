@@ -4,7 +4,7 @@ import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Button from "./button";
 import { MdArrowBack, MdArrowForward } from "react-icons/md";
-import { classes, combineClasses, isControlled } from "../../../src/core/utils";
+import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 import NumberField from "./number-field";
 
@@ -106,7 +106,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
     const style = combineClasses(styles, cc);
 
     const [partialYear, setPartialYear] = useState<null | string>(null);
-    const [dateState, setDate] = isControlled({ value, onChange }) ? [value, onChange] : useState(defaultValue);
+    const [dateState, setDate] = value !== undefined ? [value, onChange] : useState(defaultValue);
     const date = dateState || new Date();
 
     const first = new Date(date.getFullYear(), date.getMonth(), 1);

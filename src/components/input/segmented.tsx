@@ -27,6 +27,7 @@ function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'def
             padding: '.3em',
             borderRadius: 'calc(var(--f-radius-sml) + .3em)',
             backgroundColor: 'var(--f-clr-fg-100)',
+            border: 'solid 1px var(--f-clr-fg-200)',
             display: 'flex'
         },
 
@@ -57,7 +58,7 @@ function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'def
             border: 'none',
             outline: 'none',
             backgroundColor: 'transparent',
-            padding: '.65em .8em',
+            padding: '.675em .8em',
             fontWeight: 700,
             color: 'var(--f-clr-text-100)',
             borderRadius: 'var(--f-radius-sml)',
@@ -102,15 +103,20 @@ function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'def
         },
 
         '.segmented[data-error="true"]': {
-            outline: 'solid 2px var(--f-clr-error-300)'
+            border: 'solid 1px var(--f-clr-error-100)'
         },
 
         '.option[aria-checked="true"] .halo': {
-            inset: '-.5em'
+            inset: '-.3em',
+            borderRadius: 'calc(var(--f-radius-sml) + .3em)'
         },
 
         '.halo': {
             zIndex: '0 !important'
+        },
+
+        '.segmented[data-error="true"] .ring': {
+            backgroundColor: 'var(--f-clr-error-300)'
         },
 
         '.container': {
@@ -135,7 +141,11 @@ function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'def
         data-error={!!error}>
         {options.map(({ label, value: option, disabled = false }, i) => {
 
-            return <Halo key={i} hover={false} cc={{ halo: style.halo, container: style.container }}>
+            return <Halo key={i} hover={false} cc={{
+                halo: style.halo,
+                container: style.container,
+                ring: style.ring
+            }}>
                 <button className={style.option} type="button" role="radio" aria-checked={state === option} disabled={disabled}
                     onClick={() => {
                         setState?.(option);

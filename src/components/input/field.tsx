@@ -59,7 +59,7 @@ const Field = forwardRef(({ cc = {}, round = false, size = 'med', error, showErr
             display: 'flex',
             alignItems: 'center',
             gap: 'var(--f-spacing-xsm)',
-            padding: '.6em',
+            padding: '.675em',
             flexGrow: 1
         },
 

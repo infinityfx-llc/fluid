@@ -47,7 +47,7 @@ const Pincode = forwardRef(({ cc = {}, format = [1, 1, 1, 1], masked, size = 'me
             border: 'solid 1px var(--f-clr-fg-200)',
             borderRadius: 'var(--f-radius-sml)',
             transition: 'border-color .2s, outline-color .2s',
-            padding: '.6em',
+            padding: '.675em',
             display: 'flex',
             flexGrow: 1
         },

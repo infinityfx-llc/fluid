@@ -7,13 +7,13 @@ import { createStyles } from "../../core/style";
 
 export type ToastStyles = FluidStyles<'.toast' | '.icon' | '.background' | '.content' | '.text'>;
 
-const Toast = forwardRef(({ children, cc = {}, icon, color, title, round, closeable = true, onClose, ...props }:
+const Toast = forwardRef(({ children, cc = {}, icon, color, title, round, action = <MdClose />, onClose, ...props }:
     {
         cc?: Selectors<'toast' | 'icon' | 'background' | 'content' | 'text'>;
         icon: React.ReactNode;
         color: string;
         title: string;
-        closeable?: boolean;
+        action?: React.ReactNode;
         round?: boolean;
         onClose?: () => void;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
@@ -61,7 +61,8 @@ const Toast = forwardRef(({ children, cc = {}, icon, color, title, round, closea
             gap: 'var(--f-spacing-xxs)',
             color: 'var(--f-clr-grey-700)',
             alignSelf: 'center',
-            flexGrow: 1
+            flexGrow: 1,
+            paddingBlock: '.4em'
         },
 
         '.title': {
@@ -90,8 +91,8 @@ const Toast = forwardRef(({ children, cc = {}, icon, color, title, round, closea
             {children}
         </div>
 
-        {closeable && <Button compact variant="minimal" round={round} onClick={onClose}>
-            <MdClose />
+        {action && <Button compact variant="minimal" round={round} onClick={onClose}>
+            {action}
         </Button>}
     </div>;
 });

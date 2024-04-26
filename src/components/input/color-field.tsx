@@ -6,7 +6,7 @@ import { Animatable } from '@infinityfx/lively';
 import { Move } from '@infinityfx/lively/animations';
 import Popover from '../layout/popover';
 import { createStyles } from '../../core/style';
-import { combineClasses, isControlled } from '../../core/utils';
+import { combineClasses } from '../../core/utils';
 import ColorPicker, { parsePartialHex } from './color-picker';
 import Swatch from '../display/swatch';
 
@@ -33,7 +33,7 @@ const ColorField = forwardRef(({ cc = {}, value, defaultValue, onChange, disable
     }));
     const style = combineClasses(styles, cc);
 
-    const [state, setState] = isControlled({ value, onChange }) ? [value, onChange] : useState(defaultValue);
+    const [state, setState] = value !== undefined ? [value, onChange] : useState(defaultValue);
     const [partial, setPartial] = useState<string | null>(null);
 
     function update(value: string) {
