@@ -30,7 +30,10 @@ export type FluidError = null | boolean | string;
 export type FluidComponents = {
     'combobox.content'?: FluidStyles;
     'combobox.option'?: FluidStyles;
-    'action-menu'?: FluidStyles;
+    'action-menu.menu'?: FluidStyles;
+    'action-menu.group'?: FluidStyles;
+    'action-menu.item'?: FluidStyles;
+    'action-menu.heading'?: FluidStyles;
     badge?: FluidStyles;
     code?: FluidStyles;
     frame?: FluidStyles;

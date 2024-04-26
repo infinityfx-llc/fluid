@@ -8,7 +8,7 @@ import Scrollarea from "../layout/scrollarea";
 import Button from "../input/button";
 import Checkbox from "../input/checkbox";
 import { MdArrowDownward, MdArrowUpward, MdMoreVert, MdSort } from "react-icons/md";
-import ActionMenu, { ActionMenuOption } from "./action-menu";
+import ActionMenu from "./action-menu/index";
 import { createStyles } from "../../core/style";
 
 export type TableStyles = FluidStyles<'.table' | '.rows' | '.row' | '.collapsed' | '.header' | '.label' | '.checkbox' | '.checkmark'>;
@@ -24,7 +24,11 @@ type TableProps<T> = {
     columnFormatters?: {
         [column in keyof T]?: (value: T[column]) => React.ReactNode;
     };
-    rowActions?: (row: T, index: number) => ActionMenuOption[];
+    rowActions?: (row: T, index: number) => {
+        label: string;
+        keepOpen?: boolean;
+        onClick?: () => void;
+    }[];
     emptyMessage?: string;
 } & React.HTMLAttributes<HTMLDivElement>;
 
@@ -38,14 +42,14 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
             border: 'solid 1px var(--f-clr-fg-200)',
             display: 'flex'
         },
-    
+
         '.rows': {
             minWidth: 'max-content',
             display: 'flex',
             flexDirection: 'column',
             flexGrow: 1
         },
-    
+
         '.row': {
             position: 'relative',
             display: 'grid',
@@ -55,11 +59,11 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
             gap: 'var(--f-spacing-sml)',
             color: 'var(--f-clr-text-100)'
         },
-    
+
         '.row:not(:last-child)': {
             borderBottom: 'solid 1px var(--f-clr-fg-200)'
         },
-    
+
         '.row > *:not(.collapsed)': {
             whiteSpace: 'nowrap'
         },
@@ -67,18 +71,18 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
         '.row > [role="gridcell"]': {
             paddingInline: '.4rem'
         },
-    
+
         '.collapsed': {
             minWidth: '2rem',
             display: 'flex'
         },
-    
+
         '.header': {
             fontSize: '.9em',
             fontWeight: 700,
             background: 'var(--f-clr-fg-200)'
         },
-    
+
         '.label': {
             position: 'relative',
             borderRadius: 'var(--f-radius-sml)',
@@ -92,15 +96,15 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
             background: 'none',
             outline: 'none'
         },
-    
+
         '.label:enabled': {
             cursor: 'pointer'
         },
-    
+
         '.row .checkbox': {
             borderColor: 'var(--f-clr-grey-300)'
         },
-    
+
         '.row .checkmark': {
             stroke: 'var(--f-clr-text-200)'
         },
@@ -196,12 +200,24 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
                             </div>;
                         })}
 
-                        {rowActions ? <div className={style.collapsed}>
-                            <ActionMenu options={rowActions(rows[i], i)}>
-                                <Button compact variant="minimal" style={{ marginLeft: 'auto' }}>
-                                    <MdMoreVert />
-                                </Button>
-                            </ActionMenu>
+                        {rowActions?.length ? <div className={style.collapsed}>
+                            <ActionMenu.Root>
+                                <ActionMenu.Trigger>
+                                    <Button compact variant="minimal" style={{ marginLeft: 'auto' }}>
+                                        <MdMoreVert />
+                                    </Button>
+                                </ActionMenu.Trigger>
+
+                                <ActionMenu.Menu>
+                                    {rowActions(rows[i], i).map(({ label, keepOpen, onClick }, i) => (
+                                        <ActionMenu.Item key={i}
+                                            keepOpen={keepOpen}
+                                            onClick={onClick}>
+                                            {label}
+                                        </ActionMenu.Item>
+                                    ))}
+                                </ActionMenu.Menu>
+                            </ActionMenu.Root>
                         </div> : null}
                     </div>
                 </Halo>;
