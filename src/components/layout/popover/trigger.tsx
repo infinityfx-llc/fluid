@@ -1,7 +1,7 @@
 'use client';
 
 import { combineRefs } from "../../../../src/core/utils";
-import { cloneElement, useRef } from "react";
+import { cloneElement, useRef, useEffect } from "react";
 import { usePopover } from "./root";
 
 export type PopoverTrigger = { children: React.ReactElement; longpress?: boolean; disabled?: boolean; } & React.HTMLAttributes<any>;
@@ -20,63 +20,64 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
         delay ? timeout.current = setTimeout(action, delay) : toggle(!opened);
     }
 
-    return cloneElement(children, {
-        ...props,
-        'aria-expanded': opened,
-        'aria-controls': id,
-        'aria-disabled': disabled,
-        ref: combineRefs(trigger, (children as any).ref),
-        onMouseDown: (e: React.MouseEvent) => {
-            children.props.onMouseDown?.(e);
-            props.onMouseDown?.(e);
+    useEffect(() => {
+        const el = trigger.current;
+        if (!el) return;
 
-            if (longpress && !touchOnly.current) action(400);
-        },
-        onMouseUp: (e: React.MouseEvent) => {
-            children.props.onMouseUp?.(e);
-            props.onMouseUp?.(e);
+        function start(e: MouseEvent | TouchEvent | KeyboardEvent) {
+            const isTouch = 'changedTouches' in e;
+            const isValidKey = 'key' in e && (e.key === 'Enter' || e.key === ' ');
+            const isValidClick = 'button' in e && e.button === 0 && !touchOnly.current;
 
-            clearTimeout(timeout.current);
-            if (!longpress && !touchOnly.current) action();
-            touchOnly.current = false;
-        },
-        onTouchStart: (e: React.TouchEvent) => {
-            children.props.onTouchStart?.(e);
-            props.onTouchStart?.(e);
-
-            touchOnly.current = true;
-            touch.current = e.changedTouches[0];
-            if (longpress) action(400);
-        },
-        onTouchEnd: (e: React.TouchEvent) => {
-            children.props.onTouchEnd?.(e);
-            props.onTouchEnd?.(e);
-
-            const { clientX, clientY } = e.changedTouches[0];
-            const distance = Math.abs(touch.current.clientX - clientX) + Math.abs(touch.current.clientY - clientY);
-
-            clearTimeout(timeout.current);
-            if (!longpress && distance < 8) {
-                action();
+            if (isTouch) {
+                touchOnly.current = true;
+                touch.current = e.changedTouches[0];
             }
-        },
-        onKeyDown: (e: React.KeyboardEvent) => {
-            children.props.onKeyDown?.(e);
-            props.onKeyDown?.(e);
 
-            if ((e.key === 'Enter' || e.key === ' ') && longpress && !pressed.current) {
+            if (longpress && (isValidClick || isTouch || isValidKey)) {
                 pressed.current = true;
                 action(400);
             }
-        },
-        onKeyUp: (e: React.KeyboardEvent) => {
-            children.props.onKeyUp?.(e);
-            props.onKeyUp?.(e);
-
-            pressed.current = false;
-            clearTimeout(timeout.current);
-            if (!longpress && (e.key === 'Enter' || e.key === ' ')) action();
         }
+
+        function end(e: MouseEvent | TouchEvent | KeyboardEvent) {
+            const isValidTouch = 'changedTouches' in e &&
+                Math.abs(touch.current.clientX - e.changedTouches[0].clientX) + Math.abs(touch.current.clientY - e.changedTouches[0].clientY) < 8;
+            const isValidKey = 'key' in e && (e.key === 'Enter' || e.key === ' ');
+            const isValidClick = 'button' in e && e.button === 0 && !touchOnly.current;
+
+            if (!longpress && (isValidClick || isValidTouch || isValidKey)) {
+                action();
+            }
+
+            clearTimeout(timeout.current);
+            if ('button' in e) touchOnly.current = false;
+            pressed.current = false;
+        }
+
+        el.addEventListener('mousedown', start);
+        el.addEventListener('mouseup', end);
+        el.addEventListener('touchstart', start);
+        el.addEventListener('touchend', end);
+        el.addEventListener('keydown', start);
+        el.addEventListener('keyup', end);
+
+        return () => {
+            el.removeEventListener('mousedown', start);
+            el.removeEventListener('mouseup', end);
+            el.removeEventListener('touchstart', start);
+            el.removeEventListener('touchend', end);
+            el.removeEventListener('keydown', start);
+            el.removeEventListener('keyup', end);
+        }
+    }, []);
+
+    return cloneElement(children, {
+        ...props,
+        ref: combineRefs(trigger, (children as any).ref),
+        'aria-expanded': opened,
+        'aria-controls': id,
+        'aria-disabled': disabled
     });
 }
 

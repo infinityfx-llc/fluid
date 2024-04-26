@@ -9,9 +9,11 @@ import { createStyles } from "../../core/style";
 import { classes, combineClasses } from "../../core/utils";
 import useFocusTrap from "../../hooks/use-focus-trap";
 
-const setBodyOverflow = (value: string) => {
-    document.body.style.overflow = value;
-    document.documentElement.style.overflow = value;
+const toggleScroll = (value: boolean) => {
+    const isScrollable = document.documentElement.scrollHeight > document.documentElement.clientHeight;
+    
+    document.body.style.position = value ? '' : 'fixed';
+    document.documentElement.style.overflowY = value || !isScrollable ? '' : 'scroll';
 }
 
 export type OverlayStyles = FluidStyles<'.tint'>;
@@ -47,13 +49,13 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
 
     useEffect(() => {
         if (mounted && show) {
-            setBodyOverflow('hidden');
+            toggleScroll(false);
 
             index.current = document.getElementsByClassName('__fluid__overlay').length;
             
             if (trap.current) trap.current.style.zIndex = (index.current + 999).toString();
         } else
-            if (!show && !index.current) setBodyOverflow('');
+            if (!show && !index.current) toggleScroll(true);
         setMounted(true);
 
         function keypress(e: KeyboardEvent) {
@@ -64,7 +66,7 @@ export default function Overlay({ children, cc = {}, show, onClose }: { children
 
         return () => {
             window.removeEventListener('keydown', keypress);
-            if (!index.current) setBodyOverflow('');
+            if (!index.current) toggleScroll(true);
         }
     }, [show]);
 

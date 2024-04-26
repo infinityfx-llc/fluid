@@ -1,6 +1,6 @@
 'use client';
 
-import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
+import { combineClasses, combineRefs } from "../../../src/core/utils";
 import { FluidStyles, Selectors } from "../../../src/types";
 import { forwardRef, cloneElement, useState, useRef, isValidElement, useId, useEffect } from "react";
 import { createPortal } from "react-dom";
@@ -163,13 +163,14 @@ const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', vis
 
     return <>
         {cloneElement(children as React.ReactElement, {
+            ...props,
             'aria-describedby': id,
-            ref: combineRefs(element, (children as any).ref)
+            ref: combineRefs(element, ref, (children as any).ref)
         })}
 
         {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={displayPosition} />, element.current)}
 
-        {element.current && createPortal(<div ref={combineRefs(ref, tooltip)} {...props} id={id} role="tooltip" className={classes(style.tooltip, props.className)} aria-hidden={!visible}>
+        {element.current && createPortal(<div ref={tooltip} id={id} role="tooltip" className={style.tooltip} aria-hidden={!visible}>
             {content}
         </div>, document.getElementById('__fluid') as HTMLElement)}
     </>;
