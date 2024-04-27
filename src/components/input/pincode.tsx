@@ -53,7 +53,7 @@ const Pincode = forwardRef(({ cc = {}, format = [1, 1, 1, 1], masked, size = 'me
         },
 
         '.group .field + .field': {
-            borderLeft: 'none',
+            marginLeft: '-1px',
             borderTopLeftRadius: 0,
             borderBottomLeftRadius: 0
         },

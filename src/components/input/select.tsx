@@ -140,7 +140,8 @@ function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
         },
 
         '.placeholder': {
-            color: 'var(--f-clr-grey-300)'
+            color: 'var(--f-clr-grey-300)',
+            height: '1.375em'
         },
 
         '.input': {
