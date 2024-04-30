@@ -8,15 +8,16 @@ import { MdSearch } from 'react-icons/md';
 import { Animatable } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
 import { classes, combineClasses, getFocusable } from '../../../../src/core/utils';
-import { FluidStyles, Selectors } from '../../../../src/types';
+import { FluidSize, FluidStyles, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { usePopover } from '../../layout/popover/root';
 
 export type ComboboxContentStyles = FluidStyles<'.container' | '.content' | '.message' | '.wrapper' | '.field'>;
 
-const Content = forwardRef(({ children, cc = {}, autoFocus = true, searchable, placeholder = 'Search..', emptyMessage = 'Nothing found', ...props }:
+const Content = forwardRef(({ children, cc = {}, size = 'med', autoFocus = true, searchable, placeholder = 'Search..', emptyMessage = 'Nothing found', ...props }:
     {
         cc?: Selectors<'container' | 'content' | 'message' | 'wrapper' | 'field'>;
+        size?: FluidSize;
         autoFocus?: boolean;
         searchable?: boolean;
         placeholder?: string;
@@ -31,6 +32,22 @@ const Content = forwardRef(({ children, cc = {}, autoFocus = true, searchable, p
             minWidth: 'clamp(0px, 10em, 100vw)',
             width: '100%',
             overflow: 'hidden'
+        },
+
+        '.container__xsm': {
+            fontSize: 'var(--f-font-size-xxs)'
+        },
+
+        '.container__sml': {
+            fontSize: 'var(--f-font-size-xsm)'
+        },
+
+        '.container__med': {
+            fontSize: 'var(--f-font-size-sml)'
+        },
+
+        '.container__lrg': {
+            fontSize: 'var(--f-font-size-med)'
         },
 
         '.content': {
@@ -91,7 +108,11 @@ const Content = forwardRef(({ children, cc = {}, autoFocus = true, searchable, p
 
     return <Popover.Content>
         <Animatable id="combobox-options-outer" animate={Move.unique({ duration: .2 })} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
-            <div ref={ref} {...props} role="listbox" className={classes(style.container, props.className)}
+            <div ref={ref} {...props} role="listbox" className={classes(
+                style.container,
+                style[`container__${size}`],
+                props.className
+            )}
                 onKeyDown={e => {
                     props.onKeyDown?.(e);
 
@@ -110,6 +131,7 @@ const Content = forwardRef(({ children, cc = {}, autoFocus = true, searchable, p
                     }
                 }}>
                 {searchable && <Field
+                    size={size}
                     inputRef={(el: any) => options.current[0] = el}
                     autoFocus={autoFocus}
                     placeholder={placeholder}

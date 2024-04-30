@@ -1,7 +1,6 @@
 import fs from 'fs';
 import readline from 'readline';
-import { getConfig, processFile } from './utils';
-import { DIST_ROOT, OUTPUT_ROOT } from './const';
+import { getConfig, getRoots, processFile } from './utils';
 import { STYLE_CONTEXT } from '../src/core/style';
 import { mergeRecursive } from '../src/core/utils';
 import { DEFAULT_THEME } from '../src/core/theme';
@@ -9,17 +8,19 @@ import * as COMPONENTS from '../src/index';
 
 export default async function () {
 
-    if (fs.existsSync(OUTPUT_ROOT)) {
-        fs.rmSync(OUTPUT_ROOT, { recursive: true });
+    const { output, dist } = getRoots();
+
+    if (fs.existsSync(output)) {
+        fs.rmSync(output, { recursive: true });
     }
-    fs.cpSync(DIST_ROOT, OUTPUT_ROOT, { recursive: true });
+    fs.cpSync(dist, output, { recursive: true });
     const size = Object.keys(COMPONENTS).length;
 
     const config = await getConfig();
     STYLE_CONTEXT.THEME = mergeRecursive(config.theme || {}, DEFAULT_THEME);
     STYLE_CONTEXT.COMPONENTS = config.components || {};
 
-    const components = fs.readFileSync(DIST_ROOT + 'index.js', { encoding: 'ascii' })
+    const components = fs.readFileSync(dist + 'index.js', { encoding: 'ascii' })
         .matchAll(/as\s*(.+?)\s*\}\s*from\s*(?:'|")(.+?)(?:'|");/g);
 
     console.log();
@@ -36,10 +37,10 @@ export default async function () {
     }
 
     for (const file of ['index.js', 'hooks.js']) {
-        const content = fs.readFileSync(DIST_ROOT + file, { encoding: 'ascii' })
+        const content = fs.readFileSync(dist + file, { encoding: 'ascii' })
             .replace(/(from\s*(?:'|"))\.\/(.*?(?:'|");)/g, '$1../compiled/$2');
 
-        fs.writeFileSync(DIST_ROOT + file, content);
+        fs.writeFileSync(dist + file, content);
     }
 
     console.log('\n');

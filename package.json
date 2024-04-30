@@ -1,6 +1,6 @@
 {
 	"name": "@infinityfx/fluid",
-	"version": "0.1.0-beta.89",
+	"version": "0.1.0-beta.90",
 	"type": "module",
 	"description": "React UI library.",
 	"main": "dist/index.js",
@@ -36,7 +36,7 @@
 	],
 	"scripts": {
 		"build": "rollup -c --environment NODE_ENV:production",
-		"watch": "rollup -c -w"
+		"watch": "rollup -c -w --watch.onEnd=\"npx fluid compile\""
 	},
 	"bin": {
 		"@infinityfx/fluid": "dist/cli.js",
@@ -56,6 +56,7 @@
 		"@rollup/plugin-commonjs": "^25.0.7",
 		"@rollup/plugin-json": "^6.1.0",
 		"@rollup/plugin-node-resolve": "^15.2.3",
+		"@rollup/plugin-terser": "^0.4.4",
 		"@rollup/plugin-typescript": "^11.1.6",
 		"@types/react": "^18.2.70",
 		"@types/react-dom": "^18.2.22",
@@ -66,7 +67,6 @@
 		"rollup-plugin-delete": "^2.0.0",
 		"rollup-plugin-preserve-directives": "^0.4.0",
 		"rollup-plugin-preserve-shebangs": "^0.2.0",
-		"@rollup/plugin-terser": "^0.4.4",
 		"typescript": "^5.4.3"
 	},
 	"sideEffects": false

@@ -3,10 +3,26 @@ import { renderToString } from "react-dom/server";
 import fs from 'fs';
 import { FluidConfig } from "../src/types";
 import FluidProvider from "../src/context/fluid";
-import { DIST_ROOT, OUTPUT_ROOT } from "./const";
 import { STYLE_CONTEXT } from "../src/core/style";
+import packageJson from '../package.json';
 
 let fluidConfig: FluidConfig;
+
+export function getRoots() {
+    let isSelf = false;
+
+    try {
+        const packageJson = fs.readFileSync('./package.json', { encoding: 'ascii' });
+        isSelf = JSON.parse(packageJson).name === '@infinityfx/fluid';
+    } catch (err) {
+        console.log(err);
+    }
+
+    return {
+        output: isSelf ? './compiled/' : `./node_modules/${packageJson.name}/compiled/`,
+        dist: isSelf ? './dist/' : `./node_modules/${packageJson.name}/dist/`,
+    };
+}
 
 export async function getConfig() {
     try {
@@ -39,8 +55,10 @@ function insertTheme(content: string) {
 }
 
 export async function processFile(root: string, path: string, name: string, componentMap: any) {
-    let fileContent = fs.readFileSync(DIST_ROOT + root + path, { encoding: 'ascii' });
-    const [outputPath, filename] = (OUTPUT_ROOT + root + path).split(/([^\/\\]*?$)/);
+    const { output, dist } = getRoots();
+
+    let fileContent = fs.readFileSync(dist + root + path, { encoding: 'ascii' });
+    const [outputPath, filename] = (output + root + path).split(/([^\/\\]*?$)/);
 
     const names = name.split('.');
     const Component = componentMap[names[names.length - 1]];

@@ -10,6 +10,7 @@ export default function Trigger(props: PopoverTrigger) {
 
     // aria-autocomplete="list"
     return <Popover.Trigger {...props} role="combobox" onKeyDown={e => {
+        props.children.props.onKeyDown?.(e);
         props.onKeyDown?.(e);
 
         if ((e.key === 'Tab' && !e.shiftKey) || e.key === 'ArrowDown') {

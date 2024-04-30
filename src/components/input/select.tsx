@@ -4,7 +4,7 @@ import { forwardRef, useRef, useState, useId, useEffect } from 'react';
 import { FieldProps } from './field';
 import Button from './button';
 import { MdCheck, MdUnfoldMore } from 'react-icons/md';
-import { FluidInputvalue, FluidStyles, PopoverRootReference, Selectors } from '../../../src/types';
+import { FluidInputvalue, FluidSize, FluidStyles, PopoverRootReference, Selectors } from '../../../src/types';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import Badge from '../display/badge';
 import Combobox from '../display/combobox';
@@ -26,6 +26,7 @@ type SelectProps<T> = {
     value?: T | null;
     defaultValue?: T;
     onChange?: (value: T) => void;
+    contentSize?: FluidSize;
 } & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'onEnter'>;
 
 function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
@@ -46,6 +47,7 @@ function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
         showError,
         icon,
         size = 'med',
+        contentSize,
         round,
         inputRef,
         ...props
@@ -237,7 +239,7 @@ function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
             {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
         </div>
 
-        <Combobox.Content aria-multiselectable={multiple} searchable={searchable} emptyMessage={emptyMessage}>
+        <Combobox.Content size={contentSize} aria-multiselectable={multiple} searchable={searchable} emptyMessage={emptyMessage}>
             {options.map(({ label, value, disabled }, i) => {
                 const selected = (Array.isArray(state) ? state.includes(value) : state === value);
 

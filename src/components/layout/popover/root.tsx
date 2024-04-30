@@ -50,7 +50,7 @@ const Root = forwardRef(({ children, position = 'auto', mobileContainer = 'popov
     const isMobile = useMediaQuery(`(max-width: ${fluid.breakpoints.mob}px)`);
     const isModal = mobileContainer === 'modal' && isMobile;
 
-    const toggle = useCallback((value: boolean) => {
+    function toggle(value: boolean) {
         if (isModal) return setOpened(value);
         if (!value || !trigger.current || !content.current) return setOpened(false);
 
@@ -70,12 +70,12 @@ const Root = forwardRef(({ children, position = 'auto', mobileContainer = 'popov
         content.current.style[isTop ? 'top' : 'bottom'] = '';
 
         return setOpened(value);
-    }, [position, stretch, isModal]);
+    }
 
     useImperativeHandle(ref, () => ({
         open: toggle.bind({}, true),
         close: toggle.bind({}, false)
-    }), []);
+    }), [toggle]);
 
     useEffect(() => {
         setMounted(true);
@@ -90,7 +90,7 @@ const Root = forwardRef(({ children, position = 'auto', mobileContainer = 'popov
             window.removeEventListener('resize', resize);
             window.removeEventListener('scroll', resize);
         }
-    }, [opened]);
+    }, [opened, toggle]);
 
     useEffect(() => {
         function click(e: MouseEvent) {

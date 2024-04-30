@@ -2,13 +2,14 @@
 
 import { useEffect, forwardRef, useRef, useState } from 'react';
 import Field, { FieldProps } from "./field";
-import { FluidInputvalue, PopoverRootReference } from '../../../src/types';
+import { FluidInputvalue, FluidSize, PopoverRootReference } from '../../../src/types';
 import Combobox from '../display/combobox';
 import { changeInputValue } from '../../core/utils';
 
-const Autocomplete = forwardRef(({ cc = {}, completions, emptyMessage, value, defaultValue, onChange, ...props }: {
+const Autocomplete = forwardRef(({ cc = {}, completions, emptyMessage, value, defaultValue, onChange, contentSize, ...props }: {
     completions: string[] | { label: string; value: string; }[];
     emptyMessage?: string;
+    contentSize?: FluidSize;
 } & FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
     const field = useRef<HTMLInputElement>(null);
     const popover = useRef<PopoverRootReference>(null);
@@ -41,7 +42,7 @@ const Autocomplete = forwardRef(({ cc = {}, completions, emptyMessage, value, de
                 }} />
         </Combobox.Trigger>
 
-        <Combobox.Content autoFocus={false} emptyMessage={emptyMessage}>
+        <Combobox.Content size={contentSize} autoFocus={false} emptyMessage={emptyMessage}>
             {completions.map(entry => {
                 const { label, value } = typeof entry === 'string' ? { label: entry, value: entry } : entry;
 

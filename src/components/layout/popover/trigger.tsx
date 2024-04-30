@@ -70,7 +70,7 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
             el.removeEventListener('keydown', start);
             el.removeEventListener('keyup', end);
         }
-    }, []);
+    }, [action]);
 
     return cloneElement(children, {
         ...props,
