@@ -1,6 +1,6 @@
 'use client';
 
-import { FluidInputvalue, FluidStyles, Selectors } from "../../../src/types";
+import { FluidInputvalue, Selectors } from "../../../src/types";
 import { forwardRef, useId, useState } from "react";
 import Halo from "../feedback/halo";
 import { Morph } from "@infinityfx/lively/layout";
@@ -8,16 +8,75 @@ import { classes, combineClasses } from "../../../src/core/utils";
 import Scrollarea from "../layout/scrollarea";
 import { createStyles } from "../../core/style";
 
-export type TabsStyles = FluidStyles<'.wrapper' | '.tabs' | '.option' | '.selection' | '.button' | '.wrapper__var__default' | '.wrapper__var__minimal'>;
+const styles = createStyles('tabs', {
+    '.v__default': {
+        backgroundColor: 'var(--f-clr-fg-100)',
+        borderRadius: 'var(--f-radius-sml)'
+    },
+
+    '.tabs': {
+        display: 'flex',
+        width: 'max-content'
+    },
+
+    '.v__default .tabs': {
+        gap: 'var(--f-spacing-sml)',
+        padding: '0 .6em'
+    },
+
+    '.option': {
+        position: 'relative'
+    },
+
+    '.v__default .option': {
+        padding: '.6em 0'
+    },
+
+    '.selection': {
+        position: 'absolute',
+        width: '100%',
+        height: '3px',
+        backgroundColor: 'var(--f-clr-text-100)',
+        left: 0,
+        bottom: 0,
+        borderRadius: '99px'
+    },
+
+    '.button': {
+        position: 'relative',
+        outline: 'none',
+        border: 'none',
+        background: 'none',
+        padding: '.4em .6em',
+        borderRadius: 'var(--f-radius-sml)',
+        color: 'var(--f-clr-text-100)',
+        fontSize: 'var(--f-font-size-sml)',
+        fontWeight: 600
+    },
+
+    '.v__minimal .button': {
+        padding: '.8em 1.2em'
+    },
+
+    '.button:enabled': {
+        cursor: 'pointer'
+    },
+
+    '.button:disabled': {
+        color: 'var(--f-clr-grey-500)'
+    }
+});
+
+export type TabsSelectors = Selectors<'wrapper' | 'tabs' | 'option' | 'selection' | 'button' | 'v__default' | 'v__minimal'>;
 
 type TabsProps<T> = {
+    cc?: TabsSelectors;
     options: {
         label: string;
         value: FluidInputvalue;
         disabled?: boolean;
         panelId?: string;
     }[];
-    cc?: Selectors<'wrapper' | 'tabs' | 'option' | 'selection' | 'button' | 'wrapper__var__default' | 'wrapper__var__minimal'>;
     variant?: 'default' | 'minimal';
     value?: T;
     defaultValue?: T;
@@ -25,64 +84,6 @@ type TabsProps<T> = {
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>;
 
 function TabsComponent<T extends FluidInputvalue>({ options, cc = {}, variant = 'default', value, defaultValue, onChange, ...props }: TabsProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
-    const styles = createStyles('tabs', {
-        '.wrapper__var__default': {
-            backgroundColor: 'var(--f-clr-fg-100)',
-            borderRadius: 'var(--f-radius-sml)'
-        },
-
-        '.tabs': {
-            display: 'flex',
-            width: 'max-content'
-        },
-
-        '.wrapper__var__default .tabs': {
-            gap: 'var(--f-spacing-sml)',
-            padding: '0 .6em'
-        },
-
-        '.option': {
-            position: 'relative'
-        },
-
-        '.wrapper__var__default .option': {
-            padding: '.6em 0'
-        },
-
-        '.selection': {
-            position: 'absolute',
-            width: '100%',
-            height: '3px',
-            backgroundColor: 'var(--f-clr-text-100)',
-            left: 0,
-            bottom: 0,
-            borderRadius: '99px'
-        },
-
-        '.button': {
-            position: 'relative',
-            outline: 'none',
-            border: 'none',
-            background: 'none',
-            padding: '.4em .6em',
-            borderRadius: 'var(--f-radius-sml)',
-            color: 'var(--f-clr-text-100)',
-            fontSize: 'var(--f-font-size-sml)',
-            fontWeight: 600
-        },
-
-        '.wrapper__var__minimal .button': {
-            padding: '.8em 1.2em'
-        },
-
-        '.button:enabled': {
-            cursor: 'pointer'
-        },
-
-        '.button:disabled': {
-            color: 'var(--f-clr-grey-500)'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const id = useId();
@@ -90,7 +91,7 @@ function TabsComponent<T extends FluidInputvalue>({ options, cc = {}, variant = 
 
     return <div ref={ref} {...props} className={classes(
         style.wrapper,
-        style[`wrapper__var__${variant}`],
+        style[`v__${variant}`],
         props.className
     )}>
         <Scrollarea horizontal>

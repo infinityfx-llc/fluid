@@ -1,55 +1,56 @@
 'use client';
 
 import { classes, combineClasses } from "../../../src/core/utils";
-import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
+import { FluidSize, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { forwardRef, useEffect } from "react";
 import { createStyles } from "../../core/style";
 
-export type ProgressBarStyles = FluidStyles<'.track' | '.progress' | '.track__xsm' | '.track__sml' | '.track__med' | '.track__lrg'>;
+const styles = createStyles('progress-bar', {
+    '.track': {
+        height: '.4em',
+        width: 'min(100%, 12em)',
+        borderRadius: '999px',
+        overflow: 'hidden',
+        backgroundColor: 'var(--f-clr-fg-100)'
+    },
+
+    '.progress': {
+        height: '100%',
+        backgroundColor: 'var(--f-clr-primary-100)',
+        transformOrigin: 'left',
+        transition: 'background-color .3s',
+        borderRadius: '999px'
+    },
+
+    '.s__xsm': {
+        fontSize: 'var(--f-font-size-xsm)'
+    },
+
+    '.s__sml': {
+        fontSize: 'var(--f-font-size-sml)'
+    },
+
+    '.s__med': {
+        fontSize: 'var(--f-font-size-med)'
+    },
+
+    '.s__lrg': {
+        fontSize: 'var(--f-font-size-lrg)'
+    }
+});
+
+export type ProgressBarSelectors = Selectors<'track' | 'progress' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
 const ProgressBar = forwardRef(({ cc = {}, size = 'med', value, defaultValue = 0, color, ...props }:
     {
-        cc?: Selectors<'track' | 'progress' | 'track__xsm' | 'track__sml' | 'track__med' | 'track__lrg'>;
+        cc?: ProgressBarSelectors;
         size?: FluidSize;
         value?: number;
         defaultValue?: number;
         color?: string;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('progress-bar', {
-        '.track': {
-            height: '.4em',
-            width: 'clamp(0px, 12em, 100vw)',
-            borderRadius: '999px',
-            overflow: 'hidden',
-            backgroundColor: 'var(--f-clr-fg-100)'
-        },
-
-        '.progress': {
-            height: '100%',
-            backgroundColor: 'var(--f-clr-primary-100)',
-            transformOrigin: 'left',
-            transition: 'background-color .3s',
-            borderRadius: '999px'
-        },
-
-        '.track__xsm': {
-            fontSize: 'var(--f-font-size-xsm)'
-        },
-
-        '.track__sml': {
-            fontSize: 'var(--f-font-size-sml)'
-        },
-
-        '.track__med': {
-            fontSize: 'var(--f-font-size-med)'
-        },
-
-        '.track__lrg': {
-            fontSize: 'var(--f-font-size-lrg)'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const state = value !== undefined ? value : defaultValue;
@@ -59,7 +60,7 @@ const ProgressBar = forwardRef(({ cc = {}, size = 'med', value, defaultValue = 0
 
     return <div ref={ref} {...props} role="progressbar" aria-valuenow={state * 100} className={classes(
         style.track,
-        style[`track__${size}`],
+        style[`s__${size}`],
         props.className
     )}>
         <Animatable animate={{ scale: link(val => `${val} 1`) }} initial={{ scale: `${link()} 1` }} deform={false}>

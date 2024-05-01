@@ -1,19 +1,22 @@
 import { classes, combineClasses } from "../../../src/core/utils";
-import { FluidStyles, Selectors } from "../../../src/types";
+import { Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { LayoutGroup } from "@infinityfx/lively/layout";
 import { forwardRef } from "react";
 import { createStyles } from "../../core/style";
 
+const styles = createStyles('collapsible', {
+    '.content': {
+        overflow: 'hidden'
+    }
+});
+
+export type CollapsibleSelectors = Selectors<'content'>;
+
 const Collapsible = forwardRef(({ children, cc = {}, shown, ...props }: {
-    cc?: Selectors<'content'>; 
+    cc?: CollapsibleSelectors;
     shown: boolean;
 } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('collapsible', {
-        '.content': {
-            overflow: 'hidden'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     return <LayoutGroup>

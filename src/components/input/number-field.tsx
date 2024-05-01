@@ -8,22 +8,33 @@ import { changeInputValue, combineClasses, combineRefs, round, toNumber } from '
 import { FluidInputvalue } from '../../../src/types';
 import { createStyles } from '../../core/style';
 
-const NumberField = forwardRef(({ cc = {}, precision = 3, controls = true, defaultValue, ...props }: { precision?: number; controls?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('number-field', {
-        '.button': {
-            borderRadius: '0 !important',
-            alignSelf: 'stretch !important'
-        },
+const styles = createStyles('number-field', {
+    '.wrapper .button__start': {
+        marginLeft: '.3em',
+        backgroundColor: 'var(--f-clr-bg-100)',
+        color: 'var(--f-clr-text-100)'
+    },
 
-        '.input': {
-            MozAppearance: 'textfield'
-        },
+    '.wrapper .button__end': {
+        marginRight: '.3em',
+        backgroundColor: 'var(--f-clr-bg-100)',
+        color: 'var(--f-clr-text-100)'
+    },
 
-        '.input::-webkit-outer-spin-button, .input::-webkit-inner-spin-button': {
-            WebkitAppearance: 'none',
-            margin: 0
-        }
-    });
+    '.input': {
+        MozAppearance: 'textfield'
+    },
+
+    '.input::-webkit-outer-spin-button, .input::-webkit-inner-spin-button': {
+        WebkitAppearance: 'none',
+        margin: 0
+    }
+});
+
+const NumberField = forwardRef(({ cc = {}, precision = 3, controls = true, defaultValue, ...props }: {
+    precision?: number;
+    controls?: boolean;
+} & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = combineClasses(styles, cc);
 
     const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(defaultValue || '');
@@ -50,6 +61,12 @@ const NumberField = forwardRef(({ cc = {}, precision = 3, controls = true, defau
         if (inputRef.current) changeInputValue(inputRef.current, format(value, amount));
     }
 
+    const buttonProps = {
+        compact: true,
+        size: props.size,
+        disabled: props.disabled
+    };
+
     return <Field ref={ref} {...props}
         inputRef={combineRefs(inputRef, props.inputRef)}
         type="number"
@@ -61,13 +78,14 @@ const NumberField = forwardRef(({ cc = {}, precision = 3, controls = true, defau
             props.onChange?.(e);
         }}
         cc={{
-            ...cc,
-            input: style.input
+            wrapper: style.wrapper,
+            input: style.input,
+            ...cc
         }}
-        left={controls ? <Button compact aria-label="Decrement" variant="minimal" size={props.size} disabled={props.disabled} cc={{ button: style.button }} onClick={() => increment(-step)}>
+        left={controls ? <Button {...buttonProps} cc={{ button: style.button__start }} aria-label="Decrement" onClick={() => increment(-step)}>
             <MdRemove />
         </Button> : null}
-        right={controls ? <Button compact aria-label="Increment" variant="minimal" size={props.size} disabled={props.disabled} cc={{ button: style.button }} onClick={() => increment(step)}>
+        right={controls ? <Button {...buttonProps} cc={{ button: style.button__end }} aria-label="Increment" onClick={() => increment(step)}>
             <MdAdd />
         </Button> : null} />;
 });

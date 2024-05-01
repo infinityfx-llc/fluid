@@ -1,94 +1,106 @@
 'use client';
 
-import { FluidStyles, Selectors } from '../../../src/types';
+import { Selectors } from '../../../src/types';
 import { forwardRef, useState, useRef, Children, isValidElement, useEffect, cloneElement } from 'react';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
 
-const Panel = forwardRef(({ cc = {}, children, size, handles, vertical, ...props }:
+const styles = createStyles('panel', {
+    '.panel': {
+        position: 'relative',
+        display: 'flex',
+        flexShrink: 0
+    },
+
+    '.d__vertical': {
+        flexDirection: 'column'
+    },
+
+    '.divider': {
+        background: 'var(--f-clr-fg-200)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        userSelect: 'none',
+        outline: 'none'
+    },
+
+    '.d__horizontal > .divider': {
+        width: '1px',
+        height: '100%',
+        cursor: 'ew-resize'
+    },
+
+    '.d__vertical > .divider': {
+        width: '100%',
+        height: '1px',
+        cursor: 'ns-resize'
+    },
+
+    '.focus': {
+        position: 'absolute',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1
+    },
+
+    '.d__horizontal > .divider .focus': {
+        width: '3px',
+        height: '100%'
+    },
+
+    '.d__vertical > .divider .focus': {
+        width: '100%',
+        height: '3px'
+    },
+
+    '.divider:focus-visible .focus': {
+        backgroundColor: 'var(--f-clr-primary-100)'
+    },
+
+    '.handle': {
+        position: 'absolute',
+        padding: '4px',
+        borderRadius: '99px',
+        backgroundColor: 'var(--f-clr-fg-200)',
+        zIndex: 1
+    },
+
+    '.divider:focus-visible .handle': {
+        backgroundColor: 'var(--f-clr-primary-100)'
+    },
+
+    '.divider:focus-visible .strip': {
+        backgroundColor: 'var(--f-clr-primary-300)'
+    },
+
+    '.strip': {
+        backgroundColor: 'var(--f-clr-grey-200)',
+        borderRadius: '99px'
+    },
+
+    '.d__horizontal > .divider .strip': {
+        width: '2px',
+        height: '8px'
+    },
+
+    '.d__vertical > .divider .strip': {
+        height: '2px',
+        width: '8px'
+    }
+});
+
+export type PanelSelectors = Selectors<'panel' | 'd__horizontal' | 'd__vertical' | 'divider' | 'focus' | 'handle'>;
+
+const Panel = forwardRef(({ cc = {}, children, size, handles, direction = 'horizontal', ...props }:
     {
-        cc?: Selectors<'navigation'>;
+        cc?: PanelSelectors;
         size?: number;
         handles?: boolean;
-        vertical?: boolean;
+        direction?: 'horizontal' | 'vertical';
         // steps??
     } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('panel', {
-        '.panel': {
-            position: 'relative',
-            display: 'flex',
-            flexShrink: 0
-        },
-
-        '.panel__vertical': {
-            flexDirection: 'column'
-        },
-
-        '.divider': {
-            width: '1px',
-            height: '100%',
-            background: 'var(--f-clr-fg-200)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            userSelect: 'none',
-            cursor: 'ew-resize',
-            outline: 'none'
-        },
-
-        '.panel__vertical > .divider': {
-            width: '100%',
-            height: '1px',
-            cursor: 'ns-resize'
-        },
-
-        '.focus': {
-            position: 'absolute',
-            width: '3px',
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1
-        },
-
-        '.panel__vertical > .divider .focus': {
-            width: '100%',
-            height: '3px'
-        },
-
-        '.divider:focus-visible .focus': {
-            backgroundColor: 'var(--f-clr-primary-100)'
-        },
-
-        '.handle': {
-            position: 'absolute',
-            padding: '4px',
-            borderRadius: '99px',
-            backgroundColor: 'var(--f-clr-fg-200)',
-            zIndex: 1
-        },
-
-        '.divider:focus-visible .handle': {
-            backgroundColor: 'var(--f-clr-primary-100)'
-        },
-
-        '.divider:focus-visible .strip': {
-            backgroundColor: 'var(--f-clr-primary-300)'
-        },
-
-        '.strip': {
-            backgroundColor: 'var(--f-clr-grey-200)',
-            width: '2px',
-            height: '8px',
-            borderRadius: '99px'
-        },
-
-        '.panel__vertical > .divider .strip': {
-            height: '2px',
-            width: '8px'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const count = Children.count(children);
@@ -115,7 +127,7 @@ const Panel = forwardRef(({ cc = {}, children, size, handles, vertical, ...props
 
             const px = (clientX - x) / width, py = (clientY - y) / height;
 
-            update(dragging.current - 1, vertical ? py : px);
+            update(dragging.current - 1, direction === 'vertical' ? py : px);
         }
 
         const cancel = () => dragging.current = 0;
@@ -127,12 +139,12 @@ const Panel = forwardRef(({ cc = {}, children, size, handles, vertical, ...props
             window.removeEventListener('mousemove', drag);
             window.removeEventListener('mouseup', cancel);
         }
-    }, [update, vertical]);
+    }, [update, direction]);
 
     return <div ref={combineRefs(container, ref)} {...props}
         className={classes(
             style.panel,
-            vertical && style.panel__vertical,
+            style[`d__${direction}`],
             props.className
         )}
         style={{

@@ -11,6 +11,27 @@ import { combineClasses } from '../../core/utils';
 import Button from './button';
 import { MdClose } from 'react-icons/md';
 
+function toString(date?: Date | null) {
+    if (!date) return '';
+
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+}
+
+function format(value: string) {
+    const nums = value.replace(/\D/g, '');
+
+    return [nums.slice(0, 4), nums.slice(4, 6), nums.slice(6, 8)].filter(val => val.length).join('-');
+}
+
+const styles = createStyles('date-field', fluid => ({
+    [`@media(min-width: ${fluid.breakpoints.mob + 1}px)`]: {
+        '.calendar': {
+            boxShadow: 'var(--f-shadow-med)',
+            border: 'solid 1px var(--f-clr-fg-200)'
+        }
+    }
+}));
+
 const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled, clearable, ...props }:
     {
         value?: Date | null;
@@ -19,30 +40,10 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled
         disabled?: boolean | Date[];
         clearable?: boolean;
     } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('date-field', fluid => ({
-        [`@media(min-width: ${fluid.breakpoints.mob + 1}px)`]: {
-            '.calendar': {
-                boxShadow: 'var(--f-shadow-med)',
-                border: 'solid 1px var(--f-clr-fg-200)'
-            }
-        }
-    }));
     const style = combineClasses(styles, cc);
 
     const [state, setState] = value !== undefined ? [value, onChange] : useState<Date | null>(defaultValue || null);
     const [partial, setPartial] = useState<string | null>(null);
-
-    function toString(date?: Date | null) {
-        if (!date) return '';
-
-        return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-    }
-
-    function format(value: string) {
-        const nums = value.replace(/\D/g, '');
-
-        return [nums.slice(0, 4), nums.slice(4, 6), nums.slice(6, 8)].filter(val => val.length).join('-');
-    }
 
     return <Popover.Root position="center" mobileContainer="modal">
         <Popover.Trigger disabled={disabled === true || props.readOnly}>

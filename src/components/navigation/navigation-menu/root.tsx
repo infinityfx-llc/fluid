@@ -1,6 +1,6 @@
 'use client';
 
-import { FluidStyles, Selectors } from "../../../../src/types";
+import { Selectors } from "../../../../src/types";
 import { classes } from "../../../../src/utils";
 import { createContext, forwardRef, useContext, useId, useRef, useState } from "react";
 import { createStyles } from "../../../core/style";
@@ -21,19 +21,23 @@ export function useNavigationMenu() {
     return context;
 }
 
+const styles = createStyles('navigation-menu.root', {
+    '.navigation': {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--f-spacing-sml)',
+        height: '100%',
+        isolation: 'isolate',
+        paddingBlock: 'var(--f-spacing-sml)'
+    }
+});
+
+export type NavigationMenuRootSelectors = Selectors<'navigation'>;
+
 const Root = forwardRef(({ children, cc = {}, ...props }:
     {
-        cc?: Selectors<'navigation'>;
+        cc?: NavigationMenuRootSelectors;
     } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
-    const styles = createStyles('navigation-menu.root', {
-        '.navigation': {
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--f-spacing-sml)',
-            height: '100%',
-            isolation: 'isolate'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const id = useId();

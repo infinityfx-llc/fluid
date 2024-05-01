@@ -58,6 +58,85 @@ export function parsePartialHex(str: string) {
 
 // maybe sizes?
 
+const styles = createStyles('color-picker', {
+    '.wrapper': {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--f-spacing-sml)',
+    },
+
+    '.row': {
+        display: 'flex',
+        gap: 'var(--f-spacing-sml)'
+    },
+
+    '.column': {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--f-spacing-sml)',
+        flexGrow: 1
+    },
+
+    '.space': {
+        position: 'relative',
+        minWidth: '12em',
+        height: '12em',
+        borderRadius: 'var(--f-radius-sml)',
+        backgroundBlendMode: 'multiply',
+        border: 'solid 1px var(--f-clr-fg-200)',
+        flexGrow: 1,
+        userSelect: 'none'
+    },
+
+    '.selection': {
+        position: 'absolute',
+        width: '1.2em',
+        height: '1.2em',
+        borderRadius: '99px',
+        border: 'solid 1px var(--f-clr-fg-200)',
+        pointerEvents: 'none',
+        translate: '-50% -50%'
+    },
+
+    '.wrapper .swatch': {
+        width: 'auto',
+        flexGrow: 1
+    },
+
+    '.wrapper .hex ': {
+        minWidth: '3.2em'
+    },
+
+    '.rgb': {
+        display: 'flex',
+        gap: 'var(--f-spacing-sml)'
+    },
+
+    '.wrapper .rgb > * ': {
+        minWidth: '3.2em',
+        flexGrow: 1
+    },
+
+    '.wrapper .hue__progress': {
+        backgroundColor: 'transparent'
+    },
+
+    '.hue__track': {
+        background: 'linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)'
+    },
+
+    '.hue__handle::after': {
+        boxSizing: 'border-box',
+        border: 'solid 1px var(--f-clr-fg-200)'
+    },
+
+    '.wrapper .hue__handle[aria-disabled="false"]::after': {
+        backgroundColor: 'var(--hue)'
+    }
+});
+
+export type ColorPickerSelectors = Selectors<'wrapper'>;
+
 type ColorPickerProps<T> = {
     cc?: Selectors<'wrapper'>;
     format?: T;
@@ -68,86 +147,6 @@ type ColorPickerProps<T> = {
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>;
 
 function ColorPickerComponent<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format, defaultValue, value, onChange, disabled, ...props }: ColorPickerProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
-    const styles = createStyles('color-picker', {
-        '.wrapper': {
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--f-spacing-sml)',
-        },
-
-        '.row': {
-            display: 'flex',
-            gap: 'var(--f-spacing-sml)'
-        },
-
-        '.column': {
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--f-spacing-sml)',
-            flexGrow: 1
-        },
-
-        '.space': {
-            position: 'relative',
-            minWidth: '12em',
-            height: '12em',
-            borderRadius: 'var(--f-radius-sml)',
-            backgroundBlendMode: 'multiply',
-            border: 'solid 1px var(--f-clr-fg-200)',
-            flexGrow: 1,
-            userSelect: 'none'
-        },
-
-        '.selection': {
-            position: 'absolute',
-            width: '1.2em',
-            height: '1.2em',
-            borderRadius: '99px',
-            border: 'solid 2px var(--f-clr-fg-200)',
-            pointerEvents: 'none',
-            translate: '-50% -50%'
-        },
-
-        '.wrapper[data-disabled="true"] .selection': {
-            backgroundColor: 'var(--f-clr-grey-200) !important'
-        },
-
-        '.swatch': {
-            width: 'auto !important',
-            flexGrow: 1
-        },
-
-        '.hex ': {
-            minWidth: '3.2em !important'
-        },
-
-        '.rgb': {
-            display: 'flex',
-            gap: 'var(--f-spacing-sml)'
-        },
-
-        '.rgb > * ': {
-            minWidth: '3.2em !important',
-            flexGrow: 1
-        },
-
-        '.hue__progress': {
-            backgroundColor: 'transparent !important'
-        },
-
-        '.hue__track': {
-            background: 'linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)'
-        },
-
-        '.hue__handle::after': {
-            boxSizing: 'border-box',
-            border: 'solid 2px var(--f-clr-fg-200)'
-        },
-
-        '.hue__handle[aria-disabled="false"]::after': {
-            backgroundColor: 'var(--hue) !important'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const picking = useRef(false);
@@ -206,8 +205,7 @@ function ColorPickerComponent<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format
         className={classes(
             style.wrapper,
             props.className
-        )}
-        data-disabled={disabled}>
+        )}>
         <div className={style.row}>
             <div
                 ref={spaceRef}
@@ -222,12 +220,12 @@ function ColorPickerComponent<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format
                 <div className={style.selection} style={{
                     left: `${hsv[1]}%`,
                     top: `${100 - hsv[2]}%`,
-                    backgroundColor: `rgb(${rgb.join(',')})`
+                    backgroundColor: disabled ? 'var(--f-clr-grey-200)' : `rgb(${rgb.join(',')})`
                 }} />
             </div>
 
             <div className={style.column}>
-                <Swatch color={`rgb(${rgb.join(',')})`} className={style.swatch} />
+                <Swatch color={`rgb(${rgb.join(',')})`} cc={{ swatch: style.swatch, ...cc }} />
 
                 <Field
                     disabled={disabled}
@@ -247,6 +245,7 @@ function ColorPickerComponent<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format
                 <div className={style.rgb}>
                     {rgb.map((val, i) => <NumberField
                         key={i}
+                        cc={cc}
                         disabled={disabled}
                         max={255}
                         precision={0}
@@ -271,7 +270,8 @@ function ColorPickerComponent<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format
             cc={{
                 progress: style.hue__progress,
                 track: style.hue__track,
-                handle: style.hue__handle
+                handle: style.hue__handle,
+                ...cc
             }} />
     </div>;
 }

@@ -1,7 +1,13 @@
-import type { ButtonStyles } from "./components/input/button";
-import type { RadioStyles } from "./components/input/radio";
 import type { PopoverRootReference } from "./components/layout/popover/root";
 import { PartialFluidTheme } from "./core/theme";
+
+export type FluidSize = 'xsm' | 'sml' | 'med' | 'lrg';
+
+export type FluidBreakpoint = 'mob' | 'tab' | 'lap' | 'dsk';
+
+export type FluidInputvalue = string | number | readonly string[] | undefined;
+
+export type FluidError = null | boolean | string;
 
 type SharedKeys<T, P> = keyof Omit<T | P, keyof (Omit<T, keyof P> & Omit<P, keyof T>)>;
 
@@ -19,81 +25,72 @@ export type Selectors<T extends string = string> = {
     [key in (T | string & {})]?: string;
 };
 
-export type FluidSize = 'xsm' | 'sml' | 'med' | 'lrg';
-
-export type FluidBreakpoint = 'mob' | 'tab' | 'lap' | 'dsk';
-
-export type FluidInputvalue = string | number | readonly string[] | undefined;
-
-export type FluidError = null | boolean | string;
+type FluidSelectorStyles<T> = FluidStyles<T extends Selectors<infer K> ? `.${K}` : never>;
 
 export type FluidComponents = {
-    'combobox.content'?: FluidStyles;
-    'combobox.option'?: FluidStyles;
-    'action-menu.menu'?: FluidStyles;
-    'action-menu.group'?: FluidStyles;
-    'action-menu.item'?: FluidStyles;
-    'action-menu.heading'?: FluidStyles;
-    badge?: FluidStyles;
-    code?: FluidStyles;
-    frame?: FluidStyles;
-    key?: FluidStyles;
-    swatch?: FluidStyles;
-    table?: FluidStyles;
-    text?: FluidStyles;
-    timeline?: FluidStyles;
-    toast?: FluidStyles;
-    tooltip?: FluidStyles;
-    'circular-progress'?: FluidStyles;
-    halo?: FluidStyles;
-    indicator?: FluidStyles;
-    'progress-bar'?: FluidStyles;
-    skeleton?: FluidStyles;
-    spinner?: FluidStyles;
-    button?: ButtonStyles;
-    calendar?: FluidStyles;
-    checkbox?: FluidStyles;
-    chip?: FluidStyles;
-    'color-field'?: FluidStyles;
-    'color-picker'?: FluidStyles;
-    'date-field'?: FluidStyles;
-    field?: FluidStyles;
-    'file-field'?: FluidStyles;
-    hamburger?: FluidStyles;
-    'number-field'?: FluidStyles;
-    'password-field'?: FluidStyles;
-    pincode?: FluidStyles;
-    radio?: RadioStyles;
-    segmented?: FluidStyles;
-    select?: FluidStyles;
-    slider?: FluidStyles;
-    switch?: FluidStyles;
-    textarea?: FluidStyles;
-    toggle?: FluidStyles;
-    'accordion.item'?: FluidStyles;
-    'accordion.root'?: FluidStyles;
-    'sidebar.header'?: FluidStyles;
-    'sidebar.heading'?: FluidStyles;
-    'sidebar.link'?: FluidStyles;
-    'sidebar.root'?: FluidStyles;
-    'sidebar.user'?: FluidStyles;
-    combine?: FluidStyles;
-    collapsible?: FluidStyles;
-    container?: FluidStyles;
-    'container-item'?: FluidStyles;
+    'combobox.content'?: FluidSelectorStyles<import('./components/display/combobox/content').ComboboxContentSelectors>;
+    'combobox.option'?: FluidSelectorStyles<import('./components/display/combobox/option').ComboboxOptionSelectors>;
+    'action-menu.menu'?: FluidSelectorStyles<import('./components/display/action-menu/menu').ActionMenuMenuSelectors>;
+    'action-menu.group'?: FluidSelectorStyles<import('./components/display/action-menu/group').ActionMenuGroupSelectors>;
+    'action-menu.item'?: FluidSelectorStyles<import('./components/display/action-menu/item').ActionMenuItemSelectors>;
+    'action-menu.heading'?: FluidSelectorStyles<import('./components/display/action-menu/heading').ActionMenuHeadingSelectors>;
+    badge?: FluidSelectorStyles<import('./components/display/badge').BadgeSelectors>;
+    code?: FluidSelectorStyles<import('./components/display/code').CodeSelectors>;
+    frame?: FluidSelectorStyles<import('./components/display/frame').FrameSelectors>;
+    key?: FluidSelectorStyles<import('./components/display/key').KeySelectors>;
+    swatch?: FluidSelectorStyles<import('./components/display/swatch').SwatchSelectors>;
+    table?: FluidSelectorStyles<import('./components/display/table').TableSelectors>;
+    text?: FluidSelectorStyles<import('./components/display/text').TextSelectors>;
+    timeline?: FluidSelectorStyles<import('./components/display/timeline').TimelineSelectors>;
+    toast?: FluidSelectorStyles<import('./components/display/toast').ToastSelectors>;
+    tooltip?: FluidSelectorStyles<import('./components/display/tooltip').TooltipSelectors>;
+    'circular-progress'?: FluidSelectorStyles<import('./components/feedback/circular-progress').CircularProgressSelectors>;
+    halo?: FluidSelectorStyles<import('./components/feedback/halo').HaloSelectors>;
+    indicator?: FluidSelectorStyles<import('./components/feedback/indicator').IndicatorSelectors>;
+    'progress-bar'?: FluidSelectorStyles<import('./components/feedback/progress-bar').ProgressBarSelectors>;
+    skeleton?: FluidSelectorStyles<import('./components/feedback/skeleton').SkeletonSelectors>;
+    button?: FluidSelectorStyles<import('./components/input/button').ButtonSelectors>;
+    calendar?: FluidSelectorStyles<import('./components/input/calendar').CalendarSelectors>;
+    checkbox?: FluidSelectorStyles<import('./components/input/checkbox').CheckboxSelectors>;
+    chip?: FluidSelectorStyles<import('./components/input/chip').ChipSelectors>;
+    'color-field'?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
+    'color-picker'?: FluidSelectorStyles<import('./components/input/color-picker').ColorPickerSelectors>;
+    'date-field'?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
+    field?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
+    'file-field'?: FluidSelectorStyles<import('./components/input/file-field').FileFieldSelectors>;
+    hamburger?: FluidSelectorStyles<import('./components/input/hamburger').HamburgerSelectors>;
+    'number-field'?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
+    'password-field'?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
+    pincode?: FluidSelectorStyles<import('./components/input/pincode').PincodeSelectors>;
+    radio?: FluidSelectorStyles<import('./components/input/radio').RadioSelectors>;
+    segmented?: FluidSelectorStyles<import('./components/input/segmented').SegmentedSelectors>;
+    select?: FluidSelectorStyles<import('./components/input/select').SelectSelectors>;
+    slider?: FluidSelectorStyles<import('./components/input/slider').SliderSelectors>;
+    switch?: FluidSelectorStyles<import('./components/input/switch').SwitchSelectors>;
+    textarea?: FluidSelectorStyles<import('./components/input/textarea').TextareaSelectors>;
+    toggle?: FluidSelectorStyles<import('./components/input/toggle').ToggleSelectors>;
+    'accordion.item'?: FluidSelectorStyles<import('./components/layout/accordion/item').AccordionItemSelectors>;
+    'accordion.root'?: FluidSelectorStyles<import('./components/layout/accordion/root').AccordionRootSelectors>;
+    'sidebar.header'?: FluidSelectorStyles<import('./components/layout/sidebar/header').SidebarHeaderSelectors>;
+    'sidebar.heading'?: FluidSelectorStyles<import('./components/layout/sidebar/heading').SidebarHeadingSelectors>;
+    'sidebar.link'?: FluidSelectorStyles<import('./components/layout/sidebar/link').SidebarLinkSelectors>;
+    'sidebar.root'?: FluidSelectorStyles<import('./components/layout/sidebar/root').SidebarRootSelectors>;
+    'sidebar.user'?: FluidSelectorStyles<import('./components/layout/sidebar/user').SidebarUserSelectors>;
+    collapsible?: FluidSelectorStyles<import('./components/layout/collapsible').CollapsibleSelectors>;
+    combine?: FluidSelectorStyles<import('./components/layout/combine').CombineSelectors>;
     cull?: FluidStyles;
-    divider?: FluidStyles;
-    drawer?: FluidStyles;
-    modal?: FluidStyles;
-    overlay?: FluidStyles;
-    panel?: FluidStyles;
-    scrollarea?: FluidStyles;
-    'navigation-menu.root'?: FluidStyles;
-    'navigation-menu.group'?: FluidStyles;
-    'navigation-menu.link'?: FluidStyles;
-    pagination?: FluidStyles;
-    stepper?: FluidStyles;
-    tabs?: FluidStyles;
+    divider?: FluidSelectorStyles<import('./components/layout/divider').DividerSelectors>;
+    drawer?: FluidSelectorStyles<import('./components/layout/drawer').DrawerSelectors>;
+    modal?: FluidSelectorStyles<import('./components/layout/modal').ModalSelectors>;
+    overlay?: FluidSelectorStyles<import('./components/layout/overlay').OverlaySelectors>;
+    panel?: FluidSelectorStyles<import('./components/layout/panel').PanelSelectors>;
+    scrollarea?: FluidSelectorStyles<import('./components/layout/scrollarea').ScrollareaSelectors>;
+    'navigation-menu.root'?: FluidSelectorStyles<import('./components/navigation/navigation-menu/root').NavigationMenuRootSelectors>;
+    'navigation-menu.group'?: FluidSelectorStyles<import('./components/navigation/navigation-menu/group').NavigationMenuGroupSelectors>;
+    'navigation-menu.link'?: FluidSelectorStyles<import('./components/navigation/navigation-menu/link').NavigationMenuLinkSelectors>;
+    pagination?: FluidSelectorStyles<import('./components/navigation/pagination').PaginationSelectors>;
+    stepper?: FluidSelectorStyles<import('./components/navigation/stepper').StepperSelectors>;
+    tabs?: FluidSelectorStyles<import('./components/navigation/tabs').TabsSelectors>;
 }
 
 export type FluidConfig = {

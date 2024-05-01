@@ -12,28 +12,35 @@ import { createStyles } from '../../core/style';
 
 const colors = ['#eb2a1c', '#eb2a1c', '#e8831e', '#f0d030', '#fff952', '#5aff54'];
 
+const styles = createStyles('password-field', {
+    '.container': {
+        minWidth: 'min(100%, 12em)'
+    },
+
+    '.container .wrapper': {
+        width: '100%'
+    },
+
+    '.error': {
+        fontSize: '.8em',
+        fontWeight: 500,
+        color: 'var(--f-clr-error-100)'
+    },
+
+    '.container .track': {
+        width: '100%',
+        marginTop: 'var(--f-spacing-xsm)'
+    },
+
+    '.wrapper .toggle': {
+        marginRight: '.3em'
+    }
+});
+
 // optimize prop splitting
-const PasswordField = forwardRef(({ cc = {}, strengthBar = false, size = 'med', round, error, showError, icon, label, left, right, defaultValue, onEnter, inputRef, ...props }: { strengthBar?: boolean; } & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('password-field', {
-        '.wrapper': {
-            width: '100% !important'
-        },
-
-        '.container': {
-            minWidth: 'clamp(0px, 12em, 100vw)'
-        },
-
-        '.error': {
-            fontSize: '.8em',
-            fontWeight: 500,
-            color: 'var(--f-clr-error-100)'
-        },
-
-        '.track': {
-            width: '100% !important',
-            marginTop: 'var(--f-spacing-xsm)'
-        }
-    });
+const PasswordField = forwardRef(({ cc = {}, strengthBar = false, size = 'med', round, error, showError, icon, label, left, right, defaultValue, onEnter, inputRef, ...props }: {
+    strengthBar?: boolean;
+} & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = combineClasses(styles, cc);
 
     const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(defaultValue || '');
@@ -64,16 +71,26 @@ const PasswordField = forwardRef(({ cc = {}, strengthBar = false, size = 'med', 
             value={value}
             onEnter={onEnter}
             cc={{
-                ...cc,
-                wrapper: style.wrapper
+                wrapper: style.wrapper,
+                ...cc
             }}
             onChange={e => {
                 setValue?.(e.target.value);
                 props.onChange?.(e);
             }}
-            right={<Toggle compact aria-label="Toggle visibility" round={round} size={size} variant="minimal" disabled={props.disabled} checkedContent={<MdVisibilityOff />} checked={visible} onChange={e => setVisible(e.target.checked)} style={{
-                marginRight: '.2em'
-            }}>
+            right={<Toggle
+                compact
+                aria-label="Toggle visibility" 
+                round={round} 
+                size={size} 
+                variant="minimal" 
+                disabled={props.disabled} 
+                checkedContent={<MdVisibilityOff />} 
+                checked={visible} 
+                onChange={e => setVisible(e.target.checked)} 
+                cc={{
+                    toggle: style.toggle
+                }}>
                 <MdVisibility />
             </Toggle>} />
 

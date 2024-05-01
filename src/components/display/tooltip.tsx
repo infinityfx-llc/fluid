@@ -1,68 +1,69 @@
 'use client';
 
 import { combineClasses, combineRefs } from "../../../src/core/utils";
-import { FluidStyles, Selectors } from "../../../src/types";
+import { Selectors } from "../../../src/types";
 import { forwardRef, cloneElement, useState, useRef, isValidElement, useId, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
 
-export type TooltipStyles = FluidStyles<'.tooltip'>;
+const styles = createStyles('tooltip', {
+    '.anchor': {
+        position: 'absolute',
+        pointerEvents: 'none'
+    },
 
-const Tooltip = forwardRef(({ children, content, cc = {}, position = 'auto', visibility = 'interact', delay = .3, ...props }:
+    '.anchor[data-position="top"]': {
+        bottom: 'calc(100% + var(--f-spacing-sml))',
+        left: '50%'
+    },
+
+    '.anchor[data-position="left"]': {
+        right: 'calc(100% + var(--f-spacing-sml))',
+        top: '50%'
+    },
+
+    '.anchor[data-position="right"]': {
+        left: 'calc(100% + var(--f-spacing-sml))',
+        top: '50%'
+    },
+
+    '.anchor[data-position="bottom"]': {
+        top: 'calc(100% + var(--f-spacing-sml))',
+        left: '50%'
+    },
+
+    '.tooltip': {
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        zIndex: 999,
+        backgroundColor: 'var(--f-clr-fg-200)',
+        color: 'var(--f-clr-text-100)',
+        fontSize: '.8rem',
+        fontWeight: 600,
+        padding: '.3em .5em',
+        borderRadius: 'var(--f-radius-sml)',
+        pointerEvents: 'none',
+        transition: 'opacity .2s, translate .2s'
+    },
+
+    '.tooltip[aria-hidden="true"]': {
+        opacity: 0,
+        translate: '0px 4px'
+    }
+});
+
+export type TooltipSelectors = Selectors<'tooltip'>;
+
+const Tooltip = forwardRef(({ children, cc = {}, content, position = 'auto', visibility = 'interact', delay = .3, ...props }:
     {
         children: React.ReactElement;
+        cc?: TooltipSelectors;
         content?: React.ReactNode;
-        cc?: Selectors<'tooltip'>;
         position?: 'auto' | 'top' | 'left' | 'bottom' | 'right';
         visibility?: 'never' | 'interact' | 'always';
         delay?: number;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('tooltip', {
-        '.anchor': {
-            position: 'absolute',
-            pointerEvents: 'none'
-        },
-
-        '.anchor[data-position="top"]': {
-            bottom: 'calc(100% + var(--f-spacing-sml))',
-            left: '50%'
-        },
-
-        '.anchor[data-position="left"]': {
-            right: 'calc(100% + var(--f-spacing-sml))',
-            top: '50%'
-        },
-
-        '.anchor[data-position="right"]': {
-            left: 'calc(100% + var(--f-spacing-sml))',
-            top: '50%'
-        },
-
-        '.anchor[data-position="bottom"]': {
-            top: 'calc(100% + var(--f-spacing-sml))',
-            left: '50%'
-        },
-
-        '.tooltip': {
-            position: 'fixed',
-            left: 0,
-            top: 0,
-            zIndex: 999,
-            backgroundColor: 'var(--f-clr-fg-200)',
-            color: 'var(--f-clr-text-100)',
-            fontSize: '.8rem',
-            fontWeight: 600,
-            padding: '.3em .5em',
-            borderRadius: 'var(--f-radius-sml)',
-            pointerEvents: 'none',
-            transition: 'opacity .2s, translate .2s'
-        },
-
-        '.tooltip[aria-hidden="true"]': {
-            opacity: 0,
-            translate: '0px 4px'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const id = useId();

@@ -1,18 +1,58 @@
 'use client';
 
 import { Children, forwardRef, useId } from 'react';
-import { FluidStyles, Selectors } from '../../../../src/types';
+import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses } from '../../../core/utils';
 import { Morph } from '@infinityfx/lively/layout';
 import { useNavigationMenu } from './root';
 import { Animatable } from '@infinityfx/lively';
 
+const styles = createStyles('navigation-menu.group', {
+    '.group': {
+        position: 'relative',
+        display: 'flex',
+        justifyContent: 'center'
+    },
+
+    '.link': {
+        position: 'relative',
+        padding: '.4em',
+        borderRadius: 'var(--f-radius-sml)',
+        fontWeight: 600,
+        color: 'var(--f-clr-text-100)',
+        outline: 'none',
+        cursor: 'pointer'
+    },
+
+    '.selection': {
+        position: 'absolute',
+        inset: 0,
+        borderRadius: 'var(--f-radius-sml)',
+        backgroundColor: 'var(--f-clr-primary-500)',
+        zIndex: -1
+    },
+
+    '.menu': {
+        position: 'absolute',
+        top: 'calc(100% + var(--f-spacing-sml))',
+        borderRadius: 'calc(.25em + var(--f-radius-sml))',
+        padding: '.25em',
+        backgroundColor: 'var(--f-clr-fg-100)',
+        border: 'solid 1px var(--f-clr-fg-200)',
+        boxShadow: 'var(--f-shadow-med)',
+        overflow: 'hidden',
+        zIndex: 99
+    }
+});
+
+export type NavigationMenuGroupSelectors = Selectors<'group' | 'link' | 'selection' | 'menu'>;
+
 type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a';
 
 const Group = forwardRef(({ children, cc = {}, label, href, target, active = false, position = 'center', Link = 'a', ...props }:
     {
-        cc?: Selectors<'link' | 'selection' | 'menu'>;
+        cc?: NavigationMenuGroupSelectors;
         label: React.ReactNode;
         href?: string;
         target?: '_blank' | '_parent' | '_self' | '_top';
@@ -20,43 +60,6 @@ const Group = forwardRef(({ children, cc = {}, label, href, target, active = fal
         position?: 'start' | 'center' | 'end';
         Link?: AnchorLike<any>;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('navigation-menu.group', {
-        '.group': {
-            position: 'relative',
-            display: 'flex',
-            justifyContent: 'center'
-        },
-
-        '.link': {
-            position: 'relative',
-            padding: '.4em',
-            borderRadius: 'var(--f-radius-sml)',
-            fontWeight: 600,
-            color: 'var(--f-clr-text-100)',
-            outline: 'none',
-            cursor: 'pointer'
-        },
-
-        '.selection': {
-            position: 'absolute',
-            inset: 0,
-            borderRadius: 'var(--f-radius-sml)',
-            backgroundColor: 'var(--f-clr-primary-500)',
-            zIndex: -1
-        },
-
-        '.menu': {
-            position: 'absolute',
-            top: 'calc(100% + var(--f-spacing-sml))',
-            borderRadius: 'calc(.25em + var(--f-radius-sml))',
-            padding: '.25em',
-            backgroundColor: 'var(--f-clr-fg-100)',
-            border: 'solid 1px var(--f-clr-fg-200)',
-            boxShadow: 'var(--f-shadow-med)',
-            zIndex: 999,
-            overflow: 'hidden'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const linkId = useId();
@@ -106,7 +109,7 @@ const Group = forwardRef(({ children, cc = {}, label, href, target, active = fal
                     left: position === 'start' ? 0 : undefined,
                     right: position === 'end' ? 0 : undefined
                 }}>
-                <Animatable stagger={.06} triggers={[{ on: 'mount' }]}>
+                <Animatable stagger={.06} triggers={[{ on: 'mount', delay: .25 }]}>
                     {children}
                 </Animatable>
             </div>

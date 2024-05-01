@@ -2,14 +2,125 @@
 
 import { classes, combineClasses } from "../../../src/core/utils";
 import useInputProps from "../../../src/hooks/use-input-props";
-import { FluidError, FluidInputvalue, FluidSize, FluidStyles, Selectors } from "../../../src/types";
+import { FluidError, FluidInputvalue, FluidSize, Selectors } from "../../../src/types";
 import { forwardRef, useId, useRef, useState } from "react";
 import { createStyles } from "../../core/style";
 
+const styles = createStyles('pincode', {
+    '.wrapper': {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--f-spacing-xxs)'
+    },
+
+    '.label': {
+        fontSize: '.8em',
+        fontWeight: 500,
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.pincode': {
+        display: 'flex',
+        gap: 'var(--f-spacing-xsm)'
+    },
+
+    '.group': {
+        display: 'flex',
+        flexGrow: 1
+    },
+
+    '.field': {
+        outline: 'solid 3px transparent',
+        backgroundColor: 'var(--f-clr-fg-100)',
+        border: 'solid 1px var(--f-clr-fg-200)',
+        borderRadius: 'var(--f-radius-sml)',
+        transition: 'border-color .2s, outline-color .2s',
+        padding: '.675em',
+        display: 'flex',
+        flexGrow: 1
+    },
+
+    '.group .field + .field': {
+        marginLeft: '-1px',
+        borderTopLeftRadius: 0,
+        borderBottomLeftRadius: 0
+    },
+
+    '.group .field:not(:last-child)': {
+        borderTopRightRadius: 0,
+        borderBottomRightRadius: 0
+    },
+
+    '.field:focus-within': {
+        borderColor: 'var(--f-clr-primary-100)',
+        outlineColor: 'var(--f-clr-primary-500)',
+        zIndex: 1
+    },
+
+    '.input': {
+        border: 'none',
+        outline: 'none',
+        width: '1em',
+        flexGrow: 1,
+        background: 'none',
+        textAlign: 'center',
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.s__xsm': {
+        fontSize: 'var(--f-font-size-xxs)'
+    },
+
+    '.s__sml': {
+        fontSize: 'var(--f-font-size-xsm)'
+    },
+
+    '.s__med': {
+        fontSize: 'var(--f-font-size-sml)'
+    },
+
+    '.s__lrg': {
+        fontSize: 'var(--f-font-size-med)'
+    },
+
+    '.wrapper.round .field:first-child': {
+        borderTopLeftRadius: '999px',
+        borderBottomLeftRadius: '999px'
+    },
+
+    '.wrapper.round .field:last-child': {
+        borderTopRightRadius: '999px',
+        borderBottomRightRadius: '999px'
+    },
+
+    '.pincode[data-disabled="true"] .field': {
+        backgroundColor: 'var(--f-clr-grey-100)',
+        borderColor: 'var(--f-clr-grey-200)'
+    },
+
+    '.pincode[data-disabled="true"] .input': {
+        color: 'var(--f-clr-grey-500)'
+    },
+
+    '.pincode[data-error="true"] .field': {
+        borderColor: 'var(--f-clr-error-100)'
+    },
+
+    '.pincode[data-error="true"] .field:focus-within': {
+        outlineColor: 'var(--f-clr-error-400)'
+    },
+
+    '.pincode[data-error="true"] .input': {
+        color: 'var(--f-clr-error-200)'
+    }
+});
+
+export type PincodeSelectors = Selectors<'wrapper' | 'label' | 'pincode' | 'field' | 'input' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
+
 const Pincode = forwardRef(({ cc = {}, format = [1, 1, 1, 1], masked, size = 'med', round = false, label, value, error, onChange, defaultvalue, autoFocus, ...props }:
     {
+        cc?: PincodeSelectors;
         defaultvalue?: FluidInputvalue;
-        cc?: Selectors<'wrapper' | 'label' | 'pincode' | 'field' | 'input' | 'wrapper__xsm' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg' | 'wrapper__round'>;
         format?: number[];
         masked?: boolean;
         size?: FluidSize;
@@ -19,113 +130,6 @@ const Pincode = forwardRef(({ cc = {}, format = [1, 1, 1, 1], masked, size = 'me
         error?: FluidError;
         onChange?: (value: string) => void;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'size' | 'value' | 'defaultValue' | 'onChange' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('pincode', {
-        '.wrapper': {
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--f-spacing-xxs)'
-        },
-
-        '.label': {
-            fontSize: '.8em',
-            fontWeight: 500,
-            color: 'var(--f-clr-text-100)'
-        },
-
-        '.pincode': {
-            display: 'flex',
-            gap: 'var(--f-spacing-xsm)'
-        },
-
-        '.group': {
-            display: 'flex'
-        },
-
-        '.field': {
-            outline: 'solid 3px transparent',
-            backgroundColor: 'var(--f-clr-fg-100)',
-            border: 'solid 1px var(--f-clr-fg-200)',
-            borderRadius: 'var(--f-radius-sml)',
-            transition: 'border-color .2s, outline-color .2s',
-            padding: '.675em',
-            display: 'flex',
-            flexGrow: 1
-        },
-
-        '.group .field + .field': {
-            marginLeft: '-1px',
-            borderTopLeftRadius: 0,
-            borderBottomLeftRadius: 0
-        },
-
-        '.group .field:not(:last-child)': {
-            borderTopRightRadius: 0,
-            borderBottomRightRadius: 0
-        },
-
-        '.field:focus-within': {
-            borderColor: 'var(--f-clr-primary-100)',
-            outlineColor: 'var(--f-clr-primary-500)',
-            zIndex: 1
-        },
-
-        '.input': {
-            border: 'none',
-            outline: 'none',
-            width: '1em',
-            flexGrow: 1,
-            background: 'none',
-            textAlign: 'center',
-            color: 'var(--f-clr-text-100)'
-        },
-
-        '.wrapper__xsm': {
-            fontSize: 'var(--f-font-size-xxs)'
-        },
-
-        '.wrapper__sml': {
-            fontSize: 'var(--f-font-size-xsm)'
-        },
-
-        '.wrapper__med': {
-            fontSize: 'var(--f-font-size-sml)'
-        },
-
-        '.wrapper__lrg': {
-            fontSize: 'var(--f-font-size-med)'
-        },
-
-        '.wrapper__round .field:first-child': {
-            borderTopLeftRadius: '999px',
-            borderBottomLeftRadius: '999px'
-        },
-
-        '.wrapper__round .field:last-child': {
-            borderTopRightRadius: '999px',
-            borderBottomRightRadius: '999px'
-        },
-
-        '.pincode[data-disabled="true"] .field': {
-            backgroundColor: 'var(--f-clr-grey-100)',
-            borderColor: 'var(--f-clr-grey-200)'
-        },
-
-        '.pincode[data-disabled="true"] .input': {
-            color: 'var(--f-clr-grey-500)'
-        },
-
-        '.pincode[data-error="true"] .field': {
-            borderColor: 'var(--f-clr-error-100)'
-        },
-
-        '.pincode[data-error="true"] .field:focus-within': {
-            outlineColor: 'var(--f-clr-error-400)'
-        },
-
-        '.pincode[data-error="true"] .input': {
-            color: 'var(--f-clr-error-200)'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const id = useId();
@@ -177,8 +181,8 @@ const Pincode = forwardRef(({ cc = {}, format = [1, 1, 1, 1], masked, size = 'me
 
     return <div ref={ref} {...rest} className={classes(
         style.wrapper,
-        style[`wrapper__${size}`],
-        round && style.wrapper__round,
+        style[`s__${size}`],
+        round && style.round,
         props.className
     )}>
         {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}

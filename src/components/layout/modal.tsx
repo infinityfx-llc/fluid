@@ -2,7 +2,7 @@
 
 import { forwardRef, useId, useRef, useEffect } from 'react';
 import Overlay from './overlay';
-import { FluidStyles, Selectors } from '../../../src/types';
+import { Selectors } from '../../../src/types';
 import Button from '../input/button';
 import { MdClose } from 'react-icons/md';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
@@ -13,72 +13,73 @@ import useFluid from '../../hooks/use-fluid';
 import useMediaQuery from '../../hooks/use-media-query';
 import { useLink } from '@infinityfx/lively/hooks';
 
-export type ModalStyles = FluidStyles<'.modal' | '.header'>;
+const styles = createStyles('modal', (fluid) => ({
+    '.modal': {
+        background: 'var(--f-clr-bg-100)',
+        borderRadius: 'var(--f-radius-med)',
+        display: 'flex',
+        flexDirection: 'column',
+        paddingBlock: 'var(--f-spacing-med)',
+        minWidth: 'min(100%, 16em)',
+        border: 'solid 1px var(--f-clr-fg-200)',
+        margin: 'var(--f-spacing-lrg)',
+        maxHeight: 'calc(100% - var(--f-spacing-lrg) * 2)'
+    },
+
+    '.scrollarea': {
+        paddingInline: 'var(--f-spacing-med)'
+    },
+
+    '.header': {
+        display: 'flex',
+        alignItems: 'center',
+        fontWeight: 700,
+        paddingInline: 'var(--f-spacing-med)',
+        marginBottom: 'var(--f-spacing-med)',
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.handle': {
+        position: 'relative',
+        height: '5px',
+        width: '48px',
+        backgroundColor: 'var(--f-clr-grey-200)',
+        borderRadius: '99px',
+        alignSelf: 'center',
+        display: 'none',
+        touchAction: 'none'
+    },
+
+    '.title': {
+        flexGrow: 1
+    },
+
+    [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {
+        '.modal': {
+            width: '100vw',
+            alignSelf: 'flex-end',
+            margin: 0,
+            borderRadius: 'var(--f-radius-lrg)',
+            borderBottomRightRadius: 0,
+            borderBottomLeftRadius: 0
+        },
+
+        '.handle': {
+            display: 'block'
+        }
+    }
+}));
+
+export type ModalSelectors = Selectors<'modal' | 'header' | 'handle' | 'title'>;
 
 const Modal = forwardRef(({ children, cc = {}, show, onClose, title, mobileClosing = 'handle', ...props }:
     {
-        cc?: Selectors<'modal' | 'header'>;
+        cc?: ModalSelectors;
         show: boolean;
         onClose: () => void;
         title?: React.ReactNode;
         mobileClosing?: 'button' | 'handle';
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('modal', (fluid) => ({
-        '.modal': {
-            background: 'var(--f-clr-bg-100)',
-            borderRadius: 'var(--f-radius-med)',
-            display: 'flex',
-            flexDirection: 'column',
-            paddingBlock: 'var(--f-spacing-med)',
-            minWidth: 'clamp(0px, 16rem, 100vw)',
-            border: 'solid 1px var(--f-clr-fg-200)',
-            margin: 'var(--f-spacing-lrg)',
-            maxHeight: 'calc(100% - var(--f-spacing-lrg) * 2)'
-        },
-
-        '.scrollarea': {
-            paddingInline: 'var(--f-spacing-med)'
-        },
-
-        '.header': {
-            display: 'flex',
-            alignItems: 'center',
-            fontWeight: 700,
-            paddingInline: 'var(--f-spacing-med)',
-            marginBottom: 'var(--f-spacing-med)',
-            color: 'var(--f-clr-text-100)'
-        },
-
-        '.handle': {
-            position: 'relative',
-            height: '5px',
-            width: '48px',
-            backgroundColor: 'var(--f-clr-grey-200)',
-            borderRadius: '99px',
-            alignSelf: 'center',
-            display: 'none',
-            touchAction: 'none'
-        },
-
-        '.title': {
-            flexGrow: 1
-        },
-
-        [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {
-            '.modal': {
-                width: '100vw',
-                alignSelf: 'flex-end',
-                margin: 0,
-                borderRadius: 'var(--f-radius-lrg)',
-                borderBottomRightRadius: 0,
-                borderBottomLeftRadius: 0
-            },
-
-            '.handle': {
-                display: 'block'
-            }
-        }
-    }));
     const style = combineClasses(styles, cc);
 
     const modalRef = useRef<HTMLDivElement>(null);

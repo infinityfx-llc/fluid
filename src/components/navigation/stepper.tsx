@@ -1,7 +1,7 @@
 'use client';
 
 import { classes, combineClasses } from "../../../src/core/utils";
-import { FluidStyles, Selectors } from "../../../src/types";
+import { Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { forwardRef, useId } from "react";
 import { MdCheck } from "react-icons/md";
@@ -9,9 +9,174 @@ import Halo from "../feedback/halo";
 import ProgressBar from "../feedback/progress-bar";
 import { createStyles } from "../../core/style";
 
+const styles = createStyles('stepper', {
+    '.wrapper': {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--f-spacing-sml)'
+    },
+
+    '.stepper': {
+        display: 'flex',
+        fontSize: 'var(--f-font-size-sml)'
+    },
+
+    '.wrapper[data-variant="vertical"] .stepper': {
+        flexDirection: 'column'
+    },
+
+    '.step': {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--f-spacing-sml)'
+    },
+
+    '.step:not(:last-child)': {
+        flexBasis: 0,
+        flexGrow: 1
+    },
+
+    '.wrapper[data-variant="compact"] .step': {
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+
+    '.wrapper[data-variant="vertical"] .step': {
+        flexDirection: 'row'
+    },
+
+    '.wrapper[data-variant="default"] .step:not(:last-child)': {
+        paddingRight: 'var(--f-spacing-sml)'
+    },
+
+    '.wrapper[data-variant="vertical"] .step:not(:last-child)': {
+        paddingBottom: 'var(--f-spacing-sml)'
+    },
+
+    '.header': {
+        display: 'flex',
+        gap: 'var(--f-spacing-sml)',
+        alignItems: 'center'
+    },
+
+    '.wrapper[data-variant="vertical"] .header': {
+        flexDirection: 'column'
+    },
+
+    '.button': {
+        position: 'relative',
+        borderRadius: '999px',
+        outline: 'none',
+        border: 'none',
+        background: 'none'
+    },
+
+    '.button:enabled': {
+        cursor: 'pointer'
+    },
+
+    '.bullet': {
+        width: '2em',
+        height: '2em',
+        borderRadius: '999px',
+        backgroundColor: 'var(--f-clr-grey-100)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '1.2em',
+        color: 'var(--f-clr-grey-300)',
+        outline: 'solid 2px transparent',
+        transition: 'background-color .25s, color .25s, outline-color .25s'
+    },
+
+    '.step[data-completed="true"] .bullet': {
+        backgroundColor: 'var(--f-clr-primary-100)',
+        color: 'var(--f-clr-text-200)'
+    },
+
+    '.step[data-current="true"] .bullet': {
+        outlineColor: 'var(--f-clr-primary-400)',
+        color: 'var(--f-clr-primary-200)'
+    },
+
+    '.step[data-error="true"][data-completed="false"] .bullet': {
+        outlineColor: 'var(--f-clr-error-100)',
+        color: 'var(--f-clr-error-200)'
+    },
+
+    '.step[data-error="true"][data-completed="true"] .bullet': {
+        backgroundColor: 'var(--f-clr-error-100)'
+    },
+
+    '.icon': {
+        width: '1em',
+        height: '1em',
+        overflow: 'hidden'
+    },
+
+    '.icons': {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+
+    '.progress': {
+        height: '3px',
+        flexGrow: 1,
+        backgroundColor: 'var(--f-clr-grey-100)',
+        transition: 'background-color .25s',
+        borderRadius: 'var(--f-radius-xsm)'
+    },
+
+    '.wrapper[data-variant="vertical"] .progress': {
+        width: '3px',
+        minHeight: '1em'
+    },
+
+    '.step[data-completed="true"] .progress': {
+        backgroundColor: 'var(--f-clr-primary-100)'
+    },
+
+    '.label': {
+        fontSize: '.85em',
+        fontWeight: 700,
+        color: 'var(--f-clr-grey-300)',
+        transition: 'color .25s'
+    },
+
+    '.step[data-completed="true"] .label': {
+        color: 'var(--f-clr-primary-100)'
+    },
+
+    '.step[data-current="true"] .label': {
+        color: 'var(--f-clr-primary-400)'
+    },
+
+    '.step[data-error="true"] .label': {
+        color: 'var(--f-clr-error-100)'
+    },
+
+    '.title': {
+        fontWeight: 600,
+        color: 'var(--f-clr-text-100)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--f-spacing-xxs)'
+    },
+
+    '.halo': {
+        inset: '-.5em !important'
+    },
+
+    '.track': {
+        width: '100% !important'
+    }
+});
+
+export type StepperSelectors = Selectors<'wrapper' | 'stepper' | 'step' | 'header' | 'button' | 'bullet' | 'icon' | 'icons' | 'progress' | 'label' | 'title'>;
+
 const Stepper = forwardRef(({ cc = {}, steps, completed, setCompleted, navigation = 'backwards', variant = 'default', ...props }:
     {
-        cc?: Selectors<'wrapper' | 'stepper' | 'step' | 'header' | 'button' | 'bullet' | 'icon' | 'icons' | 'progress' | 'label' | 'title' | 'halo' | 'track'>;
+        cc?: StepperSelectors;
         steps: {
             title: string;
             label?: string;
@@ -23,168 +188,6 @@ const Stepper = forwardRef(({ cc = {}, steps, completed, setCompleted, navigatio
         navigation?: 'none' | 'forwards' | 'backwards' | 'both';
         variant?: 'default' | 'compact' | 'vertical';
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('stepper', {
-        '.wrapper': {
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--f-spacing-sml)'
-        },
-
-        '.stepper': {
-            display: 'flex',
-            fontSize: 'var(--f-font-size-sml)'
-        },
-
-        '.wrapper[data-variant="vertical"] .stepper': {
-            flexDirection: 'column'
-        },
-
-        '.step': {
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--f-spacing-sml)'
-        },
-
-        '.step:not(:last-child)': {
-            flexBasis: 0,
-            flexGrow: 1
-        },
-
-        '.wrapper[data-variant="compact"] .step': {
-            alignItems: 'center',
-            flexDirection: 'row'
-        },
-
-        '.wrapper[data-variant="vertical"] .step': {
-            flexDirection: 'row'
-        },
-
-        '.wrapper[data-variant="default"] .step:not(:last-child)': {
-            paddingRight: 'var(--f-spacing-sml)'
-        },
-
-        '.wrapper[data-variant="vertical"] .step:not(:last-child)': {
-            paddingBottom: 'var(--f-spacing-sml)'
-        },
-
-        '.header': {
-            display: 'flex',
-            gap: 'var(--f-spacing-sml)',
-            alignItems: 'center'
-        },
-
-        '.wrapper[data-variant="vertical"] .header': {
-            flexDirection: 'column'
-        },
-
-        '.button': {
-            position: 'relative',
-            borderRadius: '999px',
-            outline: 'none',
-            border: 'none',
-            background: 'none'
-        },
-
-        '.button:enabled': {
-            cursor: 'pointer'
-        },
-
-        '.bullet': {
-            width: '2em',
-            height: '2em',
-            borderRadius: '999px',
-            backgroundColor: 'var(--f-clr-grey-100)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.2em',
-            color: 'var(--f-clr-grey-300)',
-            outline: 'solid 2px transparent',
-            transition: 'background-color .25s, color .25s, outline-color .25s'
-        },
-
-        '.step[data-completed="true"] .bullet': {
-            backgroundColor: 'var(--f-clr-primary-100)',
-            color: 'var(--f-clr-text-200)'
-        },
-
-        '.step[data-current="true"] .bullet': {
-            outlineColor: 'var(--f-clr-primary-400)',
-            color: 'var(--f-clr-primary-200)'
-        },
-
-        '.step[data-error="true"][data-completed="false"] .bullet': {
-            outlineColor: 'var(--f-clr-error-100)',
-            color: 'var(--f-clr-error-200)'
-        },
-
-        '.step[data-error="true"][data-completed="true"] .bullet': {
-            backgroundColor: 'var(--f-clr-error-100)'
-        },
-
-        '.icon': {
-            width: '1em',
-            height: '1em',
-            overflow: 'hidden'
-        },
-
-        '.icons': {
-            display: 'flex',
-            flexDirection: 'column'
-        },
-
-        '.progress': {
-            height: '3px',
-            flexGrow: 1,
-            backgroundColor: 'var(--f-clr-grey-100)',
-            transition: 'background-color .25s',
-            borderRadius: 'var(--f-radius-xsm)'
-        },
-
-        '.wrapper[data-variant="vertical"] .progress': {
-            width: '3px',
-            minHeight: '1em'
-        },
-
-        '.step[data-completed="true"] .progress': {
-            backgroundColor: 'var(--f-clr-primary-100)'
-        },
-
-        '.label': {
-            fontSize: '.85em',
-            fontWeight: 700,
-            color: 'var(--f-clr-grey-300)',
-            transition: 'color .25s'
-        },
-
-        '.step[data-completed="true"] .label': {
-            color: 'var(--f-clr-primary-100)'
-        },
-
-        '.step[data-current="true"] .label': {
-            color: 'var(--f-clr-primary-400)'
-        },
-
-        '.step[data-error="true"] .label': {
-            color: 'var(--f-clr-error-100)'
-        },
-
-        '.title': {
-            fontWeight: 600,
-            color: 'var(--f-clr-text-100)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--f-spacing-xxs)'
-        },
-
-        '.halo': {
-            inset: '-.5em !important'
-        },
-
-        '.track': {
-            width: '100% !important'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const id = useId();

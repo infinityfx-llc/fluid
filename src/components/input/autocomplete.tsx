@@ -6,7 +6,7 @@ import { FluidInputvalue, FluidSize, PopoverRootReference } from '../../../src/t
 import Combobox from '../display/combobox';
 import { changeInputValue } from '../../core/utils';
 
-const Autocomplete = forwardRef(({ cc = {}, completions, emptyMessage, value, defaultValue, onChange, contentSize, ...props }: {
+const Autocomplete = forwardRef(({ completions, emptyMessage, value, defaultValue, onChange, contentSize, ...props }: {
     completions: string[] | { label: string; value: string; }[];
     emptyMessage?: string;
     contentSize?: FluidSize;

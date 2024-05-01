@@ -1,6 +1,6 @@
 'use client';
 
-import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
+import { FluidSize, Selectors } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Button from "./button";
 import { MdArrowBack, MdArrowForward } from "react-icons/md";
@@ -9,12 +9,92 @@ import { createStyles } from "../../core/style";
 import NumberField from "./number-field";
 
 // add arrow key support for focus
+// multiple/range select
+// aria (role="grid")
 
-export type CalendarStyles = FluidStyles<'.calendar' | '.header' | '.text' | '.years' | '.calendar__round' | '.calendar__xsm' | '.calendar__sml' | '.calendar__med' | '.calendar__lrg'>;
+function isEqual(a: Date, b: Date) {
+    return a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+const styles = createStyles('calendar', {
+    '.calendar': {
+        backgroundColor: 'var(--f-clr-fg-100)',
+        padding: '.6em',
+        borderRadius: 'var(--f-radius-sml)'
+    },
+
+    '.s__xsm': {
+        fontSize: 'var(--f-font-size-xxs)'
+    },
+
+    '.s__sml': {
+        fontSize: 'var(--f-font-size-xsm)'
+    },
+
+    '.s__med': {
+        fontSize: 'var(--f-font-size-sml)'
+    },
+
+    '.s__lrg': {
+        fontSize: 'var(--f-font-size-med)'
+    },
+
+    '.calendar.round': {
+        borderRadius: 'var(--f-radius-xlg)'
+    },
+
+    '.header': {
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '.6em',
+        gap: '.6em'
+    },
+
+    '.calendar .year': {
+        flexGrow: 1
+    },
+
+    '.calendar .field': {
+        padding: '.475em'
+    },
+
+    '.grid': {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(7, 1fr)',
+        justifyItems: 'center'
+    },
+
+    '.label': {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontWeight: 600,
+        fontSize: '.85em',
+        color: 'var(--f-clr-grey-600)',
+        marginBottom: 'var(--f-spacing-xxs)'
+    },
+
+    '.calendar .date': {
+        fontSize: '1em',
+        width: '2.3em',
+        height: '2.3em'
+    },
+
+    '.calendar .date[data-present="false"]': {
+        color: 'var(--f-clr-grey-400)',
+        fontWeight: 400
+    },
+
+    '.calendar .date__v__minimal:disabled': {
+        background: 'none'
+    }
+});
+
+export type CalendarSelectors = Selectors<'calendar' | 'header' | 'text' | 'years' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
 const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValue, value, onChange, disabled, ...props }:
     {
-        cc?: Selectors<'calendar' | 'header' | 'text' | 'years' | 'calendar__round' | 'calendar__xsm' | 'calendar__sml' | 'calendar__med' | 'calendar__lrg'>;
+        cc?: CalendarSelectors;
         locale?: Intl.LocalesArgument;
         size?: FluidSize;
         round?: boolean;
@@ -23,86 +103,6 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
         onChange?: (value: Date) => void;
         disabled?: boolean | Date[];
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('calendar', {
-        '.calendar': {
-            backgroundColor: 'var(--f-clr-fg-100)',
-            padding: '.6em',
-            borderRadius: 'var(--f-radius-sml)'
-        },
-
-        '.calendar__xsm': {
-            fontSize: 'var(--f-font-size-xxs)'
-        },
-
-        '.calendar__sml': {
-            fontSize: 'var(--f-font-size-xsm)'
-        },
-
-        '.calendar__med': {
-            fontSize: 'var(--f-font-size-sml)'
-        },
-
-        '.calendar__lrg': {
-            fontSize: 'var(--f-font-size-med)'
-        },
-
-        '.calendar__round': {
-            borderRadius: 'var(--f-radius-xlg)'
-        },
-
-        '.header': {
-            display: 'flex',
-            alignItems: 'center',
-            marginBottom: '.6em',
-            gap: '.6em'
-        },
-
-        '.year': {
-            minWidth: 'auto !important',
-            flexGrow: 1
-        },
-
-        '.year .field': {
-            padding: 'calc(.5em - 1px) !important'
-        },
-
-        '.grid': {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(7, 1fr)'
-        },
-
-        '.grid > *': {
-            width: '2.3em',
-            height: '2.3em'
-        },
-
-        '.label': {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 600,
-            fontSize: '.85em',
-            color: 'var(--f-clr-grey-600)'
-        },
-
-        '.date': {
-            fontSize: '1em !important'
-        },
-
-        '.date[data-present="false"]': {
-            color: 'var(--f-clr-grey-400)',
-            fontWeight: 400
-        },
-
-        '.date__var__minimal:disabled': {
-            background: 'none !important'
-        },
-
-        '.date__var__default:disabled': {
-            backgroundColor: 'var(--f-clr-grey-200) !important',
-            color: 'var(--f-clr-text-100) !important'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const [partialYear, setPartialYear] = useState<null | string>(null);
@@ -113,10 +113,6 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
     const monday = new Date(first), day = first.getDay();
     monday.setDate(first.getDate() - (day || 7) + 1);
 
-    function isEqual(a: Date, b: Date) {
-        return a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-    }
-
     try {
         new Intl.Locale(locale as any);
     } catch (ex) {
@@ -125,8 +121,8 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
 
     return <div ref={ref} {...props} className={classes(
         style.calendar,
-        round && style.calendar__round,
-        style[`calendar__${size}`],
+        round && style.round,
+        style[`s__${size}`],
         props.className
     )}>
         <div className={style.header}>
@@ -145,10 +141,11 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
                 controls={false}
                 cc={{
                     wrapper: style.year,
-                    content: style.field
+                    content: style.field,
+                    ...cc
                 }}
                 disabled={disabled === true}
-                icon={date.toLocaleString(locale, { month: 'long' })} 
+                icon={date.toLocaleString(locale, { month: 'long' })}
                 value={partialYear !== null ? partialYear : date.toLocaleString(locale, { year: 'numeric' })}
                 onChange={e => {
                     setPartialYear(e.target.value);
@@ -185,11 +182,15 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
 
                 const isDisabled = Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled;
 
-                return <Button disabled={isDisabled} key={i} round={round} cc={{
-                    button: style.date,
-                    button__var__default: style.date__var__default,
-                    button__var__minimal: style.date__var__minimal
-                }} data-present={isMonth} variant={isEqual(date, day) ? 'default' : 'minimal'} onClick={() => setDate?.(day)}>
+                return <Button disabled={isDisabled} key={i}
+                    round={round}
+                    cc={{
+                        button: style.date,
+                        v__minimal: style.date__v__minimal
+                    }}
+                    data-present={isMonth}
+                    variant={isEqual(date, day) ? 'default' : 'minimal'}
+                    onClick={() => setDate?.(day)}>
                     {day.getDate()}
                 </Button>;
             })}
@@ -200,6 +201,3 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
 Calendar.displayName = 'Calendar';
 
 export default Calendar;
-
-// multiple/range select
-// aria (role="grid")

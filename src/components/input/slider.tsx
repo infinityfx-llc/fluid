@@ -1,6 +1,6 @@
 'use client';
 
-import { FluidStyles, Selectors } from "../../../src/types";
+import { Selectors } from "../../../src/types";
 import { forwardRef, useId, useRef, useState, useEffect } from "react";
 import Halo from "../feedback/halo";
 import { classes, combineClasses, round, toNumber } from "../../../src/core/utils";
@@ -8,9 +8,122 @@ import Tooltip from "../display/tooltip";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { createStyles } from "../../core/style";
 
+const styles = createStyles('slider', {
+    '.wrapper': {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+
+    '.wrapper[data-vertical="false"]': {
+        minWidth: 'min(100%, 12em)',
+        gap: 'var(--f-spacing-xsm)'
+    },
+
+    '.wrapper[data-vertical="true"]': {
+        minHeight: 'min(100%, 12em)',
+        gap: 'var(--f-spacing-med)'
+    },
+
+    '.label': {
+        fontSize: '.8em',
+        fontWeight: 500,
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.slider': {
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginInline: 'auto',
+        width: 'calc(100% - 1.1em)',
+        height: '1.1em',
+        userSelect: 'none'
+    },
+
+    '.wrapper[data-vertical="true"] .slider': {
+        order: -1,
+        height: 'calc(100% - 1.1em)',
+        width: '1.1em'
+    },
+
+    '.track': {
+        width: '100%',
+        height: '.4em',
+        borderRadius: '999px',
+        backgroundColor: 'var(--f-clr-fg-200)',
+        overflow: 'hidden',
+        touchAction: 'none'
+    },
+
+    '.wrapper[data-vertical="true"] .track': {
+        width: '.4em',
+        height: '100%'
+    },
+
+    '.progress': {
+        backgroundColor: 'var(--f-clr-primary-100)',
+        height: '100%',
+        width: '100%',
+        transformOrigin: 'top left',
+        willChange: 'transform'
+    },
+
+    '.handle': {
+        position: 'absolute',
+        translate: '-50% 0%',
+        width: '1.1em',
+        height: '1.1em',
+        outline: 'none',
+        borderRadius: '99px',
+        touchAction: 'none'
+    },
+
+    '.wrapper[data-vertical="true"] .handle': {
+        translate: '0% -50%',
+    },
+
+    '.handle::after': {
+        content: '""',
+        display: 'block',
+        width: '100%',
+        height: '100%',
+        borderRadius: '99px',
+        backgroundColor: 'white',
+        boxShadow: 'var(--f-shadow-med)'
+    },
+
+    '.slider[data-disabled="false"] .track': {
+        cursor: 'pointer'
+    },
+
+    '.handle[aria-disabled="false"]': {
+        cursor: 'pointer'
+    },
+
+    '.handle[aria-disabled="true"]': {
+        width: '.8em',
+        height: '.8em'
+    },
+
+    '.handle[aria-disabled="true"]::after': {
+        backgroundColor: 'var(--f-clr-grey-200)'
+    },
+
+    '.slider[data-disabled="true"] .progress': {
+        backgroundColor: 'var(--f-clr-grey-300)'
+    },
+
+    '.handle .halo': {
+        inset: '-.5em'
+    }
+});
+
+export type SliderSelectors = Selectors<'wrapper' | 'label' | 'slider' | 'track' | 'progress' | 'handle'>;
+
 const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 'interact', formatTooltip, label, value, defaultValue, onChange, ...props }:
     {
-        cc?: Selectors<'wrapper' | 'label' | 'slider' | 'track' | 'progress' | 'handle' | 'halo'>;
+        cc?: SliderSelectors;
         handles?: number;
         vertical?: boolean;
         tooltips?: 'never' | 'interact' | 'always';
@@ -20,116 +133,6 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
         defaultValue?: number[];
         onChange?: (values: number[]) => void;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<any>) => {
-    const styles = createStyles('slider', {
-        '.wrapper': {
-            display: 'flex',
-            flexDirection: 'column'
-        },
-
-        '.wrapper[data-vertical="false"]': {
-            minWidth: 'clamp(0px, 12em, 100vw)',
-            gap: 'var(--f-spacing-xsm)'
-        },
-
-        '.wrapper[data-vertical="true"]': {
-            height: 'clamp(0px, 12em, 100vw)',
-            gap: 'var(--f-spacing-med)'
-        },
-
-        '.label': {
-            fontSize: '.8em',
-            fontWeight: 500,
-            color: 'var(--f-clr-text-100)'
-        },
-
-        '.slider': {
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginInline: 'auto',
-            width: 'calc(100% - 1.1em)',
-            height: '1.1em',
-            userSelect: 'none'
-        },
-
-        '.wrapper[data-vertical="true"] .slider': {
-            order: -1,
-            height: 'calc(100% - 1.1em)',
-            width: '1.1em'
-        },
-
-        '.track': {
-            width: '100%',
-            height: '.4em',
-            borderRadius: '999px',
-            backgroundColor: 'var(--f-clr-fg-200)',
-            overflow: 'hidden',
-            touchAction: 'none'
-        },
-
-        '.wrapper[data-vertical="true"] .track': {
-            width: '.4em',
-            height: '100%'
-        },
-
-        '.progress': {
-            backgroundColor: 'var(--f-clr-primary-100)',
-            height: '100%',
-            width: '100%',
-            transformOrigin: 'top left',
-            willChange: 'transform'
-        },
-
-        '.handle': {
-            position: 'absolute',
-            translate: '-50% 0%',
-            width: '1.1em',
-            height: '1.1em',
-            outline: 'none',
-            borderRadius: '99px',
-            touchAction: 'none'
-        },
-
-        '.wrapper[data-vertical="true"] .handle': {
-            translate: '0% -50%',
-        },
-
-        '.handle::after': {
-            content: '""',
-            display: 'block',
-            width: '100%',
-            height: '100%',
-            borderRadius: '99px',
-            backgroundColor: 'white',
-            boxShadow: 'var(--f-shadow-med)'
-        },
-
-        '.slider[data-disabled="false"] .track': {
-            cursor: 'pointer'
-        },
-
-        '.handle[aria-disabled="false"]': {
-            cursor: 'pointer'
-        },
-
-        '.handle[aria-disabled="true"]': {
-            width: '.8em',
-            height: '.8em'
-        },
-
-        '.handle[aria-disabled="true"]::after': {
-            backgroundColor: 'var(--f-clr-grey-200)'
-        },
-
-        '.slider[data-disabled="true"] .progress': {
-            backgroundColor: 'var(--f-clr-grey-300)'
-        },
-
-        '.halo': {
-            inset: '-.5em !important'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const id = useId();

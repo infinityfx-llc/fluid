@@ -1,42 +1,43 @@
 'use client';
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
-import { FluidStyles, Selectors } from "../../../src/types";
+import { Selectors } from "../../../src/types";
 import { cloneElement, forwardRef, isValidElement, useEffect, useRef, useState } from "react";
 import { createStyles } from "../../core/style";
 import { createPortal } from "react-dom";
 
-export type IndicatorStyles = FluidStyles<'.indicator' | '.indicator__round'>;
+const styles = createStyles('indicator', {
+    '.indicator': {
+        position: 'absolute',
+        minWidth: '1.5em',
+        minHeight: '1.5em',
+        lineHeight: 1,
+        borderRadius: '99px',
+        backgroundColor: 'var(--f-clr-accent-100)',
+        border: 'solid 2px transparent',
+        translate: '50% -50%',
+        pointerEvents: 'none',
+        fontSize: 'var(--f-font-size-xxs)',
+        fontWeight: 600,
+        color: 'var(--f-clr-text-200)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '.1em .3em',
+        zIndex: 99
+    }
+});
+
+export type IndicatorSelectors = Selectors<'indicator'>;
 
 const Indicator = forwardRef(<T extends React.ReactElement>({ children, cc = {}, content, color, outline, ...props }:
     {
         children: T;
-        cc?: Selectors<'indicator' | 'indicator__round'>;
+        cc?: IndicatorSelectors;
         content?: number | string | boolean;
         color?: string;
         outline?: string;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'>, ref: React.ForwardedRef<T>) => {
-    const styles = createStyles('indicator', {
-        '.indicator': {
-            position: 'absolute',
-            minWidth: '1.5em',
-            minHeight: '1.5em',
-            lineHeight: 1,
-            borderRadius: '99px',
-            backgroundColor: 'var(--f-clr-accent-100)',
-            border: 'solid 2px transparent',
-            translate: '50% -50%',
-            pointerEvents: 'none',
-            fontSize: 'var(--f-font-size-xxs)',
-            fontWeight: 600,
-            color: 'var(--f-clr-text-200)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '.1em .3em',
-            zIndex: 99
-        }
-    });
     const style = combineClasses(styles, cc);
     const container = useRef<any>();
     const [radius, setRadius] = useState(-1);

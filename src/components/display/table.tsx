@@ -1,7 +1,7 @@
 'use client';
 
 import { classes, combineClasses } from "../../../src/core/utils";
-import { FluidStyles, Selectors } from "../../../src/types";
+import { Selectors } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Halo from "../feedback/halo";
 import Scrollarea from "../layout/scrollarea";
@@ -11,10 +11,95 @@ import { MdArrowDownward, MdArrowUpward, MdMoreVert, MdSort } from "react-icons/
 import ActionMenu from "./action-menu/index";
 import { createStyles } from "../../core/style";
 
-export type TableStyles = FluidStyles<'.table' | '.rows' | '.row' | '.collapsed' | '.header' | '.label' | '.checkbox' | '.checkmark'>;
+// variants: default | minimal/light mabye?
+
+const styles = createStyles('table', {
+    '.table': {
+        backgroundColor: 'var(--f-clr-fg-100)',
+        borderRadius: 'var(--f-radius-sml)',
+        border: 'solid 1px var(--f-clr-fg-200)',
+        display: 'flex'
+    },
+
+    '.rows': {
+        minWidth: 'max-content',
+        display: 'flex',
+        flexDirection: 'column',
+        flexGrow: 1
+    },
+
+    '.row': {
+        position: 'relative',
+        display: 'grid',
+        gridAutoFlow: 'column',
+        alignItems: 'center',
+        padding: '.6em',
+        gap: 'var(--f-spacing-sml)',
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.row:not(:last-child)': {
+        borderBottom: 'solid 1px var(--f-clr-fg-200)'
+    },
+
+    '.row > *:not(.collapsed)': {
+        whiteSpace: 'nowrap'
+    },
+
+    '.row > [role="gridcell"]': {
+        paddingInline: '.4rem'
+    },
+
+    '.collapsed': {
+        minWidth: '2rem',
+        display: 'flex'
+    },
+
+    '.header': {
+        fontSize: '.9em',
+        fontWeight: 700,
+        background: 'var(--f-clr-fg-200)'
+    },
+
+    '.label': {
+        position: 'relative',
+        borderRadius: 'var(--f-radius-sml)',
+        color: 'var(--f-clr-grey-700)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--f-spacing-xxs)',
+        width: 'max-content',
+        padding: '.2rem .4rem',
+        border: 'none',
+        background: 'none',
+        outline: 'none'
+    },
+
+    '.label:enabled': {
+        cursor: 'pointer'
+    },
+
+    '.row .checkbox': {
+        borderColor: 'var(--f-clr-grey-300)'
+    },
+
+    '.row .checkmark': {
+        stroke: 'var(--f-clr-text-200)'
+    },
+
+    '.empty': {
+        alignSelf: 'center',
+        marginBlock: 'auto',
+        padding: '.6em',
+        color: 'var(--f-clr-grey-700)',
+        fontWeight: 600
+    }
+});
+
+export type TableSelectors = Selectors<'table' | 'rows' | 'row' | 'collapsed' | 'header' | 'label' | 'checkbox' | 'checkmark'>;
 
 type TableProps<T> = {
-    cc?: Selectors<'table' | 'rows' | 'row' | 'collapsed' | 'header' | 'label' | 'checkbox' | 'checkmark'>;
+    cc?: TableSelectors;
     data: T[];
     columns: (keyof T)[];
     selectable?: boolean;
@@ -24,99 +109,12 @@ type TableProps<T> = {
     columnFormatters?: {
         [column in keyof T]?: (value: T[column]) => React.ReactNode;
     };
-    rowActions?: (row: T, index: number) => {
-        label: string;
-        keepOpen?: boolean;
-        onClick?: () => void;
-    }[];
+    rowActions?: (row: T, index: number) => React.ReactNode;
     emptyMessage?: string;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-// variants: default | minimal/light mabye?
-
-function TableComponent<T extends { [key: string]: string | number | Date; }>({ cc = {}, data, columns, selectable, sortable, selected, onSelect, columnFormatters = {}, rowActions, emptyMessage = 'Nothing to display', ...props }: TableProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
-    const styles = createStyles('table', {
-        '.table': {
-            backgroundColor: 'var(--f-clr-fg-100)',
-            borderRadius: 'var(--f-radius-sml)',
-            border: 'solid 1px var(--f-clr-fg-200)',
-            display: 'flex'
-        },
-
-        '.rows': {
-            minWidth: 'max-content',
-            display: 'flex',
-            flexDirection: 'column',
-            flexGrow: 1
-        },
-
-        '.row': {
-            position: 'relative',
-            display: 'grid',
-            gridAutoFlow: 'column',
-            alignItems: 'center',
-            padding: '.6em',
-            gap: 'var(--f-spacing-sml)',
-            color: 'var(--f-clr-text-100)'
-        },
-
-        '.row:not(:last-child)': {
-            borderBottom: 'solid 1px var(--f-clr-fg-200)'
-        },
-
-        '.row > *:not(.collapsed)': {
-            whiteSpace: 'nowrap'
-        },
-
-        '.row > [role="gridcell"]': {
-            paddingInline: '.4rem'
-        },
-
-        '.collapsed': {
-            minWidth: '2rem',
-            display: 'flex'
-        },
-
-        '.header': {
-            fontSize: '.9em',
-            fontWeight: 700,
-            background: 'var(--f-clr-fg-200)'
-        },
-
-        '.label': {
-            position: 'relative',
-            borderRadius: 'var(--f-radius-sml)',
-            color: 'var(--f-clr-grey-700)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--f-spacing-xxs)',
-            width: 'max-content',
-            padding: '.2rem .4rem',
-            border: 'none',
-            background: 'none',
-            outline: 'none'
-        },
-
-        '.label:enabled': {
-            cursor: 'pointer'
-        },
-
-        '.row .checkbox': {
-            borderColor: 'var(--f-clr-grey-300)'
-        },
-
-        '.row .checkmark': {
-            stroke: 'var(--f-clr-text-200)'
-        },
-
-        '.empty': {
-            alignSelf: 'center',
-            marginBlock: 'auto',
-            padding: '.6em',
-            color: 'var(--f-clr-grey-700)',
-            fontWeight: 600
-        }
-    });
+function TableComponent<T extends { [key: string]: string | number | Date; }>({ cc = {}, data, columns, selectable, sortable, selected, onSelect,
+    columnFormatters = {}, rowActions, emptyMessage = 'Nothing to display', ...props }: TableProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
     const [column, setColumn] = useState<string>('');
@@ -209,13 +207,7 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
                                 </ActionMenu.Trigger>
 
                                 <ActionMenu.Menu>
-                                    {rowActions(rows[i], i).map(({ label, keepOpen, onClick }, i) => (
-                                        <ActionMenu.Item key={i}
-                                            keepOpen={keepOpen}
-                                            onClick={onClick}>
-                                            {label}
-                                        </ActionMenu.Item>
-                                    ))}
+                                    {rowActions(rows[i], i)}
                                 </ActionMenu.Menu>
                             </ActionMenu.Root>
                         </div> : null}

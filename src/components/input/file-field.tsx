@@ -4,13 +4,126 @@ import { forwardRef, useId, useRef, useState } from 'react';
 import Button from './button';
 import { MdUpload } from 'react-icons/md';
 import useInputProps from '../../../src/hooks/use-input-props';
-import { FluidError, FluidSize, FluidStyles, Selectors } from '../../../src/types';
+import { FluidError, FluidSize, Selectors } from '../../../src/types';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
 
+const styles = createStyles('file-field', {
+    '.wrapper': {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--f-spacing-xxs)',
+        minWidth: 'min(100%, 12em)'
+    },
+
+    '.input': {
+        position: 'absolute',
+        opacity: 0
+    },
+
+    '.placeholder': {
+        color: 'var(--f-clr-text-100)',
+        userSelect: 'none',
+        flexGrow: 1,
+        background: 'none',
+        border: 'none',
+        width: 0,
+        pointerEvents: 'none'
+    },
+
+    '.field': {
+        backgroundColor: 'var(--f-clr-fg-100)',
+        border: 'solid 1px var(--f-clr-fg-200)',
+        borderRadius: 'var(--f-radius-sml)',
+        color: 'var(--f-clr-grey-200)',
+        transition: 'border-color .2s, color .2s, outline-color .2s',
+        display: 'flex',
+        alignItems: 'center',
+        overflow: 'hidden',
+        outline: 'solid 3px transparent',
+    },
+
+    '.content': {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--f-spacing-xsm)',
+        padding: '.675em',
+        flexGrow: 1
+    },
+
+    '.label': {
+        fontSize: '.8em',
+        fontWeight: 500,
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.error': {
+        fontSize: '.8em',
+        fontWeight: 500,
+        color: 'var(--f-clr-error-100)'
+    },
+
+    '.field:focus-within': {
+        borderColor: 'var(--f-clr-primary-100)',
+        color: 'var(--f-clr-primary-100)',
+        outlineColor: 'var(--f-clr-primary-500)'
+    },
+
+    '.field[data-error="true"]': {
+        borderColor: 'var(--f-clr-error-100)'
+    },
+
+    '.field[data-error="true"]:focus-within': {
+        outlineColor: 'var(--f-clr-error-400)'
+    },
+
+    '.field[data-error="true"] .content': {
+        color: 'var(--f-clr-error-200)'
+    },
+
+    '.field[data-error="true"] .placeholder': {
+        color: 'var(--f-clr-error-200)'
+    },
+
+    '.field[data-disabled="true"]': {
+        backgroundColor: 'var(--f-clr-grey-100)',
+        borderColor: 'var(--f-clr-grey-200)'
+    },
+
+    '.field[data-disabled="true"] .placeholder': {
+        color: 'var(--f-clr-grey-500)'
+    },
+
+    '.s__xsm': {
+        fontSize: 'var(--f-font-size-xxs)'
+    },
+
+    '.s__sml': {
+        fontSize: 'var(--f-font-size-xsm)'
+    },
+
+    '.s__med': {
+        fontSize: 'var(--f-font-size-sml)'
+    },
+
+    '.s__lrg': {
+        fontSize: 'var(--f-font-size-med)'
+    },
+
+    '.wrapper.round .field': {
+        borderRadius: '999px'
+    },
+
+    '.button': {
+        marginRight: '.3em'
+    }
+});
+
+export type FileFieldSelectors = Selectors<'wrapper' | 'input' | 'placeholder' | 'field' | 'content' | 'label' | 'error' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
+
 const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error, showError, loading = false, inputRef, ...props }:
     {
-        cc?: Selectors<'wrapper' | 'input' | 'placeholder' | 'field' | 'content' | 'label' | 'error' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg' | 'wrapper__round'>;
+        cc?: FileFieldSelectors;
         round?: boolean;
         size?: FluidSize;
         error?: FluidError;
@@ -20,112 +133,6 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
         label?: string;
         inputRef?: React.Ref<HTMLInputElement>;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('file-field', {
-        '.wrapper': {
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--f-spacing-xxs)',
-            minWidth: 'clamp(0px, 12em, 100vw)'
-        },
-
-        '.input': {
-            position: 'absolute',
-            opacity: 0
-        },
-
-        '.placeholder': {
-            color: 'var(--f-clr-text-100)',
-            userSelect: 'none',
-            flexGrow: 1,
-            background: 'none',
-            border: 'none',
-            width: 0,
-            pointerEvents: 'none'
-        },
-
-        '.field': {
-            backgroundColor: 'var(--f-clr-fg-100)',
-            border: 'solid 1px var(--f-clr-fg-200)',
-            borderRadius: 'var(--f-radius-sml)',
-            color: 'var(--f-clr-grey-200)',
-            transition: 'border-color .2s, color .2s, outline-color .2s',
-            display: 'flex',
-            alignItems: 'center',
-            overflow: 'hidden',
-            outline: 'solid 3px transparent',
-        },
-
-        '.content': {
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--f-spacing-xsm)',
-            padding: '.675em',
-            flexGrow: 1
-        },
-
-        '.label': {
-            fontSize: '.8em',
-            fontWeight: 500,
-            color: 'var(--f-clr-text-100)'
-        },
-
-        '.error': {
-            fontSize: '.8em',
-            fontWeight: 500,
-            color: 'var(--f-clr-error-100)'
-        },
-
-        '.field:focus-within': {
-            borderColor: 'var(--f-clr-primary-100)',
-            color: 'var(--f-clr-primary-100)',
-            outlineColor: 'var(--f-clr-primary-500)'
-        },
-
-        '.field[data-error="true"]': {
-            borderColor: 'var(--f-clr-error-100)'
-        },
-
-        '.field[data-error="true"]:focus-within': {
-            outlineColor: 'var(--f-clr-error-400)'
-        },
-
-        '.field[data-error="true"] .content': {
-            color: 'var(--f-clr-error-200)'
-        },
-
-        '.field[data-error="true"] .placeholder': {
-            color: 'var(--f-clr-error-200)'
-        },
-
-        '.field[data-disabled="true"]': {
-            backgroundColor: 'var(--f-clr-grey-100)',
-            borderColor: 'var(--f-clr-grey-200)'
-        },
-
-        '.field[data-disabled="true"] .placeholder': {
-            color: 'var(--f-clr-grey-500)'
-        },
-
-        '.wrapper__xsm': {
-            fontSize: 'var(--f-font-size-xxs)'
-        },
-
-        '.wrapper__sml': {
-            fontSize: 'var(--f-font-size-xsm)'
-        },
-
-        '.wrapper__med': {
-            fontSize: 'var(--f-font-size-sml)'
-        },
-
-        '.wrapper__lrg': {
-            fontSize: 'var(--f-font-size-med)'
-        },
-
-        '.wrapper__round .field': {
-            borderRadius: '999px'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const [files, setFiles] = useState<File[]>([]);
@@ -136,8 +143,8 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
 
     return <div ref={ref} {...rest} className={classes(
         style.wrapper,
-        style[`wrapper__${size}`],
-        round && style.wrapper__round,
+        style[`s__${size}`],
+        round && style.round,
         props.className
     )}>
         {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
@@ -154,9 +161,16 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
                 <input className={style.placeholder} tabIndex={-1} role="none" value={files.map(file => file.name)} readOnly />
             </div>
 
-            <Button compact aria-label={split['aria-label'] || label} disabled={props.disabled} round={round} size={size} loading={loading}
-                style={{
-                    marginRight: '.2em'
+            <Button
+                compact
+                aria-label={split['aria-label'] || label}
+                disabled={props.disabled}
+                round={round}
+                size={size}
+                loading={loading}
+                cc={{
+                    button: style.button,
+                    ...cc
                 }}
                 onClick={() => input.current?.click()}>
                 <MdUpload />

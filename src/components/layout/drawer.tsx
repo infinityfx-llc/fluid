@@ -2,7 +2,7 @@
 
 import { forwardRef, useId, useRef } from 'react';
 import Overlay from './overlay';
-import { FluidStyles, Selectors } from '../../../src/types';
+import { Selectors } from '../../../src/types';
 import Button from '../input/button';
 import { MdClose } from 'react-icons/md';
 import { classes, combineClasses } from '../../../src/core/utils';
@@ -10,66 +10,67 @@ import { Animatable } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
 import { createStyles } from '../../core/style';
 
-export type DrawerStyles = FluidStyles<'.drawer' | '.header' | '.content'>;
+const styles = createStyles('drawer', {
+    '.drawer': {
+        position: 'absolute',
+        background: 'var(--f-clr-bg-100)',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: 'var(--f-spacing-med)',
+        width: 'min(100vw, 16em)',
+        border: 'solid 1px var(--f-clr-fg-200)',
+        height: '100dvh',
+        top: 0
+    },
+
+    '.drawer[data-position="right"]': {
+        borderTopLeftRadius: 'var(--f-radius-med)',
+        borderBottomLeftRadius: 'var(--f-radius-med)',
+        borderRight: 'none',
+        right: 0
+    },
+
+    '.drawer[data-position="left"]': {
+        borderTopRightRadius: 'var(--f-radius-med)',
+        borderBottomRightRadius: 'var(--f-radius-med)',
+        borderLeft: 'none',
+        left: 0
+    },
+
+    '.header': {
+        display: 'flex',
+        gap: 'var(--f-spacing-sml)',
+        alignItems: 'center',
+        marginBottom: 'var(--f-spacing-med)',
+        color: 'var(--f-clr-text-100)',
+        fontWeight: 700,
+    },
+
+    '.title': {
+        flexGrow: 1
+    },
+
+    '.drawer[data-position="right"] .title': {
+        order: 1
+    },
+
+    '.content': {
+        flexGrow: 1,
+        display: 'flex',
+        flexDirection: 'column'
+    }
+});
+
+export type DrawerSelectors = Selectors<'drawer' | 'header' | 'title' | 'content'>;
 
 const Drawer = forwardRef(({ children, cc = {}, show, onClose, position = 'right', title, ...props }:
     {
-        cc?: Selectors<'drawer' | 'header' | 'content'>;
+        cc?: DrawerSelectors;
         show: boolean;
         onClose: () => void;
         position?: 'left' | 'right';
         title?: React.ReactNode;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('drawer', {
-        '.drawer': {
-            position: 'absolute',
-            background: 'var(--f-clr-bg-100)',
-            display: 'flex',
-            flexDirection: 'column',
-            padding: 'var(--f-spacing-med)',
-            width: 'clamp(0px, 16rem, 100vw)',
-            border: 'solid 1px var(--f-clr-fg-200)',
-            height: '100dvh',
-            top: 0
-        },
-
-        '.drawer[data-position="right"]': {
-            borderTopLeftRadius: 'var(--f-radius-med)',
-            borderBottomLeftRadius: 'var(--f-radius-med)',
-            borderRight: 'none',
-            right: 0
-        },
-
-        '.drawer[data-position="left"]': {
-            borderTopRightRadius: 'var(--f-radius-med)',
-            borderBottomRightRadius: 'var(--f-radius-med)',
-            borderLeft: 'none',
-            left: 0
-        },
-
-        '.header': {
-            display: 'flex',
-            gap: 'var(--f-spacing-sml)',
-            alignItems: 'center',
-            marginBottom: 'var(--f-spacing-med)',
-            color: 'var(--f-clr-text-100)',
-            fontWeight: 700,
-        },
-
-        '.title': {
-            flexGrow: 1
-        },
-
-        '.drawer[data-position="right"] .title': {
-            order: 1
-        },
-
-        '.content': {
-            flexGrow: 1,
-            display: 'flex',
-            flexDirection: 'column'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const id = useId();
@@ -86,7 +87,17 @@ const Drawer = forwardRef(({ children, cc = {}, show, onClose, position = 'right
 
     return <Overlay show={show} onClose={onClose}>
         <Animatable id="drawer" animate={{ translate: [`${position === 'right' ? 100 : -100}% 0%`, '0% 0%'], duration: .25 }} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
-            <div ref={ref} {...props} className={classes(style.drawer, props.className)} role="dialog" aria-modal aria-labelledby={id} data-position={position} onTouchStart={touch} onTouchMove={touch}>
+            <div ref={ref} {...props}
+                role="dialog"
+                aria-modal
+                aria-labelledby={id}
+                className={classes(
+                    style.drawer,
+                    props.className
+                )}
+                data-position={position}
+                onTouchStart={touch}
+                onTouchMove={touch}>
                 <div className={style.header}>
                     <span id={id} className={style.title}>{title}</span>
 

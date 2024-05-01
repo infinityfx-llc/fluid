@@ -8,10 +8,105 @@ import { Animatable } from "@infinityfx/lively";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 
-export type ToggleStyles = FluidStyles<'.toggle' | '.content' | '.container' | '.toggle__xsm' | '.toggle__sml' | '.toggle__med' | '.toggle__lrg' | '.toggle__round' | '.toggle__var__default' | '.toggle__var__minimal' | '.toggle__var__neutral'>;
+const styles = createStyles('toggle', {
+    '.input': {
+        position: 'absolute',
+        opacity: 0,
+        inset: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 2
+    },
+
+    '.input:enabled': {
+        cursor: 'pointer'
+    },
+
+    '.toggle': {
+        position: 'relative',
+        display: 'block',
+        backgroundColor: 'var(--f-clr-fg-100)',
+        color: 'var(--f-clr-text-100)',
+        borderRadius: 'var(--f-radius-sml)',
+        transition: 'background-color .25s, color .25s'
+    },
+
+    '.toggle.round': {
+        borderRadius: '999px'
+    },
+
+    '.s__xsm': {
+        fontSize: 'var(--f-font-size-xxs)'
+    },
+
+    '.s__sml': {
+        fontSize: 'var(--f-font-size-xsm)'
+    },
+
+    '.s__med': {
+        fontSize: 'var(--f-font-size-sml)'
+    },
+
+    '.s__lrg': {
+        fontSize: 'var(--f-font-size-med)'
+    },
+
+    '.v__minimal': {
+        backgroundColor: 'transparent'
+    },
+
+    '.v__neutral': {
+        backgroundColor: 'var(--f-clr-fg-100)',
+        border: 'solid 1px var(--f-clr-fg-200)'
+    },
+
+    '.content': {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 'var(--f-spacing-xsm)',
+        gridArea: '1 / 1 / 1 / 1',
+        lineHeight: 1,
+        padding: '.8em'
+    },
+
+    '.container': {
+        display: 'grid',
+        overflow: 'hidden',
+        height: '100%',
+    },
+
+    '.toggle.compact .content': {
+        padding: '.6em'
+    },
+
+    '.toggle[data-checked="true"]:not(.v__neutral)': {
+        backgroundColor: 'var(--f-clr-primary-100)',
+        color: 'var(--f-clr-text-200)'
+    },
+
+    '.v__neutral[data-checked="true"]': {
+        backgroundColor: 'var(--f-clr-fg-200)'
+    },
+
+    '.v__minimal[data-checked="true"]': {
+        backgroundColor: 'var(--f-clr-primary-300)'
+    },
+
+    '.toggle[data-checked="false"][data-disabled="true"]': {
+        color: 'var(--f-clr-grey-500)'
+    },
+
+    '.toggle[data-checked="true"][data-disabled="true"]': {
+        backgroundColor: 'var(--f-clr-grey-300)',
+        color: 'var(--f-clr-grey-100)'
+    }
+});
+
+export type ToggleSelectors = Selectors<'toggle' | 'content' | 'container' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'compact' | 'v__default' | 'v__minimal' | 'v__neutral'>;
 
 export type ToggleProps = {
-    cc?: Selectors<'toggle' | 'content' | 'container' | 'toggle__xsm' | 'toggle__sml' | 'toggle__med' | 'toggle__lrg' | 'toggle__round' | 'toggle__var__default' | 'toggle__var__minimal' | 'toggle__var__neutral'>;
+    cc?: ToggleSelectors;
     size?: FluidSize;
     compact?: boolean;
     round?: boolean;
@@ -20,100 +115,6 @@ export type ToggleProps = {
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>;
 
 const Toggle = forwardRef(({ children, cc = {}, size = 'med', compact = false, round = false, variant = 'default', checkedContent, ...props }: ToggleProps, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('toggle', {
-        '.input': {
-            position: 'absolute',
-            opacity: 0,
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            zIndex: 2
-        },
-    
-        '.input:enabled': {
-            cursor: 'pointer'
-        },
-    
-        '.toggle': {
-            position: 'relative',
-            display: 'block',
-            backgroundColor: 'var(--f-clr-fg-100)',
-            color: 'var(--f-clr-text-100)',
-            padding: '.8em',
-            borderRadius: 'var(--f-radius-sml)',
-            transition: 'background-color .25s, color .25s'
-        },
-
-        '.toggle__compact': {
-            padding: '.6em'
-        },
-    
-        '.toggle__xsm': {
-            fontSize: 'var(--f-font-size-xxs)'
-        },
-    
-        '.toggle__sml': {
-            fontSize: 'var(--f-font-size-xsm)'
-        },
-    
-        '.toggle__med': {
-            fontSize: 'var(--f-font-size-sml)'
-        },
-    
-        '.toggle__lrg': {
-            fontSize: 'var(--f-font-size-med)'
-        },
-    
-        '.toggle__var__minimal': {
-            backgroundColor: 'transparent'
-        },
-    
-        '.toggle__var__neutral': {
-            backgroundColor: 'var(--f-clr-fg-100)',
-            border: 'solid 1px var(--f-clr-fg-200)'
-        },
-    
-        '.content': {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 'var(--f-spacing-xsm)',
-            gridArea: '1 / 1 / 1 / 1',
-            lineHeight: 1
-        },
-    
-        '.container': {
-            display: 'grid',
-            overflow: 'hidden',
-            height: '100%'
-        },
-    
-        '.toggle[data-checked="true"]:not(.toggle__var__neutral)': {
-            backgroundColor: 'var(--f-clr-primary-100)',
-            color: 'var(--f-clr-text-200)'
-        },
-    
-        '.toggle__var__neutral[data-checked="true"]': {
-            backgroundColor: 'var(--f-clr-fg-200)'
-        },
-    
-        '.toggle__var__minimal[data-checked="true"]': {
-            backgroundColor: 'var(--f-clr-primary-300)'
-        },
-    
-        '.toggle[data-checked="false"][data-disabled="true"]': {
-            color: 'var(--f-clr-grey-500)'
-        },
-    
-        '.toggle[data-checked="true"][data-disabled="true"]': {
-            backgroundColor: 'var(--f-clr-grey-300)',
-            color: 'var(--f-clr-grey-100)'
-        },
-    
-        '.toggle__round': {
-            borderRadius: '999px'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const [state, setState] = props.checked !== undefined ? [props.checked] : useState(!!props.defaultChecked);
@@ -128,10 +129,10 @@ const Toggle = forwardRef(({ children, cc = {}, size = 'med', compact = false, r
         <div ref={ref} {...rest}
             className={classes(
                 style.toggle,
-                round && style.toggle__round,
-                compact && style.toggle__compact,
-                style[`toggle__${size}`],
-                style[`toggle__var__${variant}`],
+                round && style.round,
+                compact && style.compact,
+                style[`s__${size}`],
+                style[`v__${variant}`],
                 props.className
             )}
             data-checked={state}

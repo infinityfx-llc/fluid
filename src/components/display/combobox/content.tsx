@@ -8,78 +8,78 @@ import { MdSearch } from 'react-icons/md';
 import { Animatable } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
 import { classes, combineClasses, getFocusable } from '../../../../src/core/utils';
-import { FluidSize, FluidStyles, Selectors } from '../../../../src/types';
+import { FluidSize, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { usePopover } from '../../layout/popover/root';
 
-export type ComboboxContentStyles = FluidStyles<'.container' | '.content' | '.message' | '.wrapper' | '.field'>;
+const styles = createStyles('combobox.content', {
+    '.container': {
+        background: 'var(--f-clr-fg-100)',
+        border: 'solid 1px var(--f-clr-fg-200)',
+        borderRadius: 'calc(.25em + var(--f-radius-sml))',
+        boxShadow: 'var(--f-shadow-med)',
+        minWidth: 'min(100vw, 10em)',
+        width: '100%',
+        overflow: 'hidden'
+    },
+
+    '.s__xsm': {
+        fontSize: 'var(--f-font-size-xxs)'
+    },
+
+    '.s__sml': {
+        fontSize: 'var(--f-font-size-xsm)'
+    },
+
+    '.s__med': {
+        fontSize: 'var(--f-font-size-sml)'
+    },
+
+    '.s__lrg': {
+        fontSize: 'var(--f-font-size-med)'
+    },
+
+    '.content': {
+        padding: '.25em',
+        maxHeight: '10em'
+    },
+
+    '.message': {
+        position: 'relative',
+        padding: '.5em',
+        borderRadius: 'var(--f-radius-sml)',
+        border: 'none',
+        outline: 'none',
+        background: 'none',
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'var(--f-clr-grey-500)'
+    },
+
+    '.container .wrapper': {
+        padding: '.25em',
+        paddingBottom: 0
+    },
+
+    '.container .field': {
+        border: 'none',
+        backgroundColor: 'var(--f-clr-bg-100)'
+    }
+});
+
+export type ComboboxContentSelectors = Selectors<'container' | 'content' | 'message'>;
 
 const Content = forwardRef(({ children, cc = {}, size = 'med', autoFocus = true, searchable, placeholder = 'Search..', emptyMessage = 'Nothing found', ...props }:
     {
-        cc?: Selectors<'container' | 'content' | 'message' | 'wrapper' | 'field'>;
+        cc?: ComboboxContentSelectors;
         size?: FluidSize;
         autoFocus?: boolean;
         searchable?: boolean;
         placeholder?: string;
         emptyMessage?: string;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('combobox.content', {
-        '.container': {
-            background: 'var(--f-clr-fg-100)',
-            border: 'solid 1px var(--f-clr-fg-200)',
-            borderRadius: 'calc(.25em + var(--f-radius-sml))',
-            boxShadow: 'var(--f-shadow-med)',
-            minWidth: 'clamp(0px, 10em, 100vw)',
-            width: '100%',
-            overflow: 'hidden'
-        },
-
-        '.container__xsm': {
-            fontSize: 'var(--f-font-size-xxs)'
-        },
-
-        '.container__sml': {
-            fontSize: 'var(--f-font-size-xsm)'
-        },
-
-        '.container__med': {
-            fontSize: 'var(--f-font-size-sml)'
-        },
-
-        '.container__lrg': {
-            fontSize: 'var(--f-font-size-med)'
-        },
-
-        '.content': {
-            padding: '.25em',
-            maxHeight: '10em'
-        },
-
-        '.message': {
-            position: 'relative',
-            padding: '.5em',
-            borderRadius: 'var(--f-radius-sml)',
-            border: 'none',
-            outline: 'none',
-            background: 'none',
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--f-clr-grey-500)'
-        },
-
-        '.field': {
-            border: 'none !important',
-            borderRadius: '0 !important',
-            borderBottom: 'solid 1px var(--f-clr-fg-200) !important',
-            outline: 'none !important'
-        },
-
-        '.wrapper': {
-            width: 'auto !important'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const { trigger } = usePopover();
@@ -95,7 +95,7 @@ const Content = forwardRef(({ children, cc = {}, size = 'med', autoFocus = true,
             const i = (searchable ? 1 : 0) + optionIndex++;
 
             const clone = cloneElement(child as React.ReactElement, {
-                autoFocus: autoFocus && optionIndex === 1 && !searchable,
+                autoFocus: autoFocus && optionIndex === 0,
                 onFocus: () => selected.current = i,
                 ref: (el: HTMLElement) => options.current[i] = el
             });
@@ -110,7 +110,7 @@ const Content = forwardRef(({ children, cc = {}, size = 'med', autoFocus = true,
         <Animatable id="combobox-options-outer" animate={Move.unique({ duration: .2 })} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
             <div ref={ref} {...props} role="listbox" className={classes(
                 style.container,
-                style[`container__${size}`],
+                style[`s__${size}`],
                 props.className
             )}
                 onKeyDown={e => {
@@ -126,7 +126,7 @@ const Content = forwardRef(({ children, cc = {}, size = 'med', autoFocus = true,
                             child = getFocusable(trigger.current, false);
                         }
 
-                        if (child) child.focus();
+                        child ? child.focus() : selected.current = 0;
                         if (child || e.key !== 'Tab') e.preventDefault();
                     }
                 }}>
@@ -141,7 +141,11 @@ const Content = forwardRef(({ children, cc = {}, size = 'med', autoFocus = true,
                         setSearch(e.target.value);
                     }}
                     icon={<MdSearch />}
-                    cc={{ wrapper: style.wrapper, field: style.field }} />}
+                    cc={{
+                        wrapper: style.wrapper,
+                        field: style.field,
+                        ...cc
+                    }} />}
 
                 <Scrollarea className={style.content}>
                     <div className={style.options}>

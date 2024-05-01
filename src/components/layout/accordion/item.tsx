@@ -5,58 +5,61 @@ import Halo from "../../feedback/halo";
 import Collapsible from "../collapsible";
 import { Animatable } from "@infinityfx/lively";
 import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
-import { FluidStyles, Selectors } from "../../../../src/types";
+import { Selectors } from "../../../../src/types";
 import { useAccordion } from "./root";
 import { classes } from "../../../../src/utils";
 import { createStyles } from "../../../core/style";
 import { combineClasses } from "../../../core/utils";
 
+const styles = createStyles('accordion.item', {
+    '.button': {
+        position: 'relative',
+        borderRadius: 'var(--f-radius-sml)',
+        padding: '.6em',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 'var(--f-spacing-sml)',
+        outline: 'none',
+        border: 'none',
+        background: 'none',
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.button:enabled': {
+        cursor: 'pointer'
+    },
+
+    '.button:disabled': {
+        color: 'var(--f-clr-grey-500)'
+    },
+
+    '.content': {
+        padding: '.6em',
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.icon': {
+        height: '1em',
+        overflow: 'hidden',
+        flexShrink: 0
+    },
+
+    '.arrows': {
+        display: 'flex',
+        flexDirection: 'column'
+    }
+});
+
+export type AccordionItemSelectors = Selectors<'button' | 'content' | 'icon' | 'arrows'>;
+
 const Item = forwardRef(({ children, cc = {}, label, defaultOpen = false, disabled, ...props }:
     {
-        cc?: Selectors<'button' | 'content' | 'icon' | 'arrows'>;
+        cc?: AccordionItemSelectors;
         label: React.ReactNode;
         defaultOpen?: boolean;
         disabled?: boolean;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('accordion.item', {
-        '.button': {
-            position: 'relative',
-            borderRadius: 'var(--f-radius-sml)',
-            padding: '.6em',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 'var(--f-spacing-sml)',
-            outline: 'none',
-            border: 'none',
-            background: 'none',
-            color: 'var(--f-clr-text-100)'
-        },
-
-        '.button:enabled': {
-            cursor: 'pointer'
-        },
-
-        '.button:disabled': {
-            color: 'var(--f-clr-grey-500)'
-        },
-
-        '.content': {
-            padding: '.6em',
-            color: 'var(--f-clr-text-100)'
-        },
-
-        '.icon': {
-            height: '1em',
-            overflow: 'hidden',
-            flexShrink: 0
-        },
-
-        '.arrows': {
-            display: 'flex',
-            flexDirection: 'column'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const id = useId();

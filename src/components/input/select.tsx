@@ -4,17 +4,150 @@ import { forwardRef, useRef, useState, useId, useEffect } from 'react';
 import { FieldProps } from './field';
 import Button from './button';
 import { MdCheck, MdUnfoldMore } from 'react-icons/md';
-import { FluidInputvalue, FluidSize, FluidStyles, PopoverRootReference, Selectors } from '../../../src/types';
+import { FluidInputvalue, FluidSize, PopoverRootReference, Selectors } from '../../../src/types';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import Badge from '../display/badge';
 import Combobox from '../display/combobox';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { createStyles } from '../../core/style';
 
-export type SelectStyles = FluidStyles<'.wrapper' | '.label' | '.error' | '.field' | '.content' | '.placeholder' | '.badge'>;
+const styles = createStyles('select', {
+    '.wrapper': {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--f-spacing-xxs)',
+        minWidth: 'min(100%, 12em)'
+    },
+
+    '.label': {
+        fontSize: '.8em',
+        fontWeight: 500,
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.error': {
+        fontSize: '.8em',
+        fontWeight: 500,
+        color: 'var(--f-clr-error-100)'
+    },
+
+    '.field': {
+        backgroundColor: 'var(--f-clr-fg-100)',
+        border: 'solid 1px var(--f-clr-fg-200)',
+        borderRadius: 'var(--f-radius-sml)',
+        color: 'var(--f-clr-grey-200)',
+        transition: 'border-color .2s, color .2s',
+        display: 'flex',
+        alignItems: 'center'
+    },
+
+    '.field:focus-within': {
+        borderColor: 'var(--f-clr-primary-100)',
+        color: 'var(--f-clr-primary-100)'
+    },
+
+    '.field[data-error="true"]': {
+        borderColor: 'var(--f-clr-error-100)',
+        color: 'var(--f-clr-error-200)'
+    },
+
+    '.field[data-error="true"] .content': {
+        color: 'var(--f-clr-error-200)'
+    },
+
+    '.field[data-disabled="true"]': {
+        backgroundColor: 'var(--f-clr-grey-100)',
+        borderColor: 'var(--f-clr-grey-200)'
+    },
+
+    '.field[data-disabled="true"] .content': {
+        color: 'var(--f-clr-grey-500)'
+    },
+
+    '.content__wrapper': {
+        padding: '.675em',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--f-spacing-xsm)',
+        overflow: 'hidden',
+        flexGrow: 1
+    },
+
+    '.content__wrapper > *:not(.content)': {
+        flexShrink: 0
+    },
+
+    '.content': {
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--f-spacing-xsm)',
+        flexGrow: 1,
+        overflow: 'hidden',
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.content::after': {
+        content: '""',
+        position: 'absolute',
+        height: '100%',
+        width: '16px',
+        right: 0,
+        background: 'linear-gradient(90deg, transparent, var(--f-clr-fg-100))'
+    },
+
+    '.content > *': {
+        flexShrink: 0
+    },
+
+    '.placeholder': {
+        color: 'var(--f-clr-grey-300)',
+        height: '1.375em'
+    },
+
+    '.input': {
+        position: 'absolute',
+        opacity: 0,
+        width: 0
+    },
+
+    '.s__xsm': {
+        fontSize: 'var(--f-font-size-xxs)'
+    },
+
+    '.s__sml': {
+        fontSize: 'var(--f-font-size-xsm)'
+    },
+
+    '.s__med': {
+        fontSize: 'var(--f-font-size-sml)'
+    },
+
+    '.s__lrg': {
+        fontSize: 'var(--f-font-size-med)'
+    },
+
+    '.wrapper.round .field': {
+        borderRadius: '999px'
+    },
+
+    '.field .badge': {
+        backgroundColor: 'var(--f-clr-fg-200)'
+    },
+
+    '.field[data-error="true"] .badge': {
+        backgroundColor: 'var(--f-clr-error-400)'
+    },
+
+    '.field[data-disabled="true"] .badge': {
+        backgroundColor: 'var(--f-clr-grey-200)'
+    }
+});
+
+export type SelectSelectors = Selectors<'wrapper' | 'label' | 'error' | 'field' | 'content' | 'placeholder' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'badge'>;
 
 type SelectProps<T> = {
-    cc?: Selectors<'wrapper' | 'label' | 'error' | 'field' | 'content' | 'placeholder' | 'wrapper__xsm' | 'wrapper__sml' | 'wrapper__med' | 'wrapper__lrg' | 'wrapper__round' | 'badge'>;
+    cc?: SelectSelectors;
     options: {
         label: string;
         value: FluidInputvalue;
@@ -52,138 +185,6 @@ function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
         inputRef,
         ...props
     }: SelectProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
-    const styles = createStyles('select', {
-        '.wrapper': {
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--f-spacing-xxs)',
-            minWidth: 'clamp(0px, 12em, 100vw)'
-        },
-
-        '.label': {
-            fontSize: '.8em',
-            fontWeight: 500,
-            color: 'var(--f-clr-text-100)'
-        },
-
-        '.error': {
-            fontSize: '.8em',
-            fontWeight: 500,
-            color: 'var(--f-clr-error-100)'
-        },
-
-        '.field': {
-            backgroundColor: 'var(--f-clr-fg-100)',
-            border: 'solid 1px var(--f-clr-fg-200)',
-            borderRadius: 'var(--f-radius-sml)',
-            color: 'var(--f-clr-grey-200)',
-            transition: 'border-color .2s, color .2s',
-            display: 'flex',
-            alignItems: 'center'
-        },
-
-        '.field:focus-within': {
-            borderColor: 'var(--f-clr-primary-100)',
-            color: 'var(--f-clr-primary-100)'
-        },
-
-        '.field[data-error="true"]': {
-            borderColor: 'var(--f-clr-error-100)',
-            color: 'var(--f-clr-error-200)'
-        },
-
-        '.field[data-error="true"] .content': {
-            color: 'var(--f-clr-error-200)'
-        },
-
-        '.field[data-disabled="true"]': {
-            backgroundColor: 'var(--f-clr-grey-100)',
-            borderColor: 'var(--f-clr-grey-200)'
-        },
-
-        '.field[data-disabled="true"] .content': {
-            color: 'var(--f-clr-grey-500)'
-        },
-
-        '.content_wrapper': {
-            padding: '.675em',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--f-spacing-xsm)',
-            overflow: 'hidden',
-            flexGrow: 1
-        },
-
-        '.content_wrapper > *:not(.content)': {
-            flexShrink: 0
-        },
-
-        '.content': {
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--f-spacing-xsm)',
-            flexGrow: 1,
-            overflow: 'hidden',
-            color: 'var(--f-clr-text-100)'
-        },
-
-        '.content::after': {
-            content: '""',
-            position: 'absolute',
-            height: '100%',
-            width: '16px',
-            right: 0,
-            background: 'linear-gradient(90deg, transparent, var(--f-clr-fg-100))'
-        },
-
-        '.content > *': {
-            flexShrink: 0
-        },
-
-        '.placeholder': {
-            color: 'var(--f-clr-grey-300)',
-            height: '1.375em'
-        },
-
-        '.input': {
-            position: 'absolute',
-            opacity: 0,
-            width: 0
-        },
-
-        '.wrapper__xsm': {
-            fontSize: 'var(--f-font-size-xxs)'
-        },
-
-        '.wrapper__sml': {
-            fontSize: 'var(--f-font-size-xsm)'
-        },
-
-        '.wrapper__med': {
-            fontSize: 'var(--f-font-size-sml)'
-        },
-
-        '.wrapper__lrg': {
-            fontSize: 'var(--f-font-size-med)'
-        },
-
-        '.wrapper__round .field': {
-            borderRadius: '999px'
-        },
-
-        '.badge': {
-            backgroundColor: 'var(--f-clr-fg-200) !important'
-        },
-
-        '.field[data-error="true"] .badge': {
-            backgroundColor: 'var(--f-clr-error-400) !important'
-        },
-
-        '.field[data-disabled="true"] .badge': {
-            backgroundColor: 'var(--f-clr-grey-200) !important'
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const id = useId();
@@ -197,17 +198,19 @@ function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
     }, [multiple]);
 
     return <Combobox.Root ref={popover} stretch>
-        <div ref={ref} {...rest} className={classes(
-            style.wrapper,
-            style[`wrapper__${size}`],
-            round && style.wrapper__round,
-            props.className
-        )} aria-haspopup="listbox">
+        <div ref={ref} {...rest}
+            className={classes(
+                style.wrapper,
+                style[`s__${size}`],
+                round && style.round,
+                props.className
+            )}
+            aria-haspopup="listbox">
             {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
 
             <Combobox.Trigger disabled={props.disabled || readOnly}>
                 <div className={style.field} data-error={!!error} data-disabled={props.disabled}>
-                    <div className={style.content_wrapper}>
+                    <div className={style.content__wrapper}>
                         {icon}
 
                         <div className={style.content}>

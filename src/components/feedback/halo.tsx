@@ -7,59 +7,60 @@ import { useLink, useTrigger } from "@infinityfx/lively/hooks";
 import { Children, cloneElement, forwardRef, isValidElement, useRef, useEffect } from "react";
 import { createStyles } from "../../core/style";
 
-export type HaloStyles = FluidStyles<'.container' | '.halo' | '.ring'>;
+const styles = createStyles('halo', {
+    '.container': {
+        zIndex: 0
+    },
+
+    '.halo': {
+        position: 'absolute',
+        overflow: 'hidden',
+        borderRadius: 'inherit',
+        inset: 0,
+        opacity: 0,
+        zIndex: -1,
+        transition: 'opacity .25s, scale .25s',
+        alignItems: 'center',
+        justifyContent: 'center',
+        pointerEvents: 'none'
+    },
+
+    '@media (pointer: fine)': {
+        '.container:hover > .halo[data-hover="true"]': {
+            opacity: .25
+        }
+    },
+
+    '@media (pointer: coarse)': {
+        '.container:active > .halo': {
+            opacity: .25
+        }
+    },
+
+    '.container:focus-visible > .halo, .container:has(:focus-visible) > .halo': {
+        opacity: .25
+    },
+
+    '.ring': {
+        minWidth: '241%',
+        minHeight: '241%',
+        aspectRatio: 1,
+        backgroundColor: 'var(--f-clr-grey-500)',
+        borderRadius: '9999px',
+        zIndex: -1
+    }
+});
+
+export type HaloSelectors = Selectors<'halo' | 'ring'>;
 
 const Halo = forwardRef(<T extends React.ReactElement>({ children, cc = {}, color, hover = true, disabled = false, ...props }:
     {
         children: T;
-        cc?: Selectors<'container' | 'halo' | 'ring'>;
+        cc?: HaloSelectors;
         color?: string;
         hover?: boolean;
         disabled?: boolean;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<T>) => {
-    const styles = createStyles('halo', {
-        '.container': {
-            zIndex: 0
-        },
-
-        '.halo': {
-            position: 'absolute',
-            overflow: 'hidden',
-            borderRadius: 'inherit',
-            inset: 0,
-            opacity: 0,
-            zIndex: -1,
-            transition: 'opacity .25s, scale .25s',
-            alignItems: 'center',
-            justifyContent: 'center',
-            pointerEvents: 'none'
-        },
-
-        '@media (pointer: fine)': {
-            '.container:hover > .halo[data-hover="true"]': {
-                opacity: .25
-            }
-        },
-
-        '@media (pointer: coarse)': {
-            '.container:active > .halo': {
-                opacity: .25
-            }
-        },
-
-        '.container:focus-visible > .halo, .container:has(:focus-visible) > .halo': {
-            opacity: .25
-        },
-
-        '.ring': {
-            minWidth: '241%',
-            minHeight: '241%',
-            aspectRatio: 1,
-            backgroundColor: 'var(--f-clr-grey-500)',
-            borderRadius: '9999px',
-            zIndex: -1
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const container = useRef<HTMLElement>(null);

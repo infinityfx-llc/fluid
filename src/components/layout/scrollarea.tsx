@@ -2,100 +2,100 @@
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import useDomEffect from "../../../src/hooks/use-dom-effect";
-import { FluidStyles, Selectors } from "../../../src/types";
+import { Selectors } from "../../../src/types";
 import { forwardRef, useRef, useState, useId } from "react";
 import { createStyles } from "../../core/style";
 
 const speed = 100;
 
-// add __var
-export type ScrollareaStyles = FluidStyles<'.track' | '.handle'>;
+const styles = createStyles('scrollarea', {
+    '.area': {
+        position: 'relative',
+        overflow: 'hidden'
+    },
 
-const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant = 'hover', disabled = false, ...props }:
-    {
-        cc?: Selectors<'track' | 'handle'>;
-        horizontal?: boolean;
-        variant?: 'hover' | 'permanent';
-        disabled?: boolean;
-    } & React.HTMLAttributes<HTMLDivElement>, ref: any) => {
-    const styles = createStyles('scrollarea', {
-        '.area': {
-            position: 'relative',
-            overflow: 'hidden'
-        },
+    '.track': {
+        position: 'absolute',
+        userSelect: 'none',
+        zIndex: 99,
+        transition: 'opacity .2s'
+    },
 
+    '.v__hover > .track': {
+        opacity: 0
+    },
+
+    '.v__hover:hover > .track': {
+        opacity: 1
+    },
+
+    '.handle': {
+        width: '.5rem',
+        height: '.5rem',
+        backgroundColor: 'var(--f-clr-grey-500)',
+        opacity: .35,
+        borderRadius: '99px',
+        transition: 'opacity .2s'
+    },
+
+    '.track:hover .handle': {
+        opacity: .8
+    },
+
+    '.area[data-horizontal="false"] > .track': {
+        top: 0,
+        right: 0,
+        height: '100%'
+    },
+
+    '.area[data-horizontal="true"] > .track': {
+        bottom: 0,
+        left: 0,
+        width: '100%'
+    },
+
+    '.v__permanent[data-horizontal="false"] > .track': {
+        backgroundColor: 'var(--f-clr-fg-100)',
+        paddingInline: '2px'
+    },
+
+    '.v__permanent[data-horizontal="true"] > .track': {
+        backgroundColor: 'var(--f-clr-fg-100)',
+        paddingBlock: '2px'
+    },
+
+    '.v__permanent[data-horizontal="false"]': {
+        paddingRight: 'calc(.5rem + 4px)'
+    },
+
+    '.v__permanent[data-horizontal="true"]': {
+        paddingBottom: 'calc(.5rem + 4px)'
+    },
+
+    '.area[data-scrollable="false"] > .track, .area[data-disabled="true"] > .track': {
+        display: 'none'
+    },
+
+    '@media (pointer: coarse)': {
         '.track': {
-            position: 'absolute',
-            userSelect: 'none',
-            zIndex: 99,
-            transition: 'opacity .2s'
-        },
-
-        '.area[data-variant="hover"] > .track': {
-            opacity: 0
-        },
-
-        '.area[data-variant="hover"]:hover > .track': {
-            opacity: 1
-        },
-
-        '.handle': {
-            width: '.5rem',
-            height: '.5rem',
-            backgroundColor: 'var(--f-clr-grey-500)',
-            opacity: .35,
-            borderRadius: '99px',
-            transition: 'opacity .2s'
-        },
-
-        '.track:hover .handle': {
-            opacity: .8
-        },
-
-        '.area[data-horizontal="false"] > .track': {
-            top: 0,
-            right: 0,
-            height: '100%'
-        },
-
-        '.area[data-horizontal="true"] > .track': {
-            bottom: 0,
-            left: 0,
-            width: '100%'
-        },
-
-        '.area[data-variant="permanent"][data-horizontal="false"] > .track': {
-            backgroundColor: 'var(--f-clr-fg-100)',
-            paddingInline: '2px'
-        },
-
-        '.area[data-variant="permanent"][data-horizontal="true"] > .track': {
-            backgroundColor: 'var(--f-clr-fg-100)',
-            paddingBlock: '2px'
-        },
-
-        '.area[data-variant="permanent"][data-horizontal="false"]': {
-            paddingRight: 'calc(.5rem + 4px)'
-        },
-
-        '.area[data-variant="permanent"][data-horizontal="true"]': {
-            paddingBottom: 'calc(.5rem + 4px)'
-        },
-
-        '.area[data-scrollable="false"] > .track, .area[data-disabled="true"] > .track': {
             display: 'none'
         },
 
-        '@media (pointer: coarse)': {
-            '.track': {
-                display: 'none'
-            },
-
-            '.area': {
-                overflow: 'auto'
-            }
+        '.area': {
+            overflow: 'auto'
         }
-    });
+    }
+});
+
+export type ScrollareaSelectors = Selectors<'track' | 'v__hover' | 'v__permanent' | 'handle'>;
+
+const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant = 'hover', disabled = false, ...props }:
+    {
+        cc?: ScrollareaSelectors;
+        horizontal?: boolean;
+        variant?: 'hover' | 'permanent';
+        disabled?: boolean;
+    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = combineClasses(styles, cc);
 
     const scrolled = useRef(false);
@@ -199,7 +199,11 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
 
     return <div ref={combineRefs(ref, area)} {...props}
         id={id}
-        className={classes(style.area, props.className)}
+        className={classes(
+            style.area,
+            style[`v__${variant}`],
+            props.className
+        )}
         onScroll={e => {
             props.onScroll?.(e);
             if (scrolled.current) return scrolled.current = false;
@@ -207,7 +211,6 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
             scroll(0);
         }}
         data-horizontal={horizontal}
-        data-variant={variant}
         data-scrollable={scrollable}
         data-disabled={disabled}>
         {children}

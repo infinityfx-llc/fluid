@@ -7,33 +7,35 @@ import { createStyles } from '../../core/style';
 import { useTrigger } from '@infinityfx/lively/hooks';
 import { Animatable } from '@infinityfx/lively';
 
+const styles = createStyles('text', {
+    '.text': {
+        display: 'flex',
+        alignItems: 'flex-end',
+        height: '1.2em',
+        overflow: 'hidden'
+    },
+
+    '.column': {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
+
+    '.column > *': {
+        lineHeight: 1.2
+    }
+});
+
+export type TextSelectors = Selectors<'text' | 'column'>;
+
 const Text = forwardRef(({ children, cc = {}, align = 'right', selective, duration = .7, stagger = .1, ...props }: {
     children: number | string | (number | string)[];
-    cc?: Selectors;
+    cc?: TextSelectors;
     align?: 'left' | 'right';
     selective?: boolean;
     duration?: number;
     stagger?: number;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const styles = createStyles('text', {
-        '.text': {
-            display: 'flex',
-            alignItems: 'flex-end',
-            color: 'var(--f-clr-text-100)',
-            height: '1.2em',
-            overflow: 'hidden'
-        },
-
-        '.column': {
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-        },
-
-        '.column > *': {
-            lineHeight: 1.2
-        }
-    });
     const style = combineClasses(styles, cc);
 
     const trigger = useTrigger();

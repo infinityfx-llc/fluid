@@ -2,41 +2,44 @@
 
 import { forwardRef } from 'react';
 import Halo from '../../feedback/halo';
-import { FluidStyles, Selectors } from '../../../../src/types';
+import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses } from '../../../core/utils';
 import { usePopover } from '../../layout/popover/root';
 
+const styles = createStyles('action-menu.item', {
+    '.item': {
+        position: 'relative',
+        padding: '.5rem .8rem',
+        border: 'none',
+        background: 'none',
+        outline: 'none',
+        width: '100%',
+        borderRadius: 'var(--f-radius-sml)',
+        userSelect: 'none',
+        fontWeight: 500,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--f-spacing-xsm)',
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.item:enabled': {
+        cursor: 'pointer'
+    },
+
+    '.item:disabled': {
+        color: 'var(--f-clr-grey-500)'
+    },
+});
+
+export type ActionMenuItemSelectors = Selectors<'item'>;
+
 const Item = forwardRef(({ children, cc = {}, keepOpen, className, ...props }:
     {
-        cc?: Selectors;
+        cc?: ActionMenuItemSelectors;
         keepOpen?: boolean;
     } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
-    const styles = createStyles('action-menu.item', {
-        '.item': {
-            position: 'relative',
-            padding: '.5rem .8rem',
-            border: 'none',
-            background: 'none',
-            outline: 'none',
-            width: '100%',
-            borderRadius: 'var(--f-radius-sml)',
-            userSelect: 'none',
-            fontWeight: 500,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--f-spacing-xsm)',
-            color: 'var(--f-clr-text-100)'
-        },
-
-        '.item:enabled': {
-            cursor: 'pointer'
-        },
-
-        '.item:disabled': {
-            color: 'var(--f-clr-grey-500)'
-        },
-    });
     const style = combineClasses(styles, cc);
 
     const popover = usePopover();

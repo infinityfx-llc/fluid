@@ -1,6 +1,6 @@
 'use client';
 
-import { FluidStyles, Selectors } from "../../../src/types";
+import { Selectors } from "../../../src/types";
 import { Fragment, forwardRef, useId, useState } from "react";
 import Scrollarea from "../layout/scrollarea";
 import Toggle from "../input/toggle";
@@ -8,69 +8,70 @@ import { MdCheck, MdCopyAll } from "react-icons/md";
 import { createStyles } from "../../core/style";
 import { classes, combineClasses } from "../../core/utils";
 
-export type CodeStyles = FluidStyles<'.wrapper' | '.header' | '.code' | '.numbers' | '.tab' | '.content' | '.toggle'>;
+const styles = createStyles('code', {
+    '.wrapper': {
+        fontSize: 'var(--f-font-size-sml)',
+        borderRadius: 'var(--f-radius-sml)',
+        overflow: 'hidden',
+        position: 'relative',
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.header': {
+        backgroundColor: 'var(--f-clr-primary-500)',
+        padding: '.8em 1em',
+        fontWeight: 500
+    },
+
+    '.code': {
+        display: 'flex',
+        padding: '1em',
+        backgroundColor: 'var(--f-clr-fg-100)',
+        height: '100%'
+    },
+
+    '.numbers': {
+        userSelect: 'none',
+        textAlign: 'right',
+        marginRight: 'var(--f-spacing-sml)',
+        color: 'var(--f-clr-grey-500)'
+    },
+
+    '.tab': {
+        display: 'inline-block',
+        minWidth: '2em'
+    },
+
+    '.content': {
+        width: 'max-content'
+    },
+
+    '.button__align': {
+        position: 'absolute',
+        zIndex: '99',
+        right: '1em',
+        bottom: 0,
+        display: 'flex',
+        alignItems: 'center',
+        maxHeight: '100%'
+    },
+
+    '.wrapper .toggle': {
+        marginBlock: '1em'
+    },
+
+    '.wrapper .toggle[data-checked="false"]': {
+        backgroundColor: 'var(--f-clr-bg-100)'
+    }
+});
+
+export type CodeSelectors = Selectors<'wrapper' | 'header' | 'code' | 'numbers' | 'tab' | 'content'>;
 
 const Code = forwardRef(({ children, cc = {}, title, dangerouslyInject, ...props }: {
     children: string;
-    cc?: Selectors<'wrapper' | 'header' | 'code' | 'numbers' | 'tab' | 'content' | 'toggle'>;
+    cc?: CodeSelectors;
     dangerouslyInject?: boolean;
-} & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: any) => {
-    const styles = createStyles('code', {
-        '.wrapper': {
-            fontSize: 'var(--f-font-size-sml)',
-            borderRadius: 'var(--f-radius-sml)',
-            overflow: 'hidden',
-            position: 'relative',
-            color: 'var(--f-clr-text-100)'
-        },
-
-        '.header': {
-            backgroundColor: 'var(--f-clr-primary-500)',
-            padding: '.8em 1em',
-            fontWeight: 500
-        },
-
-        '.code': {
-            display: 'flex',
-            padding: '1em',
-            backgroundColor: 'var(--f-clr-fg-100)',
-            height: '100%'
-        },
-
-        '.numbers': {
-            userSelect: 'none',
-            textAlign: 'right',
-            marginRight: 'var(--f-spacing-sml)',
-            color: 'var(--f-clr-grey-500)'
-        },
-
-        '.tab': {
-            display: 'inline-block',
-            minWidth: '2em'
-        },
-
-        '.content': {
-            width: 'max-content'
-        },
-
-        '.button__align': {
-            position: 'absolute',
-            zIndex: '99',
-            right: '1em',
-            bottom: 0,
-            display: 'flex',
-            alignItems: 'center',
-            maxHeight: '100%'
-        },
-
-        '.toggle': {
-            marginBlock: '1em !important'
-        },
-
-        '.toggle[data-checked="false"]': {
-            backgroundColor: 'var(--f-clr-bg-100) !important'
-        }
-    });
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = combineClasses(styles, cc);
 
     const id = useId();
@@ -99,10 +100,12 @@ const Code = forwardRef(({ children, cc = {}, title, dangerouslyInject, ...props
                 checkedContent={<MdCheck />}
                 checked={copied}
                 cc={{
-                    toggle: style.toggle
+                    toggle: style.toggle,
+                    ...cc
                 }}
                 onClick={() => {
-                    const range = document.createRange(), el = document.getElementById(id) as HTMLDivElement;
+                    const range = document.createRange(),
+                        el = document.getElementById(id) as HTMLDivElement;
                     range.selectNodeContents(el);
                     document.getSelection()?.addRange(range);
 
