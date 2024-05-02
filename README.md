@@ -1,4 +1,4 @@
-# Fluid
+# Fluid UI
 
 [![NPM package](https://img.shields.io/npm/v/@infinityfx/fluid)](https://www.npmjs.com/package/@infinityfx/fluid)
 [![NPM bundle size](https://img.shields.io/bundlephobia/minzip/@infinityfx/fluid)](https://bundlephobia.com/package/@infinityfx/fluid)
