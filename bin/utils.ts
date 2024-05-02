@@ -4,19 +4,20 @@ import fs from 'fs';
 import { FluidConfig } from "../src/types";
 import { STYLE_CONTEXT } from "../src/core/style";
 import packageJson from '../package.json';
-import readline from 'readline';
+import { glob } from "glob";
 
 export function getRoots() {
-    let isSelf = false;
+    let isInternal = false;
 
     try {
         const packageJson = fs.readFileSync('./package.json', { encoding: 'ascii' });
-        isSelf = JSON.parse(packageJson).name === '@infinityfx/fluid';
+        isInternal = JSON.parse(packageJson).name === '@infinityfx/fluid';
     } catch (err) { }
 
     return {
-        output: isSelf ? './compiled/' : `./node_modules/${packageJson.name}/compiled/`,
-        dist: isSelf ? './dist/' : `./node_modules/${packageJson.name}/dist/`,
+        isInternal,
+        output: isInternal ? './compiled/' : `./node_modules/${packageJson.name}/compiled/`,
+        dist: isInternal ? './dist/' : `./node_modules/${packageJson.name}/dist/`,
     };
 }
 
@@ -44,48 +45,6 @@ function removeImports(content: string) {
     return content.replace(/import[^;]*?core(?:\/|\\)style\.js(?:"|');?/gs, '');
 }
 
-export function sanitizeImports() {
-    const { dist, output } = getRoots();
-
-    for (const file of ['index.js', 'hooks.js']) {
-        const content = fs.readFileSync(dist + file, { encoding: 'ascii' })
-            .replace(/\.\/compiled/g, '');
-
-        fs.writeFileSync(dist + file, content);
-    }
-
-    if (fs.existsSync(output)) fs.rmSync(output, { recursive: true });
-    fs.cpSync(dist, output, { recursive: true });
-}
-
-export function compileImports() {
-    const { dist } = getRoots();
-
-    for (const file of ['index.js', 'hooks.js']) {
-        const content = fs.readFileSync(dist + file, { encoding: 'ascii' })
-            .replace(/(from\s*(?:'|"))\.\/(.*?(?:'|");)/g, '$1../compiled/$2');
-
-        fs.writeFileSync(dist + file, content);
-    }
-}
-
-function insertThemedStyles(contents: string) {
-    const { output } = getRoots();
-
-    const context = contents.match(/import\s*\{[^{]*(STYLE_CONTEXT(?:\s*as\s*([^\s},]+))?)[^}]*\}/s);
-    contents = contents.replace(new RegExp(`${context?.[2] || context?.[1]}\\.THEME`, 's'), JSON.stringify(STYLE_CONTEXT.THEME));
-
-    const cssInsert = contents.match(/(?:(?:'|")use\sclient(?:'|");\n?)?()/s);
-    if (cssInsert?.index === undefined) return contents;
-
-    const idx = cssInsert.index + cssInsert[0].length,
-        stylesheet = Object.values(STYLE_CONTEXT.STYLES)
-            .reduce((stylesheet, entry) => stylesheet += entry.rules, '');
-
-    fs.writeFileSync(output + '/fluid.css', stylesheet);
-    return contents.slice(0, idx) + 'import "../fluid.css";' + contents.slice(idx);
-}
-
 function createRenderableElement(components: any, name: string, parent?: any) {
     const Component = parent ? parent[name.replace(/.*\./, '')] : components[name.replace(/.*\./, '')];
 
@@ -96,46 +55,75 @@ function createRenderableElement(components: any, name: string, parent?: any) {
     return createElement(components.FluidProvider, undefined, createElement('div', { key: 0 }, Element));
 }
 
-export async function compileStyles() {
-    const { dist } = getRoots();
-    const COMPONENTS = await import('../src/index');
+async function emitCss() {
+    const { isInternal, output } = getRoots();
+    let usedComponents: {
+        [key: string]: boolean;
+    } | null = null;
 
-    const imports = Array.from(fs.readFileSync(dist + 'index.js', { encoding: 'ascii' })
-        .matchAll(/as\s*(.+?)\s*\}\s*from\s*(?:'|")(.+?)(?:'|");/g));
+    if (!isInternal) {
+        const files = await glob(STYLE_CONTEXT.PATHS);
+        usedComponents = {};
 
-    for (let i = 0; i < imports.length; i++) {
+        outer: for (const file of files) {
+            const contents = fs.readFileSync(file, { encoding: 'ascii' });
 
-        const [_, name, path] = imports[i];
+            const imports = Array.from(contents.matchAll(/import\s*(?:\{([^\}]+)\}|\*\s+as.*|\w+)\s*from\s*(?:'|")@infinityfx\/fluid/gs));
 
-        if (/index.js$/.test(path)) {
-            const Component = (COMPONENTS as any)[name.replace(/.*\./, '')];
+            for (const entry of imports) {
+                const components = entry[1];
 
-            for (const subName in Component) {
-                const localPath = path.replace(/index\.js/, `${subName.toLowerCase()}.js`);
+                if (!components) {
+                    usedComponents = null;
 
-                await processFile(`${name}.${subName}`, localPath, COMPONENTS, Component);
+                    break outer;
+                }
+
+                components.split(',')
+                    .forEach(name => {
+                        const key = name
+                            .replace(/^\s+|\s+(as\s+.+)?$/g, '')
+                            .replace(/([a-z])([A-Z])/, '$1-$2')
+                            .toLowerCase();
+
+                        (usedComponents as any)[key] = true;
+                    });
             }
-        } else
-            if (!/context\/fluid\.js$/.test(path)) {
-                await processFile(name, path, COMPONENTS);
-            }
-
-        const total = imports.length - 1;
-        readline.cursorTo(process.stdout, 0);
-        process.stdout.write(`${(i / total * 100).toFixed(1)}% ` + new Array(Math.round(i / total * 40)).fill('=').join(''));
+        }
     }
 
-    await processFile('FluidProvider', './context/fluid.js', COMPONENTS)
+    const stylesheet = Object.entries(STYLE_CONTEXT.STYLES)
+        .reduce((stylesheet, [key, entry]) => {
+            key = key.replace(/\..+$/, '');
+            if (key !== '__globals' && usedComponents !== null && !(key in usedComponents)) return stylesheet;
+
+            return stylesheet += entry.rules
+        }, '');
+
+    fs.writeFileSync(output + '/fluid.css', stylesheet);
 }
 
-async function processFile(name: string, path: string, components: any, parent?: any) {
+async function insertThemedStyles(contents: string) {
+    const context = contents.match(/import\s*\{[^{]*(STYLE_CONTEXT(?:\s*as\s*([^\s},]+))?)[^}]*\}/s);
+    contents = contents.replace(new RegExp(`${context?.[2] || context?.[1]}\\.THEME`, 's'), JSON.stringify(STYLE_CONTEXT.THEME));
+
+    const cssInsert = contents.match(/(?:(?:'|")use\sclient(?:'|");\n?)?()/s);
+    if (cssInsert?.index === undefined) return contents;
+
+    await emitCss();
+
+    const idx = cssInsert.index + cssInsert[0].length;
+    return contents.slice(0, idx) + 'import "../fluid.css";' + contents.slice(idx);
+}
+
+export async function processFile(name: string, path: string, components: any, parent?: any) {
     const { output, dist } = getRoots();
 
     let contents = fs.readFileSync(dist + path, { encoding: 'ascii' }),
         Element = createRenderableElement(components, name, parent);
 
     contents = await processStyles(name, contents, Element);
-    if (name === 'FluidProvider') contents = insertThemedStyles(contents);
+    if (name === 'FluidProvider') contents = await insertThemedStyles(contents);
 
     fs.writeFileSync(output + path, removeImports(contents));
 }

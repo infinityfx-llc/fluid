@@ -19,11 +19,11 @@ export type FluidStyles<T extends string = string> = {
     [key in (T | string & {})]?: React.CSSProperties | {
         [key: string]: React.CSSProperties | undefined
     }
-};
+}
 
 export type Selectors<T extends string = string> = {
     [key in (T | string & {})]?: string;
-};
+}
 
 type FluidSelectorStyles<T> = FluidStyles<T extends Selectors<infer K> ? `.${K}` : never>;
 
@@ -94,10 +94,11 @@ export type FluidComponents = {
 }
 
 export type FluidConfig = {
+    paths?: string[];
     theme?: PartialFluidTheme;
     components?: FluidComponents;
 }
 
 export {
     PopoverRootReference
-};
+}
