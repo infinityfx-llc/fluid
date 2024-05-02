@@ -12,9 +12,7 @@ export function getRoots() {
     try {
         const packageJson = fs.readFileSync('./package.json', { encoding: 'ascii' });
         isSelf = JSON.parse(packageJson).name === '@infinityfx/fluid';
-    } catch (err) {
-        console.log(err);
-    }
+    } catch (err) { }
 
     return {
         output: isSelf ? './compiled/' : `./node_modules/${packageJson.name}/compiled/`,
@@ -44,6 +42,31 @@ function matchBrackets(content: string, start: number, type: '{}' | '()' | '[]' 
 
 function removeImports(content: string) {
     return content.replace(/import[^;]*?core(?:\/|\\)style\.js(?:"|');?/gs, '');
+}
+
+export function sanitizeImports() {
+    const { dist, output } = getRoots();
+
+    for (const file of ['index.js', 'hooks.js']) {
+        const content = fs.readFileSync(dist + file, { encoding: 'ascii' })
+            .replace(/\.\/compiled/g, '');
+
+        fs.writeFileSync(dist + file, content);
+    }
+
+    if (fs.existsSync(output)) fs.rmSync(output, { recursive: true });
+    fs.cpSync(dist, output, { recursive: true });
+}
+
+export function compileImports() {
+    const { dist } = getRoots();
+
+    for (const file of ['index.js', 'hooks.js']) {
+        const content = fs.readFileSync(dist + file, { encoding: 'ascii' })
+            .replace(/(from\s*(?:'|"))\.\/(.*?(?:'|");)/g, '$1../compiled/$2');
+
+        fs.writeFileSync(dist + file, content);
+    }
 }
 
 function insertThemedStyles(contents: string) {
