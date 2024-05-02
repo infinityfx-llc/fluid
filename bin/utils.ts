@@ -42,6 +42,10 @@ function matchBrackets(content: string, start: number, type: '{}' | '()' | '[]' 
     return start;
 }
 
+function removeImports(content: string) {
+    return content.replace(/import[^;]*?core(?:\/|\\)style\.js(?:"|');?/gs, '');
+}
+
 function insertThemedStyles(contents: string) {
     const { output } = getRoots();
 
@@ -70,7 +74,7 @@ function createRenderableElement(components: any, name: string, parent?: any) {
 }
 
 export async function compileStyles() {
-    const { output, dist } = getRoots();
+    const { dist } = getRoots();
     const COMPONENTS = await import('../src/index');
 
     const imports = Array.from(fs.readFileSync(dist + 'index.js', { encoding: 'ascii' })
@@ -88,18 +92,17 @@ export async function compileStyles() {
 
                 await processFile(`${name}.${subName}`, localPath, COMPONENTS, Component);
             }
-        } else {
-            await processFile(name, path, COMPONENTS);
-        }
+        } else
+            if (!/context\/fluid\.js$/.test(path)) {
+                await processFile(name, path, COMPONENTS);
+            }
 
         const total = imports.length - 1;
         readline.cursorTo(process.stdout, 0);
         process.stdout.write(`${(i / total * 100).toFixed(1)}% ` + new Array(Math.round(i / total * 40)).fill('=').join(''));
     }
 
-    let contents = fs.readFileSync(output + './context/fluid.js', { encoding: 'ascii' });
-    contents = insertThemedStyles(contents);
-    fs.writeFileSync(output + './context/fluid.js', contents);
+    await processFile('FluidProvider', './context/fluid.js', COMPONENTS)
 }
 
 async function processFile(name: string, path: string, components: any, parent?: any) {
@@ -109,7 +112,9 @@ async function processFile(name: string, path: string, components: any, parent?:
         Element = createRenderableElement(components, name, parent);
 
     contents = await processStyles(name, contents, Element);
-    fs.writeFileSync(output + path, contents);
+    if (name === 'FluidProvider') contents = insertThemedStyles(contents);
+
+    fs.writeFileSync(output + path, removeImports(contents));
 }
 
 async function processStyles(name: string, content: string, Element: any) {
@@ -137,5 +142,5 @@ async function processStyles(name: string, content: string, Element: any) {
         globalStyleOffset -= (to - i);
     }
 
-    return content.replace(/import[^;]*?core(?:\/|\\)style\.js(?:"|');?/gs, '');
+    return content;
 }
