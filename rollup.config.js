@@ -8,6 +8,9 @@ import { preserveShebangs } from 'rollup-plugin-preserve-shebangs';
 import json from '@rollup/plugin-json';
 
 const plugins = [
+    process.env.NODE_ENV === 'production' ? del({
+        targets: 'dist/**'
+    }) : undefined,
     resolve(),
     commonjs(),
     json(),
@@ -19,7 +22,7 @@ const plugins = [
     preserveDirectives()
 ];
 
-const external = ['react', 'react-dom', 'react/jsx-runtime', /@infinityfx\/lively/, 'tslib', /react\-icons/];
+const external = ['react', /react\-dom/, /react\/jsx\-runtime/, /@infinityfx\/lively/, 'tslib', /react\-icons/];
 const onwarn = (msg, handler) => {
     if (msg.code === 'THIS_IS_UNDEFINED') return;
     if (msg.code === 'MODULE_LEVEL_DIRECTIVE') return;
@@ -27,34 +30,16 @@ const onwarn = (msg, handler) => {
     handler(msg);
 };
 
-export default [
-    {
-        input: ['src/index.ts', 'src/hooks.ts', 'src/utils.ts'],
-        external,
-        output: {
-            dir: 'dist',
-            format: 'es',
-            sourcemap: true,
-            preserveModules: true,
-            preserveModulesRoot: 'src'
-        },
-        plugins: [
-            process.env.NODE_ENV === 'production' ? del({
-                targets: 'dist/**'
-            }) : undefined,
-            ...plugins
-        ],
-        onwarn
+export default {
+    input: ['src/index.ts', 'src/hooks.ts', 'src/utils.ts', 'bin/cli.ts'],
+    external,
+    output: {
+        dir: 'dist',
+        format: 'es',
+        sourcemap: true,
+        preserveModules: true,
+        preserveModulesRoot: 'src'
     },
-    {
-        input: ['bin/cli.ts'],
-        external,
-        output: {
-            dir: 'dist',
-            format: 'es',
-            sourcemap: true
-        },
-        plugins,
-        onwarn
-    }
-]
+    plugins,
+    onwarn
+}

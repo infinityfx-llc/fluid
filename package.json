@@ -39,8 +39,8 @@
 		"watch": "rollup -c -w --watch.onEnd=\"npx fluid compile\""
 	},
 	"bin": {
-		"@infinityfx/fluid": "dist/cli.js",
-		"fluid": "dist/cli.js"
+		"@infinityfx/fluid": "dist/bin/cli.js",
+		"fluid": "dist/bin/cli.js"
 	},
 	"dependencies": {
 		"tslib": "^2.6.2"
