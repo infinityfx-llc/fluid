@@ -41,8 +41,19 @@ function matchBrackets(content: string, start: number, type: '{}' | '()' | '[]' 
     return start;
 }
 
+const keyFromImport = (str: string) => str
+    .replace(/^\s+|\s+(as\s+.+)?$/g, '')
+    .replace(/([a-z])([A-Z])/, '$1-$2')
+    .toLowerCase();
+
 function removeImports(content: string) {
     return content.replace(/import[^;]*?core(?:\/|\\)style\.js(?:"|');?/gs, '');
+}
+
+function getDependents(content: string) {
+    return Array.from(content.matchAll(/import\s+\w+\s+from\s*(?:'|").*?\/([^\/]+)(\/index)?\.js(?:'|")/gs))
+        .map(entry => keyFromImport(entry[1]))
+        .filter(entry => !entry.startsWith('use'));
 }
 
 function createRenderableElement(components: any, name: string, parent?: any) {
@@ -68,7 +79,7 @@ async function emitCss() {
         outer: for (const file of files) {
             const contents = fs.readFileSync(file, { encoding: 'ascii' });
 
-            const imports = Array.from(contents.matchAll(/import\s*(?:\{([^\}]+)\}|\*\s+as.*|\w+)\s*from\s*(?:'|")@infinityfx\/fluid/gs));
+            const imports = Array.from(contents.matchAll(/import\s*(?:\{([^\}]+)\}|\*\s+as.*|\w+)\s*from\s*(?:'|")@infinityfx\/fluid(?:'|")/gs));
 
             for (const entry of imports) {
                 const components = entry[1];
@@ -79,15 +90,17 @@ async function emitCss() {
                     break outer;
                 }
 
-                components.split(',')
-                    .forEach(name => {
-                        const key = name
-                            .replace(/^\s+|\s+(as\s+.+)?$/g, '')
-                            .replace(/([a-z])([A-Z])/, '$1-$2')
-                            .toLowerCase();
+                const dependents = components.split(',').map(entry => keyFromImport(entry));
 
-                        (usedComponents as any)[key] = true;
-                    });
+                while (dependents.length) {
+                    const key = dependents.pop() as string;
+
+                    if (!(key in usedComponents) && key in STYLE_CONTEXT.DEPENDENTS) {
+                        dependents.push(...STYLE_CONTEXT.DEPENDENTS[key]);
+                    }
+
+                    (usedComponents as any)[key] = true;
+                }
             }
         }
     }
@@ -122,6 +135,8 @@ export async function processFile(name: string, path: string, components: any, p
     let contents = fs.readFileSync(dist + path, { encoding: 'ascii' }),
         Element = createRenderableElement(components, name, parent);
 
+    STYLE_CONTEXT.DEPENDENTS[keyFromImport(name)] = getDependents(contents);
+
     contents = await processStyles(name, contents, Element);
     if (name === 'FluidProvider') contents = await insertThemedStyles(contents);
 
@@ -131,7 +146,7 @@ export async function processFile(name: string, path: string, components: any, p
 async function processStyles(name: string, content: string, Element: any) {
     try { renderToString(Element); } catch (ex) { }
 
-    const { selectors } = STYLE_CONTEXT.STYLES[name.replace(/([a-z])([A-Z])/, '$1-$2').toLowerCase()] || {};
+    const { selectors } = STYLE_CONTEXT.STYLES[keyFromImport(name)] || {};
 
     const createStyles = content.match(/import\s*\{[^{]*(createStyles(?:\s*as\s*([^\s},]+))?)[^}]*\}/);
 

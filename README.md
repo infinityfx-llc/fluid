@@ -6,7 +6,7 @@
 ![NPM weekly downloads](https://img.shields.io/npm/dw/@infinityfx/fluid)
 ![NPM downloads](https://img.shields.io/npm/dt/@infinityfx/fluid)
 
-A React UI library.
+A React UI library, with zero-runtime CSS-in-JS, that gets compiled and tree shaken at build time.
 
 ## Documentation
 [infinityfx.dev/fluid](https://infinityfx.dev/fluid)

@@ -10,11 +10,15 @@ export const STYLE_CONTEXT: {
         };
     };
     COMPONENTS: FluidComponents;
+    DEPENDENTS: {
+        [key: string]: string[];
+    };
     THEME: FluidTheme;
     PATHS: string[];
 } = {
     STYLES: {},
     COMPONENTS: {},
+    DEPENDENTS: {},
     THEME: DEFAULT_THEME,
     PATHS: [
         './src/**/*.{jsx,tsx}',
