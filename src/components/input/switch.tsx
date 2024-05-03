@@ -2,7 +2,7 @@
 
 import { classes, combineClasses } from '../../../src/core/utils';
 import { FluidError, FluidSize, Selectors } from '../../../src/types';
-import { forwardRef, useState } from 'react';
+import { forwardRef, useRef, useState } from 'react';
 import Halo from '../feedback/halo';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { createStyles } from '../../core/style';
@@ -76,18 +76,24 @@ const styles = createStyles('switch', {
         color: 'var(--f-clr-grey-400)'
     },
 
-    '.handle': {
+    '.handle__wrapper': {
         position: 'relative',
         borderRadius: 'calc(var(--f-radius-sml) - 1px)',
         height: '100%',
         aspectRatio: 1,
-        backgroundColor: 'white',
         transition: 'translate .25s',
         zIndex: 1,
+    },
+
+    '.handle': {
+        width: 'inherit',
+        height: 'inherit',
+        borderRadius: 'inherit',
+        backgroundColor: 'white',
         boxShadow: 'var(--f-shadow-sml)'
     },
 
-    '.input:checked + .switch .handle': {
+    '.input:checked + .switch .handle__wrapper': {
         translate: '100% 0%'
     },
 
@@ -95,7 +101,7 @@ const styles = createStyles('switch', {
         borderRadius: '999px'
     },
 
-    '.wrapper.round .handle': {
+    '.wrapper.round .handle__wrapper': {
         borderRadius: '999px'
     },
 
@@ -141,36 +147,45 @@ const Switch = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-
 
     const [split, rest] = useInputProps(props);
     const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
+    const inputRef = useRef<HTMLInputElement>(null);
 
-    return <Halo hover={false} cc={{ halo: style.halo, ...cc }}>
-        <div ref={ref} {...rest}
-            className={classes(
-                style.wrapper,
-                style[`s__${size}`],
-                round && style.round,
-                rest.className
-            )}
-            data-error={!!error}>
-            <input {...split} checked={state} type="checkbox" className={style.input} aria-invalid={!!error} onChange={e => {
+    return <div ref={ref} {...rest}
+        className={classes(
+            style.wrapper,
+            style[`s__${size}`],
+            round && style.round,
+            rest.className
+        )}
+        data-error={!!error}>
+        <input {...split}
+            ref={inputRef}
+            type="checkbox"
+            className={style.input}
+            aria-invalid={!!error}
+            checked={state}
+            onChange={e => {
                 setState?.(e.target.checked);
                 props.onChange?.(e);
             }} />
 
-            <div className={style.switch} style={{ '--color': color } as any}>
-                <div className={style.icons}>
-                    <div className={style.icon}>
-                        {iconOn}
-                    </div>
-
-                    <div className={style.icon}>
-                        {iconOff}
-                    </div>
+        <div className={style.switch} style={{ '--color': color } as any}>
+            <div className={style.icons}>
+                <div className={style.icon}>
+                    {iconOn}
                 </div>
 
-                <div className={style.handle} />
+                <div className={style.icon}>
+                    {iconOff}
+                </div>
             </div>
+
+            <Halo target={inputRef} hover={false} cc={{ halo: style.halo, ...cc }}>
+                <div className={style.handle__wrapper}>
+                    <div className={style.handle} />
+                </div>
+            </Halo>
         </div>
-    </Halo>;
+    </div>;
 });
 
 Switch.displayName = 'Switch';

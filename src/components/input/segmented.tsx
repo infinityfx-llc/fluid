@@ -100,12 +100,12 @@ const styles = createStyles('segmented', {
         borderRadius: 'calc(var(--f-radius-sml) + .3em)'
     },
 
-    '.segmented[data-error="true"] .ring': {
+    '.segmented[data-error="true"] .ripple': {
         backgroundColor: 'var(--f-clr-error-300)'
     },
 
     '.segmented .container': {
-        zIndex: 'unset'
+        isolation: 'unset'
     }
 });
 

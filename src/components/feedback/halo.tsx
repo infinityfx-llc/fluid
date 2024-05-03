@@ -1,7 +1,7 @@
 'use client';
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
-import { FluidStyles, Selectors } from "../../../src/types";
+import { Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink, useTrigger } from "@infinityfx/lively/hooks";
 import { Children, cloneElement, forwardRef, isValidElement, useRef, useEffect } from "react";
@@ -9,7 +9,7 @@ import { createStyles } from "../../core/style";
 
 const styles = createStyles('halo', {
     '.container': {
-        zIndex: 0
+        isolation: 'isolate'
     },
 
     '.halo': {
@@ -17,12 +17,23 @@ const styles = createStyles('halo', {
         overflow: 'hidden',
         borderRadius: 'inherit',
         inset: 0,
-        opacity: 0,
-        zIndex: -1,
+        minWidth: '100%',
+        minHeight: '100%',
         transition: 'opacity .25s, scale .25s',
+        display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        pointerEvents: 'none'
+        pointerEvents: 'none',
+        opacity: 0,
+        zIndex: -1
+    },
+
+    '.halo[data-disabled="true"]': {
+        display: 'none'
+    },
+
+    '.halo[data-focused="true"]': {
+        opacity: .25
     },
 
     '@media (pointer: fine)': {
@@ -37,11 +48,7 @@ const styles = createStyles('halo', {
         }
     },
 
-    '.container:focus-visible > .halo, .container:has(:focus-visible) > .halo': {
-        opacity: .25
-    },
-
-    '.ring': {
+    '.ripple': {
         minWidth: '241%',
         minHeight: '241%',
         aspectRatio: 1,
@@ -51,47 +58,85 @@ const styles = createStyles('halo', {
     }
 });
 
-export type HaloSelectors = Selectors<'halo' | 'ring'>;
+export type HaloSelectors = Selectors<'halo' | 'ripple'>;
 
-const Halo = forwardRef(<T extends React.ReactElement>({ children, cc = {}, color, hover = true, disabled = false, ...props }:
+const Halo = forwardRef(<T extends React.ReactElement>({ children, cc = {}, color, hover = true, disabled = false, target, ...props }:
     {
         children: T;
         cc?: HaloSelectors;
         color?: string;
         hover?: boolean;
         disabled?: boolean;
+        target?: React.RefObject<HTMLElement>;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<T>) => {
     const style = combineClasses(styles, cc);
 
     const container = useRef<HTMLElement>(null);
-    const click = useTrigger();
-    const translate = useLink('0px 0px');
+    const halo = useRef<HTMLDivElement>(null);
+
+    const clickTrigger = useTrigger();
+    const translate = useLink('0% 0%');
 
     useEffect(() => {
-        const el = container.current;
-        if (!el) return;
+        const focusEl = target?.current || container.current;
+        if (!focusEl) return;
 
-        const handleClick = (e: MouseEvent) => {
-            if (container.current && (e.clientX || e.clientY)) {
-                const { x, y, width, height } = container.current.getBoundingClientRect();
-                translate.set(`${e.clientX - (x + width / 2)}px ${e.clientY - (y + height / 2)}px`);
+        function click(e: MouseEvent) {
+            if (halo.current) {
+                const { x, y, width, height } = halo.current.getBoundingClientRect();
+
+                const max = Math.max(width, height) * 2.41;
+                const dx = ((e.clientX - x) / width - .5) * (width / max);
+                const dy = ((e.clientY - y) / height - .5) * (height / max);
+
+                translate.set(`${e.clientX ? dx * 100 : 0}% ${e.clientY ? dy * 100 : 0}px`);
             }
 
-            click();
+            clickTrigger();
         }
 
-        el.addEventListener('click', handleClick);
+        function focus(e: FocusEvent) {
+            if (!halo.current) return;
 
-        return () => el.removeEventListener('click', handleClick);
-    }, [click]);
+            const visible = (e.target as HTMLElement).matches(':focus-visible');
+
+            if (e.type === 'focusin' && visible) {
+                halo.current.dataset.focused = 'true';
+            } else
+                if (e.type === 'focusout') {
+                    halo.current.dataset.focused = 'false';
+                }
+        }
+
+        focusEl.addEventListener('click', click);
+        focusEl.addEventListener('focusin', focus);
+        focusEl.addEventListener('focusout', focus);
+
+        return () => {
+            focusEl.removeEventListener('click', click);
+            focusEl.removeEventListener('focusin', focus);
+            focusEl.removeEventListener('focusout', focus);
+        }
+    }, [clickTrigger]);
 
     children = Array.isArray(children) ? children[0] : children;
     if (!isValidElement(children)) return children;
 
-    const arr = Children.toArray(children.props.children);
-    arr.unshift(<div key="halo" className={style.halo} data-hover={hover} style={{ display: disabled ? 'none' : 'flex' }}>
-        <Animatable animate={{ translate, opacity: [0, 1], scale: [0, 1], duration: .4, easing: 'ease-in' }} initial={{ opacity: 1, scale: 1 }} triggers={[{ on: click, immediate: true }]}>
-            <div className={style.ring} style={{ backgroundColor: color }} />
+    const childrenArray = Children.toArray(children.props.children);
+
+    childrenArray.unshift(<div ref={halo} key="halo" className={style.halo} data-hover={hover} data-disabled={disabled}>
+        <Animatable
+            initial={{ opacity: 1, scale: 1 }}
+            animate={{
+                translate,
+                opacity: [0, 1],
+                scale: [0, 1],
+                duration: .4,
+                easing: 'ease-in'
+            }}
+            triggers={[{ on: clickTrigger, immediate: true }]}>
+
+            <div className={style.ripple} style={{ backgroundColor: color }} />
         </Animatable>
     </div>);
 
@@ -99,7 +144,7 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, cc = {}, colo
         ...props,
         ref: combineRefs(container, ref, (children as any).ref),
         className: classes(children.props.className, style.container)
-    }, arr);
+    }, childrenArray);
 });
 
 Halo.displayName = 'Halo';

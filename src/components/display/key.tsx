@@ -6,22 +6,13 @@ import { createStyles } from "../../core/style";
 const styles = createStyles('key', {
     '.key': {
         position: 'relative',
-        fontWeight: 700,
+        fontWeight: 600,
         fontSize: 'var(--f-font-size-xsm)',
-        color: 'var(--f-clr-grey-600)',
-        backgroundColor: 'var(--f-clr-grey-300)',
+        color: 'var(--f-clr-grey-700)',
+        backgroundColor: 'var(--f-clr-fg-100)',
+        border: 'solid 1px var(--f-clr-fg-200)',
         borderRadius: 'var(--f-radius-sml)',
-        padding: '.2em .5em .4em .5em',
-        zIndex: 0
-    },
-
-    '.key::after': {
-        content: '""',
-        position: 'absolute',
-        backgroundColor: 'var(--f-clr-grey-200)',
-        borderRadius: 'calc(var(--f-radius-sml) - 2px)',
-        inset: '2px 2px calc(2px + .2em) 2px',
-        zIndex: -1
+        padding: '.3em .5em'
     }
 });
 

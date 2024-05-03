@@ -44,7 +44,7 @@ const styles = createStyles('checkbox', {
         width: '1.5em',
         height: '1.5em',
         borderRadius: 'var(--f-radius-sml)',
-        backgroundColor: 'var(--f-clr-bg-100)',
+        backgroundColor: 'var(--f-clr-fg-100)',
         border: 'solid 1px var(--f-clr-fg-200)',
         transition: 'background-color .25s, border-color .25s',
         display: 'flex',
@@ -65,7 +65,8 @@ const styles = createStyles('checkbox', {
     },
 
     '.input:disabled + .checkbox': {
-        backgroundColor: 'var(--f-clr-grey-100)'
+        backgroundColor: 'var(--f-clr-grey-100)',
+        borderColor: 'var(--f-clr-grey-200)'
     },
 
     '.input:disabled + .checkbox .checkmark': {

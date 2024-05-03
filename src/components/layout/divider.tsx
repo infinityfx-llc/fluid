@@ -10,7 +10,7 @@ const styles = createStyles('divider', {
         gap: 'var(--f-spacing-xsm)',
         fontSize: 'var(--f-font-size-xsm)',
         fontWeight: 600,
-        color: 'var(--f-clr-grey-300)'
+        color: 'var(--f-clr-grey-200)'
     },
 
     '.divider[data-vertical="true"]': {
@@ -18,7 +18,7 @@ const styles = createStyles('divider', {
     },
 
     '.line': {
-        backgroundColor: 'var(--f-clr-grey-300)',
+        backgroundColor: 'var(--f-clr-fg-200)',
         flexGrow: 1
     },
 

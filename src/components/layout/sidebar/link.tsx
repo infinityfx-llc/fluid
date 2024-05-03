@@ -23,7 +23,8 @@ const styles = createStyles('sidebar.link', fluid => ({
         alignItems: 'center',
         paddingInline: '1em',
         height: '3em',
-        transition: 'background-color .25s, color .25s'
+        transition: 'background-color .25s, color .25s',
+        outline: 'none'
     },
 
     '.s__sml': {
@@ -127,7 +128,7 @@ const Link = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, 
     const isMobile = useMediaQuery(`(max-width: ${fluid.breakpoints.mob}px)`);
 
     return <>
-        <Halo color="var(--f-clr-primary-200)" disabled={disabled}>
+        <Halo color={active ? undefined : 'var(--f-clr-primary-200)'} disabled={disabled}>
             <div ref={ref} {...props} tabIndex={0}
                 className={classes(
                     style.link,

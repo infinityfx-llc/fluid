@@ -41,11 +41,9 @@ const styles = createStyles('radio', {
         width: '1.5em',
         height: '1.5em',
         borderRadius: '999px',
+        backgroundColor: 'var(--f-clr-fg-100)',
         border: 'solid 1px var(--f-clr-fg-200)',
-        transition: 'background-color .25s, border-color .25s',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
+        transition: 'background-color .25s, border-color .25s'
     },
 
     '.input:enabled:not(:checked)': {
@@ -59,19 +57,35 @@ const styles = createStyles('radio', {
 
     '.selection': {
         position: 'absolute',
-        inset: '.4em',
         borderRadius: '999px',
         backgroundColor: 'white',
-        opacity: 0,
-        transition: 'opacity .25s'
+        scale: 0,
+        transition: 'scale .25s ease-out'
+    },
+
+    '.s__xsm .selection': {
+        inset: '4px'
+    },
+
+    '.s__sml .selection': {
+        inset: '5px'
+    },
+
+    '.s__med .selection': {
+        inset: '6px'
+    },
+
+    '.s__lrg .selection': {
+        inset: '7px'
     },
 
     '.input:checked + .radio .selection': {
-        opacity: 1
+        scale: 1
     },
 
     '.input:disabled + .radio': {
-        backgroundColor: 'var(--f-clr-grey-100)'
+        backgroundColor: 'var(--f-clr-grey-100)',
+        borderColor: 'var(--f-clr-grey-200)'
     },
 
     '.input:disabled:checked + .radio': {

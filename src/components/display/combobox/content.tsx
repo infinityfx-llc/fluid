@@ -47,14 +47,8 @@ const styles = createStyles('combobox.content', {
     '.message': {
         position: 'relative',
         padding: '.5em',
-        borderRadius: 'var(--f-radius-sml)',
-        border: 'none',
-        outline: 'none',
-        background: 'none',
         width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        textAlign: 'center',
         color: 'var(--f-clr-grey-500)'
     },
 
