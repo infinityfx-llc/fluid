@@ -2,22 +2,46 @@ import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
 import { forwardRef } from "react";
 import { createStyles } from "../../core/style";
+import { MdClose } from "react-icons/md";
 
 const styles = createStyles('badge', {
     '.badge': {
         fontWeight: 700,
-        color: 'var(--f-clr-text-100)',
         borderRadius: 'var(--f-radius-sml)',
-        padding: '.2em .6em'
+        padding: '.3em .6em',
+        transition: 'background-color .15s',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--f-spacing-xxs)',
+        lineHeight: 1.2
     },
 
     '.v__default': {
-        backgroundColor: 'var(--f-clr-primary-300)'
+        backgroundColor: 'var(--f-clr-primary-300)',
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.v__default:hover': {
+        backgroundColor: 'var(--f-clr-primary-400)'
+    },
+
+    '.v__light': {
+        backgroundColor: 'var(--f-clr-fg-100)',
+        color: 'var(--f-clr-primary-100)'
+    },
+
+    '.v__light:hover': {
+        backgroundColor: 'var(--f-clr-primary-600)'
     },
 
     '.v__neutral': {
         backgroundColor: 'var(--f-clr-fg-100)',
-        border: 'solid 1px var(--f-clr-fg-200)'
+        border: 'solid 1px var(--f-clr-fg-200)',
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.v__neutral:hover': {
+        backgroundColor: 'var(--f-clr-fg-200)'
     },
 
     '.s__xsm': {
@@ -38,17 +62,24 @@ const styles = createStyles('badge', {
 
     '.badge.round': {
         borderRadius: '999px'
+    },
+
+    '.close': {
+        display: 'flex',
+        alignItems: 'center',
+        cursor: 'pointer'
     }
 });
 
-export type BadgeSelectors = Selectors<'badge' | 'v__default' | 'v__neutral' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
+export type BadgeSelectors = Selectors<'badge' | 'v__default' | 'v__light' | 'v__neutral' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
-const Badge = forwardRef(({ children, cc = {}, variant = 'default', round = false, size = 'sml', color, ...props }:
+const Badge = forwardRef(({ children, cc = {}, variant = 'default', round = false, size = 'sml', color, onClose, ...props }:
     {
         cc?: BadgeSelectors;
-        variant?: 'default' | 'neutral';
+        variant?: 'default' | 'light' | 'neutral';
         round?: boolean;
         size?: FluidSize;
+        onClose?: () => void;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = combineClasses(styles, cc);
 
@@ -60,8 +91,16 @@ const Badge = forwardRef(({ children, cc = {}, variant = 'default', round = fals
             round && style.round,
             props.className
         )}
-        style={{ backgroundColor: color, ...props.style }}>
+        style={{
+            backgroundColor: variant === 'default' ? color : undefined,
+            color: variant === 'light' ? color : undefined,
+            ...props.style
+        }}>
         {children}
+
+        {onClose ? <div className={styles.close} onClick={onClose}>
+            <MdClose />
+        </div> : null}
     </div>;
 });
 

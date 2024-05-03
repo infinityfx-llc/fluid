@@ -7,6 +7,7 @@ import { classes, combineClasses } from '../../../core/utils';
 import { Morph } from '@infinityfx/lively/layout';
 import { useNavigationMenu } from './root';
 import { Animatable } from '@infinityfx/lively';
+import { MdExpandMore } from 'react-icons/md';
 
 const styles = createStyles('navigation-menu.group', {
     '.group': {
@@ -22,14 +23,18 @@ const styles = createStyles('navigation-menu.group', {
         fontWeight: 600,
         color: 'var(--f-clr-text-100)',
         outline: 'none',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        lineHeight: 1.25,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--f-spacing-xxs)'
     },
 
     '.selection': {
         position: 'absolute',
         inset: 0,
         borderRadius: 'var(--f-radius-sml)',
-        backgroundColor: 'var(--f-clr-primary-500)',
+        backgroundColor: 'var(--f-clr-primary-400)',
         zIndex: -1
     },
 
@@ -79,6 +84,11 @@ const Group = forwardRef(({ children, cc = {}, label, href, target, active = fal
             }}>
 
             {label}
+
+            {hasLinks && <MdExpandMore style={{
+                transition: 'rotate .35s',
+                rotate: linkId === selection ? '180deg' : '0deg'
+            }} />}
 
             <Morph
                 show={!selection ? active : linkId === selection}

@@ -21,7 +21,8 @@ const styles = createStyles('action-menu.item', {
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--f-spacing-xsm)',
-        color: 'var(--f-clr-text-100)'
+        color: 'var(--f-clr-text-100)',
+        lineHeight: 1.25
     },
 
     '.item:enabled': {

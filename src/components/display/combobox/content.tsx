@@ -41,7 +41,7 @@ const styles = createStyles('combobox.content', {
 
     '.content': {
         padding: '.25em',
-        maxHeight: '10em'
+        maxHeight: '9.5em'
     },
 
     '.message': {
@@ -142,7 +142,7 @@ const Content = forwardRef(({ children, cc = {}, size = 'med', autoFocus = true,
                     }} />}
 
                 <Scrollarea className={style.content}>
-                    <div className={style.options}>
+                    <div>
                         <Animatable inherit animate={Pop.unique({ duration: .2 })} staggerLimit={4} stagger={.06}>
                             {filtered}
                         </Animatable>

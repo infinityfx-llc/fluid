@@ -99,7 +99,7 @@ function TabsComponent<T extends FluidInputvalue>({ options, cc = {}, variant = 
                 {options.map(({ label, value, disabled, panelId }, i) => {
 
                     return <div key={i} className={style.option}>
-                        <Halo disabled={disabled} color={variant === 'default' ? 'var(--f-clr-primary-200)' : undefined}>
+                        <Halo disabled={disabled} color={variant === 'default' ? 'var(--f-clr-primary-300)' : 'var(--f-clr-primary-400)'}>
                             <button role={panelId ? 'tab' : 'none'} aria-selected={state === value} aria-controls={panelId} className={style.button} disabled={disabled} onClick={() => {
                                 setState?.(value);
                                 onChange?.(value as T);
@@ -108,7 +108,7 @@ function TabsComponent<T extends FluidInputvalue>({ options, cc = {}, variant = 
                             </button>
                         </Halo>
 
-                        <Morph group={`tabs-selection-${id}`} show={state === value} deform={false}>
+                        <Morph group={`tabs-selection-${id}`} show={state === value} deform={false} cachable={['x', 'sx']}>
                             <div className={style.selection} />
                         </Morph>
                     </div>;

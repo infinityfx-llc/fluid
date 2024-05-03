@@ -4,7 +4,7 @@ import { forwardRef, useEffect, useId, useRef } from "react";
 import Halo from "../../feedback/halo";
 import Collapsible from "../collapsible";
 import { Animatable } from "@infinityfx/lively";
-import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
+import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { Selectors } from "../../../../src/types";
 import { useAccordion } from "./root";
 import { classes } from "../../../../src/utils";
@@ -73,15 +73,15 @@ const Item = forwardRef(({ children, cc = {}, label, defaultOpen = false, disabl
     }, []);
 
     return <>
-        <Halo disabled={disabled}>
+        <Halo disabled={disabled} color="var(--f-clr-primary-400)">
             <button disabled={disabled} className={style.button} type="button" aria-expanded={isOpen} aria-controls={id} onClick={() => toggle(id, !isOpen)}>
                 {label}
 
                 <div className={style.icon}>
                     <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} triggers={[{ on: isOpen }, { on: !isOpen, reverse: true }]}>
                         <div className={style.arrows}>
-                            <MdArrowDownward />
-                            <MdArrowUpward />
+                            <MdExpandMore />
+                            <MdExpandLess />
                         </div>
                     </Animatable>
                 </div>

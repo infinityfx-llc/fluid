@@ -125,7 +125,7 @@ const Toggle = forwardRef(({ children, cc = {}, size = 'med', compact = false, r
         { on: !state, reverse: true, immediate: true }
     ];
 
-    return <Halo disabled={props.disabled}>
+    return <Halo disabled={props.disabled} color={variant === 'minimal' && !state ? 'var(--f-clr-primary-400)' : undefined}>
         <div ref={ref} {...rest}
             className={classes(
                 style.toggle,

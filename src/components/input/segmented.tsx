@@ -9,11 +9,14 @@ import { createStyles } from "../../core/style";
 
 const styles = createStyles('segmented', {
     '.segmented': {
-        padding: '.3em',
+        display: 'flex'
+    },
+
+    '.v__default, .v__neutral': {
         borderRadius: 'calc(var(--f-radius-sml) + .3em)',
         backgroundColor: 'var(--f-clr-fg-100)',
         border: 'solid 1px var(--f-clr-fg-200)',
-        display: 'flex'
+        padding: '.3em'
     },
 
     '.s__sml': {
@@ -83,6 +86,10 @@ const styles = createStyles('segmented', {
         backgroundColor: 'var(--f-clr-fg-200)'
     },
 
+    '.v__minimal .selection': {
+        backgroundColor: 'var(--f-clr-primary-400)'
+    },
+
     '.segmented.round .selection': {
         borderRadius: '999px'
     },
@@ -109,11 +116,11 @@ const styles = createStyles('segmented', {
     }
 });
 
-export type SegmentedSelectors = Selectors<'segmented' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'uniform' | 'v__default' | 'v__neutral' | 'option' | 'content' | 'selection'>;
+export type SegmentedSelectors = Selectors<'segmented' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'uniform' | 'v__default' | 'v__neutral' | 'v__minimal' | 'option' | 'content' | 'selection'>;
 
 type SegmentedProps<T> = {
     cc?: SegmentedSelectors;
-    variant?: 'default' | 'neutral';
+    variant?: 'default' | 'neutral' | 'minimal';
     size?: Omit<FluidSize, 'xsm'>;
     round?: boolean;
     uniform?: boolean;
