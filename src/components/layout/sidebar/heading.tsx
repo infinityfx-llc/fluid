@@ -13,7 +13,7 @@ const styles = createStyles('sidebar.heading', fluid => ({
         fontWeight: 800,
         width: 'max-content',
         transition: 'opacity .3s',
-        padding: '0 1em',
+        padding: '0 1rem',
         marginTop: 'var(--f-spacing-lrg)'
     },
 

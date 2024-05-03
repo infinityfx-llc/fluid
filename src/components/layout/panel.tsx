@@ -56,38 +56,41 @@ const styles = createStyles('panel', {
     },
 
     '.divider:focus-visible .focus': {
-        backgroundColor: 'var(--f-clr-primary-100)'
+        backgroundColor: 'var(--f-clr-primary-300)'
     },
 
     '.handle': {
         position: 'absolute',
-        padding: '4px',
-        borderRadius: '99px',
+        borderRadius: '3px',
         backgroundColor: 'var(--f-clr-fg-200)',
+        display: 'grid',
+        gap: '1px',
         zIndex: 1
     },
 
-    '.divider:focus-visible .handle': {
-        backgroundColor: 'var(--f-clr-primary-100)'
+    '.d__horizontal .handle': {
+        gridTemplateColumns: '1fr 1fr',
+        padding: '5px 3px'
+    },
+    
+    '.d__vertical .handle': {
+        gridTemplateColumns: '1fr 1fr 1fr',
+        padding: '3px 5px'
     },
 
-    '.divider:focus-visible .strip': {
+    '.dot': {
+        backgroundColor: 'var(--f-clr-grey-200)',
+        borderRadius: '99px',
+        width: '2px',
+        height: '2px'
+    },
+
+    '.divider:focus-visible .handle': {
         backgroundColor: 'var(--f-clr-primary-300)'
     },
 
-    '.strip': {
-        backgroundColor: 'var(--f-clr-grey-200)',
-        borderRadius: '99px'
-    },
-
-    '.d__horizontal > .divider .strip': {
-        width: '2px',
-        height: '8px'
-    },
-
-    '.d__vertical > .divider .strip': {
-        height: '2px',
-        width: '8px'
+    '.divider:focus-visible .dot': {
+        backgroundColor: 'var(--f-clr-primary-600)'
     }
 });
 
@@ -164,7 +167,7 @@ const Panel = forwardRef(({ cc = {}, children, size, handles, direction = 'horiz
                 }}>
                     <div className={style.focus}>
                         {handles && <div className={style.handle}>
-                            <div className={style.strip} />
+                            {[0, 1, 2, 3, 4, 5].map(i => <div key={i} className={style.dot} />)}
                         </div>}
                     </div>
                 </div>}

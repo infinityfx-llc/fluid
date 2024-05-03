@@ -17,7 +17,6 @@ const styles = createStyles('action-menu.item', {
         width: '100%',
         borderRadius: 'var(--f-radius-sml)',
         userSelect: 'none',
-        fontWeight: 500,
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--f-spacing-xsm)',

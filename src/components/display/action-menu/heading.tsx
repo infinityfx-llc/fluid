@@ -7,10 +7,10 @@ import { classes, combineClasses } from '../../../core/utils';
 
 const styles = createStyles('action-menu.heading', {
     '.heading': {
-        padding: '.5rem .8rem .2rem .8rem',
+        padding: '.4rem .8rem .4rem .8rem',
         fontWeight: 800,
-        fontSize: '.75em',
-        color: 'var(--f-clr-grey-600)'
+        fontSize: '.7em',
+        color: 'var(--f-clr-grey-500)'
     }
 });
 

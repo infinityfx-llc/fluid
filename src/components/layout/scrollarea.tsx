@@ -99,6 +99,8 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
     const style = combineClasses(styles, cc);
 
     const scrolled = useRef(false);
+    const lastWheel = useRef(0);
+
     const area = useRef<HTMLDivElement | null>(null);
     const track = useRef<HTMLDivElement | null>(null);
     const handle = useRef<HTMLDivElement | null>(null);
@@ -114,9 +116,10 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
         const val = el[horizontal ? 'scrollLeft' : 'scrollTop'];
         const max = el[horizontal ? 'scrollWidth' : 'scrollHeight'] - el[horizontal ? 'offsetWidth' : 'offsetHeight'];
 
-        if (amount > 0 ? val < max : val > 0) {
+        if ((amount > 0 ? val < max : val > 0) || e.timeStamp - lastWheel.current < 350) {
             e.stopPropagation();
             e.preventDefault();
+            lastWheel.current = e.timeStamp;
         }
 
         scroll(amount);

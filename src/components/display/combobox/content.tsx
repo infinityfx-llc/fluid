@@ -49,7 +49,8 @@ const styles = createStyles('combobox.content', {
         padding: '.5em',
         width: '100%',
         textAlign: 'center',
-        color: 'var(--f-clr-grey-500)'
+        color: 'var(--f-clr-grey-500)',
+        lineHeight: 1.25
     },
 
     '.container .wrapper': {
@@ -59,7 +60,12 @@ const styles = createStyles('combobox.content', {
 
     '.container .field': {
         border: 'none',
+        outline: 'none',
         backgroundColor: 'var(--f-clr-bg-100)'
+    },
+
+    '.container .field__content': {
+        paddingBlock: '.5em'
     }
 });
 
@@ -130,14 +136,15 @@ const Content = forwardRef(({ children, cc = {}, size = 'med', autoFocus = true,
                     autoFocus={autoFocus}
                     placeholder={placeholder}
                     value={search}
+                    onFocus={() => selected.current = 0}
                     onChange={e => {
-                        selected.current = 0;
                         setSearch(e.target.value);
                     }}
                     icon={<MdSearch />}
                     cc={{
                         wrapper: style.wrapper,
                         field: style.field,
+                        content: style.field__content,
                         ...cc
                     }} />}
 
