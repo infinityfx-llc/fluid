@@ -51,11 +51,18 @@ const styles = createStyles('calendar', {
     },
 
     '.calendar .year': {
-        flexGrow: 1
+        flexGrow: 1,
+        minWidth: 'auto'
+    },
+
+    '.calendar .year__content': {
+        padding: '.475em'
     },
 
     '.calendar .field': {
-        padding: '.475em'
+        backgroundColor: 'var(--f-clr-bg-100)',
+        border: 'none',
+        outline: 'none'
     },
 
     '.grid': {
@@ -141,7 +148,8 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
                 controls={false}
                 cc={{
                     wrapper: style.year,
-                    content: style.field,
+                    field: style.field,
+                    content: style.year__content,
                     ...cc
                 }}
                 disabled={disabled === true}

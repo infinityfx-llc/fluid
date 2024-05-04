@@ -52,7 +52,7 @@ function hexToRgb(str: string): color {
     return hex.slice(1, 4).map(val => parseInt(val.padStart(2, val), 16)) as color;
 }
 
-export function parsePartialHex(str: string) {    
+export function parsePartialHex(str: string) {
     return rgbToHex(hexToRgb(str.replace(/[^\da-f]/g, '').slice(0, 6)))
 }
 
@@ -85,7 +85,8 @@ const styles = createStyles('color-picker', {
         backgroundBlendMode: 'multiply',
         border: 'solid 1px var(--f-clr-fg-200)',
         flexGrow: 1,
-        userSelect: 'none'
+        userSelect: 'none',
+        cursor: 'pointer'
     },
 
     '.selection': {
@@ -93,9 +94,16 @@ const styles = createStyles('color-picker', {
         width: '1.2em',
         height: '1.2em',
         borderRadius: '99px',
-        border: 'solid 1px var(--f-clr-fg-200)',
-        pointerEvents: 'none',
-        translate: '-50% -50%'
+        backgroundColor: 'var(--color)',
+        border: 'solid 2px white',
+        boxShadow: 'var(--f-shadow-sml)',
+        translate: '-50% -50%',
+        cursor: 'pointer'
+    },
+
+    '.selection[aria-disabled="true"]': {
+        backgroundColor: 'var(--f-clr-grey-200)',
+        borderColor: 'var(--f-clr-grey-300)'
     },
 
     '.wrapper .swatch': {
@@ -127,7 +135,11 @@ const styles = createStyles('color-picker', {
 
     '.hue__handle::after': {
         boxSizing: 'border-box',
-        border: 'solid 1px var(--f-clr-fg-200)'
+        border: 'solid 2px white'
+    },
+
+    '.hue__handle[aria-disabled="true"]::after': {
+        borderColor: 'var(--f-clr-grey-300)'
     },
 
     '.wrapper .hue__handle[aria-disabled="false"]::after': {
@@ -200,7 +212,8 @@ function ColorPickerComponent<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format
 
     return <div ref={ref} {...props}
         style={{
-            '--hue': `hsl(${hsv[0]}, 100%, 50%)`
+            '--hue': `hsl(${hsv[0]}, 100%, 50%)`,
+            '--color': `rgb(${rgb.join(',')})`
         } as any}
         className={classes(
             style.wrapper,
@@ -217,11 +230,14 @@ function ColorPickerComponent<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format
                 style={{
                     background: `linear-gradient(90deg, transparent, hsl(${hsv[0]}, 100%, 50%)), linear-gradient(white, black)`
                 }}>
-                <div className={style.selection} style={{
-                    left: `${hsv[1]}%`,
-                    top: `${100 - hsv[2]}%`,
-                    backgroundColor: disabled ? 'var(--f-clr-grey-200)' : `rgb(${rgb.join(',')})`
-                }} />
+                <div
+                    aria-disabled={disabled}
+                    onMouseDown={() => picking.current = true}
+                    className={style.selection}
+                    style={{
+                        left: `${hsv[1]}%`,
+                        top: `${100 - hsv[2]}%`
+                    }} />
             </div>
 
             <div className={style.column}>

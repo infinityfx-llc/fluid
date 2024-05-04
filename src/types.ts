@@ -40,7 +40,7 @@ export type FluidComponents = {
     key?: FluidSelectorStyles<import('./components/display/key').KeySelectors>;
     swatch?: FluidSelectorStyles<import('./components/display/swatch').SwatchSelectors>;
     table?: FluidSelectorStyles<import('./components/display/table').TableSelectors>;
-    text?: FluidSelectorStyles<import('./components/display/text').TextSelectors>;
+    ticker?: FluidSelectorStyles<import('./components/display/text').TickerSelectors>;
     timeline?: FluidSelectorStyles<import('./components/display/timeline').TimelineSelectors>;
     toast?: FluidSelectorStyles<import('./components/display/toast').ToastSelectors>;
     tooltip?: FluidSelectorStyles<import('./components/display/tooltip').TooltipSelectors>;

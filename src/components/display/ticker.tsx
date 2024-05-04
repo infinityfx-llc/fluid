@@ -2,12 +2,12 @@
 
 import { classes, combineClasses } from '../../../src/core/utils';
 import { Selectors } from '../../../src/types';
-import { forwardRef, useEffect, useState, useRef } from 'react';
+import { forwardRef, useState, useRef, useEffect } from 'react';
 import { createStyles } from '../../core/style';
 import { useTrigger } from '@infinityfx/lively/hooks';
 import { Animatable } from '@infinityfx/lively';
 
-const styles = createStyles('text', {
+const styles = createStyles('ticker', {
     '.text': {
         display: 'flex',
         alignItems: 'flex-end',
@@ -22,15 +22,16 @@ const styles = createStyles('text', {
     },
 
     '.column > *': {
+        height: '1.2em',
         lineHeight: 1.2
     }
 });
 
-export type TextSelectors = Selectors<'text' | 'column'>;
+export type TickerSelectors = Selectors<'text' | 'column'>;
 
-const Text = forwardRef(({ children, cc = {}, align = 'right', selective, duration = .7, stagger = .1, ...props }: {
+const Ticker = forwardRef(({ children, cc = {}, align = 'right', selective, duration = .7, stagger = .1, ...props }: {
     children: number | string | (number | string)[];
-    cc?: TextSelectors;
+    cc?: TickerSelectors;
     align?: 'left' | 'right';
     selective?: boolean;
     duration?: number;
@@ -64,15 +65,14 @@ const Text = forwardRef(({ children, cc = {}, align = 'right', selective, durati
 
         const chars = prev.current.split(''),
             updated = mutable.current,
-            len = updated.length,
-            diff = len - chars.length;
+            diff = updated.length - chars.length;
 
         prevLastRow.current = updated.map(col => col[col.length - 1]);
 
         if (diff > 0) chars[align === 'right' ? 'unshift' : 'push'](...new Array(diff).fill(null));
 
         for (let i = chars.length - 1; i >= 0; i--) {
-            if (i < len) {
+            if (i < updated.length) {
                 updated[i].push(chars[i]);
             } else {
                 updated[align === 'right' ? 'unshift' : 'push']([chars[i]]);
@@ -100,6 +100,6 @@ const Text = forwardRef(({ children, cc = {}, align = 'right', selective, durati
     </div>;
 });
 
-Text.displayName = 'Text';
+Ticker.displayName = 'Ticker';
 
-export default Text;
+export default Ticker;
