@@ -2,11 +2,11 @@
 
 import { forwardRef, useId, useRef, useState } from 'react';
 import Button from './button';
-import { MdUpload } from 'react-icons/md';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { FluidError, FluidSize, Selectors } from '../../../src/types';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
+import { Icon } from '../../core/icons';
 
 const styles = createStyles('file-field', {
     '.wrapper': {
@@ -173,7 +173,7 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
                     ...cc
                 }}
                 onClick={() => input.current?.click()}>
-                <MdUpload />
+                <Icon type="upload" />
             </Button>
         </label>
 

@@ -2,13 +2,13 @@
 
 import { useState, forwardRef, useMemo } from 'react';
 import Field, { FieldProps } from "./field";
-import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
 import { FluidInputvalue } from '../../../src/types';
 import Toggle from './toggle';
 import ProgressBar from '../feedback/progress-bar';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { classes, combineClasses } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
+import { Icon } from '../../core/icons';
 
 const colors = ['#eb2a1c', '#eb2a1c', '#e8831e', '#f0d030', '#fff952', '#5aff54'];
 
@@ -80,18 +80,18 @@ const PasswordField = forwardRef(({ cc = {}, strengthBar = false, size = 'med', 
             }}
             right={<Toggle
                 compact
-                aria-label="Toggle visibility" 
-                round={round} 
-                size={size} 
-                variant="minimal" 
-                disabled={props.disabled} 
-                checkedContent={<MdVisibilityOff />} 
-                checked={visible} 
-                onChange={e => setVisible(e.target.checked)} 
+                aria-label="Toggle visibility"
+                round={round}
+                size={size}
+                variant="minimal"
+                disabled={props.disabled}
+                checkedContent={<Icon type="eyeOff" />}
+                checked={visible}
+                onChange={e => setVisible(e.target.checked)}
                 cc={{
                     toggle: style.toggle
                 }}>
-                <MdVisibility />
+                <Icon type="eye" />
             </Toggle>} />
 
         {strengthBar && <ProgressBar size="sml" value={strength / 5} color={colors[strength]} cc={{ track: style.track }} aria-label="Password strength" />}

@@ -3,13 +3,13 @@
 import { forwardRef, useRef, useState, useId, useEffect } from 'react';
 import { FieldProps } from './field';
 import Button from './button';
-import { MdCheck, MdUnfoldMore } from 'react-icons/md';
 import { FluidInputvalue, FluidSize, PopoverRootReference, Selectors } from '../../../src/types';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import Badge from '../display/badge';
 import Combobox from '../display/combobox';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { createStyles } from '../../core/style';
+import { Icon } from '../../core/icons';
 
 const styles = createStyles('select', {
     '.wrapper': {
@@ -141,10 +141,15 @@ const styles = createStyles('select', {
 
     '.field[data-disabled="true"] .badge': {
         backgroundColor: 'var(--f-clr-grey-200)'
+    },
+
+    '.icon': {
+        display: 'flex',
+        marginLeft: 'auto'
     }
 });
 
-export type SelectSelectors = Selectors<'wrapper' | 'label' | 'error' | 'field' | 'content' | 'placeholder' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'badge'>;
+export type SelectSelectors = Selectors<'wrapper' | 'label' | 'error' | 'field' | 'content' | 'placeholder' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'badge' | 'icon'>;
 
 type SelectProps<T> = {
     cc?: SelectSelectors;
@@ -234,7 +239,7 @@ function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
                     <Button compact aria-label={split['aria-label'] || label} round={round} size={size} disabled={props.disabled || readOnly} variant="minimal" style={{
                         marginRight: '.2em'
                     }}>
-                        <MdUnfoldMore />
+                        <Icon type="expand" />
                     </Button>
                 </div>
             </Combobox.Trigger>
@@ -264,7 +269,9 @@ function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
                 }}>
                     {label}
 
-                    {selected && <MdCheck style={{ marginLeft: 'auto' }} />}
+                    {selected && <div className={style.icon}>
+                        <Icon type="check" />
+                    </div>}
                 </Combobox.Option>;
             })}
         </Combobox.Content>

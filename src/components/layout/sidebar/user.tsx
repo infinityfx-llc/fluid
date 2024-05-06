@@ -5,9 +5,9 @@ import { Selectors } from '../../../../src/types';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import Halo from '../../feedback/halo';
 import Indicator from '../../feedback/indicator';
-import { MdMoreVert } from 'react-icons/md';
 import { createStyles } from '../../../core/style';
 import { useSidebar } from './root';
+import { Icon } from '../../../core/icons';
 
 const styles = createStyles('sidebar.user',  fluid => ({
     '.user': {
@@ -98,7 +98,7 @@ const styles = createStyles('sidebar.user',  fluid => ({
 
 export type SidebarUserSelectors = Selectors<'user' | 'round' | 'avatar' | 'frame' | 'name' | 'status' | 'content' | 'icon'>;
 
-const User = forwardRef(({ children, cc = {}, name, status, indicator = false, round = false, icon = <MdMoreVert />, ...props }:
+const User = forwardRef(({ children, cc = {}, name, status, indicator = false, round = false, icon = <Icon type="more" />, ...props }:
     {
         cc?: SidebarUserSelectors;
         name: string;

@@ -7,9 +7,9 @@ import Halo from "../feedback/halo";
 import Scrollarea from "../layout/scrollarea";
 import Button from "../input/button";
 import Checkbox from "../input/checkbox";
-import { MdArrowDownward, MdArrowUpward, MdMoreVert, MdSort } from "react-icons/md";
 import ActionMenu from "./action-menu/index";
 import { createStyles } from "../../core/style";
+import { Icon } from "../../core/icons";
 
 // variants: default | minimal/light mabye?
 
@@ -166,9 +166,9 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
                             }}>
                                 {col as string}
 
-                                {(column !== col || sorting === 'nil') && sort && <MdSort />}
-                                {column === col && sorting === 'asc' && <MdArrowUpward />}
-                                {column === col && sorting === 'dsc' && <MdArrowDownward />}
+                                {(column !== col || sorting === 'nil') && sort && <Icon type="sort" />}
+                                {column === col && sorting === 'asc' && <Icon type="sortAscend" />}
+                                {column === col && sorting === 'dsc' && <Icon type="sortDescend" />}
                             </button>
                         </Halo>
                     </div>;
@@ -202,7 +202,7 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
                             <ActionMenu.Root>
                                 <ActionMenu.Trigger>
                                     <Button compact variant="minimal" size="sml" style={{ marginLeft: 'auto' }}>
-                                        <MdMoreVert />
+                                        <Icon type="more" />
                                     </Button>
                                 </ActionMenu.Trigger>
 

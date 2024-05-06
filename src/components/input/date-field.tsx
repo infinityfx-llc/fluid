@@ -9,7 +9,7 @@ import Popover from '../layout/popover';
 import { createStyles } from '../../core/style';
 import { combineClasses } from '../../core/utils';
 import Button from './button';
-import { MdClose } from 'react-icons/md';
+import { Icon } from '../../core/icons';
 
 function toString(date?: Date | null) {
     if (!date) return '';
@@ -78,7 +78,7 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled
                         marginRight: '.2em'
                     }}
                     onClick={() => setState?.(null)}>
-                    <MdClose />
+                    <Icon type="close" />
                 </Button>}
             />
         </Popover.Trigger>

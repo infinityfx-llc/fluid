@@ -4,11 +4,11 @@ import { forwardRef, useId, useRef } from 'react';
 import Overlay from './overlay';
 import { Selectors } from '../../../src/types';
 import Button from '../input/button';
-import { MdClose } from 'react-icons/md';
 import { classes, combineClasses } from '../../../src/core/utils';
 import { Animatable } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
 import { createStyles } from '../../core/style';
+import { Icon } from '../../core/icons';
 
 const styles = createStyles('drawer', {
     '.drawer': {
@@ -102,7 +102,7 @@ const Drawer = forwardRef(({ children, cc = {}, show, onClose, position = 'right
                     <span id={id} className={style.title}>{title}</span>
 
                     <Button compact variant="minimal" onClick={onClose}>
-                        <MdClose />
+                        <Icon type="close" />
                     </Button>
                 </div>
 

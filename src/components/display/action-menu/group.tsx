@@ -3,11 +3,11 @@
 import { Animate } from '@infinityfx/lively';
 import { Pop } from '@infinityfx/lively/animations';
 import { forwardRef, useState, useRef } from 'react';
-import { MdChevronRight } from 'react-icons/md';
 import { combineClasses } from '../../../../src/core/utils';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import Item from './item';
+import { Icon } from '../../../core/icons';
 
 const styles = createStyles('action-menu.group', {
     '.wrapper': {
@@ -28,6 +28,7 @@ const styles = createStyles('action-menu.group', {
     },
 
     '.icon': {
+        display: 'flex',
         marginLeft: 'auto'
     }
 });
@@ -74,7 +75,9 @@ const Group = forwardRef(({ children, cc = {}, label, className, ...props }:
             }}>
             {label}
 
-            <MdChevronRight className={style.icon} />
+            <div className={style.icon}>
+                <Icon type="right" />
+            </div>
         </Item>
 
         <Animate

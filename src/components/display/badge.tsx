@@ -2,7 +2,7 @@ import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
 import { forwardRef } from "react";
 import { createStyles } from "../../core/style";
-import { MdClose } from "react-icons/md";
+import { Icon } from "../../core/icons";
 
 const styles = createStyles('badge', {
     '.badge': {
@@ -99,7 +99,7 @@ const Badge = forwardRef(({ children, cc = {}, variant = 'default', round = fals
         {children}
 
         {onClose ? <div className={styles.close} onClick={onClose}>
-            <MdClose />
+            <Icon type="close" />
         </div> : null}
     </div>;
 });

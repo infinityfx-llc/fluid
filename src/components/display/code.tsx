@@ -4,9 +4,9 @@ import { Selectors } from "../../../src/types";
 import { Fragment, forwardRef, useId, useState } from "react";
 import Scrollarea from "../layout/scrollarea";
 import Toggle from "../input/toggle";
-import { MdCheck, MdCopyAll } from "react-icons/md";
 import { createStyles } from "../../core/style";
 import { classes, combineClasses } from "../../core/utils";
+import { Icon } from "../../core/icons";
 
 const styles = createStyles('code', {
     '.wrapper': {
@@ -97,7 +97,7 @@ const Code = forwardRef(({ children, cc = {}, title, dangerouslyInject, ...props
         <div className={style.button__align}>
             <Toggle
                 compact
-                checkedContent={<MdCheck />}
+                checkedContent={<Icon type="check" />}
                 checked={copied}
                 cc={{
                     toggle: style.toggle,
@@ -118,7 +118,7 @@ const Code = forwardRef(({ children, cc = {}, title, dangerouslyInject, ...props
                     setCopied(true);
                     setTimeout(() => setCopied(false), 2000);
                 }}>
-                <MdCopyAll />
+                <Icon type="copy" />
             </Toggle>
         </div>
     </div>;

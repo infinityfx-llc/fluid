@@ -1,9 +1,9 @@
 import { Selectors } from "../../../src/types";
 import { forwardRef } from "react";
 import Button from "../input/button";
-import { MdClose } from "react-icons/md";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
+import { Icon } from "../../core/icons";
 
 const styles = createStyles('toast', {
     '.toast': {
@@ -62,7 +62,7 @@ const styles = createStyles('toast', {
 
 export type ToastSelectors = Selectors<'toast' | 'icon' | 'background' | 'content' | 'text'>;
 
-const Toast = forwardRef(({ children, cc = {}, icon, color, title, round, action = <MdClose />, onClose, ...props }:
+const Toast = forwardRef(({ children, cc = {}, icon, color, title, round, action = <Icon type="close" />, onClose, ...props }:
     {
         cc?: ToastSelectors;
         icon: React.ReactNode;

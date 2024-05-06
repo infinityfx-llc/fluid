@@ -3,9 +3,9 @@
 import { FluidSize, Selectors } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Button from "../input/button";
-import { MdArrowBack, MdArrowForward, MdFirstPage, MdLastPage } from "react-icons/md";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
+import { Icon } from "../../core/icons";
 
 const styles = createStyles('pagination', {
     '.pagination': {
@@ -42,11 +42,11 @@ const Pagination = forwardRef(({ cc = {}, page, setPage, pages, compact, skipabl
 
     return <div ref={ref} {...props} className={classes(style.pagination, props.className)}>
         {compact && skipable && <Button {...buttonProps} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state < 1} onClick={() => update(0)}>
-            <MdFirstPage />
+            <Icon type="first" />
         </Button>}
 
         <Button {...buttonProps} disabled={state < 1} onClick={() => update(state - 1)}>
-            <MdArrowBack />
+            <Icon type="left" />
         </Button>
 
         {!compact && <>
@@ -60,11 +60,11 @@ const Pagination = forwardRef(({ cc = {}, page, setPage, pages, compact, skipabl
         </>}
 
         <Button {...buttonProps} disabled={state >= pages - 1} onClick={() => update(state + 1)}>
-            <MdArrowForward />
+            <Icon type="right" />
         </Button>
 
         {compact && skipable && <Button {...buttonProps} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state >= pages - 1} onClick={() => update(pages - 1)}>
-            <MdLastPage />
+            <Icon type="last" />
         </Button>}
     </div>;
 });

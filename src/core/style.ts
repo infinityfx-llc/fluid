@@ -59,7 +59,7 @@ function mergeStyles(...styles: FluidStyles[]) {
     return merged;
 }
 
-function rulesToString__EXP(ruleset: React.CSSProperties | { [key: string]: React.CSSProperties } | FluidStyles, postfix?: string, selectors: Selectors = {}): { rules: string; selectors: Selectors; } {
+function rulesToString(ruleset: React.CSSProperties | { [key: string]: React.CSSProperties } | FluidStyles, postfix?: string, selectors: Selectors = {}): { rules: string; selectors: Selectors; } {
     const rules = Object.entries(ruleset).reduce((str, [attr, value]) => {
         if (typeof value === 'object') {
             const prefixed = (postfix ?
@@ -76,7 +76,7 @@ function rulesToString__EXP(ruleset: React.CSSProperties | { [key: string]: Reac
                 attr)
                 .replace(/:global\((.+?)\)/g, '$1');
 
-            return str + `${prefixed}{${rulesToString__EXP(value, postfix, selectors).rules}}`;
+            return str + `${prefixed}{${rulesToString(value, postfix, selectors).rules}}`;
         }
         if (value === undefined) return str;
 
@@ -90,7 +90,7 @@ export function createStyles(key: keyof FluidComponents, styles: ((fluid: FluidT
     const ruleset = styles instanceof Function ? styles(STYLE_CONTEXT.THEME) : styles;
 
     const override = STYLE_CONTEXT.COMPONENTS[key] || {};
-    STYLE_CONTEXT.STYLES[key] = rulesToString__EXP(mergeStyles(ruleset, override), hashStyles(ruleset, override));
+    STYLE_CONTEXT.STYLES[key] = rulesToString(mergeStyles(ruleset, override), hashStyles(ruleset, override));
 
     return STYLE_CONTEXT.STYLES[key].selectors;
 }
@@ -98,11 +98,16 @@ export function createStyles(key: keyof FluidComponents, styles: ((fluid: FluidT
 export function createGlobalStyles(styles: ((fluid: FluidTheme) => FluidStyles) | FluidStyles) {
     const ruleset = styles instanceof Function ? styles(STYLE_CONTEXT.THEME) : styles;
     const key = hashStyles(ruleset);
-    const { rules } = rulesToString__EXP(ruleset);
+    const { rules } = rulesToString(ruleset);
 
     if (!(key in STYLE_CONTEXT.STYLES)) {
-        const globals = STYLE_CONTEXT.STYLES.__globals;
-        STYLE_CONTEXT.STYLES.__globals = { rules: (globals?.rules || '') + rules, selectors: {} };
-        STYLE_CONTEXT.STYLES[key] = { rules: '', selectors: {} };
+        STYLE_CONTEXT.STYLES.__globals = {
+            rules: (STYLE_CONTEXT.STYLES.__globals?.rules || '') + rules,
+            selectors: {}
+        };
+        STYLE_CONTEXT.STYLES[key] = {
+            rules: '',
+            selectors: {}
+        };
     }
 }

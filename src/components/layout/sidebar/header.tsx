@@ -6,7 +6,7 @@ import { classes, combineClasses } from '../../../../src/core/utils';
 import { createStyles } from '../../../core/style';
 import { useSidebar } from './root';
 import Toggle from '../../input/toggle';
-import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
+import { Icon } from '../../../core/icons';
 
 const styles = createStyles('sidebar.header', fluid => ({
     '.header': {
@@ -49,9 +49,9 @@ const Header = forwardRef(({ children, cc = {}, toggle = 'square', ...props }:
             round={toggle === 'round'}
             className={style.toggle}
             checked={collapsed}
-            checkedContent={<MdChevronRight />}
+            checkedContent={<Icon type="right" />}
             onChange={() => onCollapse(!collapsed)}>
-            <MdChevronLeft />
+            <Icon type="left" />
         </Toggle>}
     </div>;
 });

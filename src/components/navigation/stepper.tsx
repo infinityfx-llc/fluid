@@ -4,10 +4,10 @@ import { classes, combineClasses } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { forwardRef, useId } from "react";
-import { MdCheck } from "react-icons/md";
 import Halo from "../feedback/halo";
 import ProgressBar from "../feedback/progress-bar";
 import { createStyles } from "../../core/style";
+import { Icon } from "../../core/icons";
 
 const styles = createStyles('stepper', {
     '.wrapper': {
@@ -212,7 +212,7 @@ const Stepper = forwardRef(({ cc = {}, steps, completed, setCompleted, navigatio
                                         <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} initial={{ translate: isCompleted ? '0% -50%' : '0% 0%' }} triggers={[{ on: isCompleted }, { on: !isCompleted, reverse: true }]}>
                                             <div className={style.icons}>
                                                 <div className={style.icon}>{icon}</div>
-                                                <MdCheck />
+                                                <Icon type="check" />
                                             </div>
                                         </Animatable>
                                     </div>

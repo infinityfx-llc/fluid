@@ -4,7 +4,6 @@ import { forwardRef, useId, useRef, useEffect } from 'react';
 import Overlay from './overlay';
 import { Selectors } from '../../../src/types';
 import Button from '../input/button';
-import { MdClose } from 'react-icons/md';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { Animatable } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
@@ -12,6 +11,7 @@ import { createStyles } from '../../core/style';
 import useFluid from '../../hooks/use-fluid';
 import useMediaQuery from '../../hooks/use-media-query';
 import { useLink } from '@infinityfx/lively/hooks';
+import { Icon } from '../../core/icons';
 
 const styles = createStyles('modal', (fluid) => ({
     '.modal': {
@@ -164,7 +164,7 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, mobileClosi
                     <span id={id} className={styles.title}>{title}</span>
 
                     {(mobileClosing === 'button' || !isMobile) && <Button compact variant="minimal" onClick={onClose}>
-                        <MdClose />
+                        <Icon type="close" />
                     </Button>}
                 </div>
 

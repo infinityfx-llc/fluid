@@ -5,12 +5,12 @@ import Halo from '../../feedback/halo';
 import { Selectors } from '../../../../src/types';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import Toggle from '../../input/toggle';
-import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import Collapsible from '../collapsible';
 import { createStyles } from '../../../core/style';
 import { useSidebar } from './root';
 import useFluid from '../../../hooks/use-fluid';
 import useMediaQuery from '../../../hooks/use-media-query';
+import { Icon } from '../../../core/icons';
 
 const styles = createStyles('sidebar.link', fluid => ({
     '.link': {
@@ -158,13 +158,13 @@ const Link = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, 
                         size={size === 'med' ? 'sml' : 'xsm'}
                         round={round}
                         checked={open}
-                        checkedContent={<MdExpandLess />}
+                        checkedContent={<Icon type="up" />}
                         onChange={e => {
                             e.stopPropagation();
 
                             setOpen(e.target.checked);
                         }}>
-                        <MdExpandMore />
+                        <Icon type="down" />
                     </Toggle> : right}
                 </span>
             </div>

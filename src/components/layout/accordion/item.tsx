@@ -4,12 +4,12 @@ import { forwardRef, useEffect, useId, useRef } from "react";
 import Halo from "../../feedback/halo";
 import Collapsible from "../collapsible";
 import { Animatable } from "@infinityfx/lively";
-import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { Selectors } from "../../../../src/types";
 import { useAccordion } from "./root";
 import { classes } from "../../../../src/utils";
 import { createStyles } from "../../../core/style";
 import { combineClasses } from "../../../core/utils";
+import { Icon } from "../../../core/icons";
 
 const styles = createStyles('accordion.item', {
     '.button': {
@@ -80,8 +80,8 @@ const Item = forwardRef(({ children, cc = {}, label, defaultOpen = false, disabl
                 <div className={style.icon}>
                     <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} triggers={[{ on: isOpen }, { on: !isOpen, reverse: true }]}>
                         <div className={style.arrows}>
-                            <MdExpandMore />
-                            <MdExpandLess />
+                            <Icon type="down" />
+                            <Icon type="up" />
                         </div>
                     </Animatable>
                 </div>

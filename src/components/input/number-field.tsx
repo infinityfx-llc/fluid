@@ -2,11 +2,11 @@
 
 import { useCallback, useState, forwardRef, useRef } from 'react';
 import Field, { FieldProps } from "./field";
-import { MdAdd, MdRemove } from 'react-icons/md';
 import Button from './button';
 import { changeInputValue, combineClasses, combineRefs, round, toNumber } from '../../../src/core/utils';
 import { FluidInputvalue } from '../../../src/types';
 import { createStyles } from '../../core/style';
+import { Icon } from '../../core/icons';
 
 const styles = createStyles('number-field', {
     '.wrapper .button__start': {
@@ -83,10 +83,10 @@ const NumberField = forwardRef(({ cc = {}, precision = 3, controls = true, defau
             ...cc
         }}
         left={controls ? <Button {...buttonProps} cc={{ button: style.button__start }} aria-label="Decrement" onClick={() => increment(-step)}>
-            <MdRemove />
+            <Icon type="remove" />
         </Button> : null}
         right={controls ? <Button {...buttonProps} cc={{ button: style.button__end }} aria-label="Increment" onClick={() => increment(step)}>
-            <MdAdd />
+            <Icon type="add" />
         </Button> : null} />;
 });
 

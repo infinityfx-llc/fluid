@@ -3,10 +3,10 @@
 import { FluidSize, Selectors } from "../../../src/types";
 import { forwardRef, useState } from "react";
 import Button from "./button";
-import { MdArrowBack, MdArrowForward } from "react-icons/md";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 import NumberField from "./number-field";
+import { Icon } from "../../core/icons";
 
 // add arrow key support for focus
 // multiple/range select
@@ -138,7 +138,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
                 updated.setMonth(date.getMonth() - 1);
                 setDate?.(updated);
             }}>
-                <MdArrowBack />
+                <Icon type="left" />
             </Button>
 
             <NumberField
@@ -169,7 +169,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
                 updated.setMonth(date.getMonth() + 1);
                 setDate?.(updated);
             }}>
-                <MdArrowForward />
+                <Icon type="right" />
             </Button>
         </div>
 

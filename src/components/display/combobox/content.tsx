@@ -4,13 +4,13 @@ import { Children, forwardRef, useState, isValidElement, useRef, cloneElement } 
 import Popover from '../../layout/popover';
 import Scrollarea from '../../layout/scrollarea';
 import Field from '../../input/field';
-import { MdSearch } from 'react-icons/md';
 import { Animatable } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
 import { classes, combineClasses, getFocusable } from '../../../../src/core/utils';
 import { FluidSize, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { usePopover } from '../../layout/popover/root';
+import { Icon } from '../../../core/icons';
 
 const styles = createStyles('combobox.content', {
     '.container': {
@@ -140,7 +140,7 @@ const Content = forwardRef(({ children, cc = {}, size = 'med', autoFocus = true,
                     onChange={e => {
                         setSearch(e.target.value);
                     }}
-                    icon={<MdSearch />}
+                    icon={<Icon type="search" />}
                     cc={{
                         wrapper: style.wrapper,
                         field: style.field,

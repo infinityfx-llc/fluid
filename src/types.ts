@@ -1,4 +1,5 @@
 import type { PopoverRootReference } from "./components/layout/popover/root";
+import type { FluidIcon } from "./core/icons";
 import { PartialFluidTheme } from "./core/theme";
 
 export type FluidSize = 'xsm' | 'sml' | 'med' | 'lrg';
@@ -40,7 +41,7 @@ export type FluidComponents = {
     key?: FluidSelectorStyles<import('./components/display/key').KeySelectors>;
     swatch?: FluidSelectorStyles<import('./components/display/swatch').SwatchSelectors>;
     table?: FluidSelectorStyles<import('./components/display/table').TableSelectors>;
-    ticker?: FluidSelectorStyles<import('./components/display/text').TickerSelectors>;
+    ticker?: FluidSelectorStyles<import('./components/display/ticker').TickerSelectors>;
     timeline?: FluidSelectorStyles<import('./components/display/timeline').TimelineSelectors>;
     toast?: FluidSelectorStyles<import('./components/display/toast').ToastSelectors>;
     tooltip?: FluidSelectorStyles<import('./components/display/tooltip').TooltipSelectors>;
@@ -97,6 +98,9 @@ export type FluidConfig = {
     paths?: string[];
     theme?: PartialFluidTheme;
     components?: FluidComponents;
+    icons?: {
+        [key in FluidIcon]?: React.JSXElementConstructor<any>;
+    };
 }
 
 export {

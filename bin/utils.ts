@@ -10,8 +10,8 @@ export function getRoots() {
     let isInternal = false;
 
     try {
-        const packageJson = fs.readFileSync('./package.json', { encoding: 'ascii' });
-        isInternal = JSON.parse(packageJson).name === '@infinityfx/fluid';
+        const localPackage = fs.readFileSync('./package.json', { encoding: 'ascii' });
+        isInternal = JSON.parse(localPackage).name === packageJson.name;
     } catch (err) { }
 
     return {
@@ -21,12 +21,16 @@ export function getRoots() {
     };
 }
 
-export async function getConfig(): Promise<FluidConfig> {
+export async function getConfig(): Promise<{ config: FluidConfig; text: string; }> {
+    const [configFile] = await glob(process.cwd() + '/fluid.config.{js,mjs}');
+    let config = {}, text = '';
+
     try {
-        return (await import('file://' + process.cwd() + '/fluid.config.js' as any)).default;
-    } catch (ex) {
-        return {};
-    }
+        config = (await import('file://' + process.cwd() + `/${configFile}`)).default;
+        text = fs.readFileSync(process.cwd() + `/${configFile}`, { encoding: 'ascii' });
+    } catch (ex) { }
+
+    return { config, text };
 }
 
 function matchBrackets(content: string, start: number, type: '{}' | '()' | '[]' = '{}') {

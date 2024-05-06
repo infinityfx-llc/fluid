@@ -4,12 +4,13 @@ import { STYLE_CONTEXT } from '../src/core/style';
 import { mergeRecursive } from '../src/core/utils';
 import packageJson from '../package.json';
 import readline from 'readline';
+import { FluidIcon } from '../src/core/icons';
 
 export default async function () {
 
     sanitizeImports();
 
-    const config = await getConfig();
+    const { config } = await getConfig();
     STYLE_CONTEXT.THEME = mergeRecursive(config.theme || {}, STYLE_CONTEXT.THEME);
     STYLE_CONTEXT.COMPONENTS = config.components || {};
     STYLE_CONTEXT.PATHS = config.paths || STYLE_CONTEXT.PATHS;
@@ -17,10 +18,30 @@ export default async function () {
     console.log(`\r\n> ${packageJson.name} v${packageJson.version}\n`);
 
     await compileStyles();
+    await compileIcons();
 
     compileImports();
 
     console.log('\n');
+}
+
+async function compileIcons() {
+    const { dist, output } = getRoots();
+    let { config, text } = await getConfig(),
+        icons = config.icons || {};
+
+    let contents = fs.readFileSync(dist + './core/icons.js', { encoding: 'ascii' });
+
+    for (const icon in icons) {
+        contents = contents.replace(new RegExp(`${icon}:\\w+(,|\\})`), `${icon}:${(icons[icon as FluidIcon] as any).name}$1`);
+    }
+
+    const imports = Array.from(text.matchAll(/import\s*(.+?)from\s*(?:"|')([^"']+)(?:"|')/gs))
+        .concat(Array.from(text.matchAll(/(?:const|let|var)\s*(.+?)\s*=\s*require\((?:'|")([^"']+)(?:"|')/gs)));
+
+    contents = imports.map(([_, value, path]) => `import ${value.replace(/:/g, ' as ')} from "${path}";`).join('') + contents; // replace local paths
+
+    fs.writeFileSync(output + './core/icons.js', contents);
 }
 
 function sanitizeImports() {
