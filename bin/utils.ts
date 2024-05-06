@@ -47,6 +47,7 @@ function matchBrackets(content: string, start: number, type: '{}' | '()' | '[]' 
 
 const keyFromImport = (str: string) => str
     .replace(/^\s+|\s+(as\s+.+)?$/g, '')
+    .replace(/\.\w+$/, '')
     .replace(/([a-z])([A-Z])/, '$1-$2')
     .toLowerCase();
 
@@ -54,10 +55,18 @@ function removeImports(content: string) {
     return content.replace(/import[^;]*?core(?:\/|\\)style\.js(?:"|');?/gs, '');
 }
 
-function getDependents(content: string) {
-    return Array.from(content.matchAll(/import\s+\w+\s+from\s*(?:'|").*?\/([^\/]+)(\/index)?\.js(?:'|")/gs))
-        .map(entry => keyFromImport(entry[1]))
-        .filter(entry => !entry.startsWith('use'));
+function appendDependents(name: string, content: string) {
+    name = keyFromImport(name);
+
+    const dependencyArray = STYLE_CONTEXT.DEPENDENTS[name] || [];
+    Array.from(content.matchAll(/import\s+\w+\s+from\s*(?:'|").*?\/([^\/]+)(\/index)?\.js(?:'|")/gs))
+        .forEach(entry => {
+            const key = keyFromImport(entry[1]);
+
+            if (!key.startsWith('use')) dependencyArray.push(key);
+        });
+
+    STYLE_CONTEXT.DEPENDENTS[name] = dependencyArray;
 }
 
 function createRenderableElement(components: any, name: string, parent?: any) {
@@ -111,7 +120,7 @@ async function emitCss() {
 
     const stylesheet = Object.entries(STYLE_CONTEXT.STYLES)
         .reduce((stylesheet, [key, entry]) => {
-            key = key.replace(/\..+$/, '');
+            key = key.replace(/\.\w+$/, '');
             if (key !== '__globals' && usedComponents !== null && !(key in usedComponents)) return stylesheet;
 
             return stylesheet += entry.rules
@@ -139,7 +148,7 @@ export async function processFile(name: string, path: string, components: any, p
     let contents = fs.readFileSync(dist + path, { encoding: 'ascii' }),
         Element = createRenderableElement(components, name, parent);
 
-    STYLE_CONTEXT.DEPENDENTS[keyFromImport(name)] = getDependents(contents);
+    appendDependents(name, contents);
 
     contents = await processStyles(name, contents, Element);
     if (name === 'FluidProvider') contents = await insertThemedStyles(contents);
@@ -150,7 +159,7 @@ export async function processFile(name: string, path: string, components: any, p
 async function processStyles(name: string, content: string, Element: any) {
     try { renderToString(Element); } catch (ex) { }
 
-    const { selectors } = STYLE_CONTEXT.STYLES[keyFromImport(name)] || {};
+    const { selectors } = STYLE_CONTEXT.STYLES[name.replace(/([a-z])([A-Z])/, '$1-$2').toLowerCase()] || {};
 
     const createStyles = content.match(/import\s*\{[^{]*(createStyles(?:\s*as\s*([^\s},]+))?)[^}]*\}/);
 

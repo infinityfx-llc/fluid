@@ -92,3 +92,25 @@ export function getFocusable<T extends boolean = true>(element: HTMLElement | nu
 
     return (list ? elements : elements[0] || null) as any;
 }
+
+function hexToRgb(str: string) {
+    const hex = str.match(/^#([\da-f]{1,2})([\da-f]{1,2})([\da-f]{1,2})([\da-f]{2})?$/i);
+    if (hex) return hex.slice(1, 4).map(val => parseInt(val.padStart(2, val), 16));
+
+    return [0, 0, 0];
+}
+
+export function mixColors(base: string, mixer: string, outputLength: number) {
+    const colorA = hexToRgb(base);
+    const colorB = hexToRgb(mixer);
+
+    return new Array(outputLength).fill(0).map((_, i) => {
+        const n = i / outputLength;
+
+        return `#${[
+            colorA[0] * n + colorB[0] * (1 - n),
+            colorA[1] * n + colorB[1] * (1 - n),
+            colorA[2] * n + colorB[2] * (1 - n)
+        ].map(val => val.toString(16))}`;
+    });
+}
