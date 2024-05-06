@@ -23,7 +23,8 @@ const styles = createStyles('modal', (fluid) => ({
         minWidth: 'min(100%, 16em)',
         border: 'solid 1px var(--f-clr-fg-200)',
         margin: 'var(--f-spacing-lrg)',
-        maxHeight: 'calc(100% - var(--f-spacing-lrg) * 2)'
+        maxHeight: 'calc(100% - var(--f-spacing-lrg) * 2)',
+        touchAction: 'none'
     },
 
     '.scrollarea': {
@@ -35,7 +36,7 @@ const styles = createStyles('modal', (fluid) => ({
         alignItems: 'center',
         fontWeight: 700,
         paddingInline: 'var(--f-spacing-med)',
-        marginBottom: 'var(--f-spacing-med)',
+        paddingBottom: 'var(--f-spacing-med)',
         color: 'var(--f-clr-text-100)'
     },
 
@@ -46,8 +47,7 @@ const styles = createStyles('modal', (fluid) => ({
         backgroundColor: 'var(--f-clr-grey-200)',
         borderRadius: '99px',
         alignSelf: 'center',
-        display: 'none',
-        touchAction: 'none'
+        display: 'none'
     },
 
     '.title': {
@@ -61,7 +61,9 @@ const styles = createStyles('modal', (fluid) => ({
             margin: 0,
             borderRadius: 'var(--f-radius-lrg)',
             borderBottomRightRadius: 0,
-            borderBottomLeftRadius: 0
+            borderBottomLeftRadius: 0,
+            paddingBottom: 'calc(var(--f-spacing-med) + 32px)',
+            marginBottom: '-32px'
         },
 
         '.handle': {
@@ -82,6 +84,7 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, mobileClosi
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = combineClasses(styles, cc);
 
+    const content = useRef<HTMLDivElement>(null);
     const modalRef = useRef<HTMLDivElement>(null);
     const touch = useRef<{ clientY: number; } | null>(null);
     const offset = useLink(0);
@@ -107,7 +110,7 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, mobileClosi
             }
 
             const { clientY } = e.touches[0];
-            const dy = Math.max(clientY - touch.current.clientY, 0);
+            const dy = Math.max(clientY - touch.current.clientY, -32);
 
             offset.set(dy);
         }
@@ -157,7 +160,9 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, mobileClosi
                 role="dialog"
                 aria-modal
                 aria-labelledby={id}
-                onTouchStart={e => touch.current = e.touches[0]}>
+                onTouchStart={e => {
+                    if (mobileClosing === 'handle' && !content.current?.contains(e.target as HTMLElement)) touch.current = e.touches[0];
+                }}>
                 {isMobile && mobileClosing === 'handle' && <div className={style.handle} />}
 
                 <div className={style.header}>
@@ -168,7 +173,7 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, mobileClosi
                     </Button>}
                 </div>
 
-                <Scrollarea className={style.scrollarea}>
+                <Scrollarea className={style.scrollarea} ref={content}>
                     {children}
                 </Scrollarea>
             </div>

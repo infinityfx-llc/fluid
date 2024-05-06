@@ -1,16 +1,14 @@
 'use client';
 
 import { FluidSize, Selectors } from "../../../src/types";
-import { forwardRef, useState } from "react";
+import { forwardRef, useRef, useState } from "react";
 import Button from "./button";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 import NumberField from "./number-field";
 import { Icon } from "../../core/icons";
 
-// add arrow key support for focus
 // multiple/range select
-// aria (role="grid")
 
 function isEqual(a: Date, b: Date) {
     return a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -66,13 +64,19 @@ const styles = createStyles('calendar', {
     },
 
     '.grid': {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(7, 1fr)',
-        justifyItems: 'center'
+        display: 'flex',
+        flexDirection: 'column'
+    },
+
+    '.row': {
+        display: 'flex',
+        justifyContent: 'space-around'
     },
 
     '.label': {
         display: 'flex',
+        flexBasis: 0,
+        flexGrow: 1,
         alignItems: 'center',
         justifyContent: 'center',
         fontWeight: 600,
@@ -112,6 +116,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = combineClasses(styles, cc);
 
+    const dates = useRef<(HTMLButtonElement | null)[]>([]);
     const [partialYear, setPartialYear] = useState<null | string>(null);
     const [dateState, setDate] = value !== undefined ? [value, onChange] : useState(defaultValue);
     const date = dateState || new Date();
@@ -126,6 +131,12 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
         locale = 'en';
     }
 
+    function skipMonth(amount: number) {
+        const updated = new Date(date);
+        updated.setMonth(date.getMonth() + amount);
+        setDate?.(updated);
+    }
+
     return <div ref={ref} {...props} className={classes(
         style.calendar,
         round && style.round,
@@ -133,11 +144,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
         props.className
     )}>
         <div className={style.header}>
-            <Button compact size={size} disabled={disabled === true} variant="minimal" round={round} onClick={() => {
-                const updated = new Date(date);
-                updated.setMonth(date.getMonth() - 1);
-                setDate?.(updated);
-            }}>
+            <Button compact size={size} disabled={disabled === true} variant="minimal" round={round} onClick={() => skipMonth(-1)}>
                 <Icon type="left" />
             </Button>
 
@@ -164,44 +171,79 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
                 }}
                 onBlur={() => setPartialYear(null)} />
 
-            <Button compact size={size} disabled={disabled === true} variant="minimal" round={round} onClick={() => {
-                const updated = new Date(date);
-                updated.setMonth(date.getMonth() + 1);
-                setDate?.(updated);
-            }}>
+            <Button compact size={size} disabled={disabled === true} variant="minimal" round={round} onClick={() => skipMonth(1)}>
                 <Icon type="right" />
             </Button>
         </div>
 
         <div className={style.grid}>
-            {new Array(7).fill(0).map((_, i) => {
-                const day = new Date(monday);
-                day.setDate(monday.getDate() + i);
+            <div className={style.row}>
+                {new Array(7).fill(0).map((_, i) => {
+                    const day = new Date(monday);
+                    day.setDate(monday.getDate() + i);
 
-                return <div key={i} className={style.label}>
-                    {day.toLocaleString(locale, { weekday: 'short' })}
-                </div>;
-            })}
+                    return <div key={i} className={style.label} role="columnheader">
+                        {day.toLocaleString(locale, { weekday: 'short' })}
+                    </div>;
+                })}
+            </div>
 
-            {new Array(42).fill(0).map((_, i) => {
-                const day = new Date(monday);
-                day.setDate(monday.getDate() + i);
-                const isMonth = day.getMonth() === date.getMonth();
+            {new Array(6).fill(0).map((_, ri) => (
+                <div key={ri} className={style.row}>
+                    {new Array(7).fill(0).map((_, ci) => {
+                        const day = new Date(monday), index = ri * 7 + ci;
+                        day.setDate(monday.getDate() + index);
+                        const isMonth = day.getMonth() === date.getMonth();
 
-                const isDisabled = Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled;
+                        const isDisabled = Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled;
 
-                return <Button disabled={isDisabled} key={i}
-                    round={round}
-                    cc={{
-                        button: style.date,
-                        v__minimal: style.date__v__minimal
-                    }}
-                    data-present={isMonth}
-                    variant={isEqual(date, day) ? 'default' : 'minimal'}
-                    onClick={() => setDate?.(day)}>
-                    {day.getDate()}
-                </Button>;
-            })}
+                        return <Button key={ci}
+                            ref={el => dates.current[index] = el}
+                            role="gridcell"
+                            disabled={isDisabled}
+                            round={round}
+                            cc={{
+                                button: style.date,
+                                v__minimal: style.date__v__minimal
+                            }}
+                            data-present={isMonth}
+                            variant={isEqual(date, day) ? 'default' : 'minimal'}
+                            onClick={() => setDate?.(day)}
+                            onKeyDown={e => {
+                                let next: number | null = null;
+
+                                switch (e.key) {
+                                    case 'ArrowRight':
+                                        next = index + 1;
+                                        break;
+                                    case 'ArrowLeft':
+                                        next = index - 1;
+                                        break;
+                                    case 'ArrowDown':
+                                        next = index + 7;
+                                        break;
+                                    case 'ArrowUp':
+                                        next = index - 7;
+                                        break;
+                                }
+
+                                if (next !== null) {
+                                    if (next < 0) skipMonth(-1); 
+                                    if (next >= 42) skipMonth(1);
+
+                                    next = next % 42;
+                                    next = next < 0 ? 42 + next : next;
+                                    dates.current[next]?.focus();
+
+                                    e.preventDefault();
+                                }
+                            }}>
+
+                            {day.getDate()}
+                        </Button>;
+                    })}
+                </div>
+            ))}
         </div>
     </div>;
 });

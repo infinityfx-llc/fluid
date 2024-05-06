@@ -38,7 +38,7 @@ const ColorField = forwardRef(({ cc = {}, value, defaultValue, onChange, disable
     } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = combineClasses(styles, cc);
 
-    const [state, setState] = value !== undefined ? [value, onChange] : useState(defaultValue);
+    const [state, setState] = value !== undefined ? [value, onChange] : useState(defaultValue || '');
     const [partial, setPartial] = useState<string | null>(null);
 
     function update(value: string) {

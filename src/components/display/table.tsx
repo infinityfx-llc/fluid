@@ -138,7 +138,7 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
 
     return <Scrollarea {...props} ref={ref} horizontal role="grid" className={classes(style.table, props.className)}>
         <div role="rowgroup" className={style.rows}>
-            <div role="rowheader" className={classes(style.row, style.header)} style={{ gridTemplateColumns }}>
+            <div role="row" className={classes(style.row, style.header)} style={{ gridTemplateColumns }}>
                 {selectable && <div className={style.collapsed}>
                     <Checkbox size="xsm" color="var(--f-clr-text-100)" cc={{ checkbox: style.checkbox, checkmark: style.checkmark }} checked={selectedIndices.length === rows.length} onChange={e => {
                         if (!e.target.checked) return updateSelected([]);

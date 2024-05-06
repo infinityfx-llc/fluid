@@ -1,6 +1,6 @@
 {
 	"name": "@infinityfx/fluid",
-	"version": "0.2.0-beta.7",
+	"version": "0.2.0-beta.8",
 	"type": "module",
 	"description": "React UI library, using zero-runtime CSS-in-JS.",
 	"main": "dist/index.js",

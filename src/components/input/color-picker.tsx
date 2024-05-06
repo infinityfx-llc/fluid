@@ -53,7 +53,7 @@ function hexToRgb(str: string): color {
 }
 
 export function parsePartialHex(str: string) {
-    return rgbToHex(hexToRgb(str.replace(/[^\da-f]/g, '').slice(0, 6)))
+    return rgbToHex(hexToRgb(str.replace(/[^\da-f]/g, '').slice(0, 6)));
 }
 
 // maybe sizes?
@@ -86,7 +86,8 @@ const styles = createStyles('color-picker', {
         border: 'solid 1px var(--f-clr-fg-200)',
         flexGrow: 1,
         userSelect: 'none',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        touchAction: 'none'
     },
 
     '.selection': {
@@ -176,10 +177,10 @@ function ColorPickerComponent<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format
         onChange?.(format === 'rgb' ? rgb : rgbToHex(rgb) as any);
     }
 
-    function pick(e: MouseEvent) {
-        const { clientX, clientY } = e;
-
+    function pick(e: MouseEvent | TouchEvent) {
         if (!picking.current || !spaceRef.current || disabled) return;
+        
+        const { clientX, clientY } = 'touches' in e ? e.changedTouches[0] : e;
         let { x, y, width, height } = spaceRef.current.getBoundingClientRect();
 
         update([
@@ -190,17 +191,21 @@ function ColorPickerComponent<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format
     }
 
     useEffect(() => {
-        const mouseup = (e: MouseEvent) => {
+        const end = (e: MouseEvent | TouchEvent) => {
             pick(e);
             picking.current = false;
         }
 
-        window.addEventListener('mouseup', mouseup);
+        window.addEventListener('mouseup', end);
+        window.addEventListener('touchend', end);
         window.addEventListener('mousemove', pick);
+        window.addEventListener('touchmove', pick);
 
         return () => {
-            window.removeEventListener('mouseup', mouseup);
+            window.removeEventListener('mouseup', end);
+            window.removeEventListener('touchend', end);
             window.removeEventListener('mousemove', pick);
+            window.removeEventListener('touchmove', pick);
         }
     }, [hsv, disabled]);
 
@@ -223,6 +228,10 @@ function ColorPickerComponent<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format
             <div
                 ref={spaceRef}
                 onMouseDown={e => {
+                    picking.current = true;
+                    pick(e.nativeEvent);
+                }}
+                onTouchStart={e => {
                     picking.current = true;
                     pick(e.nativeEvent);
                 }}

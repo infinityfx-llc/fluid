@@ -20,7 +20,8 @@ const styles = createStyles('drawer', {
         width: 'min(100vw, 16em)',
         border: 'solid 1px var(--f-clr-fg-200)',
         height: '100dvh',
-        top: 0
+        top: 0,
+        touchAction: 'none'
     },
 
     '.drawer[data-position="right"]': {
