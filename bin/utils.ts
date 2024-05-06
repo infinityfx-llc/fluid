@@ -22,7 +22,7 @@ export function getRoots() {
 }
 
 export async function getConfig(): Promise<{ config: FluidConfig; text: string; }> {
-    const [configFile] = await glob(process.cwd() + '/fluid.config.{js,mjs}');
+    const [configFile] = await glob('./fluid.config.{js,mjs}');
     let config = {}, text = '';
 
     try {
