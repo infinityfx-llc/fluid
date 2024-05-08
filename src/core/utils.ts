@@ -14,7 +14,7 @@ export function changeInputValue(input: HTMLInputElement, value: FluidInputvalue
 
 export function mergeRecursive<T = any, P = any>(a: T, b: P) {
     if (a === undefined) return b as Merged<T, P>;
-    if (typeof a !== 'object' || Array.isArray(a)) return a as Merged<T, P>;
+    if (typeof a !== 'object' || a === null || Array.isArray(a)) return a as Merged<T, P>;
 
     const merged: any = Object.assign({}, a);
     for (const key in b) {
@@ -108,9 +108,9 @@ export function mixColors(base: string, mixer: string, outputLength: number) {
         const n = i / outputLength;
 
         return `#${[
-            colorA[0] * n + colorB[0] * (1 - n),
-            colorA[1] * n + colorB[1] * (1 - n),
-            colorA[2] * n + colorB[2] * (1 - n)
-        ].map(val => val.toString(16))}`;
+            colorA[0] * (1 - n) + colorB[0] * n,
+            colorA[1] * (1 - n) + colorB[1] * n,
+            colorA[2] * (1 - n) + colorB[2] * n
+        ].map(val => Math.round(val).toString(16)).join('')}`;
     });
 }

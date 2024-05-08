@@ -61,6 +61,8 @@ function mergeStyles(...styles: FluidStyles[]) {
 
 function rulesToString(ruleset: React.CSSProperties | { [key: string]: React.CSSProperties } | FluidStyles, postfix?: string, selectors: Selectors = {}): { rules: string; selectors: Selectors; } {
     const rules = Object.entries(ruleset).reduce((str, [attr, value]) => {
+        if (value === undefined || value === null) return str;
+        
         if (typeof value === 'object') {
             const prefixed = (postfix ?
                 attr.split(/((?::global\()?[.#][\w\-_][\w\d\-_]*)/gi)
@@ -78,7 +80,6 @@ function rulesToString(ruleset: React.CSSProperties | { [key: string]: React.CSS
 
             return str + `${prefixed}{${rulesToString(value, postfix, selectors).rules}}`;
         }
-        if (value === undefined) return str;
 
         return str + `${attr.replace(/(.?)([A-Z])/g, '$1-$2').toLowerCase()}:${value};`;
     }, '');
@@ -90,7 +91,7 @@ export function createStyles(key: keyof FluidComponents, styles: ((fluid: FluidT
     const ruleset = styles instanceof Function ? styles(STYLE_CONTEXT.THEME) : styles;
 
     const override = STYLE_CONTEXT.COMPONENTS[key] || {};
-    STYLE_CONTEXT.STYLES[key] = rulesToString(mergeStyles(ruleset, override), hashStyles(ruleset, override));
+    STYLE_CONTEXT.STYLES[key] = rulesToString(mergeStyles(override, ruleset), hashStyles(override, ruleset));
 
     return STYLE_CONTEXT.STYLES[key].selectors;
 }

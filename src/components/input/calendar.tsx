@@ -58,7 +58,7 @@ const styles = createStyles('calendar', {
     },
 
     '.calendar .field': {
-        backgroundColor: 'var(--f-clr-bg-100)',
+        background: 'var(--f-clr-bg-100)',
         border: 'none',
         outline: 'none'
     },

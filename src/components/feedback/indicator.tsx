@@ -24,7 +24,8 @@ const styles = createStyles('indicator', {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '.1em .3em',
-        zIndex: 99
+        zIndex: 99,
+        WebkitBackfaceVisibility: 'hidden'
     }
 });
 

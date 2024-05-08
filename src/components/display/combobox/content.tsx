@@ -61,7 +61,7 @@ const styles = createStyles('combobox.content', {
     '.container .field': {
         border: 'none',
         outline: 'none',
-        backgroundColor: 'var(--f-clr-bg-100)'
+        background: 'var(--f-clr-bg-100)'
     },
 
     '.container .field__content': {

@@ -99,7 +99,8 @@ const styles = createStyles('color-picker', {
         border: 'solid 2px white',
         boxShadow: 'var(--f-shadow-sml)',
         translate: '-50% -50%',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        WebkitBackfaceVisibility: 'hidden'
     },
 
     '.selection[aria-disabled="true"]': {

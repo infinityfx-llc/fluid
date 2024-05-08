@@ -61,7 +61,7 @@ const styles = createStyles('code', {
     },
 
     '.wrapper .toggle[data-checked="false"]': {
-        backgroundColor: 'var(--f-clr-bg-100)'
+        background: 'var(--f-clr-bg-100)'
     }
 });
 
