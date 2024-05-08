@@ -41,6 +41,11 @@ const styles = createStyles('segmented', {
         gridAutoFlow: 'column'
     },
 
+    '.segmented.vertical': {
+        flexDirection: 'column',
+        gridAutoFlow: 'row'
+    },
+
     '.option': {
         position: 'relative',
         border: 'none',
@@ -116,7 +121,7 @@ const styles = createStyles('segmented', {
     }
 });
 
-export type SegmentedSelectors = Selectors<'segmented' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'uniform' | 'v__default' | 'v__neutral' | 'v__minimal' | 'option' | 'content' | 'selection'>;
+export type SegmentedSelectors = Selectors<'segmented' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'uniform' | 'vertical' | 'v__default' | 'v__neutral' | 'v__minimal' | 'option' | 'content' | 'selection'>;
 
 type SegmentedProps<T> = {
     cc?: SegmentedSelectors;
@@ -124,6 +129,7 @@ type SegmentedProps<T> = {
     size?: Omit<FluidSize, 'xsm'>;
     round?: boolean;
     uniform?: boolean;
+    vertical?: boolean;
     options: { label: React.ReactNode; value: FluidInputvalue; disabled?: boolean; }[];
     name?: string;
     value?: T;
@@ -132,7 +138,7 @@ type SegmentedProps<T> = {
     error?: FluidError;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>;
 
-function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'default', size = 'med', round = false, uniform, options, name, value, defaultValue, onChange, error, ...props }: SegmentedProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
+function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'default', size = 'med', round = false, uniform, vertical, options, name, value, defaultValue, onChange, error, ...props }: SegmentedProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
     const [state, setState] = value !== undefined ? [value] : useState(defaultValue || options[0]?.value);
@@ -146,6 +152,7 @@ function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'def
             style[`v__${variant}`],
             round && style.round,
             uniform && style.uniform,
+            vertical && style.vertical,
             props.className
         )}
         data-error={!!error}>
@@ -165,7 +172,7 @@ function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'def
                     <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
                     <span className={style.content}>{label}</span>
 
-                    <Morph group={`segmented-selection-${id}`} show={state === option} cachable={['x', 'sx']} deform={false} transition={{ duration: .4 }}>
+                    <Morph group={`segmented-selection-${id}`} show={state === option} cachable={vertical ? ['y', 'sy'] : ['x', 'sx']} deform={false} transition={{ duration: .4 }}>
                         <div className={style.selection} />
                     </Morph>
                 </button>

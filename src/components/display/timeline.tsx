@@ -5,11 +5,10 @@ import { createStyles } from '../../core/style';
 
 const styles = createStyles('timeline', {
     '.timeline': {
-        display: 'grid',
-        fontSize: 'var(--f-font-size-sml)',
+        display: 'grid'
     },
 
-    '.timeline[data-horizontal="true"]': {
+    '.d__horizontal': {
         gridAutoFlow: 'column'
     },
 
@@ -19,34 +18,38 @@ const styles = createStyles('timeline', {
     },
 
     '.event': {
-        position: 'relative',
         display: 'flex',
-        gap: 'var(--f-spacing-sml)',
-        flexGrow: 1
+        gap: 'var(--f-spacing-sml)'
     },
 
-    '.timeline[data-horizontal="true"] .event': {
+    '.d__horizontal .event': {
         flexDirection: 'column'
     },
 
-    '.event:not(:last-child)': {
-        paddingBottom: 'var(--f-spacing-med)'
+    '.event:not(:first-child) .content': {
+        alignSelf: 'center'
     },
 
-    '.timeline[data-horizontal="true"] .event:not(:last-child)': {
-        paddingRight: 'var(--f-spacing-med)'
+    '.event:last-child .content': {
+        alignSelf: 'flex-end'
     },
 
-    '.timeline[data-horizontal="false"] .segment': {
+    '.d__horizontal .event:not(:first-child) .content': {
+        paddingLeft: 'var(--f-spacing-xsm)'
+    },
+
+    '.d__horizontal .event:not(:last-child) .content': {
+        paddingRight: 'var(--f-spacing-xsm)'
+    },
+
+    '.axis': {
         display: 'flex',
-        width: '1.5em',
-        justifyContent: 'center'
-    },
-
-    '.timeline[data-horizontal="true"] .segment': {
-        display: 'flex',
-        height: '1.5em',
+        gap: '3px',
         alignItems: 'center'
+    },
+
+    '.d__vertical .axis': {
+        flexDirection: 'column'
     },
 
     '.bullet': {
@@ -59,10 +62,6 @@ const styles = createStyles('timeline', {
         transition: 'border-color .25s'
     },
 
-    '.bullet[data-active="true"]': {
-        borderColor: 'var(--f-clr-primary-100)'
-    },
-
     '.bullet::after': {
         content: '""',
         position: 'absolute',
@@ -73,65 +72,81 @@ const styles = createStyles('timeline', {
         transition: 'opacity .25s'
     },
 
+    '.bullet[data-active="true"]': {
+        borderColor: 'var(--f-clr-primary-100)'
+    },
+
     '.bullet[data-active="true"]::after': {
         opacity: 1
     },
 
-    '.progress': {
-        position: 'absolute',
-        flexGrow: 1,
+    '.segment': {
+        height: '3px',
         backgroundColor: 'var(--f-clr-grey-200)',
         transition: 'background-color .25s',
-        borderRadius: '99px'
+        flexGrow: 1
     },
 
-    '.timeline[data-horizontal="false"] .progress': {
-        height: 'calc(100% - 1.5em - 6px)',
-        width: '3px',
-        bottom: '3px'
-    },
-
-    '.timeline[data-horizontal="true"] .progress': {
-        width: 'calc(100% - 1.5em - 6px)',
+    '.d__horizontal .segment': {
         height: '3px',
-        right: '3px'
+        minWidth: '3px'
     },
 
-    '.progress[data-active="true"]': {
-        backgroundColor: 'var(--f-clr-primary-100)'
+    '.d__vertical .segment': {
+        width: '3px',
+        minHeight: '3px',
+        writingMode: 'vertical-lr'
     },
+
+    '.segment:first-child': {
+        borderStartEndRadius: '99px',
+        borderEndEndRadius: '99px'
+    },
+
+    '.segment:last-child': {
+        borderEndStartRadius: '99px',
+        borderStartStartRadius: '99px'
+    },
+
+    '.segment[data-active="true"]': {
+        backgroundColor: 'var(--f-clr-primary-100)'
+    }
 });
 
-export type TimelineSelectors = Selectors<'timeline' | 'event' | 'bullet' | 'progress'>;
+export type TimelineSelectors = Selectors<'timeline' | 'uniform' | 'd__horizontal' | 'd__vertical' | 'event' | 'content' | 'axis' | 'bullet' | 'segment'>;
 
-const Timeline = forwardRef(({ children, cc = {}, active, horizontal = false, uniform, reverse, ...props }:
+const Timeline = forwardRef(({ children, cc = {}, active, direction = 'horizontal', uniform, reverse, ...props }:
     {
         cc?: TimelineSelectors;
         active: number;
-        horizontal?: boolean;
+        direction?: 'horizontal' | 'vertical';
         uniform?: boolean;
         reverse?: boolean;
     } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = combineClasses(styles, cc);
-    const len = Children.count(children);
+    const childArray = Children.toArray(children);
 
     return <div ref={ref} {...props}
         className={classes(
             style.timeline,
+            style[`d__${direction}`],
             uniform && style.uniform,
             props.className
-        )}
-        data-horizontal={horizontal}>
+        )}>
 
-        {Children.map(children, (child, i) => {
-            return <div className={style.event}>
-                <div className={style.segment}>
-                    <div className={style.bullet} data-active={(reverse ? len - 1 - i : i) < active} />
+        {childArray.map((child, i) => {
+            const index = reverse ? childArray.length - 1 - i : i;
 
-                    {i < len - 1 && <div className={style.progress} data-active={reverse ? len - 1 - i < active : i < active - 1} />}
+            return <div key={i} className={style.event}>
+                <div className={style.axis}>
+                    {i !== 0 && <div className={style.segment} data-active={reverse ? index + 1 < active : index < active} />}
+                    <div className={style.bullet} data-active={index < active} />
+                    {i !== childArray.length - 1 && <div className={style.segment} data-active={reverse ? index < active : index + 1 < active} />}
                 </div>
 
-                {child}
+                <div className={style.content}>
+                    {child}
+                </div>
             </div>;
         })}
     </div>;
