@@ -1,15 +1,15 @@
 import Root from "./root";
-import Header from "./header";
 import Heading from "./heading";
-import Link from "./link";
+import Item from "./item";
 import User from "./user";
+import Toggle from "./toggle";
 
 const Sidebar = {
     Root,
-    Header,
     Heading,
-    Link,
-    User
+    Item,
+    User,
+    Toggle
 };
 
 export default Sidebar;

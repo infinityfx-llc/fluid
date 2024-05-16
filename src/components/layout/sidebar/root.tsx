@@ -1,17 +1,16 @@
 'use client';
 
-import { Selectors } from '../../../../src/types';
-import { forwardRef, createContext, useContext, Children } from 'react';
-import Scrollarea from '../scrollarea';
-import { classes, combineClasses } from '../../../../src/core/utils';
-import { createStyles } from '../../../core/style';
+import { createContext, forwardRef, useContext } from "react";
+import { Selectors } from "../../../types";
+import { createStyles } from "../../../core/style";
+import { classes, combineClasses } from "../../../core/utils";
 
 export const SidebarContext = createContext<{
     collapsed: boolean;
-    onCollapse: (value: boolean) => void;
+    setCollapsed: (value: boolean) => void;
 }>({
     collapsed: false,
-    onCollapse: () => {}
+    setCollapsed: () => { }
 });
 
 export function useSidebar() {
@@ -20,64 +19,42 @@ export function useSidebar() {
 
 const styles = createStyles('sidebar.root', fluid => ({
     '.sidebar': {
-        position: 'fixed',
-        inset: 'var(--f-spacing-med)',
-        right: 'auto',
-        zIndex: 500,
-        backgroundColor: 'var(--f-clr-fg-100)',
-        boxShadow: 'var(--f-shadow-sml)',
-        border: 'solid 1px var(--f-clr-fg-200)',
-        borderRadius: 'var(--f-radius-lrg)',
         display: 'flex',
         flexDirection: 'column',
-        paddingBottom: '1em',
-        transition: 'width .3s, translate .3s, opacity .3s'
-    },
-
-    '.content': {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--f-spacing-xsm)',
-        padding: '0 1em',
-        minHeight: '100%',
-        overflow: 'hidden'
+        paddingInline: '1em',
+        overflow: 'hidden',
+        transition: 'width .3s, translate .3s'
     },
 
     [`@media (min-width: ${fluid.breakpoints.mob + 1}px)`]: {
-        '.sidebar[data-collapsed="true"]': {
-            width: 'calc(3rem + 2em) !important'
+        '.sidebar.collapsed': {
+            width: '5em !important'
         }
     },
 
     [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {
-        '.sidebar[data-collapsed="true"]': {
-            translate: 'calc(-100% - 1em) 0%'
+        '.sidebar.collapsed': {
+            translate: '-100% 0%'
         }
     }
 }));
 
-export type SidebarRootSelectors = Selectors<'sidebar' | 'content'>;
+export type SidebarRootSelectors = Selectors<'sidebar' | 'collapsed'>;
 
-const Root = forwardRef(({ children, cc = {}, size = '18rem', collapsed, onCollapse, ...props }:
-    {
-        cc?: SidebarRootSelectors;
-        size?: string;
-        collapsed: boolean;
-        onCollapse: (value: boolean) => void;
-    } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
+const Root = forwardRef(({ children, cc = {}, collapsed, setCollapsed, ...props }: {
+    cc?: SidebarRootSelectors;
+    collapsed: boolean;
+    setCollapsed: (value: boolean) => void;
+} & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
     const style = combineClasses(styles, cc);
 
-    const [header, ...nodes] = Children.toArray(children);
-
-    return <SidebarContext.Provider value={{ collapsed, onCollapse }}>
-        <aside ref={ref} {...props} className={classes(style.sidebar, props.className)} style={{ ...props.style, width: size }} data-collapsed={collapsed}>
-            {header}
-
-            <Scrollarea style={{ flexGrow: 1 }}>
-                <div className={style.content}>
-                    {nodes}
-                </div>
-            </Scrollarea>
+    return <SidebarContext.Provider value={{ collapsed, setCollapsed }}>
+        <aside ref={ref} {...props} className={classes(
+            style.sidebar,
+            collapsed && style.collapsed,
+            props.className
+        )}>
+            {children}
         </aside>
     </SidebarContext.Provider>;
 });

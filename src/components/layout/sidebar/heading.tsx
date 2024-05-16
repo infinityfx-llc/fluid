@@ -13,8 +13,7 @@ const styles = createStyles('sidebar.heading', fluid => ({
         fontWeight: 800,
         width: 'max-content',
         transition: 'opacity .3s',
-        padding: '0 1rem',
-        marginTop: 'var(--f-spacing-lrg)'
+        padding: '0 1rem'
     },
 
     [`@media (min-width: ${fluid.breakpoints.mob + 1}px)`]: {
@@ -24,7 +23,7 @@ const styles = createStyles('sidebar.heading', fluid => ({
     }
 }));
 
-export type SidebarHeadingSelectors = Selectors<'heading'>;
+export type SidebarHeadingSelectors = Selectors<'heading' | 'collapsed'>;
 
 const Heading = forwardRef(({ children, cc = {}, ...props }:
     {

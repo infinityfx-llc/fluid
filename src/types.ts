@@ -72,10 +72,10 @@ export type FluidComponents = {
     toggle?: FluidSelectorStyles<import('./components/input/toggle').ToggleSelectors>;
     'accordion.item'?: FluidSelectorStyles<import('./components/layout/accordion/item').AccordionItemSelectors>;
     'accordion.root'?: FluidSelectorStyles<import('./components/layout/accordion/root').AccordionRootSelectors>;
-    'sidebar.header'?: FluidSelectorStyles<import('./components/layout/sidebar/header').SidebarHeaderSelectors>;
     'sidebar.heading'?: FluidSelectorStyles<import('./components/layout/sidebar/heading').SidebarHeadingSelectors>;
-    'sidebar.link'?: FluidSelectorStyles<import('./components/layout/sidebar/link').SidebarLinkSelectors>;
+    'sidebar.item'?: FluidSelectorStyles<import('./components/layout/sidebar/item').SidebarItemSelectors>;
     'sidebar.root'?: FluidSelectorStyles<import('./components/layout/sidebar/root').SidebarRootSelectors>;
+    'sidebar.toggle'?: FluidSelectorStyles<import('./components/layout/sidebar/toggle').SidebarToggleSelectors>;
     'sidebar.user'?: FluidSelectorStyles<import('./components/layout/sidebar/user').SidebarUserSelectors>;
     collapsible?: FluidSelectorStyles<import('./components/layout/collapsible').CollapsibleSelectors>;
     combine?: FluidSelectorStyles<import('./components/layout/combine').CombineSelectors>;

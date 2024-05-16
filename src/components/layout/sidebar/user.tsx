@@ -90,13 +90,13 @@ const styles = createStyles('sidebar.user',  fluid => ({
     },
 
     [`@media (min-width: ${fluid.breakpoints.mob + 1}px)`]: {
-        '.user[data-collapsed="true"] .content, .user[data-collapsed="true"] .icon': {
+        '.user.collapsed .content, .user.collapsed .icon': {
             opacity: 0
         }
     }
 }));
 
-export type SidebarUserSelectors = Selectors<'user' | 'round' | 'avatar' | 'frame' | 'name' | 'status' | 'content' | 'icon'>;
+export type SidebarUserSelectors = Selectors<'user' | 'collapsed' | 'round' | 'avatar' | 'frame' | 'name' | 'status' | 'content' | 'icon'>;
 
 const User = forwardRef(({ children, cc = {}, name, status, indicator = false, round = false, icon = <Icon type="more" />, ...props }:
     {
@@ -114,8 +114,9 @@ const User = forwardRef(({ children, cc = {}, name, status, indicator = false, r
         <button ref={ref} {...props} type="button" className={classes(
             style.user,
             round && style.round,
+            collapsed && style.collapsed,
             props.className
-        )} data-collapsed={collapsed}>
+        )}>
             <Indicator outline="var(--f-clr-bg-100)" content={indicator}>
                 <div className={style.avatar}>
                     <div className={style.frame}>

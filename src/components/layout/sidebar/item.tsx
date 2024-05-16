@@ -12,20 +12,19 @@ import useFluid from '../../../hooks/use-fluid';
 import useMediaQuery from '../../../hooks/use-media-query';
 import { Icon } from '../../../core/icons';
 
-const styles = createStyles('sidebar.link', fluid => ({
-    '.link': {
+const styles = createStyles('sidebar.item', fluid => ({
+    '.item': {
         position: 'relative',
         fontWeight: 600,
         borderRadius: 'var(--f-radius-sml)',
         color: 'var(--f-clr-text-100)',
         display: 'flex',
-        gap: 'var(--f-spacing-sml)',
-        alignItems: 'center',
-        paddingInline: '1em',
-        minWidth: '3em',
-        height: '3em',
         transition: 'background-color .25s, color .25s',
         outline: 'none'
+    },
+
+    '.item:not(.compact)': {
+        height: '3em'
     },
 
     '.s__sml': {
@@ -37,21 +36,26 @@ const styles = createStyles('sidebar.link', fluid => ({
     },
 
     '.icon': {
-        minWidth: '1em',
+        height: 'inherit',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        flexShrink: 0
     },
 
-    '.link[data-disabled="false"]': {
+    '.item:not(.compact) .icon': {
+        width: '3em'
+    },
+
+    '.item[data-disabled="false"]': {
         cursor: 'pointer'
     },
 
-    '.link.round': {
+    '.item.round': {
         borderRadius: '999px'
     },
 
-    '.link[data-active="true"]': {
+    '.item[data-active="true"]': {
         backgroundColor: 'var(--f-clr-primary-100)',
         color: 'var(--f-clr-text-200)'
     },
@@ -61,12 +65,23 @@ const styles = createStyles('sidebar.link', fluid => ({
         color: 'var(--f-clr-primary-100)'
     },
 
-    '.link[data-disabled="true"]': {
+    '.item[data-disabled="true"]': {
         color: 'var(--f-clr-grey-500)'
     },
 
-    '.link .toggle': {
+    '.item .toggle': {
         marginRight: '-.3em'
+    },
+
+    '.item.compact .toggle': {
+        background: 'transparent',
+        color: 'var(--f-clr-text-100)',
+        pointerEvents: 'none',
+        marginRight: 0
+    },
+
+    '.item.compact .toggle__content': {
+        padding: 0
     },
 
     '.v__default[data-active="true"] .toggle': {
@@ -74,6 +89,7 @@ const styles = createStyles('sidebar.link', fluid => ({
     },
 
     '.content': {
+        paddingRight: '1em',
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--f-spacing-sml)',
@@ -83,34 +99,50 @@ const styles = createStyles('sidebar.link', fluid => ({
         flexShrink: 0
     },
 
-    '.sublinks': {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--f-spacing-xsm)',
+    '.item.compact .icon': {
+        padding: '.6em',
+        lineHeight: 1
+    },
+
+    '.item.compact .content': {
+        paddingRight: '.6em',
+        paddingBlock: '.6em',
+        lineHeight: 1
+    },
+
+    '.content[data-hasicon="false"]': {
+        paddingLeft: '1em'
+    },
+
+    '.item.compact .content[data-hasicon="false"]': {
+        paddingLeft: '.6em'
+    },
+
+    '.children': {
         paddingLeft: '1.5em',
         transition: 'padding-left .3s, margin-bottom .3s, opacity .35s !important'
     },
 
-    '.sublinks > *': {
+    '.children > *': {
         flexShrink: 0
     },
 
     [`@media (min-width: ${fluid.breakpoints.mob + 1}px)`]: {
-        '.link[data-collapsed="true"] .content': {
+        '.item.collapsed .content': {
             opacity: 0
         },
 
-        '.sublinks[data-collapsed="true"]': {
+        '.children[data-collapsed="true"]': {
             paddingLeft: '0em'
         }
     }
 }));
 
-export type SidebarLinkSelectors = Selectors<'link' | 's__sml' | 's__med' | 'v__default' | 'v__light' | 'round' | 'icon' | 'content' | 'sublinks'>;
+export type SidebarItemSelectors = Selectors<'item' | 'collapsed' | 's__sml' | 's__med' | 'v__default' | 'v__light' | 'round' | 'compact' | 'icon' | 'content' | 'children'>;
 
-const Link = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, active = false, round = false, variant = 'default', disabled = false, ...props }:
+const Item = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, active = false, round, compact, variant = 'default', disabled = false, ...props }:
     {
-        cc?: SidebarLinkSelectors;
+        cc?: SidebarItemSelectors;
         label: string;
         size?: 'sml' | 'med';
         icon?: React.ReactNode;
@@ -118,6 +150,7 @@ const Link = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, 
         active?: boolean;
         variant?: 'default' | 'light',
         round?: boolean;
+        compact?: boolean;
     } & React.ButtonHTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
     const style = combineClasses(styles, cc);
 
@@ -130,40 +163,41 @@ const Link = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, 
 
     return <>
         <Halo color={active ? undefined : 'var(--f-clr-primary-300)'} disabled={disabled}>
-            <div ref={ref} {...props} tabIndex={0}
+            <div ref={ref} {...props}
+                tabIndex={0}
                 className={classes(
-                    style.link,
+                    style.item,
                     style[`s__${size}`],
                     style[`v__${variant}`],
                     round && style.round,
+                    compact && style.compact,
+                    collapsed && style.collapsed,
                     props.className
                 )}
                 data-disabled={disabled}
                 data-active={active}
-                data-collapsed={collapsed}>
-                <div className={style.icon}>
-                    {icon}
-                </div>
+                onClick={() => setOpen(!open)}>
 
-                <span className={style.content}>
+                {icon !== undefined && <div className={style.icon}>
+                    {icon}
+                </div>}
+
+                <span className={style.content} data-hasicon={icon !== undefined}>
                     {label}
 
                     {count ? <Toggle
                         cc={{
                             toggle: style.toggle,
+                            content: style.toggle__content,
                             ...cc
                         }}
+                        disabled={compact}
                         compact
                         variant="minimal"
                         size={size === 'med' ? 'sml' : 'xsm'}
                         round={round}
                         checked={open}
-                        checkedContent={<Icon type="up" />}
-                        onChange={e => {
-                            e.stopPropagation();
-
-                            setOpen(e.target.checked);
-                        }}>
+                        checkedContent={<Icon type="up" />}>
                         <Icon type="down" />
                     </Toggle> : right}
                 </span>
@@ -172,16 +206,13 @@ const Link = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, 
 
         {count ? <Collapsible
             shown={open && (isMobile || !collapsed)}
-            cc={{ content: style.sublinks, ...cc }}
-            style={{
-                marginBottom: open ? undefined : 'calc(var(--f-spacing-xsm) * -1)'
-            }}
+            cc={{ content: style.children, ...cc }}
             data-collapsed={collapsed}>
             {children}
         </Collapsible> : null}
     </>;
 });
 
-Link.displayName = 'Sidebar.Link';
+Item.displayName = 'Sidebar.Item';
 
-export default Link;
+export default Item;
