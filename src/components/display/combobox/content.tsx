@@ -1,6 +1,6 @@
 'use client';
 
-import { Children, forwardRef, useState, isValidElement, useRef, cloneElement } from 'react';
+import { Children, useState, isValidElement, useRef, cloneElement } from 'react';
 import Popover from '../../layout/popover';
 import Scrollarea from '../../layout/scrollarea';
 import Field from '../../input/field';
@@ -71,15 +71,16 @@ const styles = createStyles('combobox.content', {
 
 export type ComboboxContentSelectors = Selectors<'container' | 'content' | 'message'>;
 
-const Content = forwardRef(({ children, cc = {}, size = 'med', autoFocus = true, searchable, placeholder = 'Search..', emptyMessage = 'Nothing found', ...props }:
+export default function Content({ children, cc = {}, size = 'med', autoFocus = true, searchable, placeholder = 'Search..', emptyMessage = 'Nothing found', ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: ComboboxContentSelectors;
         size?: FluidSize;
         autoFocus?: boolean;
         searchable?: boolean;
         placeholder?: string;
         emptyMessage?: string;
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
     const { trigger } = usePopover();
@@ -89,12 +90,12 @@ const Content = forwardRef(({ children, cc = {}, size = 'med', autoFocus = true,
 
     let optionIndex = 0;
     const filtered = Children.map(children, child => {
-        if (isValidElement(child) && child.props.value.toString().toLowerCase().includes(search.toLowerCase())) {
-            if (child.props.disabled) return child;
+        if (isValidElement(child) && (child as React.ReactElement<any>).props.value.toString().toLowerCase().includes(search.toLowerCase())) {
+            if ((child as React.ReactElement<any>).props.disabled) return child;
 
             const i = (searchable ? 1 : 0) + optionIndex++;
 
-            const clone = cloneElement(child as React.ReactElement, {
+            const clone = cloneElement(child as React.ReactElement<any>, {
                 autoFocus: autoFocus && optionIndex === 0,
                 onFocus: () => selected.current = i,
                 ref: (el: HTMLElement) => options.current[i] = el
@@ -108,7 +109,7 @@ const Content = forwardRef(({ children, cc = {}, size = 'med', autoFocus = true,
 
     return <Popover.Content>
         <Animatable id="combobox-options-outer" animate={Move.unique({ duration: .2 })} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
-            <div ref={ref} {...props} role="listbox" className={classes(
+            <div {...props} role="listbox" className={classes(
                 style.container,
                 style[`s__${size}`],
                 props.className
@@ -162,8 +163,6 @@ const Content = forwardRef(({ children, cc = {}, size = 'med', autoFocus = true,
             </div>
         </Animatable>
     </Popover.Content>;
-});
+}
 
 Content.displayName = 'Combobox.Content';
-
-export default Content;

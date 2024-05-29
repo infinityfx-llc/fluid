@@ -1,6 +1,5 @@
 'use client';
 
-import { forwardRef } from 'react';
 import { Selectors } from '../../../../src/types';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import { createStyles } from '../../../core/style';
@@ -67,15 +66,16 @@ const styles = createStyles('sidebar.toggle', {
 
 export type SidebarToggleSelectors = Selectors<'wrapper' | 'toggle' | 'logo' | 'icon'>;
 
-const Toggle = forwardRef(({ children, cc = {}, toggle = 'square', ...props }: // rename to logotoggle??
+export default function Toggle({ children, cc = {}, toggle = 'square', ...props }: // rename to logotoggle??
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: SidebarToggleSelectors;
         toggle?: 'square' | 'round' | 'none';
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
     const { collapsed, setCollapsed } = useSidebar();
 
-    return <div ref={ref} {...props} className={classes(style.wrapper, props.className)}>
+    return <div {...props} className={classes(style.wrapper, props.className)}>
         <Halo disabled={!collapsed} color="var(--f-clr-primary-300)">
             <button type="button" className={style.toggle} onClick={() => setCollapsed(false)} disabled={!collapsed}>
                 <div className={style.logo}>
@@ -92,8 +92,6 @@ const Toggle = forwardRef(({ children, cc = {}, toggle = 'square', ...props }: /
             <Icon type="left" />
         </Button>
     </div>;
-});
+}
 
 Toggle.displayName = 'Sidebar.Toggle';
-
-export default Toggle;

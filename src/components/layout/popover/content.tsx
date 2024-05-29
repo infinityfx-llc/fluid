@@ -2,12 +2,14 @@
 
 import { combineRefs } from '../../../../src/core/utils';
 import { LayoutGroup } from '@infinityfx/lively/layout';
-import { forwardRef, useMemo } from 'react';
+import { useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopover } from './root';
 import Modal from '../modal';
 
-const Content = forwardRef(({ children, ...props }: React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+export default function Content({ children, ref, ...props }: React.HTMLAttributes<HTMLDivElement> & {
+    ref?: React.Ref<HTMLDivElement>;
+}) {
     const { id, mounted, isModal, trigger, content, opened, toggle } = usePopover();
 
     const zIndex = useMemo(() => {
@@ -35,8 +37,6 @@ const Content = forwardRef(({ children, ...props }: React.HTMLAttributes<HTMLDiv
             {opened && children}
         </div>
     </LayoutGroup>, document.getElementById('__fluid') as HTMLElement);
-});
+}
 
 Content.displayName = 'Popover.Content';
-
-export default Content;

@@ -17,7 +17,7 @@ type FluidContext = FluidTheme & {
 
 export const FluidContext = createContext<FluidContext | null>(null);
 
-export default function FluidProvider({ children, initialColorScheme }: { children: React.ReactElement; initialColorScheme?: ColorScheme<typeof fluid>; }) {
+export default function FluidProvider({ children, initialColorScheme }: { children: React.ReactElement<any>; initialColorScheme?: ColorScheme<typeof fluid>; }) {
 
     const colorSchemes = Object.keys(fluid.palettes).concat('system'); // type infer not working when compiled
     const { colorScheme, setColorScheme } = useColorScheme<typeof fluid>(initialColorScheme as ColorScheme<typeof fluid>, colorSchemes);
@@ -34,7 +34,7 @@ export default function FluidProvider({ children, initialColorScheme }: { childr
     });
     createGlobalStyles(global);
 
-    return <FluidContext.Provider value={{
+    return <FluidContext value={{
         ...fluid,
         colorScheme,
         appliedColorScheme: colorScheme === 'system' ? systemColorScheme : colorScheme,
@@ -44,5 +44,5 @@ export default function FluidProvider({ children, initialColorScheme }: { childr
             id: '__fluid',
             className: `scheme-${colorScheme}`
         })}
-    </FluidContext.Provider>
+    </FluidContext>
 }

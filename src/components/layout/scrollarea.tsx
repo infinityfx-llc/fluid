@@ -3,7 +3,7 @@
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import useDomEffect from "../../../src/hooks/use-dom-effect";
 import { Selectors } from "../../../src/types";
-import { forwardRef, useRef, useState, useId } from "react";
+import { useRef, useState, useId } from "react";
 import { createStyles } from "../../core/style";
 
 const speed = 100;
@@ -89,22 +89,23 @@ const styles = createStyles('scrollarea', {
 
 export type ScrollareaSelectors = Selectors<'track' | 'v__hover' | 'v__permanent' | 'handle'>;
 
-const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant = 'hover', disabled = false, ...props }:
+export default function Scrollarea({ children, cc = {}, horizontal = false, variant = 'hover', disabled = false, ref, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: ScrollareaSelectors;
         horizontal?: boolean;
         variant?: 'hover' | 'permanent';
         disabled?: boolean;
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
     const scrolled = useRef(false);
     const lastWheel = useRef(0);
 
-    const area = useRef<HTMLDivElement | null>(null);
-    const track = useRef<HTMLDivElement | null>(null);
-    const handle = useRef<HTMLDivElement | null>(null);
-    const dragging = useRef<{ x: number; y: number; } | null>(null);
+    const area = useRef<HTMLDivElement>(null);
+    const track = useRef<HTMLDivElement>(null);
+    const handle = useRef<HTMLDivElement>(null);
+    const dragging = useRef<{ x: number; y: number; }>(null);
     const [scrollable, setScrollable] = useState(false);
 
     function wheel(e: WheelEvent) {
@@ -200,7 +201,9 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
 
     const id = useId();
 
-    return <div ref={combineRefs(ref, area)} {...props}
+    return <div
+        {...props}
+        ref={combineRefs(ref, area)}
         id={id}
         className={classes(
             style.area,
@@ -222,8 +225,4 @@ const Scrollarea = forwardRef(({ children, cc = {}, horizontal = false, variant 
             <div ref={handle} className={style.handle} onMouseDown={e => drag(e.nativeEvent)} role="scrollbar" aria-controls={id} />
         </div>
     </div>;
-});
-
-Scrollarea.displayName = 'Scrollarea';
-
-export default Scrollarea;
+}

@@ -2,7 +2,7 @@
 
 import { Animate } from '@infinityfx/lively';
 import { Pop } from '@infinityfx/lively/animations';
-import { forwardRef, useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { combineClasses } from '../../../../src/core/utils';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
@@ -35,11 +35,12 @@ const styles = createStyles('action-menu.group', {
 
 export type ActionMenuGroupSelectors = Selectors<'wrapper' | 'menu' | 'icon'>;
 
-const Group = forwardRef(({ children, cc = {}, label, className, ...props }:
+export default function Group({ children, cc = {}, label, className, ...props }:
     {
+        ref?: React.Ref<HTMLButtonElement>;
         cc?: ActionMenuGroupSelectors;
         label: React.ReactNode;
-    } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
+    } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);
 
     const element = useRef<HTMLDivElement>(null);
@@ -63,7 +64,6 @@ const Group = forwardRef(({ children, cc = {}, label, className, ...props }:
         onMouseEnter={openMenu}
         onMouseLeave={() => setState({ ...state, open: false })}>
         <Item
-            ref={ref}
             {...props}
             keepOpen
             onTouchEnd={e => {
@@ -104,8 +104,6 @@ const Group = forwardRef(({ children, cc = {}, label, className, ...props }:
             </div>
         </Animate>
     </div>;
-});
+}
 
 Group.displayName = 'ActionMenu.Group';
-
-export default Group;

@@ -4,11 +4,11 @@ import { combineRefs } from "../../../../src/core/utils";
 import { cloneElement, useRef, useEffect } from "react";
 import { usePopover } from "./root";
 
-export type PopoverTrigger = { children: React.ReactElement; longpress?: boolean; disabled?: boolean; } & React.HTMLAttributes<any>;
+export type PopoverTrigger = { children: React.ReactElement<any>; longpress?: boolean; disabled?: boolean; } & React.HTMLAttributes<any>;
 
 export default function Trigger({ children, longpress, disabled, ...props }: PopoverTrigger) {
     const { id, trigger, opened, toggle } = usePopover();
-    const timeout = useRef<any>();
+    const timeout = useRef<any>(undefined);
     const touch = useRef({ clientX: 0, clientY: 0 });
     const pressed = useRef(false);
     const touchOnly = useRef(false);

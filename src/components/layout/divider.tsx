@@ -1,6 +1,5 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
-import { forwardRef } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('divider', {
@@ -33,17 +32,18 @@ const styles = createStyles('divider', {
 
 export type DividerSelectors = Selectors<'divider' | 'line'>;
 
-const Divider = forwardRef(({ cc = {}, vertical = false, label, labelPosition = 'center', size = 'med', ...props }:
+export default function Divider({ cc = {}, vertical = false, label, labelPosition = 'center', size = 'med', ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: DividerSelectors
         vertical?: boolean;
         label?: string;
         labelPosition?: 'start' | 'center' | 'end';
         size?: FluidSize;
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    return <div ref={ref} {...props} role="separator" aria-orientation={vertical ? 'vertical' : 'horizontal'}
+    return <div {...props} role="separator" aria-orientation={vertical ? 'vertical' : 'horizontal'}
         className={classes(style.divider, props.className)}
         style={{
             paddingBlock: `var(--f-spacing-${size})`,
@@ -56,8 +56,4 @@ const Divider = forwardRef(({ cc = {}, vertical = false, label, labelPosition = 
 
         {!(label && labelPosition === 'end') && <div className={style.line} />}
     </div>;
-});
-
-Divider.displayName = 'Divider';
-
-export default Divider;
+}

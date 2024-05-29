@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useId, useRef, useState, forwardRef, useImperativeHandle, useCallback } from "react";
+import { createContext, use, useEffect, useId, useRef, useState, useImperativeHandle } from "react";
 import useFluid from "../../../hooks/use-fluid";
 import useMediaQuery from "../../../hooks/use-media-query";
 
@@ -8,17 +8,17 @@ type PopoverContext = {
     id: string;
     mounted: boolean;
     isModal: boolean;
-    trigger: React.RefObject<HTMLElement>;
-    content: React.RefObject<HTMLElement>;
+    trigger: React.RefObject<HTMLElement | null>;
+    content: React.RefObject<HTMLElement | null>;
     opened: boolean;
     toggle: (value: boolean) => void;
-    children: React.MutableRefObject<React.RefObject<HTMLElement>[]>;
+    children: React.RefObject<React.RefObject<HTMLElement | null>[]>;
 };
 
 export const PopoverContext = createContext<PopoverContext | null>(null);
 
 export function usePopover<T extends boolean = false>(nullable?: T): T extends true ? PopoverContext | null : PopoverContext {
-    const context = useContext(PopoverContext);
+    const context = use(PopoverContext);
 
     if (!nullable && !context) throw new Error('Unable to access PopoverRoot context');
 
@@ -32,13 +32,14 @@ export type PopoverRootReference = {
 
 export type PopoverRoot = {
     children: React.ReactNode;
+    ref?: React.Ref<PopoverRootReference>;
     position?: 'auto' | 'center';
     mobileContainer?: 'popover' | 'modal';
     stretch?: boolean;
     onClose?: () => void;
 };
 
-const Root = forwardRef(({ children, position = 'auto', mobileContainer = 'popover', stretch, onClose }: PopoverRoot, ref: React.ForwardedRef<PopoverRootReference>) => {
+export default function Root({ children, position = 'auto', mobileContainer = 'popover', stretch, onClose, ref }: PopoverRoot) {
     const id = useId();
     const fluid = useFluid();
     const childrenRef = useRef<React.RefObject<HTMLElement>[]>([]);
@@ -105,11 +106,9 @@ const Root = forwardRef(({ children, position = 'auto', mobileContainer = 'popov
         return () => window.removeEventListener('click', click);
     }, [isModal]);
 
-    return <PopoverContext.Provider value={{ id, mounted, isModal, trigger, content, opened, toggle, children: childrenRef }}>
+    return <PopoverContext value={{ id, mounted, isModal, trigger, content, opened, toggle, children: childrenRef }}>
         {children}
-    </PopoverContext.Provider>;
-});
+    </PopoverContext>;
+}
 
 Root.displayName = 'Popover.Root';
-
-export default Root;

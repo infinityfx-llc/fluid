@@ -2,7 +2,7 @@
 
 import { combineClasses, combineRefs } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { forwardRef, cloneElement, useState, useRef, isValidElement, useId, useEffect } from "react";
+import { cloneElement, useState, useRef, isValidElement, useId, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
 
@@ -55,15 +55,16 @@ const styles = createStyles('tooltip', {
 
 export type TooltipSelectors = Selectors<'tooltip'>;
 
-const Tooltip = forwardRef(({ children, cc = {}, content, position = 'auto', visibility = 'interact', delay = .3, ...props }:
+export default function Tooltip({ children, cc = {}, content, position = 'auto', visibility = 'interact', delay = .3, ...props }:
     {
-        children: React.ReactElement;
+        children: React.ReactElement<any>;
+        ref?: React.Ref<HTMLDivElement>;
         cc?: TooltipSelectors;
         content?: React.ReactNode;
         position?: 'auto' | 'top' | 'left' | 'bottom' | 'right';
         visibility?: 'never' | 'interact' | 'always';
         delay?: number;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
@@ -76,7 +77,7 @@ const Tooltip = forwardRef(({ children, cc = {}, content, position = 'auto', vis
     const [computed, setComputed] = useState<string>(position);
 
     const displayPosition = position === 'auto' ? computed : position;
-    const timeout = useRef<any>();
+    const timeout = useRef<any>(undefined);
 
     function toggle(value: boolean | null, delay = 0) {
         clearTimeout(timeout.current);
@@ -163,10 +164,10 @@ const Tooltip = forwardRef(({ children, cc = {}, content, position = 'auto', vis
     if (!isValidElement(children)) return children;
 
     return <>
-        {cloneElement(children as React.ReactElement, {
+        {cloneElement(children, {
             ...props,
             'aria-describedby': id,
-            ref: combineRefs(element, ref, (children as any).ref)
+            ref: combineRefs(element, props.ref, (children as any).ref)
         })}
 
         {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={displayPosition} />, element.current)}
@@ -175,9 +176,4 @@ const Tooltip = forwardRef(({ children, cc = {}, content, position = 'auto', vis
             {content}
         </div>, document.getElementById('__fluid') as HTMLElement)}
     </>;
-});
-
-
-Tooltip.displayName = 'Tooltip';
-
-export default Tooltip;
+}

@@ -1,7 +1,7 @@
 'use client';
 
 import { Selectors } from "../../../src/types";
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 import Halo from "../feedback/halo";
 import { Animatable } from "@infinityfx/lively";
 import { classes, combineClasses } from "../../../src/core/utils";
@@ -57,17 +57,18 @@ const styles = createStyles('hamburger', {
 
 export type HamburgerSelectors = Selectors<'hamburger' | 'line' | 'cross'>
 
-const Hamburger = forwardRef(({ cc = {}, open, color = 'var(--f-clr-text-100)', ...props }: {
+export default function Hamburger({ cc = {}, open, color = 'var(--f-clr-text-100)', ...props }: {
+    ref?: React.Ref<HTMLButtonElement>;
     cc?: HamburgerSelectors;
     open?: boolean;
     color?: string;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);
 
     const [state, setState] = open !== undefined ? [open] : useState(false);
 
     return <Halo disabled={props.disabled}>
-        <button ref={ref} {...props}
+        <button {...props}
             style={{
                 ...props.style,
                 '--color': color
@@ -105,8 +106,4 @@ const Hamburger = forwardRef(({ cc = {}, open, color = 'var(--f-clr-text-100)', 
             </div>
         </button>
     </Halo>;
-});
-
-Hamburger.displayName = 'Hamburger';
-
-export default Hamburger;
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useId, useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import Button from './button';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { FluidError, FluidSize, Selectors } from '../../../src/types';
@@ -121,8 +121,9 @@ const styles = createStyles('file-field', {
 
 export type FileFieldSelectors = Selectors<'wrapper' | 'input' | 'placeholder' | 'field' | 'content' | 'label' | 'error' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
-const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error, showError, loading = false, inputRef, ...props }:
+export default function FileField({ cc = {}, size = 'med', round, icon, label, error, showError, loading = false, inputRef, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: FileFieldSelectors;
         round?: boolean;
         size?: FluidSize;
@@ -132,16 +133,16 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
         icon?: React.ReactNode;
         label?: string;
         inputRef?: React.Ref<HTMLInputElement>;
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children' | 'type'>) {
     const style = combineClasses(styles, cc);
 
     const [files, setFiles] = useState<File[]>([]);
 
     const id = useId();
-    const input = useRef<HTMLInputElement | null>(null);
+    const input = useRef<HTMLInputElement>(null);
     const [split, rest] = useInputProps(props);
 
-    return <div ref={ref} {...rest} className={classes(
+    return <div {...rest} className={classes(
         style.wrapper,
         style[`s__${size}`],
         round && style.round,
@@ -179,8 +180,4 @@ const FileField = forwardRef(({ cc = {}, size = 'med', round, icon, label, error
 
         {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
     </div>;
-});
-
-FileField.displayName = 'FileField';
-
-export default FileField;
+}

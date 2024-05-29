@@ -1,7 +1,7 @@
 'use client';
 
 import { FluidSize, Selectors } from "../../../src/types";
-import { forwardRef, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Button from "./button";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
@@ -103,8 +103,9 @@ const styles = createStyles('calendar', {
 
 export type CalendarSelectors = Selectors<'calendar' | 'header' | 'text' | 'years' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
-const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValue, value, onChange, disabled, ...props }:
+export default function Calendar({ cc = {}, locale, size = 'med', round, defaultValue, value, onChange, disabled, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: CalendarSelectors;
         locale?: Intl.LocalesArgument;
         size?: FluidSize;
@@ -113,7 +114,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
         defaultValue?: Date;
         onChange?: (value: Date) => void;
         disabled?: boolean | Date[];
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>) {
     const style = combineClasses(styles, cc);
 
     const dates = useRef<(HTMLButtonElement | null)[]>([]);
@@ -137,7 +138,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
         setDate?.(updated);
     }
 
-    return <div ref={ref} {...props} className={classes(
+    return <div {...props} className={classes(
         style.calendar,
         round && style.round,
         style[`s__${size}`],
@@ -198,7 +199,9 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
                         const isDisabled = Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled;
 
                         return <Button key={ci}
-                            ref={el => dates.current[index] = el}
+                            ref={el => {
+                                dates.current[index] = el;
+                            }}
                             role="gridcell"
                             disabled={isDisabled}
                             round={round}
@@ -228,7 +231,7 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
                                 }
 
                                 if (next !== null) {
-                                    if (next < 0) skipMonth(-1); 
+                                    if (next < 0) skipMonth(-1);
                                     if (next >= 42) skipMonth(1);
 
                                     next = next % 42;
@@ -246,8 +249,4 @@ const Calendar = forwardRef(({ cc = {}, locale, size = 'med', round, defaultValu
             ))}
         </div>
     </div>;
-});
-
-Calendar.displayName = 'Calendar';
-
-export default Calendar;
+}

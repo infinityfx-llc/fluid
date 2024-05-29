@@ -2,7 +2,7 @@
 
 import { classes, combineClasses } from '../../../src/core/utils';
 import { FluidError, FluidSize, Selectors } from '../../../src/types';
-import { forwardRef, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import Halo from '../feedback/halo';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { createStyles } from '../../core/style';
@@ -133,8 +133,9 @@ const styles = createStyles('switch', {
 
 export type SwitchSelectors = Selectors<'wrapper' | 'input' | 'switch' | 'icons' | 'icon' | 'hanlde' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
-const Switch = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', round = true, iconOff, iconOn, checked, defaultChecked, ...props }:
+export default function Switch({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', round = true, iconOff, iconOn, checked, defaultChecked, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: SwitchSelectors;
         error?: FluidError;
         size?: FluidSize;
@@ -142,14 +143,14 @@ const Switch = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-
         round?: boolean;
         iconOff?: React.ReactNode;
         iconOn?: React.ReactNode;
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'>) {
     const style = combineClasses(styles, cc);
 
     const [split, rest] = useInputProps(props);
     const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    return <div ref={ref} {...rest}
+    return <div {...rest}
         className={classes(
             style.wrapper,
             style[`s__${size}`],
@@ -186,8 +187,4 @@ const Switch = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-
             </Halo>
         </div>
     </div>;
-});
-
-Switch.displayName = 'Switch';
-
-export default Switch;
+}

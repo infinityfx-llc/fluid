@@ -4,7 +4,7 @@ import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidError, FluidSize, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
-import { forwardRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Halo from "../feedback/halo";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { createStyles } from "../../core/style";
@@ -99,13 +99,14 @@ const styles = createStyles('checkbox', {
 
 export type CheckboxSelectors = Selectors<'wrapper' | 'checkbox' | 'checkmark' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
-const Checkbox = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', checked, defaultChecked, ...props }:
+export default function Checkbox({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', checked, defaultChecked, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: CheckboxSelectors;
         error?: FluidError;
         size?: FluidSize;
         color?: string;
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>) {
     const style = combineClasses(styles, cc);
 
     const link = useLink(defaultChecked ? 1 : 0);
@@ -113,10 +114,10 @@ const Checkbox = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-cl
     const [split, rest] = useInputProps(props);
     const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
 
-    useEffect(() => link.set(state ? 1 : 0, .25), [state]);
+    useEffect(() => link.set(state ? 1 : 0, { duration: .25 }), [state]);
 
     return <Halo hover={false} cc={{ halo: style.halo, ...cc }}>
-        <div ref={ref} {...rest}
+        <div {...rest}
             className={classes(
                 style.wrapper,
                 style[`s__${size}`],
@@ -138,8 +139,4 @@ const Checkbox = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-cl
             </div>
         </div>
     </Halo>;
-});
-
-Checkbox.displayName = 'Checkbox';
-
-export default Checkbox;
+}

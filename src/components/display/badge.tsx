@@ -1,6 +1,5 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
-import { forwardRef } from "react";
 import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
 
@@ -73,17 +72,18 @@ const styles = createStyles('badge', {
 
 export type BadgeSelectors = Selectors<'badge' | 'v__default' | 'v__light' | 'v__neutral' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
-const Badge = forwardRef(({ children, cc = {}, variant = 'default', round = false, size = 'sml', color, onClose, ...props }:
+export default function Badge({ children, cc = {}, variant = 'default', round = false, size = 'sml', color, onClose, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: BadgeSelectors;
         variant?: 'default' | 'light' | 'neutral';
         round?: boolean;
         size?: FluidSize;
         onClose?: () => void;
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    return <div ref={ref} {...props}
+    return <div {...props}
         className={classes(
             style.badge,
             style[`v__${variant}`],
@@ -102,8 +102,4 @@ const Badge = forwardRef(({ children, cc = {}, variant = 'default', round = fals
             <Icon type="close" />
         </div> : null}
     </div>;
-});
-
-Badge.displayName = 'Badge';
-
-export default Badge;
+}

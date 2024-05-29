@@ -1,6 +1,6 @@
 import { classes, combineClasses } from '../../../src/core/utils';
 import { Selectors } from '../../../src/types';
-import { forwardRef, Children } from 'react';
+import { Children } from 'react';
 import { createStyles } from '../../core/style';
 
 const styles = createStyles('timeline', {
@@ -115,18 +115,19 @@ const styles = createStyles('timeline', {
 
 export type TimelineSelectors = Selectors<'timeline' | 'uniform' | 'd__horizontal' | 'd__vertical' | 'event' | 'content' | 'axis' | 'bullet' | 'segment'>;
 
-const Timeline = forwardRef(({ children, cc = {}, active, direction = 'horizontal', uniform, reverse, ...props }:
+export default function Timeline({ children, cc = {}, active, direction = 'horizontal', uniform, reverse, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: TimelineSelectors;
         active: number;
         direction?: 'horizontal' | 'vertical';
         uniform?: boolean;
         reverse?: boolean;
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
     const childArray = Children.toArray(children);
 
-    return <div ref={ref} {...props}
+    return <div {...props}
         className={classes(
             style.timeline,
             style[`d__${direction}`],
@@ -150,8 +151,4 @@ const Timeline = forwardRef(({ children, cc = {}, active, direction = 'horizonta
             </div>;
         })}
     </div>;
-});
-
-Timeline.displayName = 'Timeline';
-
-export default Timeline;
+}

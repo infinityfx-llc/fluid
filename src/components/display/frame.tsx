@@ -1,6 +1,5 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
-import { forwardRef } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('frame', {
@@ -32,17 +31,18 @@ const styles = createStyles('frame', {
 
 export type FrameSelectors = Selectors<'frame' | 'shadow' | 'border' | 'bg__light' | 'bg__dark'>;
 
-const Frame = forwardRef(({ children, cc = {}, radius = 'sml', shadow, border, background = 'none', ...props }:
+export default function Frame({ children, cc = {}, radius = 'sml', shadow, border, background = 'none', ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: FrameSelectors;
         radius?: FluidSize;
         shadow?: boolean;
         border?: boolean;
         background?: 'none' | 'dark' | 'light';
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    return <div ref={ref} {...props}
+    return <div {...props}
         className={classes(
             style.frame,
             shadow && style.shadow,
@@ -56,8 +56,4 @@ const Frame = forwardRef(({ children, cc = {}, radius = 'sml', shadow, border, b
         }}>
         {children}
     </div>;
-});
-
-Frame.displayName = 'Frame';
-
-export default Frame;
+}

@@ -3,7 +3,7 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
-import { forwardRef, useId } from "react";
+import { useId } from "react";
 import Halo from "../feedback/halo";
 import ProgressBar from "../feedback/progress-bar";
 import { createStyles } from "../../core/style";
@@ -79,7 +79,7 @@ const styles = createStyles('stepper', {
         width: '2em',
         height: '2em',
         borderRadius: '999px',
-        backgroundColor: 'var(--f-clr-grey-100)',
+        backgroundColor: 'var(--f-clr-fg-200)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -122,7 +122,7 @@ const styles = createStyles('stepper', {
     '.progress': {
         height: '3px',
         flexGrow: 1,
-        backgroundColor: 'var(--f-clr-grey-100)',
+        backgroundColor: 'var(--f-clr-fg-200)',
         transition: 'background-color .25s',
         borderRadius: 'var(--f-radius-xsm)'
     },
@@ -174,8 +174,9 @@ const styles = createStyles('stepper', {
 
 export type StepperSelectors = Selectors<'wrapper' | 'stepper' | 'step' | 'header' | 'button' | 'bullet' | 'icon' | 'icons' | 'progress' | 'label' | 'title'>;
 
-const Stepper = forwardRef(({ cc = {}, steps, completed, setCompleted, navigation = 'backwards', variant = 'default', ...props }:
+export default function Stepper({ cc = {}, steps, completed, setCompleted, navigation = 'backwards', variant = 'default', ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: StepperSelectors;
         steps: {
             title: string;
@@ -187,14 +188,14 @@ const Stepper = forwardRef(({ cc = {}, steps, completed, setCompleted, navigatio
         setCompleted?: (value: number) => void;
         navigation?: 'none' | 'forwards' | 'backwards' | 'both';
         variant?: 'default' | 'compact' | 'vertical';
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
     const stepsArray = variant === 'compact' ? steps.slice(Math.min(completed, steps.length - 1), completed + 1) : steps;
     const vertical = variant === 'compact' || variant === 'vertical';
 
-    return <div ref={ref} {...props} className={classes(style.wrapper, props.className)} data-variant={variant}>
+    return <div {...props} className={classes(style.wrapper, props.className)} data-variant={variant}>
         <div className={style.stepper}>
             {stepsArray.map(({ title, label, icon, error }, i) => {
                 const navigatable = (navigation === 'forwards' ? i >= completed :
@@ -236,8 +237,4 @@ const Stepper = forwardRef(({ cc = {}, steps, completed, setCompleted, navigatio
 
         {variant === 'compact' && <ProgressBar value={completed / steps.length} cc={{ track: style.track }} />}
     </div>;
-});
-
-Stepper.displayName = 'Stepper';
-
-export default Stepper;
+}

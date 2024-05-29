@@ -1,7 +1,7 @@
 'use client';
 
 import { Selectors } from "../../../src/types";
-import { forwardRef, useId, useRef, useState, useEffect } from "react";
+import { useId, useRef, useState, useEffect } from "react";
 import Halo from "../feedback/halo";
 import { classes, combineClasses, round, toNumber } from "../../../src/core/utils";
 import Tooltip from "../display/tooltip";
@@ -121,8 +121,9 @@ const styles = createStyles('slider', {
 
 export type SliderSelectors = Selectors<'wrapper' | 'label' | 'slider' | 'track' | 'progress' | 'handle'>;
 
-const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 'interact', formatTooltip, label, value, defaultValue, onChange, ...props }:
+export default function Slider({ cc = {}, handles = 1, vertical = false, tooltips = 'interact', formatTooltip, label, value, defaultValue, onChange, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: SliderSelectors;
         handles?: number;
         vertical?: boolean;
@@ -132,12 +133,12 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
         value?: number[];
         defaultValue?: number[];
         onChange?: (values: number[]) => void;
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<any>) => {
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'value' | 'defaultValue' | 'onChange'>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
-    const track = useRef<HTMLDivElement | null>(null);
-    const dragging = useRef<number | null>(null);
+    const track = useRef<HTMLDivElement>(null);
+    const dragging = useRef<number>(null);
     const max = toNumber(props.max, 1);
     const min = toNumber(props.min, 0);
     const step = toNumber(props.step, 0.1);
@@ -214,7 +215,7 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
     const offset = handles < 2 ? 0 : scale;
     if (handles > 1) scale = toOffset(values[handles - 1]) - scale;
 
-    return <div ref={ref} {...rest} className={classes(style.wrapper, props.className)} data-vertical={vertical}>
+    return <div {...rest} className={classes(style.wrapper, props.className)} data-vertical={vertical}>
         <input {...split} type="hidden" value={values.join(',')} />
 
         {label && <div id={id} className={style.label}>{label}</div>}
@@ -268,8 +269,4 @@ const Slider = forwardRef(({ cc = {}, handles = 1, vertical = false, tooltips = 
             })}
         </div>
     </div >;
-});
-
-Slider.displayName = 'Slider';
-
-export default Slider;
+}

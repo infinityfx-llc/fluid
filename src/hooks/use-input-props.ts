@@ -34,7 +34,7 @@ export default function useInputProps<T = any>(props: React.InputHTMLAttributes<
 
         for (const prop in props) {
             if (prop in InputProps) {
-                // @ts-expect-error
+                // @ts-ignore
                 split[prop as keyof typeof InputProps] = props[prop as keyof React.HTMLAttributes<any>];
             } else {
                 rest[prop as keyof React.HTMLAttributes<any>] = props[prop as keyof React.HTMLAttributes<any>];

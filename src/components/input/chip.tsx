@@ -3,7 +3,7 @@
 import { classes, combineClasses } from '../../../src/core/utils';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { FluidSize, Selectors } from '../../../src/types';
-import { forwardRef, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createStyles } from '../../core/style';
 import { Animatable } from '@infinityfx/lively';
 import { useLink } from '@infinityfx/lively/hooks';
@@ -119,22 +119,23 @@ const styles = createStyles('chip', {
 
 export type ChipSelectors = Selectors<'wrapper' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'chip' | 'checkmark'>;
 
-const Chip = forwardRef(({ children, cc = {}, size = 'med', type = 'checkbox', round, checked, defaultChecked, ...props }:
+export default function Chip({ children, cc = {}, size = 'med', type = 'checkbox', round, checked, defaultChecked, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: ChipSelectors;
         size?: FluidSize;
         type?: 'checkbox' | 'radio';
         round?: boolean;
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'>) {
     const style = combineClasses(styles, cc);
 
     const [split, rest] = useInputProps(props);
     const link = useLink(defaultChecked ? 1 : 0);
     const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
 
-    useEffect(() => link.set(state ? 1 : 0, .15), [state]);
+    useEffect(() => link.set(state ? 1 : 0, { duration: .15 }), [state]);
 
-    return <div ref={ref} {...rest}
+    return <div {...rest}
         className={classes(
             style.wrapper,
             style[`s__${size}`],
@@ -156,8 +157,4 @@ const Chip = forwardRef(({ children, cc = {}, size = 'med', type = 'checkbox', r
             {children}
         </div>
     </div>;
-});
-
-Chip.displayName = 'Chip';
-
-export default Chip;
+}

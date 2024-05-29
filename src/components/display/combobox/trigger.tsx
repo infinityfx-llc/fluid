@@ -15,6 +15,7 @@ export default function Trigger(props: PopoverTrigger) {
 
         if ((e.key === 'Tab' && !e.shiftKey) || e.key === 'ArrowDown') {
             const child = getFocusable(content.current, false);
+
             if (child) {
                 e.preventDefault();
                 child.focus();

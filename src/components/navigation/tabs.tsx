@@ -1,7 +1,7 @@
 'use client';
 
 import { FluidInputvalue, Selectors } from "../../../src/types";
-import { forwardRef, useId, useState } from "react";
+import { useId, useState } from "react";
 import Halo from "../feedback/halo";
 import { Morph } from "@infinityfx/lively/layout";
 import { classes, combineClasses } from "../../../src/core/utils";
@@ -70,6 +70,7 @@ const styles = createStyles('tabs', {
 export type TabsSelectors = Selectors<'wrapper' | 'tabs' | 'option' | 'selection' | 'button' | 'v__default' | 'v__minimal'>;
 
 type TabsProps<T> = {
+    ref?: React.Ref<HTMLDivElement>;
     cc?: TabsSelectors;
     options: {
         label: string;
@@ -83,13 +84,13 @@ type TabsProps<T> = {
     onChange?: (value: T) => void;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>;
 
-function TabsComponent<T extends FluidInputvalue>({ options, cc = {}, variant = 'default', value, defaultValue, onChange, ...props }: TabsProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
+export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, variant = 'default', value, defaultValue, onChange, ...props }: TabsProps<T>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
     const [state, setState] = value !== undefined ? [value] : useState<FluidInputvalue>(defaultValue || options[0]?.value);
 
-    return <div ref={ref} {...props} className={classes(
+    return <div {...props} className={classes(
         style.wrapper,
         style[`v__${variant}`],
         props.className
@@ -117,9 +118,3 @@ function TabsComponent<T extends FluidInputvalue>({ options, cc = {}, variant = 
         </Scrollarea>
     </div>;
 }
-
-const Tabs = forwardRef(TabsComponent) as (<T extends FluidInputvalue>(props: TabsProps<T> & { ref?: React.ForwardedRef<HTMLDivElement>; }) => ReturnType<typeof TabsComponent>) & { displayName: string; };
-
-Tabs.displayName = 'Tabs';
-
-export default Tabs;

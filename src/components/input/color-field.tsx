@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useState } from 'react';
+import { useState } from 'react';
 import Field, { FieldProps } from './field';
 import { Animatable } from '@infinityfx/lively';
 import { Move } from '@infinityfx/lively/animations';
@@ -29,13 +29,13 @@ const styles = createStyles('color-field', fluid => ({
     }
 }));
 
-const ColorField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled, ...props }:
+export default function ColorField({ cc = {}, value, defaultValue, onChange, disabled, ...props }:
     {
         value?: string;
         defaultValue?: string;
         onChange?: (value: string) => void;
         disabled?: boolean;
-    } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>) {
     const style = combineClasses(styles, cc);
 
     const [state, setState] = value !== undefined ? [value, onChange] : useState(defaultValue || '');
@@ -49,7 +49,7 @@ const ColorField = forwardRef(({ cc = {}, value, defaultValue, onChange, disable
 
     return <Popover.Root position="center" mobileContainer="modal">
         <Popover.Trigger disabled={disabled}>
-            <Field ref={ref} {...props}
+            <Field {...props}
                 cc={cc}
                 inputMode="none"
                 left={<Swatch size={props.size} round={props.round} color={state} cc={{ swatch: style.swatch, ...cc }} />}
@@ -77,8 +77,4 @@ const ColorField = forwardRef(({ cc = {}, value, defaultValue, onChange, disable
             </Animatable>
         </Popover.Content>
     </Popover.Root>
-});
-
-ColorField.displayName = 'ColorField';
-
-export default ColorField;
+}

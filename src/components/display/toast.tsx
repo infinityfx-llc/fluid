@@ -1,5 +1,4 @@
 import { Selectors } from "../../../src/types";
-import { forwardRef } from "react";
 import Button from "../input/button";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
@@ -62,8 +61,9 @@ const styles = createStyles('toast', {
 
 export type ToastSelectors = Selectors<'toast' | 'icon' | 'background' | 'content' | 'text'>;
 
-const Toast = forwardRef(({ children, cc = {}, icon, color, title, round, action = <Icon type="close" />, onClose, ...props }:
+export default function Toast({ children, cc = {}, icon, color, title, round, action = <Icon type="close" />, onClose, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: ToastSelectors;
         icon: React.ReactNode;
         color: string;
@@ -71,10 +71,10 @@ const Toast = forwardRef(({ children, cc = {}, icon, color, title, round, action
         action?: React.ReactNode;
         round?: boolean;
         onClose?: () => void;
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    return <div ref={ref} {...props}
+    return <div {...props}
         className={classes(
             style.toast,
             round && style.round,
@@ -96,8 +96,4 @@ const Toast = forwardRef(({ children, cc = {}, icon, color, title, round, action
             {action}
         </Button>}
     </div>;
-});
-
-Toast.displayName = 'Toast';
-
-export default Toast;
+}

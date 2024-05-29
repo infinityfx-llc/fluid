@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useId, useRef } from 'react';
+import { useId, useRef } from 'react';
 import Overlay from './overlay';
 import { Selectors } from '../../../src/types';
 import Button from '../input/button';
@@ -64,14 +64,15 @@ const styles = createStyles('drawer', {
 
 export type DrawerSelectors = Selectors<'drawer' | 'header' | 'title' | 'content'>;
 
-const Drawer = forwardRef(({ children, cc = {}, show, onClose, position = 'right', title, ...props }:
+export default function Drawer({ children, cc = {}, show, onClose, position = 'right', title, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: DrawerSelectors;
         show: boolean;
         onClose: () => void;
         position?: 'left' | 'right';
         title?: React.ReactNode;
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
@@ -88,7 +89,7 @@ const Drawer = forwardRef(({ children, cc = {}, show, onClose, position = 'right
 
     return <Overlay show={show} onClose={onClose}>
         <Animatable id="drawer" animate={{ translate: [`${position === 'right' ? 100 : -100}% 0%`, '0% 0%'], duration: .25 }} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
-            <div ref={ref} {...props}
+            <div {...props}
                 role="dialog"
                 aria-modal
                 aria-labelledby={id}
@@ -113,8 +114,4 @@ const Drawer = forwardRef(({ children, cc = {}, show, onClose, position = 'right
             </div>
         </Animatable>
     </Overlay>;
-});
-
-Drawer.displayName = 'Drawer';
-
-export default Drawer;
+}

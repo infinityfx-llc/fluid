@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import Halo from "../../feedback/halo";
 import Collapsible from "../collapsible";
 import { Animatable } from "@infinityfx/lively";
@@ -53,13 +53,14 @@ const styles = createStyles('accordion.item', {
 
 export type AccordionItemSelectors = Selectors<'button' | 'content' | 'icon' | 'arrows'>;
 
-const Item = forwardRef(({ children, cc = {}, label, defaultOpen = false, disabled, ...props }:
+export default function Item({ children, cc = {}, label, defaultOpen = false, disabled, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: AccordionItemSelectors;
         label: React.ReactNode;
         defaultOpen?: boolean;
         disabled?: boolean;
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
@@ -89,13 +90,11 @@ const Item = forwardRef(({ children, cc = {}, label, defaultOpen = false, disabl
         </Halo>
 
         <Collapsible shown={isOpen} id={id}>
-            <div ref={ref} {...props} className={classes(style.content, props.className)}>
+            <div {...props} className={classes(style.content, props.className)}>
                 {children}
             </div>
         </Collapsible>
     </>
-});
+}
 
 Item.displayName = 'Accordion.Item';
-
-export default Item;

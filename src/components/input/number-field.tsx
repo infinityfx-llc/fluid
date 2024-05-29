@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState, forwardRef, useRef } from 'react';
+import { useCallback, useState, useRef } from 'react';
 import Field, { FieldProps } from "./field";
 import Button from './button';
 import { changeInputValue, combineClasses, combineRefs, round, toNumber } from '../../../src/core/utils';
@@ -31,15 +31,15 @@ const styles = createStyles('number-field', {
     }
 });
 
-const NumberField = forwardRef(({ cc = {}, precision = 3, controls = true, defaultValue, ...props }: {
+export default function NumberField({ cc = {}, precision = 3, controls = true, defaultValue, ...props }: {
     precision?: number;
     controls?: boolean;
-} & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+} & Omit<FieldProps, 'type'>) {
     const style = combineClasses(styles, cc);
 
     const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(defaultValue || '');
 
-    const inputRef = useRef<HTMLInputElement | null>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
     const step = toNumber(props.step, 1);
     const min = toNumber(props.min, -Number.MAX_VALUE);
     const max = toNumber(props.max, Number.MAX_VALUE);
@@ -67,7 +67,7 @@ const NumberField = forwardRef(({ cc = {}, precision = 3, controls = true, defau
         disabled: props.disabled
     };
 
-    return <Field ref={ref} {...props}
+    return <Field {...props}
         inputRef={combineRefs(inputRef, props.inputRef)}
         type="number"
         value={value}
@@ -88,8 +88,4 @@ const NumberField = forwardRef(({ cc = {}, precision = 3, controls = true, defau
         right={controls ? <Button {...buttonProps} cc={{ button: style.button__end }} aria-label="Increment" onClick={() => increment(step)}>
             <Icon type="add" />
         </Button> : null} />;
-});
-
-NumberField.displayName = 'NumberField';
-
-export default NumberField;
+}

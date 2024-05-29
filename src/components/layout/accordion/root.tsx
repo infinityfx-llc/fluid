@@ -2,7 +2,7 @@
 
 import { Selectors } from "../../../../src/types";
 import { classes } from "../../../../src/utils";
-import { createContext, forwardRef, useContext, useState, useRef, Children, Fragment } from "react";
+import { createContext, use, useState, useRef, Children, Fragment } from "react";
 import { createStyles } from "../../../core/style";
 import { combineClasses } from "../../../core/utils";
 
@@ -12,7 +12,7 @@ export const AccordionContext = createContext<{
 } | null>(null);
 
 export function useAccordion() {
-    const context = useContext(AccordionContext);
+    const context = use(AccordionContext);
 
     if (!context) throw new Error('Unable to access AccordionRoot context');
 
@@ -39,12 +39,13 @@ const styles = createStyles('accordion.root', {
 
 export type AccordionRootSelectors = Selectors<'accordion' | 'v__default' | 'v__minimal' | 'divider'>;
 
-const Root = forwardRef(({ children, cc = {}, multiple = false, variant = 'default', ...props }:
+export default function Root({ children, cc = {}, multiple = false, variant = 'default', ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: AccordionRootSelectors;
         multiple?: boolean;
         variant?: 'default' | 'minimal';
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
     const openRef = useRef<string[]>([]);
@@ -63,13 +64,13 @@ const Root = forwardRef(({ children, cc = {}, multiple = false, variant = 'defau
         setOpen(openRef.current.slice());
     }
 
-    return <div ref={ref} {...props}
+    return <div {...props}
         className={classes(
             style.accordion,
             style[`v__${variant}`],
             props.className
         )}>
-        <AccordionContext.Provider value={{ open, toggle }}>
+        <AccordionContext value={{ open, toggle }}>
             {arr.map((child, i) => {
 
                 return <Fragment key={i}>
@@ -78,10 +79,8 @@ const Root = forwardRef(({ children, cc = {}, multiple = false, variant = 'defau
                     {i < arr.length - 1 && <div className={style.divider} />}
                 </Fragment>
             })}
-        </AccordionContext.Provider>
+        </AccordionContext>
     </div>;
-});
+}
 
 Root.displayName = 'Accordion.Root';
-
-export default Root;

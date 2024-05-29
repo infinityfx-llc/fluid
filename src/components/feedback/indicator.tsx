@@ -2,7 +2,7 @@
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { cloneElement, forwardRef, isValidElement, useEffect, useRef, useState } from "react";
+import { cloneElement, isValidElement, useEffect, useRef, useState } from "react";
 import { createStyles } from "../../core/style";
 import { createPortal } from "react-dom";
 
@@ -31,16 +31,17 @@ const styles = createStyles('indicator', {
 
 export type IndicatorSelectors = Selectors<'indicator'>;
 
-const Indicator = forwardRef(<T extends React.ReactElement>({ children, cc = {}, content, color, outline, ...props }:
+export default function Indicator<T extends React.ReactElement<any>>({ children, cc = {}, content, color, outline, ref, ...props }:
     {
         children: T;
+        ref?: React.Ref<any>;
         cc?: IndicatorSelectors;
         content?: number | string | boolean;
         color?: string;
         outline?: string;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'>, ref: React.ForwardedRef<T>) => {
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'>) {
     const style = combineClasses(styles, cc);
-    const container = useRef<any>();
+    const container = useRef<any>(undefined);
     const [radius, setRadius] = useState(-1);
 
     useEffect(() => {
@@ -78,8 +79,4 @@ const Indicator = forwardRef(<T extends React.ReactElement>({ children, cc = {},
             {typeof content !== 'boolean' ? content : null}
         </div>, container.current)}
     </>;
-});
-
-Indicator.displayName = 'Indicator';
-
-export default Indicator;
+}

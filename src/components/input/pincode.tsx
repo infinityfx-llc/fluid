@@ -3,7 +3,7 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { FluidError, FluidInputvalue, FluidSize, Selectors } from "../../../src/types";
-import { forwardRef, useId, useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('pincode', {
@@ -117,8 +117,9 @@ const styles = createStyles('pincode', {
 
 export type PincodeSelectors = Selectors<'wrapper' | 'label' | 'pincode' | 'field' | 'input' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
-const Pincode = forwardRef(({ cc = {}, format = [1, 1, 1, 1], masked, size = 'med', round = false, label, value, error, onChange, defaultvalue, autoFocus, ...props }:
+export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size = 'med', round = false, label, value, error, onChange, defaultvalue, autoFocus, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: PincodeSelectors;
         defaultvalue?: FluidInputvalue;
         format?: number[];
@@ -129,7 +130,7 @@ const Pincode = forwardRef(({ cc = {}, format = [1, 1, 1, 1], masked, size = 'me
         value?: string;
         error?: FluidError;
         onChange?: (value: string) => void;
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'size' | 'value' | 'defaultValue' | 'onChange' | 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'size' | 'value' | 'defaultValue' | 'onChange' | 'type'>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
@@ -179,12 +180,13 @@ const Pincode = forwardRef(({ cc = {}, format = [1, 1, 1, 1], masked, size = 'me
 
     const [split, rest] = useInputProps(props);
 
-    return <div ref={ref} {...rest} className={classes(
-        style.wrapper,
-        style[`s__${size}`],
-        round && style.round,
-        props.className
-    )}>
+    return <div {...rest}
+        className={classes(
+            style.wrapper,
+            style[`s__${size}`],
+            round && style.round,
+            props.className
+        )}>
         {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
 
         <div className={style.pincode} data-error={!!error} data-disabled={props.disabled}>
@@ -196,7 +198,9 @@ const Pincode = forwardRef(({ cc = {}, format = [1, 1, 1, 1], masked, size = 'me
                         i += min;
 
                         return <div key={i} className={style.field}>
-                            <input ref={el => refs.current[i] = el}
+                            <input ref={el => {
+                                refs.current[i] = el;
+                            }}
                                 autoFocus={i === 0 && autoFocus}
                                 disabled={props.disabled}
                                 className={style.input}
@@ -214,9 +218,4 @@ const Pincode = forwardRef(({ cc = {}, format = [1, 1, 1, 1], masked, size = 'me
 
         <input {...split} type="hidden" aria-labelledby={label ? id : undefined} value={state} />
     </div>;
-});
-
-
-Pincode.displayName = 'Pincode';
-
-export default Pincode;
+}

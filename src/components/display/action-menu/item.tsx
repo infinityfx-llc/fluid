@@ -1,6 +1,5 @@
 'use client';
 
-import { forwardRef } from 'react';
 import Halo from '../../feedback/halo';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
@@ -35,17 +34,18 @@ const styles = createStyles('action-menu.item', {
 
 export type ActionMenuItemSelectors = Selectors<'item'>;
 
-const Item = forwardRef(({ children, cc = {}, keepOpen, className, ...props }:
+export default function Item({ children, cc = {}, keepOpen, className, ...props }:
     {
+        ref?: React.Ref<HTMLButtonElement>;
         cc?: ActionMenuItemSelectors;
         keepOpen?: boolean;
-    } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
+    } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);
 
     const popover = usePopover();
 
     return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
-        <button ref={ref} {...props}
+        <button {...props}
             className={classes(style.item, className)}
             role="menuitem"
             onClick={e => {
@@ -56,8 +56,6 @@ const Item = forwardRef(({ children, cc = {}, keepOpen, className, ...props }:
             {children}
         </button>
     </Halo>;
-});
+}
 
 Item.displayName = 'ActionMenu.Item';
-
-export default Item;

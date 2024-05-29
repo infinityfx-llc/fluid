@@ -4,7 +4,7 @@ import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
-import { forwardRef, useEffect } from "react";
+import { useEffect } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('progress-bar', {
@@ -43,22 +43,23 @@ const styles = createStyles('progress-bar', {
 
 export type ProgressBarSelectors = Selectors<'track' | 'progress' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
-const ProgressBar = forwardRef(({ cc = {}, size = 'med', value, defaultValue = 0, color, ...props }:
+export default function ProgressBar({ cc = {}, size = 'med', value, defaultValue = 0, color, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: ProgressBarSelectors;
         size?: FluidSize;
         value?: number;
         defaultValue?: number;
         color?: string;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue'>) {
     const style = combineClasses(styles, cc);
 
     const state = value !== undefined ? value : defaultValue;
     const link = useLink(state);
 
-    useEffect(() => link.set(state, .3), [state]);
+    useEffect(() => link.set(state, { duration: .3 }), [state]);
 
-    return <div ref={ref} {...props} role="progressbar" aria-valuenow={state * 100} className={classes(
+    return <div {...props} role="progressbar" aria-valuenow={state * 100} className={classes(
         style.track,
         style[`s__${size}`],
         props.className
@@ -67,8 +68,4 @@ const ProgressBar = forwardRef(({ cc = {}, size = 'med', value, defaultValue = 0
             <div className={style.progress} style={{ backgroundColor: color }} />
         </Animatable>
     </div>;
-});
-
-ProgressBar.displayName = 'ProgressBar';
-
-export default ProgressBar;
+}

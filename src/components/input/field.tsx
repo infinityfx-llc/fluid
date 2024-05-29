@@ -2,8 +2,8 @@
 
 import { classes, combineClasses } from '../../../src/core/utils';
 import useInputProps from '../../../src/hooks/use-input-props';
-import { FluidError, FluidInputvalue, FluidSize, FluidStyles, Selectors } from '../../../src/types';
-import { forwardRef, useId } from 'react';
+import { FluidError, FluidInputvalue, FluidSize, Selectors } from '../../../src/types';
+import { useId } from 'react';
 import { createStyles } from '../../core/style';
 
 const styles = createStyles('field', {
@@ -114,6 +114,7 @@ const styles = createStyles('field', {
 export type FieldSelectors = Selectors<'wrapper' | 'input' | 'field' | 'content' | 'label' | 'error' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
 export type FieldProps = {
+    ref?: React.Ref<HTMLDivElement>;
     defaultValue?: FluidInputvalue;
     cc?: FieldSelectors;
     round?: boolean;
@@ -128,13 +129,13 @@ export type FieldProps = {
     inputRef?: React.Ref<HTMLInputElement>;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>;
 
-const Field = forwardRef(({ cc = {}, round = false, size = 'med', error, showError, icon, label, left, right, onEnter, inputRef, ...props }: FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+export default function Field({ cc = {}, round = false, size = 'med', error, showError, icon, label, left, right, onEnter, inputRef, ...props }: FieldProps) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
     const [split, rest] = useInputProps(props);
 
-    return <div ref={ref} {...rest} className={classes(
+    return <div {...rest} className={classes(
         style.wrapper,
         style[`s__${size}`],
         round && style.round,
@@ -158,8 +159,4 @@ const Field = forwardRef(({ cc = {}, round = false, size = 'med', error, showErr
 
         {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
     </div>;
-});
-
-Field.displayName = 'Field';
-
-export default Field;
+}

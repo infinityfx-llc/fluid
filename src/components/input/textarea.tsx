@@ -3,7 +3,7 @@
 import { classes, combineClasses } from '../../../src/core/utils';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { FluidError, FluidSize, Selectors } from '../../../src/types';
-import { forwardRef, useId, useState } from 'react';
+import { useId, useState } from 'react';
 import Scrollarea from '../layout/scrollarea';
 import { createStyles } from '../../core/style';
 
@@ -87,21 +87,22 @@ const styles = createStyles('textarea', {
 
 export type TextareaSelectors = Selectors<'wrapper' | 'label' | 'textarea' | 'input' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
-const Textarea = forwardRef(({ cc = {}, label, error, size = 'med', resize = 'both', ...props }:
+export default function Textarea({ cc = {}, label, error, size = 'med', resize = 'both', ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: TextareaSelectors;
         label?: string;
         error?: FluidError;
         size?: FluidSize;
         resize?: 'none' | 'vertical' | 'horizontal' | 'both';
-    } & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'children' | 'cols'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'children' | 'cols'>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
     const [split, rest] = useInputProps(props);
     const [rows, setRows] = useState(1);
 
-    return <div ref={ref} {...rest}
+    return <div {...rest}
         className={classes(
             style.wrapper,
             style[`s__${size}`],
@@ -121,8 +122,4 @@ const Textarea = forwardRef(({ cc = {}, label, error, size = 'med', resize = 'bo
                 }} />
         </Scrollarea>
     </div>;
-});
-
-Textarea.displayName = 'Textarea';
-
-export default Textarea;
+}

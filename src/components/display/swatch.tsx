@@ -1,6 +1,5 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
-import { forwardRef } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('swatch', {
@@ -46,15 +45,16 @@ const styles = createStyles('swatch', {
 
 export type SwatchSelectors = Selectors<'swatch' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
-const Swatch = forwardRef(({ cc = {}, size = 'med', round = false, color, ...props }:
+export default function Swatch({ cc = {}, size = 'med', round = false, color, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: SwatchSelectors;
         size?: FluidSize;
         round?: boolean;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
 
-    return <div ref={ref} {...props}
+    return <div {...props}
         className={classes(
             style.swatch,
             style[`s__${size}`],
@@ -63,8 +63,4 @@ const Swatch = forwardRef(({ cc = {}, size = 'med', round = false, color, ...pro
         )}>
         <div className={style.color} style={{ backgroundColor: color }} />
     </div>;
-});
-
-Swatch.displayName = 'Swatch';
-
-export default Swatch;
+}

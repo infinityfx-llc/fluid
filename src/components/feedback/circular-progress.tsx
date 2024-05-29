@@ -4,7 +4,7 @@ import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
-import { forwardRef, useEffect } from "react";
+import { useEffect } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('circular-progress', {
@@ -54,23 +54,24 @@ const styles = createStyles('circular-progress', {
 
 export type CircularProgressSelectors = Selectors<'wrapper' | 'track' | 'progress' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
-const CircularProgress = forwardRef(({ children, cc = {}, size = 'med', slice = 0, value, defaultValue = 0, color, ...props }:
+export default function CircularProgress({ children, cc = {}, size = 'med', slice = 0, value, defaultValue = 0, color, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: CircularProgressSelectors;
         size?: FluidSize;
         slice?: number;
         value?: number;
         defaultValue?: number;
         color?: string;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue'>) {
     const style = combineClasses(styles, cc);
 
     const state = value !== undefined ? value : defaultValue;
     const link = useLink(state);
 
-    useEffect(() => link.set(state * (1 - slice), .3), [state, slice]);
+    useEffect(() => link.set(state * (1 - slice), { duration: .3 }), [state, slice]);
 
-    return <div ref={ref} {...props} className={classes(
+    return <div {...props} className={classes(
         style.wrapper,
         style[`s__${size}`],
         props.className
@@ -87,8 +88,4 @@ const CircularProgress = forwardRef(({ children, cc = {}, size = 'med', slice = 
             </Animatable>
         </svg>
     </div>;
-});
-
-CircularProgress.displayName = 'CircularProgress';
-
-export default CircularProgress;
+}

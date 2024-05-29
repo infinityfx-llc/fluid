@@ -1,7 +1,7 @@
 'use client';
 
 import { FluidSize, Selectors } from "../../../src/types";
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 import Button from "../input/button";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
@@ -21,8 +21,9 @@ const styles = createStyles('pagination', {
 
 export type PaginationSelectors = Selectors<'pagination'>;
 
-const Pagination = forwardRef(({ cc = {}, page, setPage, pages, compact, skipable, round, size, variant, ...props }:
+export default function Pagination({ cc = {}, page, setPage, pages, compact, skipable, round, size, variant, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: PaginationSelectors;
         page?: number;
         setPage?: (page: number) => void;
@@ -32,7 +33,7 @@ const Pagination = forwardRef(({ cc = {}, page, setPage, pages, compact, skipabl
         round?: boolean;
         size?: FluidSize;
         variant?: 'default' | 'neutral' | 'light';
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
 
     const [state, setState] = page !== undefined ? [page, setPage] : useState(0);
@@ -40,7 +41,7 @@ const Pagination = forwardRef(({ cc = {}, page, setPage, pages, compact, skipabl
     const update = (page: number) => setState?.(page);
     const buttonProps = { cc, round, size, variant };
 
-    return <div ref={ref} {...props} className={classes(style.pagination, props.className)}>
+    return <div {...props} className={classes(style.pagination, props.className)}>
         {compact && skipable && <Button {...buttonProps} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state < 1} onClick={() => update(0)}>
             <Icon type="first" />
         </Button>}
@@ -67,8 +68,4 @@ const Pagination = forwardRef(({ cc = {}, page, setPage, pages, compact, skipabl
             <Icon type="last" />
         </Button>}
     </div>;
-});
-
-Pagination.displayName = 'Pagination';
-
-export default Pagination;
+}

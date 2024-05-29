@@ -1,6 +1,6 @@
 import { classes, combineClasses } from '../../../src/core/utils';
 import { Selectors } from '../../../src/types';
-import { forwardRef, Children, isValidElement, cloneElement } from 'react';
+import { Children, isValidElement, cloneElement } from 'react';
 import { createStyles } from '../../core/style';
 
 const styles = createStyles('combine', {
@@ -55,13 +55,14 @@ const styles = createStyles('combine', {
 
 export type CombineSelectors = Selectors<'combine' | 'd__horizontal' | 'd__vertical'>;
 
-const Combine = forwardRef(({ children, cc = {}, direction = 'horizontal', ...props }: {
+export default function Combine({ children, cc = {}, direction = 'horizontal', ...props }: {
+    ref?: React.Ref<HTMLDivElement>;
     cc?: CombineSelectors;
     direction?: 'horizontal' | 'vertical';
-} & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+} & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    return <div ref={ref} {...props}
+    return <div {...props}
         className={classes(
             style.combine,
             style[`d__${direction}`],
@@ -81,8 +82,4 @@ const Combine = forwardRef(({ children, cc = {}, direction = 'horizontal', ...pr
             } as any);
         })}
     </div>;
-});
-
-Combine.displayName = 'Combine';
-
-export default Combine;
+}

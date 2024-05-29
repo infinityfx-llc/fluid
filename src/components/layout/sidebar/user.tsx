@@ -1,6 +1,5 @@
 'use client';
 
-import { forwardRef } from 'react';
 import { Selectors } from '../../../../src/types';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import Halo from '../../feedback/halo';
@@ -98,20 +97,21 @@ const styles = createStyles('sidebar.user',  fluid => ({
 
 export type SidebarUserSelectors = Selectors<'user' | 'collapsed' | 'round' | 'avatar' | 'frame' | 'name' | 'status' | 'content' | 'icon'>;
 
-const User = forwardRef(({ children, cc = {}, name, status, indicator = false, round = false, icon = <Icon type="more" />, ...props }:
+export default function User({ children, cc = {}, name, status, indicator = false, round = false, icon = <Icon type="more" />, ...props }:
     {
+        ref?: React.Ref<HTMLButtonElement>;
         cc?: SidebarUserSelectors;
         name: string;
         status?: string;
         indicator?: string | number | boolean;
         round?: boolean;
         icon?: React.ReactNode;
-    } & React.ButtonHTMLAttributes<HTMLButtonElement>, ref: React.ForwardedRef<HTMLButtonElement>) => {
+    } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);
     const { collapsed } = useSidebar();
 
     return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
-        <button ref={ref} {...props} type="button" className={classes(
+        <button {...props} type="button" className={classes(
             style.user,
             round && style.round,
             collapsed && style.collapsed,
@@ -135,8 +135,6 @@ const User = forwardRef(({ children, cc = {}, name, status, indicator = false, r
             </div>}
         </button>
     </Halo>;
-});
+}
 
 User.displayName = 'Sidebar.User';
-
-export default User;

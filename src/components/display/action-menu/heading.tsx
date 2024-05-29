@@ -1,6 +1,5 @@
 'use client';
 
-import { forwardRef } from 'react';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses } from '../../../core/utils';
@@ -16,17 +15,16 @@ const styles = createStyles('action-menu.heading', {
 
 export type ActionMenuHeadingSelectors = Selectors<'option'>;
 
-const Heading = forwardRef(({ children, cc = {}, className, ...props }:
+export default function Heading({ children, cc = {}, className, ...props }:
     {
+        ref?: React.ForwardedRef<HTMLDivElement>;
         cc?: ActionMenuHeadingSelectors;
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    return <div ref={ref} {...props} className={classes(style.heading, className)}>
+    return <div {...props} className={classes(style.heading, className)}>
         {children}
     </div>;
-});
+}
 
 Heading.displayName = 'ActionMenu.Heading';
-
-export default Heading;

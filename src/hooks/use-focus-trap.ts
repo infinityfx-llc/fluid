@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react"
 import { getFocusable } from "../core/utils";
 
 export default function useFocusTrap<T extends HTMLElement>(active?: boolean) {
-    const ref = useRef<T | null>(null);
+    const ref = useRef<T>(null);
 
     useEffect(() => {
         if (!ref.current || !active) return;

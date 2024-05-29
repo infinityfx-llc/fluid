@@ -4,7 +4,7 @@ import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink, useTrigger } from "@infinityfx/lively/hooks";
-import { Children, cloneElement, forwardRef, isValidElement, useRef, useEffect } from "react";
+import { Children, cloneElement, isValidElement, useRef, useEffect } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('halo', {
@@ -60,15 +60,16 @@ const styles = createStyles('halo', {
 
 export type HaloSelectors = Selectors<'halo' | 'ripple'>;
 
-const Halo = forwardRef(<T extends React.ReactElement>({ children, cc = {}, color, hover = true, disabled = false, target, ...props }:
+export default function Halo<T extends React.ReactElement<any>, P extends HTMLElement>({ children, cc = {}, color, hover = true, disabled = false, target, ref, ...props }:
     {
         children: T;
+        ref?: React.Ref<any>;
         cc?: HaloSelectors;
         color?: string;
         hover?: boolean;
         disabled?: boolean;
-        target?: React.RefObject<HTMLElement>;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<T>) => {
+        target?: React.RefObject<P | null>;
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
 
     const container = useRef<HTMLElement>(null);
@@ -117,7 +118,7 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, cc = {}, colo
             focusEl.removeEventListener('focusin', focus);
             focusEl.removeEventListener('focusout', focus);
         }
-    }, [clickTrigger]);
+    }, []);
 
     children = Array.isArray(children) ? children[0] : children;
     if (!isValidElement(children)) return children;
@@ -145,8 +146,4 @@ const Halo = forwardRef(<T extends React.ReactElement>({ children, cc = {}, colo
         ref: combineRefs(container, ref, (children as any).ref),
         className: classes(children.props.className, style.container)
     }, childrenArray);
-});
-
-Halo.displayName = 'Halo';
-
-export default Halo;
+}

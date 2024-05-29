@@ -1,6 +1,5 @@
 'use client';
 
-import { forwardRef } from 'react';
 import Popover from '../../layout/popover';
 import { Animate } from '@infinityfx/lively';
 import { Move, Pop } from '@infinityfx/lively/animations';
@@ -23,10 +22,11 @@ const styles = createStyles('action-menu.menu', {
 
 export type ActionMenuMenuSelectors = Selectors<'menu'>;
 
-const Menu = forwardRef(({ children, cc = {}, className, ...props }:
+export default function Menu({ children, cc = {}, className, ...props }:
     {
+        ref?: React.ForwardedRef<HTMLDivElement>;
         cc?: Selectors;
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
     return <Popover.Content role="menu">
@@ -36,13 +36,11 @@ const Menu = forwardRef(({ children, cc = {}, className, ...props }:
             levels={2}
             stagger={.06}>
 
-            <div ref={ref} {...props} className={classes(style.menu, className)} role="group">
+            <div {...props} className={classes(style.menu, className)} role="group">
                 {children}
             </div>
         </Animate>
     </Popover.Content>;
-});
+}
 
 Menu.displayName = 'ActionMenu.Menu';
-
-export default Menu;

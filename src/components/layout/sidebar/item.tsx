@@ -1,6 +1,6 @@
 'use client';
 
-import { Children, forwardRef, useState } from 'react';
+import { Children, useState } from 'react';
 import Halo from '../../feedback/halo';
 import { Selectors } from '../../../../src/types';
 import { classes, combineClasses } from '../../../../src/core/utils';
@@ -140,8 +140,9 @@ const styles = createStyles('sidebar.item', fluid => ({
 
 export type SidebarItemSelectors = Selectors<'item' | 'collapsed' | 's__sml' | 's__med' | 'v__default' | 'v__light' | 'round' | 'compact' | 'icon' | 'content' | 'children'>;
 
-const Item = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, active = false, round, compact, variant = 'default', disabled = false, ...props }:
+export default function Item({ children, cc = {}, size = 'med', label, icon, right, active = false, round, compact, variant = 'default', disabled = false, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: SidebarItemSelectors;
         label: string;
         size?: 'sml' | 'med';
@@ -151,7 +152,7 @@ const Item = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, 
         variant?: 'default' | 'light',
         round?: boolean;
         compact?: boolean;
-    } & React.ButtonHTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.ButtonHTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
     const [open, setOpen] = useState(false);
@@ -163,7 +164,7 @@ const Item = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, 
 
     return <>
         <Halo color={active ? undefined : 'var(--f-clr-primary-300)'} disabled={disabled}>
-            <div ref={ref} {...props}
+            <div {...props}
                 tabIndex={0}
                 className={classes(
                     style.item,
@@ -211,8 +212,6 @@ const Item = forwardRef(({ children, cc = {}, size = 'med', label, icon, right, 
             {children}
         </Collapsible> : null}
     </>;
-});
+}
 
 Item.displayName = 'Sidebar.Item';
-
-export default Item;

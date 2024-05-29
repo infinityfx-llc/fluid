@@ -1,7 +1,7 @@
 'use client';
 
 import { Selectors } from '../../../src/types';
-import { forwardRef, useState, useRef, Children, isValidElement, useEffect, cloneElement } from 'react';
+import { useState, useRef, Children, isValidElement, useEffect, cloneElement } from 'react';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
 
@@ -72,7 +72,7 @@ const styles = createStyles('panel', {
         gridTemplateColumns: '1fr 1fr',
         padding: '5px 3px'
     },
-    
+
     '.d__vertical .handle': {
         gridTemplateColumns: '1fr 1fr 1fr',
         padding: '3px 5px'
@@ -96,14 +96,15 @@ const styles = createStyles('panel', {
 
 export type PanelSelectors = Selectors<'panel' | 'd__horizontal' | 'd__vertical' | 'divider' | 'focus' | 'handle'>;
 
-const Panel = forwardRef(({ cc = {}, children, size, handles, direction = 'horizontal', ...props }:
+export default function Panel({ cc = {}, children, size, handles, direction = 'horizontal', ref, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: PanelSelectors;
         size?: number;
         handles?: boolean;
         direction?: 'horizontal' | 'vertical';
         // steps??
-    } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLElement>) {
     const style = combineClasses(styles, cc);
 
     const count = Children.count(children);
@@ -144,7 +145,9 @@ const Panel = forwardRef(({ cc = {}, children, size, handles, direction = 'horiz
         }
     }, [update, direction]);
 
-    return <div ref={combineRefs(container, ref)} {...props}
+    return <div
+        {...props}
+        ref={combineRefs(container, ref)}
         className={classes(
             style.panel,
             style[`d__${direction}`],
@@ -178,8 +181,4 @@ const Panel = forwardRef(({ cc = {}, children, size, handles, direction = 'horiz
             return child;
         })}
     </div>;
-});
-
-Panel.displayName = 'Panel';
-
-export default Panel;
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useState } from 'react';
+import { useState } from 'react';
 import Field, { FieldProps } from './field';
 import { Animatable } from '@infinityfx/lively';
 import { Move } from '@infinityfx/lively/animations';
@@ -32,14 +32,14 @@ const styles = createStyles('date-field', fluid => ({
     }
 }));
 
-const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled, clearable, ...props }:
+export default function DateField({ cc = {}, value, defaultValue, onChange, disabled, clearable, ...props }:
     {
         value?: Date | null;
         defaultValue?: Date;
         onChange?: (value: Date | null) => void;
         disabled?: boolean | Date[];
         clearable?: boolean;
-    } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>) {
     const style = combineClasses(styles, cc);
 
     const [state, setState] = value !== undefined ? [value, onChange] : useState<Date | null>(defaultValue || null);
@@ -47,7 +47,7 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled
 
     return <Popover.Root position="center" mobileContainer="modal">
         <Popover.Trigger disabled={disabled === true || props.readOnly}>
-            <Field ref={ref} {...props}
+            <Field {...props}
                 cc={cc}
                 inputMode="none"
                 role="combobox"
@@ -95,8 +95,4 @@ const DateField = forwardRef(({ cc = {}, value, defaultValue, onChange, disabled
             </Animatable>
         </Popover.Content>
     </Popover.Root>
-});
-
-DateField.displayName = 'DateField';
-
-export default DateField;
+}

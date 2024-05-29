@@ -1,16 +1,16 @@
 'use client';
 
-import { useEffect, forwardRef, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Field, { FieldProps } from "./field";
 import { FluidInputvalue, FluidSize, PopoverRootReference } from '../../../src/types';
 import Combobox from '../display/combobox';
 import { changeInputValue } from '../../core/utils';
 
-const Autocomplete = forwardRef(({ completions, emptyMessage, value, defaultValue, onChange, contentSize, ...props }: {
+export default function Autocomplete({ completions, emptyMessage, value, defaultValue, onChange, contentSize, ...props }: {
     completions: string[] | { label: string; value: string; }[];
     emptyMessage?: string;
     contentSize?: FluidSize;
-} & FieldProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+} & FieldProps) {
     const field = useRef<HTMLInputElement>(null);
     const popover = useRef<PopoverRootReference>(null);
     const focus = useRef(false);
@@ -24,9 +24,8 @@ const Autocomplete = forwardRef(({ completions, emptyMessage, value, defaultValu
     return <Combobox.Root ref={popover} stretch onClose={() => focus.current = false}>
         <Combobox.Trigger disabled>
             <Field
-                ref={ref}
-                inputRef={field}
                 {...props}
+                inputRef={field}
                 aria-haspopup="listbox"
                 aria-autocomplete="list"
                 value={state}
@@ -57,8 +56,4 @@ const Autocomplete = forwardRef(({ completions, emptyMessage, value, defaultValu
             })}
         </Combobox.Content>
     </Combobox.Root>;
-});
-
-Autocomplete.displayName = 'Autocomplete';
-
-export default Autocomplete;
+}

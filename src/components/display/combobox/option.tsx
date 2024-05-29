@@ -1,6 +1,5 @@
 'use client';
 
-import { forwardRef } from 'react';
 import Halo from '../../feedback/halo';
 import { FluidInputvalue, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
@@ -33,16 +32,17 @@ const styles = createStyles('combobox.option', {
 
 export type ComboboxOptionSelectors = Selectors<'option'>;
 
-const Option = forwardRef(<T extends FluidInputvalue>({ children, cc = {}, value, onSelect, ...props }:
+export default function Option<T extends FluidInputvalue>({ children, cc = {}, value, onSelect, ...props }:
     {
+        ref?: React.Ref<HTMLButtonElement>;
         cc?: ComboboxOptionSelectors;
         value: T;
         onSelect?: (value: T) => void;
-    } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onSelect'>, ref: React.ForwardedRef<HTMLButtonElement>) => {
+    } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onSelect'>) {
     const style = combineClasses(styles, cc);
 
     return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
-        <button ref={ref} {...props} type="button" role="option" className={style.option} onClick={e => {
+        <button {...props} type="button" role="option" className={style.option} onClick={e => {
             props.onClick?.(e);
 
             onSelect?.(value);
@@ -50,8 +50,6 @@ const Option = forwardRef(<T extends FluidInputvalue>({ children, cc = {}, value
             {children}
         </button>
     </Halo>;
-});
+}
 
 Option.displayName = 'Combobox.Option';
-
-export default Option;

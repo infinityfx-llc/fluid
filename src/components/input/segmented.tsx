@@ -1,7 +1,7 @@
 'use client';
 
 import { FluidError, FluidInputvalue, FluidSize, Selectors } from "../../../src/types";
-import { forwardRef, useId, useState } from "react";
+import { useId, useState } from "react";
 import { Morph } from '@infinityfx/lively/layout';
 import { classes, combineClasses } from "../../../src/core/utils";
 import Halo from "../feedback/halo";
@@ -124,6 +124,7 @@ const styles = createStyles('segmented', {
 export type SegmentedSelectors = Selectors<'segmented' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'uniform' | 'vertical' | 'v__default' | 'v__neutral' | 'v__minimal' | 'option' | 'content' | 'selection'>;
 
 type SegmentedProps<T> = {
+    ref?: React.Ref<HTMLDivElement>;
     cc?: SegmentedSelectors;
     variant?: 'default' | 'neutral' | 'minimal';
     size?: Omit<FluidSize, 'xsm'>;
@@ -138,13 +139,13 @@ type SegmentedProps<T> = {
     error?: FluidError;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>;
 
-function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'default', size = 'med', round = false, uniform, vertical, options, name, value, defaultValue, onChange, error, ...props }: SegmentedProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
+export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant = 'default', size = 'med', round = false, uniform, vertical, options, name, value, defaultValue, onChange, error, ...props }: SegmentedProps<T>) {
     const style = combineClasses(styles, cc);
 
     const [state, setState] = value !== undefined ? [value] : useState(defaultValue || options[0]?.value);
     const id = useId();
 
-    return <div ref={ref} {...props}
+    return <div {...props}
         role="radiogroup"
         className={classes(
             style.segmented,
@@ -180,9 +181,3 @@ function SegmentedComponent<T extends FluidInputvalue>({ cc = {}, variant = 'def
         })}
     </div>
 }
-
-const Segmented = forwardRef(SegmentedComponent) as (<T extends FluidInputvalue>(props: SegmentedProps<T> & { ref?: React.ForwardedRef<HTMLDivElement>; }) => ReturnType<typeof SegmentedComponent>) & { displayName: string; };
-
-Segmented.displayName = 'Segmented';
-
-export default Segmented;

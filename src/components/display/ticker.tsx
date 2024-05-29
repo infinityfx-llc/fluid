@@ -2,7 +2,7 @@
 
 import { classes, combineClasses } from '../../../src/core/utils';
 import { Selectors } from '../../../src/types';
-import { forwardRef, useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { createStyles } from '../../core/style';
 import { useTrigger } from '@infinityfx/lively/hooks';
 import { Animatable } from '@infinityfx/lively';
@@ -29,14 +29,15 @@ const styles = createStyles('ticker', {
 
 export type TickerSelectors = Selectors<'text' | 'column'>;
 
-const Ticker = forwardRef(({ children, cc = {}, align = 'right', selective, duration = .7, stagger = .1, ...props }: {
+export default function Ticker({ children, cc = {}, align = 'right', selective, duration = .7, stagger = .1, ...props }: {
     children: number | string | (number | string)[];
+    ref?: React.Ref<HTMLDivElement>;
     cc?: TickerSelectors;
     align?: 'left' | 'right';
     selective?: boolean;
     duration?: number;
     stagger?: number;
-} & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
 
     const trigger = useTrigger();
@@ -84,7 +85,7 @@ const Ticker = forwardRef(({ children, cc = {}, align = 'right', selective, dura
         trigger();
     }, [children]);
 
-    return <div ref={ref} {...props} className={classes(style.text, props.className)}>
+    return <div {...props} className={classes(style.text, props.className)}>
         {state.map((column, i) => {
 
             return <Animatable key={i}
@@ -98,8 +99,4 @@ const Ticker = forwardRef(({ children, cc = {}, align = 'right', selective, dura
             </Animatable>
         })}
     </div>;
-});
-
-Ticker.displayName = 'Ticker';
-
-export default Ticker;
+}

@@ -2,19 +2,19 @@
 
 import { Selectors } from "../../../../src/types";
 import { classes } from "../../../../src/utils";
-import { createContext, forwardRef, useContext, useId, useRef, useState } from "react";
+import { createContext, use, useId, useRef, useState } from "react";
 import { createStyles } from "../../../core/style";
 import { combineClasses, combineRefs } from "../../../core/utils";
 
 export const NavigationMenuContext = createContext<{
-    root: React.RefObject<HTMLElement>;
+    root: React.RefObject<HTMLElement | null>;
     id: string;
     selection: string | undefined;
     select: (id?: string) => void;
 } | null>(null);
 
 export function useNavigationMenu() {
-    const context = useContext(NavigationMenuContext);
+    const context = use(NavigationMenuContext);
 
     if (!context) throw new Error('Unable to access NavigationMenuRoot context');
 
@@ -34,10 +34,11 @@ const styles = createStyles('navigation-menu.root', {
 
 export type NavigationMenuRootSelectors = Selectors<'navigation'>;
 
-const Root = forwardRef(({ children, cc = {}, ...props }:
+export default function Root({ children, cc = {}, ref, ...props }:
     {
+        ref?: React.Ref<HTMLElement>;
         cc?: NavigationMenuRootSelectors;
-    } & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
+    } & React.HTMLAttributes<HTMLElement>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
@@ -50,12 +51,10 @@ const Root = forwardRef(({ children, cc = {}, ...props }:
             props.onMouseLeave?.(e);
             setSelection(undefined);
         }}>
-        <NavigationMenuContext.Provider value={{ root, id, selection, select: setSelection }}>
+        <NavigationMenuContext value={{ root, id, selection, select: setSelection }}>
             {children}
-        </NavigationMenuContext.Provider>
+        </NavigationMenuContext>
     </nav>;
-});
+}
 
 Root.displayName = 'NavigationMenu.Root';
-
-export default Root;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, forwardRef, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import Field, { FieldProps } from "./field";
 import { FluidInputvalue } from '../../../src/types';
 import Toggle from './toggle';
@@ -38,9 +38,9 @@ const styles = createStyles('password-field', {
 });
 
 // optimize prop splitting
-const PasswordField = forwardRef(({ cc = {}, strengthBar = false, size = 'med', round, error, showError, icon, label, left, right, defaultValue, onEnter, inputRef, ...props }: {
+export default function PasswordField({ cc = {}, strengthBar = false, size = 'med', round, error, showError, icon, label, left, right, defaultValue, onEnter, inputRef, ref, ...props }: {
     strengthBar?: boolean;
-} & Omit<FieldProps, 'type'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+} & Omit<FieldProps, 'type'>) {
     const style = combineClasses(styles, cc);
 
     const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(defaultValue || '');
@@ -98,8 +98,4 @@ const PasswordField = forwardRef(({ cc = {}, strengthBar = false, size = 'med', 
 
         {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
     </div>;
-});
-
-PasswordField.displayName = 'PasswordField';
-
-export default PasswordField;
+}

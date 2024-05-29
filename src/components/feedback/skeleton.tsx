@@ -1,6 +1,5 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
-import { forwardRef } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('skeleton', {
@@ -22,17 +21,18 @@ const styles = createStyles('skeleton', {
 
 export type SkeletonSelectors = Selectors<'skeleton'>;
 
-const Skeleton = forwardRef(({ cc = {}, w, h, ar, radius = 'sml', ...props }:
+export default function Skeleton({ cc = {}, w, h, ar, radius = 'sml', ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: SkeletonSelectors;
         w?: number | string;
         h?: number | string;
         ar?: number;
         radius?: FluidSize | 'max';
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
 
-    return <div ref={ref} {...props}
+    return <div {...props}
         className={classes(
             style.skeleton,
             props.className
@@ -44,8 +44,4 @@ const Skeleton = forwardRef(({ cc = {}, w, h, ar, radius = 'sml', ...props }:
             aspectRatio: ar,
             ...props.style
         }} />
-});
-
-Skeleton.displayName = 'Skeleton';
-
-export default Skeleton;
+}

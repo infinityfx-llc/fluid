@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useRef, useState, useId, useEffect } from 'react';
+import { useRef, useState, useId, useEffect } from 'react';
 import { FieldProps } from './field';
 import Button from './button';
 import { FluidInputvalue, FluidSize, PopoverRootReference, Selectors } from '../../../src/types';
@@ -167,7 +167,7 @@ type SelectProps<T> = {
     contentSize?: FluidSize;
 } & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'onEnter'>;
 
-function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
+export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
     {
         cc = {},
         options,
@@ -189,7 +189,7 @@ function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
         round,
         inputRef,
         ...props
-    }: SelectProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
+    }: SelectProps<T>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
@@ -203,7 +203,7 @@ function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
     }, [multiple]);
 
     return <Combobox.Root ref={popover} stretch>
-        <div ref={ref} {...rest}
+        <div {...rest}
             className={classes(
                 style.wrapper,
                 style[`s__${size}`],
@@ -277,9 +277,3 @@ function SelectComponent<T extends FluidInputvalue | FluidInputvalue[]>(
         </Combobox.Content>
     </Combobox.Root>;
 }
-
-const Select = forwardRef(SelectComponent) as (<T extends FluidInputvalue | FluidInputvalue[]>(props: SelectProps<T> & { ref?: React.ForwardedRef<HTMLDivElement>; }) => ReturnType<typeof SelectComponent>) & { displayName: string; };
-
-Select.displayName = 'Select';
-
-export default Select;

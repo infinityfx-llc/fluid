@@ -1,7 +1,7 @@
 'use client';
 
-import { FluidSize, FluidStyles, Selectors } from "../../../src/types";
-import { forwardRef, useState } from "react";
+import { FluidSize, Selectors } from "../../../src/types";
+import { useState } from "react";
 import Halo from "../feedback/halo";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { Animatable } from "@infinityfx/lively";
@@ -106,6 +106,7 @@ const styles = createStyles('toggle', {
 export type ToggleSelectors = Selectors<'toggle' | 'content' | 'container' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'compact' | 'v__default' | 'v__minimal' | 'v__neutral'>;
 
 export type ToggleProps = {
+    ref?: React.Ref<HTMLDivElement>;
     cc?: ToggleSelectors;
     size?: FluidSize;
     compact?: boolean;
@@ -114,7 +115,7 @@ export type ToggleProps = {
     checkedContent?: React.ReactNode;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>;
 
-const Toggle = forwardRef(({ children, cc = {}, size = 'med', compact = false, round = false, variant = 'default', checkedContent, ...props }: ToggleProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+export default function Toggle({ children, cc = {}, size = 'med', compact = false, round = false, variant = 'default', checkedContent, ...props }: ToggleProps) {
     const style = combineClasses(styles, cc);
 
     const [state, setState] = props.checked !== undefined ? [props.checked] : useState(!!props.defaultChecked);
@@ -126,7 +127,7 @@ const Toggle = forwardRef(({ children, cc = {}, size = 'med', compact = false, r
     ];
 
     return <Halo disabled={props.disabled} color={variant === 'minimal' && !state ? 'var(--f-clr-primary-400)' : undefined}>
-        <div ref={ref} {...rest}
+        <div {...rest}
             className={classes(
                 style.toggle,
                 round && style.round,
@@ -159,8 +160,4 @@ const Toggle = forwardRef(({ children, cc = {}, size = 'med', compact = false, r
             </div>
         </div>
     </Halo>;
-});
-
-Toggle.displayName = 'Toggle';
-
-export default Toggle;
+}

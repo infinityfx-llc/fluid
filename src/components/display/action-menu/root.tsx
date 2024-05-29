@@ -1,16 +1,13 @@
 'use client';
 
-import { forwardRef } from "react";
 import Popover from "../../layout/popover";
-import type { PopoverRoot, PopoverRootReference } from "../../layout/popover/root";
+import type { PopoverRoot } from "../../layout/popover/root";
 
-const Root = forwardRef((props: PopoverRoot, ref: React.ForwardedRef<PopoverRootReference>) => {
+export default function Root(props: PopoverRoot) {
     
-    return <Popover.Root ref={ref} {...props}>
+    return <Popover.Root {...props}>
         {props.children}
     </Popover.Root>
-});
+}
 
 Root.displayName = 'ActionMenu.Root';
-
-export default Root;

@@ -2,7 +2,7 @@
 
 import { classes, combineRefs } from '../../../src/core/utils';
 import { FluidBreakpoint } from '../../../src/types';
-import { cloneElement, forwardRef } from 'react';
+import { cloneElement } from 'react';
 import { createStyles } from '../../core/style';
 
 const style = createStyles('cull', fluid => ({
@@ -28,20 +28,17 @@ const style = createStyles('cull', fluid => ({
     }
 }));
 
-const Cull = forwardRef(({ children, include, ...props }: {
-    children: React.ReactElement;
+export default function Cull({ children, include, ref, ...props }: {
+    children: React.ReactElement<any>;
     include: FluidBreakpoint[];
-} & Omit<React.HTMLAttributes<any>, 'children'>, ref: React.ForwardedRef<any>) => {
+    ref?: React.Ref<any>;
+} & Omit<React.HTMLAttributes<any>, 'children'>) {
 
     children = Array.isArray(children) ? children[0] : children;
 
-    return cloneElement(children as React.ReactElement, {
+    return cloneElement(children, {
         ...props,
         ref: combineRefs(ref, (children as any).ref),
         className: classes(...include.map(breakpoint => style[`cull__${breakpoint}`]), children.props.className)
     });
-});
-
-Cull.displayName = 'Cull';
-
-export default Cull;
+}

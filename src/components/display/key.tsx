@@ -1,6 +1,5 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { forwardRef } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('key', {
@@ -18,17 +17,14 @@ const styles = createStyles('key', {
 
 export type KeySelectors = Selectors<'key'>;
 
-const Key = forwardRef(({ children, cc = {}, ...props }: {
+export default function Key({ children, cc = {}, ...props }: {
     children: string;
+    ref?: React.Ref<HTMLDivElement>;
     cc?: KeySelectors;
-} & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+} & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    return <div ref={ref} {...props} className={classes(style.key, props.className)}>
+    return <div {...props} className={classes(style.key, props.className)}>
         {children}
     </div>;
-});
-
-Key.displayName = 'Key';
-
-export default Key;
+}

@@ -1,7 +1,7 @@
 'use client';
 
 import { Selectors } from "../../../src/types";
-import { Fragment, forwardRef, useId, useState } from "react";
+import { Fragment, useId, useState } from "react";
 import Scrollarea from "../layout/scrollarea";
 import Toggle from "../input/toggle";
 import { createStyles } from "../../core/style";
@@ -67,17 +67,18 @@ const styles = createStyles('code', {
 
 export type CodeSelectors = Selectors<'wrapper' | 'header' | 'code' | 'numbers' | 'tab' | 'content'>;
 
-const Code = forwardRef(({ children, cc = {}, title, dangerouslyInject, ...props }: {
+export default function Code({ children, cc = {}, title, dangerouslyInject, ...props }: {
     children: string;
+    ref?: React.Ref<HTMLDivElement>;
     cc?: CodeSelectors;
     dangerouslyInject?: boolean;
-} & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
     const [copied, setCopied] = useState(false);
 
-    return <div ref={ref} {...props} className={classes(style.wrapper, props.className)}>
+    return <div {...props} className={classes(style.wrapper, props.className)}>
         {title && <div className={style.header}>
             {title}
         </div>}
@@ -122,8 +123,4 @@ const Code = forwardRef(({ children, cc = {}, title, dangerouslyInject, ...props
             </Toggle>
         </div>
     </div>;
-});
-
-Code.displayName = 'Code';
-
-export default Code;
+}

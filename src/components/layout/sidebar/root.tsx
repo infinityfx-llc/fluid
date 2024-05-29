@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, forwardRef, useContext } from "react";
+import { createContext, use } from "react";
 import { Selectors } from "../../../types";
 import { createStyles } from "../../../core/style";
 import { classes, combineClasses } from "../../../core/utils";
@@ -14,7 +14,7 @@ export const SidebarContext = createContext<{
 });
 
 export function useSidebar() {
-    return useContext(SidebarContext);
+    return use(SidebarContext);
 }
 
 const styles = createStyles('sidebar.root', fluid => ({
@@ -41,24 +41,23 @@ const styles = createStyles('sidebar.root', fluid => ({
 
 export type SidebarRootSelectors = Selectors<'sidebar' | 'collapsed'>;
 
-const Root = forwardRef(({ children, cc = {}, collapsed, setCollapsed, ...props }: {
+export default function Root({ children, cc = {}, collapsed, setCollapsed, ...props }: {
+    ref?: React.Ref<HTMLElement>;
     cc?: SidebarRootSelectors;
     collapsed: boolean;
     setCollapsed: (value: boolean) => void;
-} & React.HTMLAttributes<HTMLElement>, ref: React.ForwardedRef<HTMLElement>) => {
+} & React.HTMLAttributes<HTMLElement>) {
     const style = combineClasses(styles, cc);
 
-    return <SidebarContext.Provider value={{ collapsed, setCollapsed }}>
-        <aside ref={ref} {...props} className={classes(
+    return <SidebarContext value={{ collapsed, setCollapsed }}>
+        <aside {...props} className={classes(
             style.sidebar,
             collapsed && style.collapsed,
             props.className
         )}>
             {children}
         </aside>
-    </SidebarContext.Provider>;
-});
+    </SidebarContext>;
+}
 
 Root.displayName = 'Sidebar.Root';
-
-export default Root;

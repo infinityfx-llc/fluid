@@ -1,6 +1,6 @@
 'use client';
 
-import { Children, forwardRef, useId } from 'react';
+import { Children, useId } from 'react';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses } from '../../../core/utils';
@@ -55,8 +55,9 @@ export type NavigationMenuGroupSelectors = Selectors<'group' | 'link' | 'selecti
 
 type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a';
 
-const Group = forwardRef(({ children, cc = {}, label, href, target, active = false, position = 'center', Link = 'a', ...props }:
+export default function Group({ children, cc = {}, label, href, target, active = false, position = 'center', Link = 'a', ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: NavigationMenuGroupSelectors;
         label: React.ReactNode;
         href?: string;
@@ -64,7 +65,7 @@ const Group = forwardRef(({ children, cc = {}, label, href, target, active = fal
         active?: boolean;
         position?: 'start' | 'center' | 'end';
         Link?: AnchorLike<any>;
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
     const linkId = useId();
@@ -114,7 +115,7 @@ const Group = forwardRef(({ children, cc = {}, label, href, target, active = fal
             animate={{ opacity: [1, 0], translate: ['0px 0px', '0px -8px'], duration: .25 }}
             triggers={[{ on: 'mount', reverse: true }, { on: 'unmount' }]}>
 
-            <div ref={ref} {...props}
+            <div {...props}
                 id={id + linkId}
                 className={classes(style.menu, props.className)}
                 style={{
@@ -128,8 +129,6 @@ const Group = forwardRef(({ children, cc = {}, label, href, target, active = fal
             </div>
         </Morph>}
     </div>;
-});
+}
 
 Group.displayName = 'NavigationMenu.Group';
-
-export default Group;

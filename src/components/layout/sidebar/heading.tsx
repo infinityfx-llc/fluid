@@ -1,6 +1,5 @@
 'use client';
 
-import { forwardRef } from 'react';
 import { Selectors } from '../../../../src/types';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import { createStyles } from '../../../core/style';
@@ -25,15 +24,16 @@ const styles = createStyles('sidebar.heading', fluid => ({
 
 export type SidebarHeadingSelectors = Selectors<'heading' | 'collapsed'>;
 
-const Heading = forwardRef(({ children, cc = {}, ...props }:
+export default function Heading({ children, cc = {}, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: SidebarHeadingSelectors;
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
     
     const { collapsed } = useSidebar();
 
-    return <div ref={ref} {...props}
+    return <div {...props}
         className={classes(
             style.heading,
             collapsed && style.collapsed,
@@ -41,8 +41,6 @@ const Heading = forwardRef(({ children, cc = {}, ...props }:
         )}>
         {children}
     </div>;
-});
+}
 
 Heading.displayName = 'Sidebar.Heading';
-
-export default Heading;

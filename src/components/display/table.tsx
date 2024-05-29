@@ -2,7 +2,7 @@
 
 import { classes, combineClasses } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 import Halo from "../feedback/halo";
 import Scrollarea from "../layout/scrollarea";
 import Button from "../input/button";
@@ -99,6 +99,7 @@ const styles = createStyles('table', {
 export type TableSelectors = Selectors<'table' | 'rows' | 'row' | 'collapsed' | 'header' | 'label' | 'checkbox' | 'checkmark'>;
 
 type TableProps<T> = {
+    ref?: React.Ref<HTMLDivElement>;
     cc?: TableSelectors;
     data: T[];
     columns: (keyof T)[];
@@ -113,11 +114,11 @@ type TableProps<T> = {
     emptyMessage?: string;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-function TableComponent<T extends { [key: string]: string | number | Date; }>({ cc = {}, data, columns, selectable, sortable, selected, onSelect,
-    columnFormatters = {}, rowActions, emptyMessage = 'Nothing to display', ...props }: TableProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
+export default function Table<T extends { [key: string]: string | number | Date; }>({ cc = {}, data, columns, selectable, sortable, selected, onSelect,
+    columnFormatters = {}, rowActions, emptyMessage = 'Nothing to display', ...props }: TableProps<T>) {
     const style = combineClasses(styles, cc);
 
-    const [column, setColumn] = useState<string>('');
+    const [column, setColumn] = useState('');
     const [sorting, setSorting] = useState<'nil' | 'asc' | 'dsc'>('nil');
     const [selectedIndices, setSelectedIndices] = selected !== undefined ? [selected] : useState<number[]>([]);
 
@@ -136,7 +137,7 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
 
     const gridTemplateColumns = `${selectable ? 'auto' : ''} repeat(${columns.length}, 1fr) ${rowActions ? 'auto' : ''}`;
 
-    return <Scrollarea {...props} ref={ref} horizontal role="grid" className={classes(style.table, props.className)}>
+    return <Scrollarea {...props} horizontal role="grid" className={classes(style.table, props.className)}>
         <div role="rowgroup" className={style.rows}>
             <div role="row" className={classes(style.row, style.header)} style={{ gridTemplateColumns }}>
                 {selectable && <div className={style.collapsed}>
@@ -219,9 +220,3 @@ function TableComponent<T extends { [key: string]: string | number | Date; }>({ 
         </div>
     </Scrollarea>;
 }
-
-const Table = forwardRef(TableComponent) as (<T extends { [key: string]: string | number | Date; }>(props: TableProps<T> & { ref?: React.ForwardedRef<HTMLDivElement>; }) => ReturnType<typeof TableComponent>) & { displayName: string; };
-
-Table.displayName = 'Table';
-
-export default Table;

@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useId, useRef, useEffect } from 'react';
+import { useId, useRef, useEffect } from 'react';
 import Overlay from './overlay';
 import { Selectors } from '../../../src/types';
 import Button from '../input/button';
@@ -74,19 +74,20 @@ const styles = createStyles('modal', (fluid) => ({
 
 export type ModalSelectors = Selectors<'modal' | 'header' | 'handle' | 'title'>;
 
-const Modal = forwardRef(({ children, cc = {}, show, onClose, title, mobileClosing = 'handle', ...props }:
+export default function Modal({ children, cc = {}, show, onClose, title, mobileClosing = 'handle', ref, ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: ModalSelectors;
         show: boolean;
         onClose: () => void;
         title?: React.ReactNode;
         mobileClosing?: 'button' | 'handle';
-    } & React.HTMLAttributes<HTMLDivElement>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
     const content = useRef<HTMLDivElement>(null);
     const modalRef = useRef<HTMLDivElement>(null);
-    const touch = useRef<{ clientY: number; } | null>(null);
+    const touch = useRef<{ clientY: number; }>(null);
     const offset = useLink(0);
 
     const id = useId();
@@ -103,7 +104,7 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, mobileClosi
                 if (py > 0.35) {
                     onClose();
                 } else {
-                    offset.set(0, .25);
+                    offset.set(0, { duration: .25 });
                 }
 
                 return touch.current = null;
@@ -155,7 +156,9 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, mobileClosi
                 reverse: true,
                 name: isMobile ? 'mob' : 'dsk'
             }]}>
-            <div ref={combineRefs(ref, modalRef)} {...props}
+            <div
+                {...props}
+                ref={combineRefs(ref, modalRef)}
                 className={classes(style.modal, props.className)}
                 role="dialog"
                 aria-modal
@@ -179,8 +182,4 @@ const Modal = forwardRef(({ children, cc = {}, show, onClose, title, mobileClosi
             </div>
         </Animatable>
     </Overlay>;
-});
-
-Modal.displayName = 'Modal';
-
-export default Modal;
+}

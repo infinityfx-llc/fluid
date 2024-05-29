@@ -1,6 +1,5 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidError, FluidSize, Selectors } from "../../../src/types";
-import { forwardRef } from "react";
 import Halo from "../feedback/halo";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { createStyles } from "../../core/style";
@@ -113,19 +112,20 @@ const styles = createStyles('radio', {
 
 export type RadioSelectors = Selectors<'wrapper' | 'input' | 'radio' | 'selection' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
-const Radio = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', ...props }:
+export default function Radio({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', ...props }:
     {
+        ref?: React.Ref<HTMLDivElement>;
         cc?: RadioSelectors;
         error?: FluidError;
         size?: FluidSize;
         color?: string;
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'>, ref: React.ForwardedRef<HTMLDivElement>) => {
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'>) {
     const style = combineClasses(styles, cc);
 
     const [split, rest] = useInputProps(props);
 
     return <Halo hover={false} cc={{ halo: style.halo, ...cc }}>
-        <div ref={ref} {...rest}
+        <div {...rest}
             className={classes(
                 style.wrapper,
                 style[`s__${size}`],
@@ -140,8 +140,4 @@ const Radio = forwardRef(({ cc = {}, error, size = 'med', color = 'var(--f-clr-p
             </div>
         </div>
     </Halo>;
-});
-
-Radio.displayName = 'Radio';
-
-export default Radio;
+}

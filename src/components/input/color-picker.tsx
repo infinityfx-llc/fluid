@@ -1,7 +1,7 @@
 'use client';
 
 import { FluidSize, Selectors } from "../../../src/types";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { Swatch } from "../display";
 import { createStyles } from "../../core/style";
@@ -152,6 +152,7 @@ const styles = createStyles('color-picker', {
 export type ColorPickerSelectors = Selectors<'wrapper'>;
 
 type ColorPickerProps<T> = {
+    ref?: React.Ref<HTMLDivElement>;
     cc?: Selectors<'wrapper'>;
     format?: T;
     value?: T extends 'hex' ? string : [number, number, number];
@@ -160,7 +161,7 @@ type ColorPickerProps<T> = {
     disabled?: boolean;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>;
 
-function ColorPickerComponent<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format, defaultValue, value, onChange, disabled, ...props }: ColorPickerProps<T>, ref: React.ForwardedRef<HTMLDivElement>) {
+export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format, defaultValue, value, onChange, disabled, ...props }: ColorPickerProps<T>) {
     const style = combineClasses(styles, cc);
 
     const picking = useRef(false);
@@ -216,7 +217,7 @@ function ColorPickerComponent<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format
         setHsv(typeof value === 'string' ? rgbToHsv(hexToRgb(value)) : rgbToHsv(value));
     }, [value]);
 
-    return <div ref={ref} {...props}
+    return <div {...props}
         style={{
             '--hue': `hsl(${hsv[0]}, 100%, 50%)`,
             '--color': `rgb(${rgb.join(',')})`
@@ -301,9 +302,3 @@ function ColorPickerComponent<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format
             }} />
     </div>;
 }
-
-const ColorPicker = forwardRef(ColorPickerComponent) as (<T extends 'hex' | 'rgb' = 'hex'>(props: ColorPickerProps<T> & { ref?: React.ForwardedRef<HTMLDivElement>; }) => ReturnType<typeof ColorPickerComponent>) & { displayName: string; };
-
-ColorPicker.displayName = 'ColorPicker';
-
-export default ColorPicker;
