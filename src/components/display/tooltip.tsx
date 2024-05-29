@@ -167,7 +167,7 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
         {cloneElement(children, {
             ...props,
             'aria-describedby': id,
-            ref: combineRefs(element, props.ref, (children as any).ref)
+            ref: combineRefs(element, props.ref, children.props.ref)
         })}
 
         {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={displayPosition} />, element.current)}

@@ -60,7 +60,7 @@ export default function Indicator<T extends React.ReactElement<any>>({ children,
 
     return <>
         {cloneElement(children, {
-            ref: combineRefs(ref, (children as any).ref, container)
+            ref: combineRefs(ref, children.props.ref, container)
         })}
 
         {radius >= 0 && content !== false && createPortal(<div {...props}

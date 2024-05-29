@@ -1,6 +1,6 @@
 {
 	"name": "@infinityfx/fluid",
-	"version": "0.3.0-beta.0",
+	"version": "0.3.0-beta.1",
 	"type": "module",
 	"description": "React UI library, using zero-runtime CSS-in-JS.",
 	"main": "dist/index.js",
@@ -51,13 +51,13 @@
 		"glob": "^10.3.12"
 	},
 	"peerDependencies": {
-		"@infinityfx/lively": "^4.0.0-beta.1",
+		"@infinityfx/lively": "^4.0.0-beta.3",
 		"react": ">=19.0.0",
 		"react-dom": ">=19.0.0",
 		"react-icons": ">=4.0.0"
 	},
 	"devDependencies": {
-		"@infinityfx/lively": "^4.0.0-beta.0",
+		"@infinityfx/lively": "^4.0.0-beta.3",
 		"@rollup/plugin-commonjs": "^25.0.7",
 		"@rollup/plugin-json": "^6.1.0",
 		"@rollup/plugin-node-resolve": "^15.2.3",

@@ -143,7 +143,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
 
     return cloneElement(children, {
         ...props,
-        ref: combineRefs(container, ref, (children as any).ref),
+        ref: combineRefs(container, ref, children.props.ref),
         className: classes(children.props.className, style.container)
     }, childrenArray);
 }

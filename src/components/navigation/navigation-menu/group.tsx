@@ -18,7 +18,7 @@ const styles = createStyles('navigation-menu.group', {
 
     '.link': {
         position: 'relative',
-        padding: '.4em',
+        padding: '.4em .6em',
         borderRadius: 'var(--f-radius-sml)',
         fontWeight: 600,
         color: 'var(--f-clr-text-100)',
@@ -27,7 +27,13 @@ const styles = createStyles('navigation-menu.group', {
         lineHeight: 1.25,
         display: 'flex',
         alignItems: 'center',
-        gap: 'var(--f-spacing-xxs)'
+        gap: 'var(--f-spacing-xsm)'
+    },
+
+    '.arrow': {
+        display: 'flex',
+        transition: 'rotate .35s',
+        fontSize: '.8em'
     },
 
     '.selection': {
@@ -51,7 +57,7 @@ const styles = createStyles('navigation-menu.group', {
     }
 });
 
-export type NavigationMenuGroupSelectors = Selectors<'group' | 'link' | 'selection' | 'menu'>;
+export type NavigationMenuGroupSelectors = Selectors<'group' | 'link' | 'arrow' | 'selection' | 'menu'>;
 
 type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a';
 
@@ -86,11 +92,11 @@ export default function Group({ children, cc = {}, label, href, target, active =
 
             {label}
 
-            {hasLinks && <div style={{
-                display: 'flex',
-                transition: 'rotate .35s',
-                rotate: linkId === selection ? '180deg' : '0deg'
-            }}>
+            {hasLinks && <div
+                className={style.arrow}
+                style={{
+                    rotate: linkId === selection ? '180deg' : '0deg'
+                }}>
                 <Icon type="down" />
             </div>}
 

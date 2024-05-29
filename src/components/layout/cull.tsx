@@ -38,7 +38,7 @@ export default function Cull({ children, include, ref, ...props }: {
 
     return cloneElement(children, {
         ...props,
-        ref: combineRefs(ref, (children as any).ref),
+        ref: combineRefs(ref, children.props.ref),
         className: classes(...include.map(breakpoint => style[`cull__${breakpoint}`]), children.props.className)
     });
 }
