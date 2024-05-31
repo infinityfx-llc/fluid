@@ -10,10 +10,10 @@ import { classes, combineClasses } from "../../core/utils";
 import useFocusTrap from "../../hooks/use-focus-trap";
 
 const toggleScroll = (value: boolean) => {
-    const isScrollable = document.documentElement.scrollHeight > document.documentElement.clientHeight;
+    const isScrollable = document.documentElement.scrollHeight > document.documentElement.clientHeight; // also do for hor scrolling?
 
-    document.body.style.position = value ? '' : 'fixed';
-    document.documentElement.style.overflowY = value || !isScrollable ? '' : 'scroll';
+    document.documentElement.style.overflowY = value ? '' : 'hidden';
+    document.body.style.overflowY = value || !isScrollable ? '' : 'scroll';
 }
 
 const styles = createStyles('overlay', {

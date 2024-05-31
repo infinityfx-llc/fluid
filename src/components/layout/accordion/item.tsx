@@ -81,8 +81,8 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
                 <div className={style.icon}>
                     <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} triggers={[{ on: isOpen }, { on: !isOpen, reverse: true }]}>
                         <div className={style.arrows}>
-                            <Icon type="down" />
-                            <Icon type="up" />
+                            <Icon type="expandDown" />
+                            <Icon type="collapseUp" />
                         </div>
                     </Animatable>
                 </div>

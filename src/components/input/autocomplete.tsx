@@ -13,7 +13,7 @@ export default function Autocomplete({ completions, emptyMessage, value, default
 } & FieldProps) {
     const field = useRef<HTMLInputElement>(null);
     const popover = useRef<PopoverRootReference>(null);
-    const focus = useRef(false);
+    const focus = useRef(0);
 
     const [state, setState] = value !== undefined ? [value] : useState<FluidInputvalue>(defaultValue || '');
 
@@ -21,7 +21,9 @@ export default function Autocomplete({ completions, emptyMessage, value, default
         if (focus.current) popover.current?.[completions.length ? 'open' : 'close']();
     }, [completions]);
 
-    return <Combobox.Root ref={popover} stretch onClose={() => focus.current = false}>
+    return <Combobox.Root ref={popover} stretch onClose={() => {
+        if (focus.current < 2) focus.current = 0;
+    }}>
         <Combobox.Trigger disabled>
             <Field
                 {...props}
@@ -33,10 +35,15 @@ export default function Autocomplete({ completions, emptyMessage, value, default
                     onChange?.(e);
                     setState?.(e.target.value);
                 }}
+                onBlur={e => {
+                    props.onBlur?.(e);
+
+                    focus.current = 1;
+                }}
                 onFocus={e => {
                     props.onFocus?.(e);
 
-                    focus.current = true;
+                    focus.current = 2;
                     if (completions.length) popover.current?.open();
                 }} />
         </Combobox.Trigger>

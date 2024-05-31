@@ -85,13 +85,13 @@ export default function PasswordField({ cc = {}, strengthBar = false, size = 'me
                 size={size}
                 variant="minimal"
                 disabled={props.disabled}
-                checkedContent={<Icon type="eyeOff" />}
+                checkedContent={<Icon type="hide" />}
                 checked={visible}
                 onChange={e => setVisible(e.target.checked)}
                 cc={{
                     toggle: style.toggle
                 }}>
-                <Icon type="eye" />
+                <Icon type="show" />
             </Toggle>} />
 
         {strengthBar && <ProgressBar size="sml" value={strength / 5} color={colors[strength]} cc={{ track: style.track }} aria-label="Password strength" />}

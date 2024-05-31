@@ -198,8 +198,8 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
                         size={size === 'med' ? 'sml' : 'xsm'}
                         round={round}
                         checked={open}
-                        checkedContent={<Icon type="up" />}>
-                        <Icon type="down" />
+                        checkedContent={<Icon type="collapseUp" />}>
+                        <Icon type="expandDown" />
                     </Toggle> : right}
                 </span>
             </div>

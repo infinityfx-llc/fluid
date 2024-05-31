@@ -48,7 +48,8 @@ const styles = createStyles('drawer', {
     },
 
     '.title': {
-        flexGrow: 1
+        flexGrow: 1,
+        color: 'var(--f-clr-heading-100)'
     },
 
     '.drawer[data-position="right"] .title': {

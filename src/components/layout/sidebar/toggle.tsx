@@ -83,13 +83,13 @@ export default function Toggle({ children, cc = {}, toggle = 'square', ...props 
                 </div>
 
                 <div className={style.icon}>
-                    <Icon type="right" />
+                    <Icon type="expandSidebar" />
                 </div>
             </button>
         </Halo>
 
         <Button size="sml" compact variant="light" onClick={() => setCollapsed(true)} className={style.button} tabIndex={collapsed ? -1 : 0} data-collapsed={collapsed}>
-            <Icon type="left" />
+            <Icon type="collapseSidebar" />
         </Button>
     </div>;
 }
