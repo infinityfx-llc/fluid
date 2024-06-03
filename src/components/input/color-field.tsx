@@ -7,7 +7,8 @@ import { Move } from '@infinityfx/lively/animations';
 import Popover from '../layout/popover';
 import { createStyles } from '../../core/style';
 import { combineClasses } from '../../core/utils';
-import ColorPicker, { parsePartialHex } from './color-picker';
+import ColorPicker from './color-picker';
+import { parsePartialHex } from './color-picker';
 import Swatch from '../display/swatch';
 
 const styles = createStyles('color-field', fluid => ({

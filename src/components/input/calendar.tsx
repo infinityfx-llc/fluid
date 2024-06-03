@@ -58,8 +58,7 @@ const styles = createStyles('calendar', {
     },
 
     '.calendar .field': {
-        background: 'var(--f-clr-bg-100)',
-        border: 'none',
+        background: 'transparent',
         outline: 'none'
     },
 
@@ -98,6 +97,10 @@ const styles = createStyles('calendar', {
 
     '.calendar .date__v__minimal:disabled': {
         background: 'none'
+    },
+
+    '.calendar .button, .calendar .button:disabled': {
+        background: 'var(--f-clr-bg-100)'
     }
 });
 
@@ -145,7 +148,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
         props.className
     )}>
         <div className={style.header}>
-            <Button compact size={size} disabled={disabled === true} variant="minimal" round={round} onClick={() => skipMonth(-1)}>
+            <Button compact size={size} disabled={disabled === true} variant="minimal" cc={{ button: style.button }} round={round} onClick={() => skipMonth(-1)}>
                 <Icon type="left" />
             </Button>
 
@@ -172,7 +175,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                 }}
                 onBlur={() => setPartialYear(null)} />
 
-            <Button compact size={size} disabled={disabled === true} variant="minimal" round={round} onClick={() => skipMonth(1)}>
+            <Button compact size={size} disabled={disabled === true} variant="minimal" cc={{ button: style.button }} round={round} onClick={() => skipMonth(1)}>
                 <Icon type="right" />
             </Button>
         </div>

@@ -85,7 +85,7 @@ async function emitCss() {
         [key: string]: boolean;
     } | null = null;
 
-    if (!isInternal) {
+    if (!isInternal && process.env.NODE_ENV === 'production') {
         const files = await glob(STYLE_CONTEXT.PATHS);
         usedComponents = {};
 

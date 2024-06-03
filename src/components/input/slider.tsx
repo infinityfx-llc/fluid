@@ -35,7 +35,7 @@ const styles = createStyles('slider', {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        marginInline: 'auto',
+        margin: 'auto',
         width: 'calc(100% - 1.1em)',
         height: '1.1em',
         userSelect: 'none'
@@ -65,7 +65,7 @@ const styles = createStyles('slider', {
         backgroundColor: 'var(--f-clr-primary-100)',
         height: '100%',
         width: '100%',
-        transformOrigin: 'top left',
+        transformOrigin: 'bottom left',
         willChange: 'transform'
     },
 
@@ -80,7 +80,7 @@ const styles = createStyles('slider', {
     },
 
     '.wrapper[data-vertical="true"] .handle': {
-        translate: '0% -50%',
+        translate: '0% 50%',
     },
 
     '.handle::after': {
@@ -168,7 +168,7 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
         if (dp === undefined) return;
 
         const { y, height, x, width } = track.current.getBoundingClientRect();
-        const value = toValue(vertical ? (dp - y) / height : (dp - x) / width);
+        const value = toValue(vertical ? 1 - (dp - y) / height : (dp - x) / width);
 
         const idx = dragging.current === null || dragging.current < 0 ?
             values.reduce((res, val, i) => {
@@ -233,7 +233,7 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
                 }}>
                 <div className={style.progress} style={{
                     scale: vertical ? `1 ${scale}` : `${scale} 1`,
-                    translate: vertical ? `0% ${offset * 100}%` : `${offset * 100}% 0%`
+                    translate: vertical ? `0% ${offset * -100}%` : `${offset * 100}% 0%`
                 }} />
             </div>
 
@@ -249,9 +249,9 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
                             onKeyDown={e => {
                                 switch (e.key) {
                                     case 'ArrowUp':
-                                    case 'ArrowRight': return update(i, val + step * (vertical ? -1 : 1));
+                                    case 'ArrowRight': return update(i, val + step);
                                     case 'ArrowDown':
-                                    case 'ArrowLeft': return update(i, val - step * (vertical ? -1 : 1));
+                                    case 'ArrowLeft': return update(i, val - step);
                                     case 'Home': return update(i, min);
                                     case 'End': return update(i, max);
                                 }
@@ -262,7 +262,7 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
                             aria-orientation={vertical ? 'vertical' : 'horizontal'}
                             aria-labelledby={label ? id : undefined}
                             style={{
-                                [vertical ? 'top' : 'left']: `${toOffset(val) * 100}%`
+                                [vertical ? 'bottom' : 'left']: `${toOffset(val) * 100}%`
                             }} />
                     </Halo>
                 </Tooltip>;
