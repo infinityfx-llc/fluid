@@ -3,7 +3,7 @@
 import Halo from '../../feedback/halo';
 import { FluidInputvalue, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
-import { combineClasses } from '../../../core/utils';
+import { classes, combineClasses } from '../../../core/utils';
 
 const styles = createStyles('combobox.option', {
     '.option': {
@@ -21,6 +21,10 @@ const styles = createStyles('combobox.option', {
         lineHeight: 1.25
     },
 
+    '.option.round': {
+        borderRadius: '999px'
+    },
+
     '.option:enabled': {
         cursor: 'pointer'
     },
@@ -30,23 +34,29 @@ const styles = createStyles('combobox.option', {
     }
 });
 
-export type ComboboxOptionSelectors = Selectors<'option'>;
+export type ComboboxOptionSelectors = Selectors<'option' | 'round'>;
 
-export default function Option<T extends FluidInputvalue>({ children, cc = {}, value, onSelect, ...props }:
+export default function Option<T extends FluidInputvalue>({ children, cc = {}, value, round, onSelect, ...props }:
     {
         ref?: React.Ref<HTMLButtonElement>;
         cc?: ComboboxOptionSelectors;
         value: T;
+        round?: boolean;
         onSelect?: (value: T) => void;
     } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onSelect'>) {
     const style = combineClasses(styles, cc);
 
     return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
-        <button {...props} type="button" role="option" className={style.option} onClick={e => {
-            props.onClick?.(e);
+        <button {...props} type="button" role="option"
+            className={classes(
+                style.option,
+                round && style.round
+            )}
+            onClick={e => {
+                props.onClick?.(e);
 
-            onSelect?.(value);
-        }}>
+                onSelect?.(value);
+            }}>
             {children}
         </button>
     </Halo>;

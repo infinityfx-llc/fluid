@@ -84,7 +84,8 @@ const styles = createStyles('select', {
         gap: 'var(--f-spacing-xsm)',
         flexGrow: 1,
         overflow: 'hidden',
-        color: 'var(--f-clr-text-100)'
+        color: 'var(--f-clr-text-100)',
+        minHeight: '1.375em'
     },
 
     '.content::after': {
@@ -101,8 +102,7 @@ const styles = createStyles('select', {
     },
 
     '.placeholder': {
-        color: 'var(--f-clr-grey-300)',
-        height: '1.375em'
+        color: 'var(--f-clr-grey-300)'
     },
 
     '.input': {
@@ -219,7 +219,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                         {icon}
 
                         <div className={style.content}>
-                            {!(Array.isArray(state) ? state.length : state) && <div className={style.placeholder}>{placeholder}</div>}
+                            {(Array.isArray(state) ? !state.length : state === null || state === undefined || state === '') && <div className={style.placeholder}>{placeholder}</div>}
 
                             {Array.isArray(state) ?
                                 (state.length < 3 ?
@@ -247,7 +247,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
             {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
         </div>
 
-        <Combobox.Content size={contentSize} aria-multiselectable={multiple} searchable={searchable} emptyMessage={emptyMessage}>
+        <Combobox.Content size={contentSize} aria-multiselectable={multiple} searchable={searchable} emptyMessage={emptyMessage} round={round}>
             {options.map(({ label, value, disabled }, i) => {
                 const selected = (Array.isArray(state) ? state.includes(value) : state === value);
 

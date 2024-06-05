@@ -64,7 +64,8 @@ export default function NumberField({ cc = {}, precision = 3, controls = true, d
     const buttonProps = {
         compact: true,
         size: props.size,
-        disabled: props.disabled
+        disabled: props.disabled,
+        round: props.round
     };
 
     return <Field {...props}

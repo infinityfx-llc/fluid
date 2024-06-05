@@ -14,12 +14,12 @@ const styles = createStyles('slider', {
         flexDirection: 'column'
     },
 
-    '.wrapper[data-vertical="false"]': {
+    '.wrapper:not(.vertical)': {
         minWidth: 'min(100%, 12em)',
         gap: 'var(--f-spacing-xsm)'
     },
 
-    '.wrapper[data-vertical="true"]': {
+    '.wrapper.vertical': {
         minHeight: 'min(100%, 12em)',
         gap: 'var(--f-spacing-med)'
     },
@@ -38,33 +38,35 @@ const styles = createStyles('slider', {
         margin: 'auto',
         width: 'calc(100% - 1.1em)',
         height: '1.1em',
-        userSelect: 'none'
+        userSelect: 'none',
+        flexGrow: 1
     },
 
-    '.wrapper[data-vertical="true"] .slider': {
+    '.wrapper.vertical .slider': {
         order: -1,
+        flexDirection: 'column',
         height: 'calc(100% - 1.1em)',
         width: '1.1em'
     },
 
     '.track': {
-        width: '100%',
+        position: 'relative',
         height: '.4em',
         borderRadius: '999px',
         backgroundColor: 'var(--f-clr-fg-200)',
         overflow: 'hidden',
-        touchAction: 'none'
+        touchAction: 'none',
+        flexGrow: 1
     },
 
-    '.wrapper[data-vertical="true"] .track': {
-        width: '.4em',
-        height: '100%'
+    '.wrapper.vertical .track': {
+        width: '.4em'
     },
 
     '.progress': {
         backgroundColor: 'var(--f-clr-primary-100)',
-        height: '100%',
         width: '100%',
+        height: '100%',
         transformOrigin: 'bottom left',
         willChange: 'transform'
     },
@@ -79,7 +81,7 @@ const styles = createStyles('slider', {
         touchAction: 'none'
     },
 
-    '.wrapper[data-vertical="true"] .handle': {
+    '.wrapper.vertical .handle': {
         translate: '0% 50%',
     },
 
@@ -119,7 +121,7 @@ const styles = createStyles('slider', {
     }
 });
 
-export type SliderSelectors = Selectors<'wrapper' | 'label' | 'slider' | 'track' | 'progress' | 'handle'>;
+export type SliderSelectors = Selectors<'wrapper' | 'vertical' | 'label' | 'slider' | 'track' | 'progress' | 'handle'>;
 
 export default function Slider({ cc = {}, handles = 1, vertical = false, tooltips = 'interact', formatTooltip, label, value, defaultValue, onChange, ...props }:
     {
@@ -215,7 +217,12 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
     const offset = handles < 2 ? 0 : scale;
     if (handles > 1) scale = toOffset(values[handles - 1]) - scale;
 
-    return <div {...rest} className={classes(style.wrapper, props.className)} data-vertical={vertical}>
+    return <div {...rest}
+        className={classes(
+            style.wrapper,
+            vertical && style.vertical,
+            props.className
+        )}>
         <input {...split} type="hidden" value={values.join(',')} />
 
         {label && <div id={id} className={style.label}>{label}</div>}

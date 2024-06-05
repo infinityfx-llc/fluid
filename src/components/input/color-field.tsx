@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Field, { FieldProps } from './field';
 import { Animatable } from '@infinityfx/lively';
-import { Move } from '@infinityfx/lively/animations';
 import Popover from '../layout/popover';
 import { createStyles } from '../../core/style';
 import { combineClasses } from '../../core/utils';
@@ -71,7 +70,18 @@ export default function ColorField({ cc = {}, value, defaultValue, onChange, dis
         </Popover.Trigger>
 
         <Popover.Content role="listbox" aria-multiselectable={false}>
-            <Animatable id="date-field-calendar" animate={Move.unique({ duration: .2 })} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
+            <Animatable
+                id="date-field-calendar"
+                animate={{
+                    opacity: [0, 1],
+                    translate: ['0px 20px', '0px 0px'],
+                    duration: .2
+                }}
+                triggers={[
+                    { on: 'mount' },
+                    { on: 'unmount', reverse: true }
+                ]}>
+                    
                 <div className={style.picker}>
                     <ColorPicker value={state?.replace('#', '')} onChange={update} disabled={props.readOnly || disabled} />
                 </div>

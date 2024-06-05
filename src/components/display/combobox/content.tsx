@@ -5,7 +5,6 @@ import Popover from '../../layout/popover';
 import Scrollarea from '../../layout/scrollarea';
 import Field from '../../input/field';
 import { Animatable } from '@infinityfx/lively';
-import { Move, Pop } from '@infinityfx/lively/animations';
 import { classes, combineClasses, getFocusable } from '../../../../src/core/utils';
 import { FluidSize, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
@@ -21,6 +20,10 @@ const styles = createStyles('combobox.content', {
         minWidth: 'min(100vw, 10em)',
         width: '100%',
         overflow: 'hidden'
+    },
+
+    '.container.round': {
+        borderRadius: '1.4em'
     },
 
     '.s__xsm': {
@@ -71,7 +74,7 @@ const styles = createStyles('combobox.content', {
 
 export type ComboboxContentSelectors = Selectors<'container' | 'content' | 'message'>;
 
-export default function Content({ children, cc = {}, size = 'med', autoFocus = true, searchable, placeholder = 'Search..', emptyMessage = 'Nothing found', ...props }:
+export default function Content({ children, cc = {}, size = 'med', autoFocus = true, searchable, placeholder = 'Search..', emptyMessage = 'Nothing found', round, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: ComboboxContentSelectors;
@@ -80,6 +83,7 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
         searchable?: boolean;
         placeholder?: string;
         emptyMessage?: string;
+        round?: boolean;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
@@ -98,7 +102,8 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
             const clone = cloneElement(child as React.ReactElement<any>, {
                 autoFocus: autoFocus && optionIndex === 0,
                 onFocus: () => selected.current = i,
-                ref: (el: HTMLElement) => options.current[i] = el
+                ref: (el: HTMLElement) => options.current[i] = el,
+                round
             });
 
             return clone;
@@ -108,10 +113,21 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
     });
 
     return <Popover.Content>
-        <Animatable id="combobox-options-outer" animate={Move.unique({ duration: .2 })} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
+        <Animatable id="combobox-options-outer"
+            animate={{
+                opacity: [0, 1],
+                translate: ['0px 20px', '0px 0px'],
+                duration: .2
+            }}
+            triggers={[
+                { on: 'mount' },
+                { on: 'unmount', reverse: true }
+            ]}>
+
             <div {...props} role="listbox" className={classes(
                 style.container,
                 style[`s__${size}`],
+                round && style.round,
                 props.className
             )}
                 onKeyDown={e => {
@@ -132,6 +148,7 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
                     }
                 }}>
                 {searchable && <Field
+                    round={round}
                     size={size}
                     inputRef={(el: any) => options.current[0] = el}
                     autoFocus={autoFocus}
@@ -151,7 +168,15 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
 
                 <Scrollarea className={style.content}>
                     <div>
-                        <Animatable inherit animate={Pop.unique({ duration: .2 })} staggerLimit={4} stagger={.06}>
+                        <Animatable
+                            inherit
+                            animate={{
+                                opacity: [0, 1],
+                                scale: [.85, 1],
+                                duration: .2
+                            }}
+                            staggerLimit={4}
+                            stagger={.06}>
                             {filtered}
                         </Animatable>
 

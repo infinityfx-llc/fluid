@@ -105,7 +105,7 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
         if (anchor.current && tooltip.current) {
             const { x, y } = anchor.current.getBoundingClientRect();
             const offset = {
-                top: '-50%, 100%',
+                top: '-50%, -100%',
                 left: '-100%, -50%',
                 right: '0%, -50%',
                 bottom: '-50%, 0%'
@@ -156,7 +156,7 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
             el.removeEventListener('blur', hide);
             el.removeEventListener('touchend', lift);
         }
-    }, [displayPosition, delay]);
+    }, [visibility, displayPosition, delay]);
 
     useEffect(() => toggle(visibility === 'always'), [visibility]);
 

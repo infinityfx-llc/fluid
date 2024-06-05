@@ -1,7 +1,6 @@
 'use client';
 
 import { Animate } from '@infinityfx/lively';
-import { Pop } from '@infinityfx/lively/animations';
 import { useState, useRef } from 'react';
 import { combineClasses } from '../../../../src/core/utils';
 import { Selectors } from '../../../../src/types';
@@ -88,7 +87,11 @@ export default function Group({ children, cc = {}, label, className, ...props }:
                     translate: ['0px 20px', '0px 0px'],
                     duration: .2
                 },
-                Pop.unique({ duration: .2 })
+                {
+                    opacity: [0, 1],
+                    scale: [.85, 1],
+                    duration: .2
+                }
             ]}
             triggers={[
                 { on: state.open, immediate: true },

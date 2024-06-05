@@ -67,7 +67,7 @@ export default function CircularProgress({ children, cc = {}, size = 'med', slic
     const style = combineClasses(styles, cc);
 
     const state = value !== undefined ? value : defaultValue;
-    const link = useLink(state);
+    const link = useLink(state * (1 - slice));
 
     useEffect(() => link.set(state * (1 - slice), { duration: .3 }), [state, slice]);
 
@@ -83,7 +83,7 @@ export default function CircularProgress({ children, cc = {}, size = 'med', slic
         <svg viewBox="0 0 100 100" role="progressbar" aria-valuenow={state * 100} style={{ rotate: `${90 + 180 * slice}deg`, width: '100%' }}>
             <circle r={45} cx={50} cy={50} fill="none" className={style.track} pathLength={1} style={{ strokeDashoffset: slice }} />
 
-            <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: 1 - (link() * (1 - slice)) }}>
+            <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: 1 - link() }}>
                 <circle r={45} cx={50} cy={50} fill="none" className={style.progress} style={{ stroke: color }} />
             </Animatable>
         </svg>

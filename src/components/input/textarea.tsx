@@ -63,24 +63,24 @@ const styles = createStyles('textarea', {
         color: 'var(--f-clr-text-100)'
     },
 
-    '.textarea[data-error="true"]': {
+    '.wrapper[data-error="true"] .textarea': {
         borderColor: 'var(--f-clr-error-100)'
     },
 
-    '.textarea[data-error="true"]:focus-within': {
+    '.wrapper[data-error="true"] .textarea:focus-within': {
         outlineColor: 'var(--f-clr-error-400)'
     },
 
-    '.textarea[data-error="true"] .input': {
+    '.wrapper[data-error="true"] .input': {
         color: 'var(--f-clr-error-200)'
     },
 
-    '.textarea[data-disabled="true"]': {
+    '.wrapper[data-disabled="true"] .textarea': {
         backgroundColor: 'var(--f-clr-grey-100)',
         borderColor: 'var(--f-clr-grey-200)'
     },
 
-    '.textarea[data-disabled="true"] .input': {
+    '.wrapper[data-disabled="true"] .input': {
         color: 'var(--f-clr-grey-500)'
     }
 });
@@ -107,10 +107,12 @@ export default function Textarea({ cc = {}, label, error, size = 'med', resize =
             style.wrapper,
             style[`s__${size}`],
             props.className
-        )}>
+        )}
+        data-error={!!error}
+        data-disabled={props.disabled}>
         {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
 
-        <Scrollarea className={style.textarea} style={{ resize, height: `${(props.rows || 2) * 2}em` }} data-error={!!error} data-disabled={props.disabled}>
+        <Scrollarea className={style.textarea} style={{ resize, height: `${(props.rows || 2) * 2}em` }}>
             <textarea {...split} rows={rows}
                 className={style.input}
                 aria-labelledby={label ? id : undefined}

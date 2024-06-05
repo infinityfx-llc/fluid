@@ -46,6 +46,10 @@ const styles = createStyles('segmented', {
         gridAutoFlow: 'row'
     },
 
+    '.segmented.vertical.round': {
+        borderRadius: 'calc(1.4em + 1px)'
+    },
+
     '.option': {
         position: 'relative',
         border: 'none',
@@ -131,7 +135,11 @@ type SegmentedProps<T> = {
     round?: boolean;
     uniform?: boolean;
     vertical?: boolean;
-    options: { label: React.ReactNode; value: FluidInputvalue; disabled?: boolean; }[];
+    options: {
+        label: React.ReactNode;
+        value: FluidInputvalue;
+        disabled?: boolean;
+    }[];
     name?: string;
     value?: T;
     defaultValue?: T;

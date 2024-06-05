@@ -48,7 +48,7 @@ export default function Autocomplete({ completions, emptyMessage, value, default
                 }} />
         </Combobox.Trigger>
 
-        <Combobox.Content size={contentSize} autoFocus={false} emptyMessage={emptyMessage}>
+        <Combobox.Content size={contentSize} autoFocus={false} emptyMessage={emptyMessage} round={props.round}>
             {completions.map(entry => {
                 const { label, value } = typeof entry === 'string' ? { label: entry, value: entry } : entry;
 

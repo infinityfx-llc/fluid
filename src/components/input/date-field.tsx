@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Field, { FieldProps } from './field';
 import { Animatable } from '@infinityfx/lively';
-import { Move } from '@infinityfx/lively/animations';
 import Calendar from './calendar';
 import Popover from '../layout/popover';
 import { createStyles } from '../../core/style';
@@ -84,7 +83,18 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
         </Popover.Trigger>
 
         <Popover.Content role="listbox">
-            <Animatable id="date-field-calendar" animate={Move.unique({ duration: .2 })} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
+            <Animatable
+                id="date-field-calendar"
+                animate={{
+                    opacity: [0, 1],
+                    translate: ['0px 20px', '0px 0px'],
+                    duration: .2
+                }}
+                triggers={[
+                    { on: 'mount' },
+                    { on: 'unmount', reverse: true }
+                ]}>
+
                 <Calendar
                     className={style.calendar}
                     round={props.round}

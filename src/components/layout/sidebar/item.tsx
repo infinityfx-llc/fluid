@@ -140,7 +140,7 @@ const styles = createStyles('sidebar.item', fluid => ({
 
 export type SidebarItemSelectors = Selectors<'item' | 'collapsed' | 's__sml' | 's__med' | 'v__default' | 'v__light' | 'round' | 'compact' | 'icon' | 'content' | 'children'>;
 
-export default function Item({ children, cc = {}, size = 'med', label, icon, right, active = false, round, compact, variant = 'default', disabled = false, ...props }:
+export default function Item({ children, cc = {}, size = 'med', label, icon, right, active = false, round, compact, variant = 'default', disabled = false, defaultOpen = false, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: SidebarItemSelectors;
@@ -152,10 +152,11 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
         variant?: 'default' | 'light',
         round?: boolean;
         compact?: boolean;
+        defaultOpen?: boolean;
     } & React.ButtonHTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(defaultOpen);
     const count = Children.count(children);
     const { collapsed } = useSidebar();
 

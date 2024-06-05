@@ -2,7 +2,6 @@
 
 import Popover from '../../layout/popover';
 import { Animate } from '@infinityfx/lively';
-import { Move, Pop } from '@infinityfx/lively/animations';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
@@ -31,7 +30,18 @@ export default function Menu({ children, cc = {}, className, ...props }:
 
     return <Popover.Content role="menu">
         <Animate id="action-menu"
-            animations={[Move.unique({ duration: .2 }), Pop.unique({ duration: .2 })]}
+            animations={[
+                {
+                    opacity: [0, 1],
+                    translate: ['0px 20px', '0px 0px'],
+                    duration: .2
+                },
+                {
+                    opacity: [0, 1],
+                    scale: [.85, 1],
+                    duration: .2
+                }
+            ]}
             triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}
             levels={2}
             stagger={.06}>
