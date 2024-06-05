@@ -145,8 +145,8 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
                     composite: 'combine'
                 },
                 dsk: {
-                    translate: ['0px 20px', '0px 0px'],
-                    opacity: [0, 1],
+                    opacity: [0, .2, 1],
+                    scale: [0.9, 1],
                     duration: .25
                 }
             }} triggers={[{

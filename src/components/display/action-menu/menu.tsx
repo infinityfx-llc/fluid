@@ -29,22 +29,23 @@ export default function Menu({ children, cc = {}, className, ...props }:
     const style = combineClasses(styles, cc);
 
     return <Popover.Content role="menu">
-        <Animate id="action-menu"
+        <Animate
+            id="action-menu"
             animations={[
                 {
-                    opacity: [0, 1],
-                    translate: ['0px 20px', '0px 0px'],
+                    opacity: [0, .2, 1],
+                    scale: [0.9, 1],
                     duration: .2
                 },
                 {
                     opacity: [0, 1],
-                    scale: [.85, 1],
+                    scale: [0.95, 1],
                     duration: .2
                 }
             ]}
             triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}
             levels={2}
-            stagger={.06}>
+            stagger={.05}>
 
             <div {...props} className={classes(style.menu, className)} role="group">
                 {children}

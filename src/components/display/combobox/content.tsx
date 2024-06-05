@@ -115,8 +115,8 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
     return <Popover.Content>
         <Animatable id="combobox-options-outer"
             animate={{
-                opacity: [0, 1],
-                translate: ['0px 20px', '0px 0px'],
+                opacity: [0, .2, 1],
+                scale: [0.9, 1],
                 duration: .2
             }}
             triggers={[
@@ -172,11 +172,11 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
                             inherit
                             animate={{
                                 opacity: [0, 1],
-                                scale: [.85, 1],
+                                scale: [.95, 1],
                                 duration: .2
                             }}
                             staggerLimit={4}
-                            stagger={.06}>
+                            stagger={.05}>
                             {filtered}
                         </Animatable>
 

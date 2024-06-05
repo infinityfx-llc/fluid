@@ -83,13 +83,13 @@ export default function Group({ children, cc = {}, label, className, ...props }:
             animations={[
                 {
                     visibility: ['hidden', 'visible'],
-                    opacity: [0, 1],
-                    translate: ['0px 20px', '0px 0px'],
+                    opacity: [0, .2, 1],
+                    scale: [0.9, 1],
                     duration: .2
                 },
                 {
                     opacity: [0, 1],
-                    scale: [.85, 1],
+                    scale: [0.95, 1],
                     duration: .2
                 }
             ]}
@@ -98,7 +98,7 @@ export default function Group({ children, cc = {}, label, className, ...props }:
                 { on: !state.open, reverse: true, immediate: true }
             ]}
             levels={2}
-            stagger={.06}>
+            stagger={.05}>
             <div
                 role="group"
                 className={style.menu}

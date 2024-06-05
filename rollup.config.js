@@ -30,16 +30,43 @@ const onwarn = (msg, handler) => {
     handler(msg);
 };
 
-export default {
-    input: ['src/index.ts', 'src/hooks.ts', 'src/utils.ts', 'bin/cli.ts'],
-    external,
-    output: {
-        dir: 'dist',
-        format: 'es',
-        sourcemap: true,
-        preserveModules: true,
-        preserveModulesRoot: 'src'
+export default [
+    {
+        input: ['src/index.ts', 'src/hooks.ts', 'bin/cli.ts'],
+        external,
+        output: {
+            dir: 'dist',
+            format: 'es',
+            sourcemap: true,
+            preserveModules: true,
+            preserveModulesRoot: 'src'
+        },
+        plugins,
+        onwarn
     },
-    plugins,
-    onwarn
-}
+    {
+        input: ['src/utils.ts'],
+        external,
+        output: [
+            {
+                file: 'dist/utils.mjs',
+                format: 'es',
+                sourcemap: true
+            },
+            {
+                file: 'dist/utils.cjs',
+                format: 'cjs',
+                sourcemap: true
+            }
+        ],
+        plugins: [
+            resolve(),
+            commonjs(),
+            typescript({
+                tsconfig: './tsconfig.json'
+            }),
+            terser({ compress: { directives: false } }),
+        ],
+        onwarn
+    }
+]

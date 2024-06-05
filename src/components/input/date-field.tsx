@@ -86,8 +86,8 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
             <Animatable
                 id="date-field-calendar"
                 animate={{
-                    opacity: [0, 1],
-                    translate: ['0px 20px', '0px 0px'],
+                    opacity: [0, .2, 1],
+                    scale: [.9, 1],
                     duration: .2
                 }}
                 triggers={[

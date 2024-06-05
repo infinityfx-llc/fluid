@@ -73,8 +73,8 @@ export default function ColorField({ cc = {}, value, defaultValue, onChange, dis
             <Animatable
                 id="date-field-calendar"
                 animate={{
-                    opacity: [0, 1],
-                    translate: ['0px 20px', '0px 0px'],
+                    opacity: [0, .2, 1],
+                    scale: [.9, 1],
                     duration: .2
                 }}
                 triggers={[
