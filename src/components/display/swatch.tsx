@@ -13,13 +13,13 @@ const styles = createStyles('swatch', {
         background: 'linear-gradient(45deg, var(--f-clr-grey-100) 25%, transparent 25%, transparent 75%, var(--f-clr-grey-100) 75%, var(--f-clr-grey-100) 100%), linear-gradient(45deg, var(--f-clr-grey-100) 25%, var(--f-clr-bg-100) 25%, var(--f-clr-bg-100) 75%, var(--f-clr-grey-100) 75%, var(--f-clr-grey-100) 100%)',
         backgroundPosition: '0 0, 1em 1em',
         backgroundSize: '2em 2em',
-        backgroundRepeat: 'repeat'
+        backgroundRepeat: 'repeat',
+        display: 'flex'
     },
 
     '.color': {
-        content: '""',
-        position: 'absolute',
-        inset: 0
+        height: '100%',
+        flexGrow: 1
     },
 
     '.swatch.round': {
@@ -45,14 +45,16 @@ const styles = createStyles('swatch', {
 
 export type SwatchSelectors = Selectors<'swatch' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
-export default function Swatch({ cc = {}, size = 'med', round = false, color, ...props }:
+export default function Swatch({ cc = {}, size = 'med', round = false, color = ['transparent'], ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: SwatchSelectors;
         size?: FluidSize;
         round?: boolean;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
+        color?: string | string[];
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'color'>) {
     const style = combineClasses(styles, cc);
+    color = Array.isArray(color) ? color: [color];
 
     return <div {...props}
         className={classes(
@@ -61,6 +63,6 @@ export default function Swatch({ cc = {}, size = 'med', round = false, color, ..
             round && style.round,
             props.className
         )}>
-        <div className={style.color} style={{ backgroundColor: color }} />
+        {color.map(color => <div key={color} className={style.color} style={{ backgroundColor: color }} />)}
     </div>;
 }

@@ -8,7 +8,7 @@ const command = args[0];
 
 switch (command) {
     case 'compile':
-        compile();
+        compile(args[1] || '');
         break;
     case 'help':
         console.log();

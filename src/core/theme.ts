@@ -135,7 +135,7 @@ export const DEFAULT_THEME = {
         xlg: '16px'
     },
     font: {
-        family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
+        family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue"',
         size: {
             xxs: '.7rem',
             xsm: '.825rem',
@@ -150,7 +150,7 @@ export const DEFAULT_THEME = {
         mob: 480,
         tab: 768,
         lap: 1024,
-        dsk: 1200
+        dsk: 1280
     }
 }
 

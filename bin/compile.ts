@@ -1,12 +1,13 @@
 import fs from 'fs';
-import { getConfig, getRoots, processFile } from './utils';
+import { CONFIG, getConfig, getRoots, processFile } from './utils';
 import { STYLE_CONTEXT } from '../src/core/style';
 import { mergeRecursive } from '../src/core/utils';
 import packageJson from '../package.json';
 import readline from 'readline';
 import { FluidIcon } from '../src/core/icons';
 
-export default async function () {
+export default async function (flag: string) {
+    CONFIG.isDev = /^-{1,2}d(ev)?/.test(flag);
 
     sanitizeImports();
 

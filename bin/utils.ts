@@ -6,6 +6,10 @@ import { STYLE_CONTEXT } from "../src/core/style";
 import packageJson from '../package.json';
 import { glob } from "glob";
 
+export const CONFIG = {
+    isDev: false
+};
+
 export function getRoots() {
     let isInternal = false;
 
@@ -15,6 +19,7 @@ export function getRoots() {
     } catch (err) { }
 
     return {
+        isDev: CONFIG.isDev,
         isInternal,
         output: isInternal ? './compiled/' : `./node_modules/${packageJson.name}/compiled/`,
         dist: isInternal ? './dist/' : `./node_modules/${packageJson.name}/dist/`,
@@ -80,12 +85,12 @@ function createRenderableElement(components: any, name: string, parent?: any) {
 }
 
 async function emitCss() {
-    const { isInternal, output } = getRoots();
+    const { isDev, isInternal, output } = getRoots();
     let usedComponents: {
         [key: string]: boolean;
     } | null = null;
 
-    if (!isInternal && process.env.NODE_ENV === 'production') {
+    if (!isInternal && !isDev) {
         const files = await glob(STYLE_CONTEXT.PATHS);
         usedComponents = {};
 

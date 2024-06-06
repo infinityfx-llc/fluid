@@ -11,7 +11,7 @@ export default {
         width: '100%',
         minHeight: '100dvh',
         overflowX: 'hidden',
-        fontFamily: 'var(--f-font-family)',
+        fontFamily: 'var(--f-font-family), system-ui, sans-serif',
         '--f-shadow-sml': '0 2px 8px -2px rgb(0, 0, 0, 0.08), 0 1px 3px rgb(0, 0, 0, 0.04)',
         '--f-shadow-med': '0 4px 12px -3px rgb(0, 0, 0, 0.1), 0 2px 4px rgb(0, 0, 0, 0.05)'
     },
