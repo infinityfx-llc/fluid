@@ -14,6 +14,8 @@ const styles = createStyles('code', {
         borderRadius: 'var(--f-radius-sml)',
         overflow: 'hidden',
         position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
         color: 'var(--f-clr-text-100)'
     },
 
@@ -27,7 +29,7 @@ const styles = createStyles('code', {
         display: 'flex',
         padding: '1em',
         backgroundColor: 'var(--f-clr-fg-100)',
-        height: '100%'
+        flexGrow: 1
     },
 
     '.numbers': {

@@ -42,12 +42,6 @@ const styles = createStyles('halo', {
         }
     },
 
-    '@media (pointer: coarse)': {
-        '.container:active > .halo': {
-            opacity: .25
-        }
-    },
-
     '.ripple': {
         minWidth: '241%',
         minHeight: '241%',
@@ -72,11 +66,25 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
 
+    const endTouch = useRef<any>(undefined);
     const container = useRef<HTMLElement>(null);
     const halo = useRef<HTMLDivElement>(null);
 
     const clickTrigger = useTrigger();
     const translate = useLink('0% 0%');
+
+    function toggleHalo(value: boolean) {
+        const h = halo.current;
+        if (!h) return;
+
+        if (value) {
+            clearTimeout(endTouch.current);
+
+            h.style.opacity = '0.25';
+        } else {
+            endTouch.current = setTimeout(() => h.style.opacity = '', 250);
+        }
+    }
 
     useEffect(() => {
         const focusEl = target?.current || container.current;
@@ -109,12 +117,19 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
                 }
         }
 
+        const showHalo = () => toggleHalo(true);
+        const hideHalo = () => toggleHalo(false);
+
         focusEl.addEventListener('click', click);
+        focusEl.addEventListener('touchstart', showHalo);
+        focusEl.addEventListener('touchend', hideHalo);
         focusEl.addEventListener('focusin', focus);
         focusEl.addEventListener('focusout', focus);
 
         return () => {
             focusEl.removeEventListener('click', click);
+            focusEl.removeEventListener('touchstart', showHalo);
+            focusEl.removeEventListener('touchend', hideHalo);
             focusEl.removeEventListener('focusin', focus);
             focusEl.removeEventListener('focusout', focus);
         }

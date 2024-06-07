@@ -3,24 +3,28 @@
 import { cloneElement, createContext } from "react";
 import { FluidTheme, parseCSSVariables, parseColorPalettes } from "../../src/core/theme";
 import global from "../../src/styles/global";
-import useColorScheme, { ColorScheme } from "../../src/hooks/use-color-scheme";
+import useColorScheme from "../../src/hooks/use-color-scheme";
 import { STYLE_CONTEXT, createGlobalStyles } from "../core/style";
 import useMediaQuery from "../hooks/use-media-query";
+import type { FluidColorScheme } from "../types";
 
 const fluid = STYLE_CONTEXT.THEME;
 
 type FluidContext = FluidTheme & {
     colorScheme: string;
     appliedColorScheme: string;
-    setColorScheme: (scheme: ColorScheme<typeof fluid>) => void;
+    setColorScheme: (scheme: FluidColorScheme) => void;
 }
 
 export const FluidContext = createContext<FluidContext | null>(null);
 
-export default function FluidProvider({ children, initialColorScheme }: { children: React.ReactElement<any>; initialColorScheme?: ColorScheme<typeof fluid>; }) {
+export default function FluidProvider({ children, initialColorScheme }: {
+    children: React.ReactElement<any>;
+    initialColorScheme?: FluidColorScheme;
+}) {
 
-    const colorSchemes = Object.keys(fluid.palettes).concat('system'); // type infer not working when compiled
-    const { colorScheme, setColorScheme } = useColorScheme<typeof fluid>(initialColorScheme as ColorScheme<typeof fluid>, colorSchemes);
+    const colorSchemes = Object.keys(fluid.palettes).concat('system');
+    const { colorScheme, setColorScheme } = useColorScheme(initialColorScheme, colorSchemes);
     const preferred = useMediaQuery('(prefers-color-scheme: dark)') ? 'dark' : 'light';
     const systemColorScheme = preferred in fluid.palettes ? preferred : fluid.defaultColorScheme;
 

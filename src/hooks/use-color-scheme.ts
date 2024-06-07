@@ -2,16 +2,16 @@
 
 import { useState } from "react";
 import { cookies, formatCookie } from "../core/utils";
-import { COLOR_SCHEME_COOKIE, FluidTheme } from "../core/theme";
+import { COLOR_SCHEME_COOKIE } from "../core/theme";
 import useDomEffect from "./use-dom-effect";
+import type { FluidColorScheme } from "../types";
 
-export type ColorScheme<T extends FluidTheme> = (keyof T['palettes'] extends string ? keyof T['palettes'] : never) | 'light' | 'dark' | 'system';
-
-export default function useColorScheme<T extends FluidTheme>(initial: ColorScheme<T> = 'system', schemes = ['light', 'dark', 'system']) {
+export default function useColorScheme(initial: FluidColorScheme = 'system', schemes = ['light', 'dark', 'system']) {
     const [colorScheme, setColorScheme] = useState(initial);
 
-    function updateColorScheme(scheme: ColorScheme<T>) {
+    function updateColorScheme(scheme: FluidColorScheme) {
         if (!schemes.includes(scheme)) return;
+        
         document.cookie = formatCookie(COLOR_SCHEME_COOKIE, scheme, {
             maxAge: 604800
         });
@@ -21,7 +21,7 @@ export default function useColorScheme<T extends FluidTheme>(initial: ColorSchem
 
     useDomEffect(() => {
         const scheme = cookies()[COLOR_SCHEME_COOKIE];
-        updateColorScheme(scheme as ColorScheme<T>);
+        updateColorScheme(scheme as FluidColorScheme);
     }, []);
 
     return {

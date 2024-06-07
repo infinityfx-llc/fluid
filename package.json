@@ -1,27 +1,24 @@
 {
 	"name": "@infinityfx/fluid",
-	"version": "0.3.0-beta.6",
+	"version": "0.3.0-beta.7",
 	"type": "module",
 	"description": "React UI library, using zero-runtime CSS-in-JS.",
 	"main": "dist/index.js",
 	"module": "dist/index.js",
 	"types": "dist/types/src/index.d.ts",
 	"exports": {
-		".": "./dist/index.js",
-		"./hooks": "./dist/hooks.js",
+		".": {
+			"types": "./dist/types/src/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./hooks": {
+			"types": "./dist/types/src/hooks.d.ts",
+			"default": "./dist/hooks.js"
+		},
 		"./utils": {
+			"types": "./dist/types/src/utils.d.ts",
 			"require": "./dist/utils.cjs",
 			"import": "./dist/utils.mjs"
-		}
-	},
-	"typesVersions": {
-		"*": {
-			"hooks": [
-				"./dist/types/src/hooks.d.ts"
-			],
-			"utils": [
-				"./dist/types/src/utils.d.ts"
-			]
 		}
 	},
 	"repository": "infinityfx-llc/fluid",

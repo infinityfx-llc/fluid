@@ -2,6 +2,8 @@ import type { PopoverRootReference } from "./components/layout/popover/root";
 import type { FluidIcon } from "./core/icons";
 import { PartialFluidTheme } from "./core/theme";
 
+export type FluidColorScheme = 'light' | 'dark' | 'system';
+
 export type FluidSize = 'xsm' | 'sml' | 'med' | 'lrg';
 
 export type FluidBreakpoint = 'mob' | 'tab' | 'lap' | 'dsk';

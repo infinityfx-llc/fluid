@@ -22,8 +22,20 @@ export default async function (flag: string) {
     await compileIcons();
 
     compileImports();
+    compileTypes();
 
     console.log('\n');
+}
+
+function compileTypes() {
+    const { dist } = getRoots();
+
+    let palettes = Array.from(new Set([...Object.keys(STYLE_CONTEXT.THEME.palettes), 'light', 'dark', 'system']).keys()),
+        types = fs.readFileSync(dist + './types/src/types.d.ts', { encoding: 'ascii' });
+
+    types = types.replace(/(FluidColorScheme\s*=\s*).+?(;)/, `$1${palettes.map(name => `'${name}'`).join(' | ')}$2`);
+
+    fs.writeFileSync(dist + './types/src/types.d.ts', types);
 }
 
 async function compileIcons() {
