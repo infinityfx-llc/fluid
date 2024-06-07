@@ -1,4 +1,4 @@
-import { FluidBreakpoint, FluidStyles } from "../types";
+import { FluidBreakpoint, FluidColorScheme, FluidStyles } from "../types";
 
 export type PartialFluidTheme = {
     palettes?: {
@@ -60,7 +60,7 @@ export type FluidTheme = {
             error?: string[];
         }
     },
-    defaultColorScheme: string;
+    defaultColorScheme: FluidColorScheme;
     spacing: {
         xxs: string;
         xsm: string;
@@ -117,7 +117,7 @@ export const DEFAULT_THEME = {
             error: ['#ff1f1f', '#b32727', '#822f2f', '#632c2c']
         }
     },
-    defaultColorScheme: 'light',
+    defaultColorScheme: 'light' as const,
     spacing: {
         xxs: '.2rem',
         xsm: '.4rem',

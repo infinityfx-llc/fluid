@@ -11,8 +11,8 @@ import type { FluidColorScheme } from "../types";
 const fluid = STYLE_CONTEXT.THEME;
 
 type FluidContext = FluidTheme & {
-    colorScheme: string;
-    appliedColorScheme: string;
+    colorScheme: FluidColorScheme;
+    appliedColorScheme: FluidColorScheme;
     setColorScheme: (scheme: FluidColorScheme) => void;
 }
 
@@ -26,7 +26,7 @@ export default function FluidProvider({ children, initialColorScheme }: {
     const colorSchemes = Object.keys(fluid.palettes).concat('system');
     const { colorScheme, setColorScheme } = useColorScheme(initialColorScheme, colorSchemes);
     const preferred = useMediaQuery('(prefers-color-scheme: dark)') ? 'dark' : 'light';
-    const systemColorScheme = preferred in fluid.palettes ? preferred : fluid.defaultColorScheme;
+    const systemColorScheme = preferred in fluid.palettes ? preferred : fluid.defaultColorScheme as FluidColorScheme;
 
     createGlobalStyles(() => {
         const __fluid = STYLE_CONTEXT.THEME;
