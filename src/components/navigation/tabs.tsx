@@ -92,10 +92,10 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
     const [state, setState] = value !== undefined ? [value] : useState<FluidInputvalue>(defaultValue || options[0]?.value);
 
     function focus(index: number) {
-        const len = tabs.current.length - 1;
-        index = index < 0 ? len - 1 : index >= len ? 0 : index;
+        const arr = tabs.current.filter(tab => tab);
+        index = index < 0 ? arr.length - 1 : (index >= arr.length ? 0 : index);
 
-        tabs.current[index]?.focus();
+        arr[index]?.focus();
     }
 
     return <div {...props} className={classes(
@@ -111,7 +111,7 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
                         <Halo disabled={disabled} color={variant === 'default' ? 'var(--f-clr-primary-300)' : 'var(--f-clr-primary-400)'}>
                             <button
                                 ref={el => {
-                                    tabs.current[i] = el;
+                                    tabs.current[i] = disabled ? null : el;
                                 }}
                                 role="tab"
                                 className={style.button}

@@ -93,7 +93,7 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
     const [search, setSearch] = useState<string>('');
 
     let optionIndex = 0;
-    const filtered = Children.map(children, child => {
+    const filtered = Children.map(children, child => { // memo?
         if (isValidElement(child) && (child as React.ReactElement<any>).props.value.toString().toLowerCase().includes(search.toLowerCase())) {
             if ((child as React.ReactElement<any>).props.disabled) return child;
 
