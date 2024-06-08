@@ -22,7 +22,7 @@ export default function Heading({ children, cc = {}, className, ...props }:
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    return <div {...props} className={classes(style.heading, className)}>
+    return <div {...props} className={classes(style.heading, className)} role="heading">
         {children}
     </div>;
 }

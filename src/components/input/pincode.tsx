@@ -201,6 +201,7 @@ export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size =
                             <input ref={el => {
                                 refs.current[i] = el;
                             }}
+                                aria-labelledby={label ? id : undefined}
                                 autoFocus={i === 0 && autoFocus}
                                 disabled={props.disabled}
                                 className={style.input}

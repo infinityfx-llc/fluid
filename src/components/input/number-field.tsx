@@ -83,10 +83,10 @@ export default function NumberField({ cc = {}, precision = 3, controls = true, d
             input: style.input,
             ...cc
         }}
-        left={controls ? <Button {...buttonProps} cc={{ button: style.button__start }} aria-label="Decrement" onClick={() => increment(-step)}>
+        left={controls ? <Button {...buttonProps} cc={{ button: style.button__start }} aria-label={`-${step}`} onClick={() => increment(-step)}>
             <Icon type="remove" />
         </Button> : null}
-        right={controls ? <Button {...buttonProps} cc={{ button: style.button__end }} aria-label="Increment" onClick={() => increment(step)}>
+        right={controls ? <Button {...buttonProps} cc={{ button: style.button__end }} aria-label={`+${step}`} onClick={() => increment(step)}>
             <Icon type="add" />
         </Button> : null} />;
 }

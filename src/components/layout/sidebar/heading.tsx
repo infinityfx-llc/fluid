@@ -30,10 +30,11 @@ export default function Heading({ children, cc = {}, ...props }:
         cc?: SidebarHeadingSelectors;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
-    
+
     const { collapsed } = useSidebar();
 
     return <div {...props}
+        role="heading"
         className={classes(
             style.heading,
             collapsed && style.collapsed,

@@ -46,6 +46,7 @@ export default function Root({ children, cc = {}, ref, ...props }:
     const [selection, setSelection] = useState<string | undefined>(undefined);
 
     return <nav ref={combineRefs(ref, root)} {...props}
+        role="menubar"
         className={classes(style.navigation, props.className)}
         onMouseLeave={e => {
             props.onMouseLeave?.(e);

@@ -1,7 +1,7 @@
 'use client';
 
 import { FluidInputvalue, Selectors } from "../../../src/types";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import Halo from "../feedback/halo";
 import { Morph } from "@infinityfx/lively/layout";
 import { classes, combineClasses } from "../../../src/core/utils";
@@ -88,7 +88,15 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
     const style = combineClasses(styles, cc);
 
     const id = useId();
+    const tabs = useRef<(HTMLButtonElement | null)[]>([]);
     const [state, setState] = value !== undefined ? [value] : useState<FluidInputvalue>(defaultValue || options[0]?.value);
+
+    function focus(index: number) {
+        const len = tabs.current.length - 1;
+        index = index < 0 ? len - 1 : index >= len ? 0 : index;
+
+        tabs.current[index]?.focus();
+    }
 
     return <div {...props} className={classes(
         style.wrapper,
@@ -101,10 +109,43 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
 
                     return <div key={i} className={style.option}>
                         <Halo disabled={disabled} color={variant === 'default' ? 'var(--f-clr-primary-300)' : 'var(--f-clr-primary-400)'}>
-                            <button role={panelId ? 'tab' : 'none'} aria-selected={state === value} aria-controls={panelId} className={style.button} disabled={disabled} onClick={() => {
-                                setState?.(value);
-                                onChange?.(value as T);
-                            }}>
+                            <button
+                                ref={el => {
+                                    tabs.current[i] = el;
+                                }}
+                                role="tab"
+                                className={style.button}
+                                aria-selected={state === value}
+                                aria-controls={panelId}
+                                disabled={disabled}
+                                onClick={() => {
+                                    setState?.(value);
+                                    onChange?.(value as T);
+                                }}
+                                onKeyDown={e => {
+                                    let matched = true;
+
+                                    switch (e.key) {
+                                        case 'ArrowRight':
+                                        case 'ArrowDown':
+                                            focus(i + 1);
+                                            break;
+                                        case 'ArrowLeft':
+                                        case 'ArrowUp':
+                                            focus(i - 1);
+                                            break;
+                                        case 'Home':
+                                            focus(0);
+                                            break;
+                                        case 'End':
+                                            focus(-1);
+                                            break;
+                                        default:
+                                            matched = false;
+                                    }
+
+                                    if (matched) e.preventDefault();
+                                }}>
                                 {label}
                             </button>
                         </Halo>

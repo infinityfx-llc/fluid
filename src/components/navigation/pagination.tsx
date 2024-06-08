@@ -42,11 +42,11 @@ export default function Pagination({ cc = {}, page, setPage, pages, compact, ski
     const buttonProps = { cc, round, size, variant };
 
     return <div {...props} className={classes(style.pagination, props.className)}>
-        {compact && skipable && <Button {...buttonProps} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state < 1} onClick={() => update(0)}>
+        {compact && skipable && <Button {...buttonProps} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state < 1} onClick={() => update(0)} aria-label="1">
             <Icon type="first" />
         </Button>}
 
-        <Button {...buttonProps} disabled={state < 1} onClick={() => update(state - 1)}>
+        <Button {...buttonProps} disabled={state < 1} onClick={() => update(state - 1)} aria-label={state + ''}>
             <Icon type="left" />
         </Button>
 
@@ -60,11 +60,11 @@ export default function Pagination({ cc = {}, page, setPage, pages, compact, ski
             })}
         </>}
 
-        <Button {...buttonProps} disabled={state >= pages - 1} onClick={() => update(state + 1)}>
+        <Button {...buttonProps} disabled={state >= pages - 1} onClick={() => update(state + 1)} aria-label={state + 2 + ''}>
             <Icon type="right" />
         </Button>
 
-        {compact && skipable && <Button {...buttonProps} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state >= pages - 1} onClick={() => update(pages - 1)}>
+        {compact && skipable && <Button {...buttonProps} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state >= pages - 1} onClick={() => update(pages - 1)} aria-label={pages + ''}>
             <Icon type="last" />
         </Button>}
     </div>;

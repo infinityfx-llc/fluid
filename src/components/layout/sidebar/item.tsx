@@ -20,11 +20,13 @@ const styles = createStyles('sidebar.item', fluid => ({
         color: 'var(--f-clr-text-100)',
         display: 'flex',
         transition: 'background-color .25s, color .25s',
-        outline: 'none'
+        outline: 'none',
+        overflow: 'hidden'
     },
 
     '.item:not(.compact)': {
-        height: '3em'
+        height: '3em',
+        flexShrink: 0
     },
 
     '.s__sml': {
@@ -120,7 +122,8 @@ const styles = createStyles('sidebar.item', fluid => ({
 
     '.children': {
         paddingLeft: '1.5em',
-        transition: 'padding-left .3s, margin-bottom .3s, opacity .35s !important'
+        transition: 'padding-left .3s, margin-bottom .3s, opacity .35s !important',
+        flexShrink: 0
     },
 
     '.children > *': {
@@ -167,6 +170,7 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
         <Halo color={active ? undefined : 'var(--f-clr-primary-300)'} disabled={disabled}>
             <div {...props}
                 tabIndex={0}
+                role="button"
                 className={classes(
                     style.item,
                     style[`s__${size}`],
@@ -193,6 +197,7 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
                             content: style.toggle__content,
                             ...cc
                         }}
+                        aria-label={label}
                         disabled={compact}
                         compact
                         variant="minimal"

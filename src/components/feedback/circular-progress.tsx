@@ -71,16 +71,19 @@ export default function CircularProgress({ children, cc = {}, size = 'med', slic
 
     useEffect(() => link.set(state * (1 - slice), { duration: .3 }), [state, slice]);
 
-    return <div {...props} className={classes(
-        style.wrapper,
-        style[`s__${size}`],
-        props.className
-    )}>
+    return <div
+        {...props}
+        aria-label={undefined}
+        className={classes(
+            style.wrapper,
+            style[`s__${size}`],
+            props.className
+        )}>
         <div className={style.label}>
             {children}
         </div>
 
-        <svg viewBox="0 0 100 100" role="progressbar" aria-valuenow={state * 100} style={{ rotate: `${90 + 180 * slice}deg`, width: '100%' }}>
+        <svg viewBox="0 0 100 100" role="progressbar" aria-valuenow={state * 100} aria-label={props["aria-label"]} style={{ rotate: `${90 + 180 * slice}deg`, width: '100%' }}>
             <circle r={45} cx={50} cy={50} fill="none" className={style.track} pathLength={1} style={{ strokeDashoffset: slice }} />
 
             <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: 1 - link() }}>

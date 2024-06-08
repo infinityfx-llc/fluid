@@ -267,6 +267,7 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
                             aria-valuemin={values[i - 1] || 0}
                             aria-valuemax={values[i + 1] || 1}
                             aria-orientation={vertical ? 'vertical' : 'horizontal'}
+                            aria-label={split["aria-label"]}
                             aria-labelledby={label ? id : undefined}
                             style={{
                                 [vertical ? 'bottom' : 'left']: `${toOffset(val) * 100}%`

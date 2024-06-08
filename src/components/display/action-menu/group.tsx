@@ -1,7 +1,7 @@
 'use client';
 
 import { Animate } from '@infinityfx/lively';
-import { useState, useRef } from 'react';
+import { useState, useRef, useId } from 'react';
 import { combineClasses } from '../../../../src/core/utils';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
@@ -42,6 +42,7 @@ export default function Group({ children, cc = {}, label, className, ...props }:
     } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);
 
+    const id = useId();
     const element = useRef<HTMLDivElement>(null);
     const [state, setState] = useState({ open: false, side: 'left' });
 
@@ -64,6 +65,9 @@ export default function Group({ children, cc = {}, label, className, ...props }:
         onMouseLeave={() => setState({ ...state, open: false })}>
         <Item
             {...props}
+            aria-haspopup="menu"
+            aria-expanded={state.open}
+            aria-controls={id}
             keepOpen
             onTouchEnd={e => {
                 props.onTouchEnd?.(e);
@@ -100,7 +104,8 @@ export default function Group({ children, cc = {}, label, className, ...props }:
             levels={2}
             stagger={.05}>
             <div
-                role="group"
+                id={id}
+                role="menu"
                 className={style.menu}
                 style={{ [state.side]: '100%' }}>
                 {children}

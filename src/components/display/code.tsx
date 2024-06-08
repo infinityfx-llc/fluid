@@ -106,6 +106,7 @@ export default function Code({ children, cc = {}, title, dangerouslyInject, ...p
                     toggle: style.toggle,
                     ...cc
                 }}
+                aria-label="Copy code"
                 onClick={() => {
                     const range = document.createRange(),
                         el = document.getElementById(id) as HTMLDivElement;

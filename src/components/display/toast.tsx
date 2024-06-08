@@ -92,7 +92,7 @@ export default function Toast({ children, cc = {}, icon, color, title, round, ac
             {children}
         </div>
 
-        {action && <Button compact variant="minimal" round={round} onClick={onClose}>
+        {action && <Button compact variant="minimal" round={round} onClick={onClose} aria-label="Close">
             {action}
         </Button>}
     </div>;

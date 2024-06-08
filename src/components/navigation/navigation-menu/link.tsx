@@ -34,6 +34,7 @@ export default function Link({ children, cc = {}, Link = 'a', ...props }:
 
     return <Halo color="var(--f-clr-primary-400)">
         <Link {...props}
+            role="menuitem"
             className={classes(style.link, props.className)}
             onBlur={e => {
                 props.onBlur?.(e);

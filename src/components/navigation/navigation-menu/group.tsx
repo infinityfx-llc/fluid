@@ -80,8 +80,10 @@ export default function Group({ children, cc = {}, label, href, target, active =
 
     return <div className={style.group}>
         <Link className={style.link}
+            role="menuitem"
             href={href}
             target={target}
+            aria-haspopup={hasLinks ? 'menu' : undefined}
             aria-expanded={hasLinks ? linkId === selection : undefined}
             aria-controls={hasLinks ? id + linkId : undefined}
             onMouseEnter={() => select(linkId)}
@@ -123,6 +125,7 @@ export default function Group({ children, cc = {}, label, href, target, active =
 
             <div {...props}
                 id={id + linkId}
+                role="menu"
                 className={classes(style.menu, props.className)}
                 style={{
                     ...props.style,
