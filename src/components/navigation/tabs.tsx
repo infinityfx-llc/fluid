@@ -150,9 +150,9 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
                             </button>
                         </Halo>
 
-                        <Morph group={`tabs-selection-${id}`} show={state === value} deform={false} cachable={['x', 'sx']}>
+                        {state === value && <Morph group={`tabs-selection-${id}`} deform={false} cachable={['x', 'sx']}>
                             <div className={style.selection} />
-                        </Morph>
+                        </Morph>}
                     </div>;
                 })}
             </div>

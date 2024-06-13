@@ -5,7 +5,7 @@ import { classes, combineClasses } from '../../../../src/core/utils';
 import { createStyles } from '../../../core/style';
 import { useSidebar } from './root';
 
-const styles = createStyles('sidebar.heading', fluid => ({
+const styles = createStyles('sidebar.heading', {
     '.heading': {
         color: 'var(--f-clr-text-100)',
         fontSize: 'var(--f-font-size-xsm)',
@@ -15,12 +15,10 @@ const styles = createStyles('sidebar.heading', fluid => ({
         padding: '0 1rem'
     },
 
-    [`@media (min-width: ${fluid.breakpoints.mob + 1}px)`]: {
-        '.heading.collapsed': {
-            opacity: 0
-        }
+    '.heading.collapsed': {
+        opacity: 0
     }
-}));
+});
 
 export type SidebarHeadingSelectors = Selectors<'heading' | 'collapsed'>;
 

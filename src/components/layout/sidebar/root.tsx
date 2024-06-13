@@ -17,7 +17,7 @@ export function useSidebar() {
     return use(SidebarContext);
 }
 
-const styles = createStyles('sidebar.root', fluid => ({
+const styles = createStyles('sidebar.root', {
     '.sidebar': {
         display: 'flex',
         flexDirection: 'column',
@@ -26,18 +26,10 @@ const styles = createStyles('sidebar.root', fluid => ({
         transition: 'width .3s, translate .3s'
     },
 
-    [`@media (min-width: ${fluid.breakpoints.mob + 1}px)`]: {
-        '.sidebar.collapsed': {
-            width: '5em !important'
-        }
-    },
-
-    [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {
-        '.sidebar.collapsed': {
-            translate: '-100% 0%'
-        }
+    '.sidebar.collapsed': {
+        width: '5em !important'
     }
-}));
+});
 
 export type SidebarRootSelectors = Selectors<'sidebar' | 'collapsed'>;
 

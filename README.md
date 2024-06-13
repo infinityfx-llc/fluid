@@ -8,5 +8,13 @@
 
 A React UI library, with zero-runtime CSS-in-JS, that gets compiled and tree shaken at build time.
 
+# Get started
+
 ## Documentation
-[infinityfx.dev/fluid](https://infinityfx.dev/fluid)
+Visit [fluid.infinityfx.dev](https://fluid.infinityfx.dev) for the complete documentation.
+
+## Installation
+
+```sh
+$ npm i @infinityfx/fluid
+```

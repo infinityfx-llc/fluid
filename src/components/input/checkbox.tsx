@@ -99,13 +99,14 @@ const styles = createStyles('checkbox', {
 
 export type CheckboxSelectors = Selectors<'wrapper' | 'checkbox' | 'checkmark' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
-export default function Checkbox({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', checked, defaultChecked, ...props }:
+export default function Checkbox({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', intermediate, checked, defaultChecked, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: CheckboxSelectors;
         error?: FluidError;
         size?: FluidSize;
         color?: string;
+        intermediate?: boolean;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>) {
     const style = combineClasses(styles, cc);
 
@@ -132,9 +133,14 @@ export default function Checkbox({ cc = {}, error, size = 'med', color = 'var(--
 
             <div className={style.checkbox} style={{ '--color': color } as any}>
                 <svg viewBox="0 0 18 18" className={style.checkmark}>
-                    <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: state ? 0 : 1 }}>
-                        <path d="M 3 9 L 8 13 L 15 5" fill="none" />
-                    </Animatable>
+                    {intermediate ?
+                        <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: state ? 0 : 1 }}>
+                            <path d="M 3 9 L 15 9" fill="none" />
+                        </Animatable> :
+                        <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: state ? 0 : 1 }}>
+                            <path d="M 3 9 L 8 13 L 15 5" fill="none" />
+                        </Animatable>
+                    }
                 </svg>
             </div>
         </div>

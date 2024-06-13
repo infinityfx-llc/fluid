@@ -1,6 +1,6 @@
 {
 	"name": "@infinityfx/fluid",
-	"version": "0.3.0-beta.10",
+	"version": "0.3.0-beta.11",
 	"type": "module",
 	"description": "React UI library, using zero-runtime CSS-in-JS.",
 	"main": "dist/index.js",
@@ -54,28 +54,28 @@
 		"glob": "^10.3.12"
 	},
 	"peerDependencies": {
-		"@infinityfx/lively": "^4.0.0-beta.5",
+		"@infinityfx/lively": "^4.0.0-beta.9",
 		"react": ">=19.0.0",
 		"react-dom": ">=19.0.0",
 		"react-icons": ">=4.0.0"
 	},
 	"devDependencies": {
-		"@infinityfx/lively": "^4.0.0-beta.5",
+		"@infinityfx/lively": "^4.0.0-beta.9",
 		"@rollup/plugin-commonjs": "^25.0.7",
 		"@rollup/plugin-json": "^6.1.0",
 		"@rollup/plugin-node-resolve": "^15.2.3",
 		"@rollup/plugin-terser": "^0.4.4",
 		"@rollup/plugin-typescript": "^11.1.6",
-		"@types/react": "npm:types-react@^19.0.0-rc.0",
-		"@types/react-dom": "npm:types-react-dom@^19.0.0-rc.0",
-		"react": "^19.0.0-rc-cc1ec60d0d-20240607",
-		"react-dom": "^19.0.0-rc-cc1ec60d0d-20240607",
+		"@types/react": "npm:types-react@^19.0.0-rc.1",
+		"@types/react-dom": "npm:types-react-dom@^19.0.0-rc.1",
+		"react": "^19.0.0-rc-dfd30974ab-20240613",
+		"react-dom": "^19.0.0-rc-dfd30974ab-20240613",
 		"react-icons": "^5.1.0",
 		"rollup": "^4.11.0",
 		"rollup-plugin-delete": "^2.0.0",
 		"rollup-plugin-preserve-directives": "^0.4.0",
 		"rollup-plugin-preserve-shebangs": "^0.2.0",
-		"typescript": "^5.4.3"
+		"typescript": "^5.4.5"
 	},
 	"sideEffects": false
 }

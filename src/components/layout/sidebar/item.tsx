@@ -12,7 +12,7 @@ import useFluid from '../../../hooks/use-fluid';
 import useMediaQuery from '../../../hooks/use-media-query';
 import { Icon } from '../../../core/icons';
 
-const styles = createStyles('sidebar.item', fluid => ({
+const styles = createStyles('sidebar.item', {
     '.item': {
         position: 'relative',
         fontWeight: 600,
@@ -130,16 +130,14 @@ const styles = createStyles('sidebar.item', fluid => ({
         flexShrink: 0
     },
 
-    [`@media (min-width: ${fluid.breakpoints.mob + 1}px)`]: {
-        '.item.collapsed .content': {
-            opacity: 0
-        },
+    '.item.collapsed .content': {
+        opacity: 0
+    },
 
-        '.children[data-collapsed="true"]': {
-            paddingLeft: '0em'
-        }
+    '.children[data-collapsed="true"]': {
+        paddingLeft: '0em'
     }
-}));
+});
 
 export type SidebarItemSelectors = Selectors<'item' | 'collapsed' | 's__sml' | 's__med' | 'v__default' | 'v__light' | 'round' | 'compact' | 'icon' | 'content' | 'children'>;
 

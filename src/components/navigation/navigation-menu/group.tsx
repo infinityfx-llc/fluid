@@ -4,7 +4,7 @@ import { Children, useId } from 'react';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses } from '../../../core/utils';
-import { Morph } from '@infinityfx/lively/layout';
+import { LayoutGroup, Morph } from '@infinityfx/lively/layout';
 import { useNavigationMenu } from './root';
 import { Animatable } from '@infinityfx/lively';
 import { Icon } from '../../../core/icons';
@@ -102,41 +102,45 @@ export default function Group({ children, cc = {}, label, href, target, active =
                 <Icon type="down" />
             </div>}
 
-            <Morph
-                show={!selection ? active : linkId === selection}
-                group={`fluid-navigation-menu-selection-${id}`}
-                cachable={['x', 'sx']}
-                deform={false}
-                transition={{ duration: .35 }}
-                animate={{ opacity: [1, 0], duration: .25 }}
-                triggers={[{ on: 'mount', reverse: true }, { on: 'unmount' }]}>
-                <div className={style.selection} />
-            </Morph>
+            <LayoutGroup>
+                {(selection ? linkId === selection : active) && <Morph
+                    id="fluid-navigation-menu-selection"
+                    group={`fluid-navigation-menu-selection-${id}`}
+                    cachable={['x', 'sx']}
+                    deform={false}
+                    transition={{ duration: .35 }}
+                    animate={{ opacity: [1, 0], duration: .25 }}
+                    triggers={[{ on: 'mount', reverse: true }, { on: 'unmount' }]}>
+                    <div className={style.selection} />
+                </Morph>}
+            </LayoutGroup>
         </Link>
 
-        {hasLinks && <Morph
-            show={linkId === selection}
-            group={`fluid-navigation-menu-group-${id}`}
-            cachable={['x', 'y', 'sx', 'sy']}
-            deform={false}
-            transition={{ duration: .35 }}
-            animate={{ opacity: [1, 0], translate: ['0px 0px', '0px -8px'], duration: .25 }}
-            triggers={[{ on: 'mount', reverse: true }, { on: 'unmount' }]}>
+        <LayoutGroup>
+            {hasLinks && linkId === selection && <Morph
+                id="fluid-navigation-menu-group"
+                group={`fluid-navigation-menu-group-${id}`}
+                cachable={['x', 'y', 'sx', 'sy']}
+                deform={false}
+                transition={{ duration: .35 }}
+                animate={{ opacity: [1, 0], translate: ['0px 0px', '0px -8px'], duration: .25 }}
+                triggers={[{ on: 'mount', reverse: true }, { on: 'unmount' }]}>
 
-            <div {...props}
-                id={id + linkId}
-                role="menu"
-                className={classes(style.menu, props.className)}
-                style={{
-                    ...props.style,
-                    left: position === 'start' ? 0 : undefined,
-                    right: position === 'end' ? 0 : undefined
-                }}>
-                <Animatable stagger={.06} triggers={[{ on: 'mount', delay: .25 }]}>
-                    {children}
-                </Animatable>
-            </div>
-        </Morph>}
+                <div {...props}
+                    id={id + linkId}
+                    role="menu"
+                    className={classes(style.menu, props.className)}
+                    style={{
+                        ...props.style,
+                        left: position === 'start' ? 0 : undefined,
+                        right: position === 'end' ? 0 : undefined
+                    }}>
+                    <Animatable stagger={.06} triggers={[{ on: 'mount', delay: .25 }]}>
+                        {children}
+                    </Animatable>
+                </div>
+            </Morph>}
+        </LayoutGroup>
     </div>;
 }
 

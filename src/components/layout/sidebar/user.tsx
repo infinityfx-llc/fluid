@@ -8,7 +8,7 @@ import { createStyles } from '../../../core/style';
 import { useSidebar } from './root';
 import { Icon } from '../../../core/icons';
 
-const styles = createStyles('sidebar.user',  fluid => ({
+const styles = createStyles('sidebar.user', {
     '.user': {
         position: 'relative',
         outline: 'none',
@@ -88,12 +88,10 @@ const styles = createStyles('sidebar.user',  fluid => ({
         transition: 'opacity .3s'
     },
 
-    [`@media (min-width: ${fluid.breakpoints.mob + 1}px)`]: {
-        '.user.collapsed .content, .user.collapsed .icon': {
-            opacity: 0
-        }
+    '.user.collapsed .content, .user.collapsed .icon': {
+        opacity: 0
     }
-}));
+});
 
 export type SidebarUserSelectors = Selectors<'user' | 'collapsed' | 'round' | 'avatar' | 'frame' | 'name' | 'status' | 'content' | 'icon'>;
 

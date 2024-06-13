@@ -181,9 +181,9 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
                     <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
                     <span className={style.content}>{label}</span>
 
-                    <Morph group={`segmented-selection-${id}`} show={state === option} cachable={vertical ? ['y', 'sy'] : ['x', 'sx']} deform={false} transition={{ duration: .4 }}>
+                    {state === option && <Morph group={`segmented-selection-${id}`} cachable={vertical ? ['y', 'sy'] : ['x', 'sx']} deform={false} transition={{ duration: .4 }}>
                         <div className={style.selection} />
-                    </Morph>
+                    </Morph>}
                 </button>
             </Halo>;
         })}
