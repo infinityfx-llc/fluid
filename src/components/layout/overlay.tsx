@@ -6,8 +6,12 @@ import { LayoutGroup } from "@infinityfx/lively/layout";
 import { useEffect, useState, useRef } from 'react';
 import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
-import { classes, combineClasses } from "../../core/utils";
+import { combineClasses } from "../../core/utils";
 import useFocusTrap from "../../hooks/use-focus-trap";
+
+const OverlayData = {
+    count: 0
+};
 
 const toggleScroll = (value: boolean) => {
     const isScrollable = document.documentElement.scrollHeight > document.documentElement.clientHeight; // also do for hor scrolling?
@@ -50,20 +54,23 @@ export default function Overlay({ children, cc = {}, show, onClose }: {
 }) {
     const style = combineClasses(styles, cc);
 
-    const index = useRef(0);
+    const previous = useRef(show);
     const trap = useFocusTrap<HTMLDivElement>(show);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
+
+        if (previous.current !== show) OverlayData.count += show ? 1 : -1;
+        previous.current = show;
+
         if (mounted && show) {
             toggleScroll(false);
 
-            index.current = document.getElementsByClassName('__fluid__overlay').length;
+            if (trap.current) trap.current.style.zIndex = (OverlayData.count + 999).toString();
+        }
 
-            if (trap.current) trap.current.style.zIndex = (index.current + 999).toString();
-        } else
-            if (!show && !index.current) toggleScroll(true);
-        setMounted(true);
+        if (!show && !OverlayData.count) toggleScroll(true);
 
         function keypress(e: KeyboardEvent) {
             if (show && e.key === 'Escape') onClose();
@@ -73,13 +80,13 @@ export default function Overlay({ children, cc = {}, show, onClose }: {
 
         return () => {
             window.removeEventListener('keydown', keypress);
-            if (!index.current) toggleScroll(true);
+            if (!OverlayData.count) toggleScroll(true);
         }
     }, [show]);
 
     return mounted ? createPortal(<LayoutGroup>
         <div ref={trap} className={style.wrapper}>
-            {show && <div className={classes(style.overlay, '__fluid__overlay')}>
+            {show && <div className={style.overlay}>
                 <Animatable id="overlay" animate={{ opacity: [0, 1], duration: .25 }} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
                     <div className={style.tint} onClick={onClose} />
                 </Animatable>
