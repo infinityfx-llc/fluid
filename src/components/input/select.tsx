@@ -97,6 +97,10 @@ const styles = createStyles('select', {
         background: 'linear-gradient(90deg, transparent, var(--f-clr-fg-100))'
     },
 
+    '.field[data-disabled="true"] .content::after': {
+        background: 'linear-gradient(90deg, transparent, var(--f-clr-grey-100))'
+    },
+
     '.content > *': {
         flexShrink: 0
     },

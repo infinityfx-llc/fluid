@@ -17,24 +17,43 @@ const styles = createStyles('panel', {
     },
 
     '.divider': {
-        background: 'var(--f-clr-fg-200)',
+        position: 'relative',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         userSelect: 'none',
-        outline: 'none'
+        outline: 'none',
+        touchAction: 'none'
     },
 
     '.d__horizontal > .divider': {
-        width: '1px',
-        height: '100%',
+        minHeight: '100%',
+        height: 'auto',
         cursor: 'ew-resize'
     },
 
+    '.d__horizontal.v__default > .divider': {
+        background: 'var(--f-clr-fg-200)',
+        width: '1px'
+    },
+
+    '.d__horizontal.v__minimal > .divider': {
+        paddingInline: '3px'
+    },
+
     '.d__vertical > .divider': {
-        width: '100%',
-        height: '1px',
+        minWidth: '100%',
+        width: 'auto',
         cursor: 'ns-resize'
+    },
+
+    '.d__vertical.v__default > .divider': {
+        background: 'var(--f-clr-fg-200)',
+        height: '1px'
+    },
+
+    '.d__vertical.v__minimal > .divider': {
+        paddingBlock: '3px'
     },
 
     '.focus': {
@@ -45,14 +64,14 @@ const styles = createStyles('panel', {
         zIndex: 1
     },
 
-    '.d__horizontal > .divider .focus': {
+    '.d__horizontal.v__default > .divider .focus': {
         width: '3px',
         height: '100%'
     },
 
-    '.d__vertical > .divider .focus': {
-        width: '100%',
-        height: '3px'
+    '.d__vertical.v__default > .divider .focus': {
+        height: '3px',
+        width: '100%'
     },
 
     '.divider:focus-visible .focus': {
@@ -60,7 +79,6 @@ const styles = createStyles('panel', {
     },
 
     '.handle': {
-        position: 'absolute',
         borderRadius: '3px',
         backgroundColor: 'var(--f-clr-fg-200)',
         display: 'grid',
@@ -68,12 +86,24 @@ const styles = createStyles('panel', {
         zIndex: 1
     },
 
-    '.d__horizontal .handle': {
+    '.d__horizontal.v__minimal > .divider .handle': {
+        width: '6px',
+        height: '30px',
+        backgroundColor: 'var(--f-clr-grey-200)'
+    },
+
+    '.d__vertical.v__minimal > .divider .handle': {
+        height: '6px',
+        width: '30px',
+        backgroundColor: 'var(--f-clr-grey-200)'
+    },
+
+    '.d__horizontal > .divider .handle': {
         gridTemplateColumns: '1fr 1fr',
         padding: '5px 3px'
     },
 
-    '.d__vertical .handle': {
+    '.d__vertical > .divider .handle': {
         gridTemplateColumns: '1fr 1fr 1fr',
         padding: '3px 5px'
     },
@@ -96,25 +126,29 @@ const styles = createStyles('panel', {
 
 export type PanelSelectors = Selectors<'panel' | 'd__horizontal' | 'd__vertical' | 'divider' | 'focus' | 'handle'>;
 
-export default function Panel({ cc = {}, children, size, handles, direction = 'horizontal', ref, ...props }:
+export default function Panel({ cc = {}, children, variant = 'default', direction = 'horizontal', handles, defaultSizes, ref, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: PanelSelectors;
-        size?: number;
-        handles?: boolean;
+        variant?: 'default' | 'minimal';
         direction?: 'horizontal' | 'vertical';
+        handles?: boolean;
+        defaultSizes?: number[];
         // steps??
     } & React.HTMLAttributes<HTMLElement>) {
     const style = combineClasses(styles, cc);
 
     const count = Children.count(children);
 
-    const [dividers, setDividers] = useState(new Array(Math.max(count - 1, 0)).fill(0).map((_, i) => (i + 1) / count)); // init with sizes
+    const [dividers, setDividers] = useState(new Array(Math.max(count - 1, 0)).fill(0).map((_, i) => {
+        return defaultSizes?.[i] !== undefined ? defaultSizes[i] : (i + 1) / count;
+    }));
     const container = useRef<HTMLDivElement>(null);
     const dragging = useRef(0);
 
     function update(index: number, value: number) {
-        const min = (dividers[index - 1] || 0) + .1, max = (dividers[index + 1] || 1) - .1;
+        const min = dividers[index - 1] || 0,
+            max = dividers[index + 1] || 1;
 
         const updated = dividers.slice();
         updated[index] = Math.min(Math.max(value, min), max);
@@ -123,11 +157,11 @@ export default function Panel({ cc = {}, children, size, handles, direction = 'h
     }
 
     useEffect(() => {
-        function drag(e: MouseEvent) {
+        function drag(e: MouseEvent | TouchEvent) {
             if (!dragging.current || !container.current) return;
 
             const { x, y, width, height } = container.current.getBoundingClientRect();
-            const { clientX, clientY } = e;
+            const { clientX, clientY } = 'touches' in e ? e.touches[0] : e;
 
             const px = (clientX - x) / width, py = (clientY - y) / height;
 
@@ -138,10 +172,14 @@ export default function Panel({ cc = {}, children, size, handles, direction = 'h
 
         window.addEventListener('mousemove', drag);
         window.addEventListener('mouseup', cancel);
+        window.addEventListener('touchmove', drag);
+        window.addEventListener('touchend', cancel);
 
         return () => {
             window.removeEventListener('mousemove', drag);
             window.removeEventListener('mouseup', cancel);
+            window.removeEventListener('touchmove', drag);
+            window.removeEventListener('touchend', cancel);
         }
     }, [update, direction]);
 
@@ -150,18 +188,20 @@ export default function Panel({ cc = {}, children, size, handles, direction = 'h
         ref={combineRefs(container, ref)}
         className={classes(
             style.panel,
+            style[`v__${variant}`],
             style[`d__${direction}`],
             props.className
         )}>
         {Children.map(children, (child, i) => {
             if (!isValidElement(child)) return child;
 
-            const size = (dividers[i] || 1) - (dividers[i - 1] || 0);
+            const size = (dividers[i] ?? 1) - (dividers[i - 1] ?? 0);
 
             return <>
                 {i !== 0 && <div
                     tabIndex={0}
                     className={style.divider}
+                    onTouchStart={() => dragging.current = i}
                     onMouseDown={() => dragging.current = i}
                     onKeyDown={e => {
                         const pos = e.key === 'ArrowRight' || e.key === 'ArrowDown';
@@ -171,11 +211,11 @@ export default function Panel({ cc = {}, children, size, handles, direction = 'h
                             e.preventDefault();
                         }
                     }}>
-                    <div className={style.focus}>
-                        {handles && <div className={style.handle}>
-                            {[0, 1, 2, 3, 4, 5].map(i => <div key={i} className={style.dot} />)}
-                        </div>}
-                    </div>
+                    <div className={style.focus} />
+
+                    {handles && <div className={style.handle}>
+                        {variant === 'default' && [0, 1, 2, 3, 4, 5].map(i => <div key={i} className={style.dot} />)}
+                    </div>}
                 </div>}
 
                 {cloneElement(child as React.ReactElement<any>, {
