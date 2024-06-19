@@ -46,8 +46,9 @@ export default function Item({ children, cc = {}, keepOpen, className, ...props 
 
     return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
         <button {...props}
-            className={classes(style.item, className)}
+            type="button"
             role="menuitem"
+            className={classes(style.item, className)}
             onClick={e => {
                 props.onClick?.(e);
 

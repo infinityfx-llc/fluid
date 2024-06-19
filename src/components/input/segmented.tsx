@@ -173,7 +173,12 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
                 ring: style.ring,
                 ...cc
             }}>
-                <button className={style.option} type="button" role="radio" aria-checked={state === option} disabled={disabled}
+                <button
+                    className={style.option}
+                    type="button" 
+                    role="radio" 
+                    aria-checked={state === option} 
+                    disabled={disabled}
                     onClick={() => {
                         setState?.(option);
                         onChange?.(option as T);

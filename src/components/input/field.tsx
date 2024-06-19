@@ -11,7 +11,7 @@ const styles = createStyles('field', {
         display: 'flex',
         flexDirection: 'column',
         gap: 'var(--f-spacing-xxs)',
-        minWidth: 'min(100%, 12em)'
+        minWidth: 'min(100vw, 12em)'
     },
 
     '.input': {
@@ -149,9 +149,15 @@ export default function Field({ cc = {}, round = false, size = 'med', error, sho
             <label className={style.content}>
                 {icon}
 
-                <input {...split} ref={inputRef} aria-labelledby={label ? id : undefined} aria-invalid={!!error} className={style.input} onKeyDown={e => {
-                    if (e.key === 'Enter') onEnter?.();
-                }} />
+                <input
+                    {...split}
+                    className={style.input}
+                    ref={inputRef}
+                    aria-labelledby={label ? id : undefined}
+                    aria-invalid={!!error}
+                    onKeyDown={e => {
+                        if (e.key === 'Enter') onEnter?.();
+                    }} />
             </label>
 
             {right}

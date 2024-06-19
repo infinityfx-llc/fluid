@@ -20,7 +20,7 @@ const styles = createStyles('modal', (fluid) => ({
         display: 'flex',
         flexDirection: 'column',
         paddingBlock: 'var(--f-spacing-med)',
-        minWidth: 'min(100%, 16em)',
+        minWidth: 'min(100vw, 16em)',
         border: 'solid 1px var(--f-clr-fg-200)',
         margin: 'var(--f-spacing-lrg)',
         maxHeight: 'calc(100% - var(--f-spacing-lrg) * 2)',

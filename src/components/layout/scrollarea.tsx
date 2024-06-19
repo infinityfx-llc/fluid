@@ -1,9 +1,8 @@
 'use client';
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
-import useDomEffect from "../../../src/hooks/use-dom-effect";
 import { Selectors } from "../../../src/types";
-import { useRef, useState, useId } from "react";
+import { useRef, useState, useId, useLayoutEffect } from "react";
 import { createStyles } from "../../core/style";
 
 const speed = 100;
@@ -178,7 +177,7 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
         scroll(0);
     }
 
-    useDomEffect(() => {
+    useLayoutEffect(() => {
         resize();
 
         const observer = new ResizeObserver(resize), areaRef = area.current;

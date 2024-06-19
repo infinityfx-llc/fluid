@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { cookies, formatCookie } from "../core/utils";
 import { COLOR_SCHEME_COOKIE } from "../core/theme";
-import useDomEffect from "./use-dom-effect";
 import type { FluidColorScheme } from "../types";
 
 export default function useColorScheme(initial: FluidColorScheme = 'system', schemes = ['light', 'dark', 'system']) {
@@ -19,7 +18,7 @@ export default function useColorScheme(initial: FluidColorScheme = 'system', sch
         setColorScheme(scheme);
     }
 
-    useDomEffect(() => {
+    useLayoutEffect(() => {
         const scheme = cookies()[COLOR_SCHEME_COOKIE];
         updateColorScheme(scheme as FluidColorScheme);
     }, []);

@@ -92,15 +92,15 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
     const options = useRef<HTMLElement[]>([]);
     const [search, setSearch] = useState<string>('');
 
-    let optionIndex = 0;
+    let optionIndex = searchable ? 1 : 0;
     const filtered = Children.map(children, child => { // memo?
         if (isValidElement(child) && (child as React.ReactElement<any>).props.value.toString().toLowerCase().includes(search.toLowerCase())) {
             if ((child as React.ReactElement<any>).props.disabled) return child;
 
-            const i = (searchable ? 1 : 0) + optionIndex++;
+            const i = optionIndex++;
 
             const clone = cloneElement(child as React.ReactElement<any>, {
-                autoFocus: autoFocus && optionIndex === 0,
+                autoFocus: autoFocus && i === 0,
                 onFocus: () => selected.current = i,
                 ref: (el: HTMLElement) => options.current[i] = el,
                 round

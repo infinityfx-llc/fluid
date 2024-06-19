@@ -113,6 +113,7 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
                                 ref={el => {
                                     tabs.current[i] = disabled ? null : el;
                                 }}
+                                type="button"
                                 role="tab"
                                 className={style.button}
                                 aria-selected={state === value}

@@ -47,7 +47,10 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
     const style = combineClasses(styles, cc);
 
     return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
-        <button {...props} type="button" role="option"
+        <button
+            {...props}
+            type="button"
+            role="option"
             className={classes(
                 style.option,
                 round && style.round

@@ -15,12 +15,12 @@ const styles = createStyles('slider', {
     },
 
     '.wrapper:not(.vertical)': {
-        minWidth: 'min(100%, 12em)',
+        minWidth: 'min(100vw, 12em)',
         gap: 'var(--f-spacing-xsm)'
     },
 
     '.wrapper.vertical': {
-        minHeight: 'min(100%, 12em)',
+        minHeight: 'min(100vh, 12em)',
         gap: 'var(--f-spacing-med)'
     },
 

@@ -14,7 +14,7 @@ const colors = ['#eb2a1c', '#eb2a1c', '#e8831e', '#f0d030', '#fff952', '#5aff54'
 
 const styles = createStyles('password-field', {
     '.container': {
-        minWidth: 'min(100%, 12em)'
+        minWidth: 'min(100vw, 12em)'
     },
 
     '.container .wrapper': {

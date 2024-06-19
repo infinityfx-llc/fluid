@@ -13,7 +13,7 @@ const styles = createStyles('toast', {
         display: 'flex',
         alignItems: 'flex-start',
         gap: 'var(--f-spacing-med)',
-        minWidth: 'min(100%, 16em)'
+        minWidth: 'min(100vw, 16em)'
     },
 
     '.toast.round': {

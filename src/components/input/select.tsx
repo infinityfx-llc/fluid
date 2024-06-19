@@ -16,7 +16,7 @@ const styles = createStyles('select', {
         display: 'flex',
         flexDirection: 'column',
         gap: 'var(--f-spacing-xxs)',
-        minWidth: 'min(100%, 12em)'
+        minWidth: 'min(100vw, 12em)'
     },
 
     '.label': {

@@ -153,18 +153,22 @@ export default function Table<T extends { [key: string]: string | number | Date;
 
                     return <div key={i} role="columnheader">
                         <Halo disabled={!sort}>
-                            <button disabled={!sort} className={style.label} onClick={() => {
-                                setColumn(col as string);
+                            <button
+                                className={style.label}
+                                type="button"
+                                disabled={!sort}
+                                onClick={() => {
+                                    setColumn(col as string);
 
-                                if (column !== col || sorting === 'nil') {
-                                    setSorting('asc');
-                                } else
-                                    if (sorting === 'asc') {
-                                        setSorting('dsc');
-                                    } else {
-                                        setSorting('nil');
-                                    }
-                            }}>
+                                    if (column !== col || sorting === 'nil') {
+                                        setSorting('asc');
+                                    } else
+                                        if (sorting === 'asc') {
+                                            setSorting('dsc');
+                                        } else {
+                                            setSorting('nil');
+                                        }
+                                }}>
                                 {col as string}
 
                                 {(column !== col || sorting === 'nil') && sort && <Icon type="sort" />}

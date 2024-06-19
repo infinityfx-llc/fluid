@@ -73,10 +73,16 @@ export default function NumberField({ cc = {}, precision = 3, controls = true, d
         type="number"
         value={value}
         onChange={e => {
-            e.target.value = format(e.target.value); // maybe only do on blur??
             setValue?.(e.target.value);
 
             props.onChange?.(e);
+        }}
+        onBlur={e => {
+            e.target.value = format(e.target.value);
+            setValue?.(e.target.value);
+
+            props.onChange?.(e);
+            props.onBlur?.(e);
         }}
         cc={{
             wrapper: style.wrapper,

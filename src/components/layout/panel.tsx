@@ -4,6 +4,7 @@ import { Selectors } from '../../../src/types';
 import { useState, useRef, Children, isValidElement, useEffect, cloneElement } from 'react';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
+import { Halo } from '../feedback';
 
 const styles = createStyles('panel', {
     '.panel': {
@@ -22,7 +23,6 @@ const styles = createStyles('panel', {
         alignItems: 'center',
         justifyContent: 'center',
         userSelect: 'none',
-        outline: 'none',
         touchAction: 'none'
     },
 
@@ -74,16 +74,14 @@ const styles = createStyles('panel', {
         width: '100%'
     },
 
-    '.divider:focus-visible .focus': {
-        backgroundColor: 'var(--f-clr-primary-300)'
-    },
-
     '.handle': {
+        position: 'relative',
         borderRadius: '3px',
         backgroundColor: 'var(--f-clr-fg-200)',
         display: 'grid',
         gap: '1px',
-        zIndex: 1
+        zIndex: 1,
+        outline: 'none'
     },
 
     '.d__horizontal.v__minimal > .divider .handle': {
@@ -114,13 +112,11 @@ const styles = createStyles('panel', {
         width: '2px',
         height: '2px'
     },
-
-    '.divider:focus-visible .handle': {
-        backgroundColor: 'var(--f-clr-primary-300)'
+    '.divider .halo': {
+        inset: '-.5em'
     },
-
-    '.divider:focus-visible .dot': {
-        backgroundColor: 'var(--f-clr-primary-600)'
+    '.v__minimal .divider .halo': {
+        borderRadius: '99px'
     }
 });
 
@@ -199,23 +195,32 @@ export default function Panel({ cc = {}, children, variant = 'default', directio
 
             return <>
                 {i !== 0 && <div
-                    tabIndex={0}
                     className={style.divider}
                     onTouchStart={() => dragging.current = i}
-                    onMouseDown={() => dragging.current = i}
-                    onKeyDown={e => {
-                        const pos = e.key === 'ArrowRight' || e.key === 'ArrowDown';
-
-                        if (pos || e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-                            update(i - 1, dividers[i - 1] + (pos ? 0.05 : -0.05));
-                            e.preventDefault();
-                        }
-                    }}>
+                    onMouseDown={() => dragging.current = i}>
                     <div className={style.focus} />
 
-                    {handles && <div className={style.handle}>
-                        {variant === 'default' && [0, 1, 2, 3, 4, 5].map(i => <div key={i} className={style.dot} />)}
-                    </div>}
+                    {handles && <Halo
+                        hover={false}
+                        color="var(--f-clr-primary-400)"
+                        cc={{
+                            halo: style.halo,
+                            ...cc
+                        }}>
+                        <div
+                            tabIndex={0}
+                            className={style.handle}
+                            onKeyDown={e => {
+                                const pos = e.key === 'ArrowRight' || e.key === 'ArrowDown';
+
+                                if (pos || e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                                    update(i - 1, dividers[i - 1] + (pos ? 0.05 : -0.05));
+                                    e.preventDefault();
+                                }
+                            }}>
+                            {variant === 'default' && [0, 1, 2, 3, 4, 5].map(i => <div key={i} className={style.dot} />)}
+                        </div>
+                    </Halo>}
                 </div>}
 
                 {cloneElement(child as React.ReactElement<any>, {
