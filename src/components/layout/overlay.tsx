@@ -54,7 +54,7 @@ export default function Overlay({ children, cc = {}, show, onClose }: {
 }) {
     const style = combineClasses(styles, cc);
 
-    const previous = useRef(show);
+    const previous = useRef(false);
     const trap = useFocusTrap<HTMLDivElement>(show);
     const [mounted, setMounted] = useState(false);
 
@@ -80,6 +80,12 @@ export default function Overlay({ children, cc = {}, show, onClose }: {
 
         return () => {
             window.removeEventListener('keydown', keypress);
+
+            if (show && show === previous.current) {
+                OverlayData.count--;
+                previous.current = false;
+            }
+
             if (!OverlayData.count) toggleScroll(true);
         }
     }, [show]);

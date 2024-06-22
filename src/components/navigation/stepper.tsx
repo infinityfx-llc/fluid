@@ -10,19 +10,15 @@ import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
 
 const styles = createStyles('stepper', {
-    '.wrapper': {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--f-spacing-sml)'
-    },
-
     '.stepper': {
-        display: 'flex',
-        fontSize: 'var(--f-font-size-sml)'
+        display: 'grid',
+        gridAutoFlow: 'column',
+        gridAutoColumns: '1fr',
+        gap: '6px'
     },
 
-    '.wrapper[data-variant="vertical"] .stepper': {
-        flexDirection: 'column'
+    '.stepper.vertical': {
+        gridAutoFlow: 'row'
     },
 
     '.step': {
@@ -31,62 +27,40 @@ const styles = createStyles('stepper', {
         gap: 'var(--f-spacing-sml)'
     },
 
-    '.step:not(:last-child)': {
-        flexBasis: 0,
-        flexGrow: 1
-    },
-
-    '.wrapper[data-variant="compact"] .step': {
-        alignItems: 'center',
+    '.stepper.vertical .step': {
         flexDirection: 'row'
-    },
-
-    '.wrapper[data-variant="vertical"] .step': {
-        flexDirection: 'row'
-    },
-
-    '.wrapper[data-variant="default"] .step:not(:last-child)': {
-        paddingRight: 'var(--f-spacing-sml)'
-    },
-
-    '.wrapper[data-variant="vertical"] .step:not(:last-child)': {
-        paddingBottom: 'var(--f-spacing-sml)'
     },
 
     '.header': {
         display: 'flex',
-        gap: 'var(--f-spacing-sml)',
-        alignItems: 'center'
+        alignItems: 'center',
+        gap: '6px'
     },
 
-    '.wrapper[data-variant="vertical"] .header': {
+    '.stepper.vertical .header': {
         flexDirection: 'column'
     },
 
-    '.button': {
+    '.bullet': {
         position: 'relative',
+        width: '2.5em',
+        height: '2.5em',
+        backgroundColor: 'var(--f-clr-fg-100)',
+        border: 'solid 1px var(--f-clr-fg-200)',
         borderRadius: '999px',
-        outline: 'none',
-        border: 'none',
-        background: 'none'
+        color: 'var(--f-clr-grey-300)',
+        outline: 'solid 2px transparent',
+        outlineOffset: '-1px',
+        transition: 'background-color .25s, color .25s, outline-color .25s'
     },
 
-    '.button:enabled': {
+    '.bullet:enabled': {
         cursor: 'pointer'
     },
 
-    '.bullet': {
-        width: '2em',
-        height: '2em',
-        borderRadius: '999px',
-        backgroundColor: 'var(--f-clr-fg-200)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '1.2em',
-        color: 'var(--f-clr-grey-300)',
-        outline: 'solid 2px transparent',
-        transition: 'background-color .25s, color .25s, outline-color .25s'
+    '.step[data-current="true"] .bullet': {
+        outlineColor: 'var(--f-clr-primary-200)',
+        color: 'var(--f-clr-primary-200)'
     },
 
     '.step[data-completed="true"] .bullet': {
@@ -94,13 +68,8 @@ const styles = createStyles('stepper', {
         color: 'var(--f-clr-text-200)'
     },
 
-    '.step[data-current="true"] .bullet': {
-        outlineColor: 'var(--f-clr-primary-400)',
-        color: 'var(--f-clr-primary-200)'
-    },
-
     '.step[data-error="true"][data-completed="false"] .bullet': {
-        outlineColor: 'var(--f-clr-error-100)',
+        outlineColor: 'var(--f-clr-error-200)',
         color: 'var(--f-clr-error-200)'
     },
 
@@ -109,58 +78,55 @@ const styles = createStyles('stepper', {
     },
 
     '.icon': {
-        width: '1em',
-        height: '1em',
+        width: '100%',
+        aspectRatio: 1,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
         overflow: 'hidden'
     },
 
     '.icons': {
+        width: '100%',
         display: 'flex',
         flexDirection: 'column'
     },
 
     '.progress': {
-        height: '3px',
         flexGrow: 1,
         backgroundColor: 'var(--f-clr-fg-200)',
-        transition: 'background-color .25s',
-        borderRadius: 'var(--f-radius-xsm)'
+        borderRadius: 'var(--f-radius-xsm)',
+        transition: 'background-color .25s'
     },
 
-    '.wrapper[data-variant="vertical"] .progress': {
-        width: '3px',
-        minHeight: '1em'
+    '.stepper:not(.vertical) .progress': {
+        minWidth: '1em',
+        height: '3px'
+    },
+
+    '.stepper.vertical .progress': {
+        minHeight: '1em',
+        width: '3px'
     },
 
     '.step[data-completed="true"] .progress': {
         backgroundColor: 'var(--f-clr-primary-100)'
     },
 
-    '.label': {
-        fontSize: '.85em',
-        fontWeight: 700,
-        color: 'var(--f-clr-grey-300)',
-        transition: 'color .25s'
+    '.stepper:not(.vertical) .step:not(:last-child) .content': {
+        paddingRight: 'var(--f-spacing-sml)'
     },
 
-    '.step[data-completed="true"] .label': {
-        color: 'var(--f-clr-primary-100)'
-    },
-
-    '.step[data-current="true"] .label': {
-        color: 'var(--f-clr-primary-400)'
-    },
-
-    '.step[data-error="true"] .label': {
-        color: 'var(--f-clr-error-100)'
-    },
-
-    '.title': {
-        fontWeight: 600,
+    '.name': {
+        fontSize: 'var(--f-font-size-sml)',
         color: 'var(--f-clr-text-100)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--f-spacing-xxs)'
+        fontWeight: 600
+    },
+
+    '.label': {
+        fontSize: 'var(--f-font-size-xsm)',
+        color: 'var(--f-clr-grey-600)'
     },
 
     '.halo': {
@@ -168,73 +134,102 @@ const styles = createStyles('stepper', {
     },
 
     '.track': {
-        width: '100% !important'
+        marginTop: 'calc(var(--f-spacing-sml) - 6px)'
     }
 });
 
-export type StepperSelectors = Selectors<'wrapper' | 'stepper' | 'step' | 'header' | 'button' | 'bullet' | 'icon' | 'icons' | 'progress' | 'label' | 'title'>;
+export type StepperSelectors = Selectors<'stepper' | 'step' | 'header' | 'bullet' | 'icon' | 'icons' | 'progress' | 'content' | 'name' | 'label'>;
 
 export default function Stepper({ cc = {}, steps, completed, setCompleted, navigation = 'backwards', variant = 'default', ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: StepperSelectors;
+        navigation?: 'none' | 'forwards' | 'backwards' | 'both';
+        variant?: 'default' | 'compact' | 'vertical';
         steps: {
-            title: string;
+            name: string;
+            icon: React.ReactNode;
             label?: string;
-            icon?: React.ReactNode;
             error?: boolean;
         }[];
         completed: number;
         setCompleted?: (value: number) => void;
-        navigation?: 'none' | 'forwards' | 'backwards' | 'both';
-        variant?: 'default' | 'compact' | 'vertical';
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
-    const stepsArray = variant === 'compact' ? steps.slice(Math.min(completed, steps.length - 1), completed + 1) : steps;
-    const vertical = variant === 'compact' || variant === 'vertical';
+    const stepsArray = variant === 'compact' ?
+        steps.slice(Math.min(completed, steps.length - 1), completed + 1) :
+        steps;
 
-    return <div {...props} className={classes(style.wrapper, props.className)} data-variant={variant}>
-        <div className={style.stepper}>
-            {stepsArray.map(({ title, label, icon, error }, i) => {
-                const navigatable = (navigation === 'forwards' ? i >= completed :
-                    navigation === 'backwards' ? i < completed :
-                        navigation === 'both' ? true : false) && variant !== 'compact';
-                const stepId = `${id}__${i}`;
-                const isCompleted = variant === 'compact' ? completed === steps.length : i < completed;
+    return <div
+        {...props}
+        className={classes(
+            style.stepper,
+            variant !== 'default' && style.vertical,
+            props.className
+        )}>
 
-                return <div key={i} className={style.step} data-completed={isCompleted} data-current={variant === 'compact' ? !isCompleted : i === completed} data-error={error}>
-                    <div className={style.header}>
-                        <Halo disabled={!navigatable} cc={{ halo: style.halo }}>
-                            <button type="button" className={style.button} disabled={!navigatable} onClick={() => setCompleted?.(i)} aria-labelledby={label ? stepId : undefined}>
-                                <div className={style.bullet}>
-                                    <div className={style.icon}>
-                                        <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} initial={{ translate: isCompleted ? '0% -50%' : '0% 0%' }} triggers={[{ on: isCompleted }, { on: !isCompleted, reverse: true }]}>
-                                            <div className={style.icons}>
-                                                <div className={style.icon}>{icon}</div>
-                                                <Icon type="check" />
-                                            </div>
-                                        </Animatable>
+        {stepsArray.map(({ name, label, icon, error }, i) => {
+            const navigatable = (navigation === 'forwards' ? i >= completed :
+                navigation === 'backwards' ? i < completed :
+                    navigation === 'both' ? true : false) && variant !== 'compact';
+            const isCompleted = variant === 'compact' ? completed === steps.length : i < completed;
+
+            if (!label) label = (i + 1 + '').padStart(2, '0');
+
+            return <div
+                key={i}
+                className={style.step}
+                data-completed={isCompleted}
+                data-current={variant === 'compact' ? !isCompleted : i === completed}
+                data-error={error}>
+
+                <div className={style.header}>
+                    <Halo disabled={!navigatable} cc={{ halo: style.halo }}>
+                        <button
+                            type="button"
+                            className={style.bullet}
+                            disabled={!navigatable}
+                            onClick={() => setCompleted?.(i)}
+                            aria-labelledby={`${id}-${i}`}>
+                            <div className={style.icon}>
+                                <Animatable
+                                    initial={{
+                                        translate: isCompleted ? '0% -25%' : '0% 25%'
+                                    }}
+                                    animate={{
+                                        translate: ['0% 25%', '0% -25%'],
+                                        duration: .35
+                                    }}
+                                    triggers={[
+                                        { on: isCompleted },
+                                        { on: !isCompleted, reverse: true }
+                                    ]}>
+                                    <div className={style.icons}>
+                                        <div className={style.icon}>
+                                            {icon}
+                                        </div>
+                                        <div className={style.icon}>
+                                            <Icon type="check" />
+                                        </div>
                                     </div>
-                                </div>
-                            </button>
-                        </Halo>
+                                </Animatable>
+                            </div>
+                        </button>
+                    </Halo>
 
-                        {label && !vertical && <span className={style.label} id={stepId}>{label}</span>}
+                    {i < steps.length - 1 && variant !== 'compact' && <div className={style.progress} />}
+                </div>
 
-                        {i < steps.length - 1 && variant !== 'compact' && <div className={style.progress} />}
-                    </div>
+                <div className={style.content}>
+                    <div className={style.label} id={`${id}-${i}`}>{label}</div>
+                    <div className={style.name}>{name}</div>
+                </div>
+            </div>;
+        })}
 
-                    <div className={style.title}>
-                        {label && vertical && <span className={style.label} id={stepId}>{label}</span>}
-
-                        {title}
-                    </div>
-                </div>;
-            })}
-        </div>
-
-        {variant === 'compact' && <ProgressBar value={completed / steps.length} cc={{ track: style.track }} />}
+        {variant === 'compact' &&
+            <ProgressBar size="sml" value={completed / steps.length} cc={{ track: style.track }} />}
     </div>;
 }
