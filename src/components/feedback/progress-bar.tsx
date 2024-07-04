@@ -43,6 +43,8 @@ const styles = createStyles('progress-bar', {
 
 export type ProgressBarSelectors = Selectors<'track' | 'progress' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
+// vertical variant?
+
 export default function ProgressBar({ cc = {}, size = 'med', value, defaultValue = 0, color, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

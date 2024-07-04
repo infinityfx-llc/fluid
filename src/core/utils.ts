@@ -83,14 +83,32 @@ export function formatCookie(key: string, value: string, options: CookieOptions 
     return `${key}=${value}; ${config}`;
 }
 
+const selector = 'a[href], button, input, textarea, [tabindex]';
+
 export function getFocusable<T extends boolean = true>(element: HTMLElement | null, list: T = true as T): T extends true | undefined ? HTMLElement[] : HTMLElement | null {
     if (!element) return list ? [] : null as any;
 
-    const selector = 'a[href], button, input, textarea, [tabindex]:not([tabindex="-1"])';
-    const elements = Array.from(element.querySelectorAll(selector))
-        .filter(el => !el.hasAttribute('disabled') && el.getAttribute('tabindex') !== '-1' && !el.closest('[aria-hidden="true"]'));
+    const elements = filterFocusable(Array.from(element.querySelectorAll(selector)), false);
 
     return (list ? elements : elements[0] || null) as any;
+}
+
+export function filterFocusable(elements: Element[], types = true) {
+    return elements
+        .map(el => {
+            if (types && !el.matches(selector)) {
+                const child = el.querySelector(selector);
+
+                if (!child) return null;
+
+                el = child;
+            }
+
+            return el.hasAttribute('disabled') || el.getAttribute('tabindex') === '-1' || el.closest('[aria-hidden="true"]') ?
+                null :
+                el;
+        })
+        .filter(el => el !== null);
 }
 
 function hexToRgb(str: string) {

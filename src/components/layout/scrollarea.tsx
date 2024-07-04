@@ -88,12 +88,13 @@ const styles = createStyles('scrollarea', {
 
 export type ScrollareaSelectors = Selectors<'track' | 'v__hover' | 'v__permanent' | 'handle'>;
 
-export default function Scrollarea({ children, cc = {}, horizontal = false, variant = 'hover', disabled = false, ref, ...props }:
+export default function Scrollarea({ children, cc = {}, horizontal = false, variant = 'hover', behavior = 'normal', disabled = false, ref, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: ScrollareaSelectors;
         horizontal?: boolean;
         variant?: 'hover' | 'permanent';
+        behavior?: 'normal' | 'shift';
         disabled?: boolean;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
@@ -109,7 +110,7 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
 
     function wheel(e: WheelEvent) {
         const el = area.current;
-        if (!el) return;
+        if (!el || (!e.shiftKey && behavior === 'shift')) return;
 
         const amount = Math.sign(e.deltaY) * speed;
 
@@ -196,7 +197,7 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
             window.removeEventListener('mouseup', drag);
             areaRef.removeEventListener('wheel', wheel);
         }
-    }, [disabled, horizontal]);
+    }, [disabled, horizontal, behavior]);
 
     const id = useId();
 

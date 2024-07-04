@@ -57,14 +57,14 @@ const keyFromImport = (str: string) => str
     .toLowerCase();
 
 function removeImports(content: string) {
-    return content.replace(/import[^;]*?core(?:\/|\\)style\.js(?:"|');?/gs, '');
+    return content.replace(/import[^;]*?core(?:\/|\\)style\.js(?:"|');?/g, '');
 }
 
 function appendDependents(name: string, content: string) {
     name = keyFromImport(name);
 
     const dependencyArray = STYLE_CONTEXT.DEPENDENTS[name] || [];
-    Array.from(content.matchAll(/import\s+\w+\s+from\s*(?:'|").*?\/([^\/]+)(\/index)?\.js(?:'|")/gs))
+    Array.from(content.matchAll(/import\s+\w+\s+from\s*(?:'|").*?\/([^\/]+)(\/index)?\.js(?:'|")/g))
         .forEach(entry => {
             const key = keyFromImport(entry[1]);
 
@@ -97,7 +97,7 @@ async function emitCss() {
         outer: for (const file of files) {
             const contents = fs.readFileSync(file, { encoding: 'ascii' });
 
-            const imports = Array.from(contents.matchAll(/import\s*(?:\{([^\}]+)\}|\*\s+as.*|\w+)\s*from\s*(?:'|")@infinityfx\/fluid(?:'|")/gs));
+            const imports = Array.from(contents.matchAll(/import\s*(?:\{([^\}]+)\}|\*\s+as.*|\w+)\s*from\s*(?:'|")@infinityfx\/fluid(?:'|")/g));
 
             for (const entry of imports) {
                 const components = entry[1];
@@ -131,17 +131,18 @@ async function emitCss() {
             return stylesheet += entry.rules
         }, '');
 
-    fs.writeFileSync(output + '/fluid.css', stylesheet);
+    fs.writeFileSync((STYLE_CONTEXT.OUTPUT === 'automatic' ? output : process.cwd()) + '/fluid.css', stylesheet);
 }
 
 async function insertThemedStyles(contents: string) {
-    const context = contents.match(/import\s*\{[^{]*(STYLE_CONTEXT(?:\s*as\s*([^\s},]+))?)[^}]*\}/s);
-    contents = contents.replace(new RegExp(`${context?.[2] || context?.[1]}\\.THEME`, 's'), JSON.stringify(STYLE_CONTEXT.THEME));
+    const context = contents.match(/import\s*\{[^{]*(STYLE_CONTEXT(?:\s*as\s*([^\s},]+))?)[^}]*\}/);
+    contents = contents.replace(new RegExp(`${context?.[2] || context?.[1]}\\.THEME`), JSON.stringify(STYLE_CONTEXT.THEME));
 
-    const cssInsert = contents.match(/(?:(?:'|")use\sclient(?:'|");\n?)?()/s);
-    if (cssInsert?.index === undefined) return contents;
+    const cssInsert = contents.match(/(?:(?:'|")use\sclient(?:'|");\n?)?()/);
 
     await emitCss();
+
+    if (cssInsert?.index === undefined || STYLE_CONTEXT.OUTPUT === 'manual') return contents;
 
     const idx = cssInsert.index + cssInsert[0].length;
     return contents.slice(0, idx) + 'import "../fluid.css";' + contents.slice(idx);
@@ -168,14 +169,14 @@ async function processStyles(name: string, content: string, Element: any) {
 
     const createStyles = content.match(/import\s*\{[^{]*(createStyles(?:\s*as\s*([^\s},]+))?)[^}]*\}/);
 
-    const match = content.match(new RegExp(`(=|,|;|\\s|:)${createStyles?.[2] || createStyles?.[1]}\\(`, 's'));
+    const match = content.match(new RegExp(`(=|,|;|\\s|:)${createStyles?.[2] || createStyles?.[1]}\\(`));
     if (match?.index) {
         const to = matchBrackets(content, match.index as number + match[0].length, '()');
         content = content.slice(0, match.index + 1) + JSON.stringify(selectors || {}) + content.slice(to + 1);
     }
 
     const createGlobalStyles = content.match(/import\s*\{[^{]*(createGlobalStyles(?:\s*as\s*([^\s},]+))?)[^}]*\}/);
-    let matches = content.matchAll(new RegExp(`(=|,|;|\\s|:)${createGlobalStyles?.[2] || createGlobalStyles?.[1]}\\(`, 'gs')), globalStyle, globalStyleOffset = 0;
+    let matches = content.matchAll(new RegExp(`(=|,|;|\\s|:)${createGlobalStyles?.[2] || createGlobalStyles?.[1]}\\(`, 'g')), globalStyle, globalStyleOffset = 0;
 
     while (globalStyle = matches.next().value) {
         const i = globalStyle.index + globalStyleOffset;

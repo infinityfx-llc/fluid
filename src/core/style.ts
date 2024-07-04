@@ -15,6 +15,7 @@ export const STYLE_CONTEXT: {
     };
     THEME: FluidTheme;
     PATHS: string[];
+    OUTPUT: 'automatic' | 'manual';
 } = {
     STYLES: {},
     COMPONENTS: {},
@@ -25,12 +26,11 @@ export const STYLE_CONTEXT: {
         './app/**/*.{jsx,tsx}',
         './pages/**/*.{jsx,tsx}',
         './components/**/*.{jsx,tsx}'
-    ]
+    ],
+    OUTPUT: 'automatic'
 };
 
-function hashStyles(...styles: FluidStyles[]) {
-    const str = JSON.stringify(styles);
-
+function hash(str: string) {
     let l = 0xdeadbeef, r = 0x41c6ce57;
     for (let i = 0, char; i < str.length; i++) {
         char = str.charCodeAt(i);
@@ -91,14 +91,16 @@ export function createStyles(key: keyof FluidComponents, styles: ((fluid: FluidT
     const ruleset = styles instanceof Function ? styles(STYLE_CONTEXT.THEME) : styles;
 
     const override = STYLE_CONTEXT.COMPONENTS[key] || {};
-    STYLE_CONTEXT.STYLES[key] = rulesToString(mergeStyles(override, ruleset), hashStyles(override, ruleset));
+    const hashKey = hash(STYLE_CONTEXT.OUTPUT === 'automatic' ? JSON.stringify([override, ruleset]) : key);
+
+    STYLE_CONTEXT.STYLES[key] = rulesToString(mergeStyles(override, ruleset), hashKey);
 
     return STYLE_CONTEXT.STYLES[key].selectors;
 }
 
 export function createGlobalStyles(styles: ((fluid: FluidTheme) => FluidStyles) | FluidStyles) {
     const ruleset = styles instanceof Function ? styles(STYLE_CONTEXT.THEME) : styles;
-    const key = hashStyles(ruleset);
+    const key = hash(JSON.stringify(ruleset));
     const { rules } = rulesToString(ruleset);
 
     if (!(key in STYLE_CONTEXT.STYLES)) {

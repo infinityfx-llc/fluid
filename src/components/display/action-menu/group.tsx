@@ -2,7 +2,7 @@
 
 import { Animate } from '@infinityfx/lively';
 import { useState, useRef, useId } from 'react';
-import { combineClasses } from '../../../../src/core/utils';
+import { combineClasses, getFocusable } from '../../../../src/core/utils';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import Item from './item';
@@ -44,6 +44,7 @@ export default function Group({ children, cc = {}, label, className, ...props }:
 
     const id = useId();
     const element = useRef<HTMLDivElement>(null);
+    const content = useRef<HTMLDivElement>(null);
     const [state, setState] = useState({ open: false, side: 'left' });
 
     function openMenu() {
@@ -61,8 +62,10 @@ export default function Group({ children, cc = {}, label, className, ...props }:
     return <div
         ref={element}
         className={style.wrapper}
+        onFocus={openMenu}
         onMouseEnter={openMenu}
-        onMouseLeave={() => setState({ ...state, open: false })}>
+        onMouseLeave={() => setState({ ...state, open: false })}
+        onBlur={() => setState({ ...state, open: false })}>
         <Item
             {...props}
             aria-haspopup="menu"
@@ -75,6 +78,18 @@ export default function Group({ children, cc = {}, label, className, ...props }:
                 state.open ?
                     setState({ ...state, open: false }) :
                     openMenu();
+            }}
+            onKeyDown={e => {
+                props.onKeyDown?.(e);
+
+                if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                    const child = getFocusable(content.current, false);
+
+                    if (child) {
+                        e.preventDefault();
+                        child.focus();
+                    }
+                }
             }}>
             {label}
 
@@ -104,6 +119,7 @@ export default function Group({ children, cc = {}, label, className, ...props }:
             levels={2}
             stagger={.05}>
             <div
+                ref={content}
                 id={id}
                 role="menu"
                 className={style.menu}

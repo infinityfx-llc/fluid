@@ -97,6 +97,7 @@ export type FluidComponents = {
 }
 
 export type FluidConfig = {
+    cssOutput?: 'automatic' | 'manual';
     paths?: string[];
     theme?: PartialFluidTheme;
     components?: FluidComponents;

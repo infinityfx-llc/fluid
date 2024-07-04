@@ -90,7 +90,7 @@ export default function Code({ children, cc = {}, title, dangerouslyInject, ...p
                     {i + 1} <br />
                 </Fragment>)}
             </div>
-            <Scrollarea horizontal>
+            <Scrollarea horizontal behavior="shift">
                 <pre id={id} className={style.content} dangerouslySetInnerHTML={dangerouslyInject ? { __html: children } : undefined}>
                     {dangerouslyInject ? undefined : children}
                 </pre>

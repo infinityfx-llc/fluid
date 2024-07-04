@@ -3,8 +3,9 @@
 import Halo from '../../feedback/halo';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
-import { classes, combineClasses } from '../../../core/utils';
+import { classes, combineClasses, combineRefs, filterFocusable } from '../../../core/utils';
 import { usePopover } from '../../layout/popover/root';
+import { useRef } from 'react';
 
 const styles = createStyles('action-menu.item', {
     '.item': {
@@ -34,6 +35,8 @@ const styles = createStyles('action-menu.item', {
 
 export type ActionMenuItemSelectors = Selectors<'item'>;
 
+// todo: home/end/escape keys
+
 export default function Item({ children, cc = {}, keepOpen, className, ...props }:
     {
         ref?: React.Ref<HTMLButtonElement>;
@@ -42,10 +45,13 @@ export default function Item({ children, cc = {}, keepOpen, className, ...props 
     } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);
 
+    const ref = useRef<HTMLButtonElement>(null);
     const popover = usePopover();
 
     return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
-        <button {...props}
+        <button
+            {...props}
+            ref={combineRefs(props.ref, ref)}
             type="button"
             role="menuitem"
             className={classes(style.item, className)}
@@ -53,6 +59,34 @@ export default function Item({ children, cc = {}, keepOpen, className, ...props 
                 props.onClick?.(e);
 
                 if (!keepOpen) popover.toggle(false);
+            }}
+            onKeyDown={e => {
+                props.onKeyDown?.(e);
+                
+                let parent = ref.current?.parentElement;
+                while (parent && !parent.matches('[role="menu"], [role="group"]')) parent = parent.parentElement;
+
+                if (parent?.matches('[role="menu"]') && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+                    const el = parent.parentElement?.querySelector('[aria-haspopup="menu"]') as HTMLElement;
+
+                    if (el) {
+                        e.preventDefault();
+                        el.focus();
+                    }
+                }
+
+                const offset = e.key === 'ArrowDown' ? 1 :
+                    e.key === 'ArrowUp' ? -1 :
+                        0;
+
+                if (parent && offset !== 0) {
+                    const focusable = filterFocusable(Array.from(parent.children));
+                    const i = focusable.findIndex(el => el === ref.current);
+
+                    const el = focusable[i + offset] as HTMLElement | undefined;
+                    if (el) el.focus();
+                    if (i >= 0) e.preventDefault();
+                }
             }}>
             {children}
         </button>

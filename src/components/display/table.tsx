@@ -137,7 +137,12 @@ export default function Table<T extends { [key: string]: string | number | Date;
 
     const gridTemplateColumns = `${selectable ? 'auto' : ''} repeat(${columns.length}, 1fr) ${rowActions ? 'auto' : ''}`;
 
-    return <Scrollarea {...props} horizontal role="grid" className={classes(style.table, props.className)}>
+    return <Scrollarea
+        {...props}
+        role="grid"
+        horizontal
+        behavior="shift"
+        className={classes(style.table, props.className)}>
         <div role="rowgroup" className={style.rows}>
             <div role="row" className={classes(style.row, style.header)} style={{ gridTemplateColumns }}>
                 {selectable && <div className={style.collapsed}>

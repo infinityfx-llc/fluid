@@ -15,6 +15,7 @@ export default async function (flag: string) {
     STYLE_CONTEXT.THEME = mergeRecursive(config.theme || {}, STYLE_CONTEXT.THEME);
     STYLE_CONTEXT.COMPONENTS = config.components || {};
     STYLE_CONTEXT.PATHS = config.paths || STYLE_CONTEXT.PATHS;
+    STYLE_CONTEXT.OUTPUT = config.cssOutput || STYLE_CONTEXT.OUTPUT;
 
     console.log(`\r\n> ${packageJson.name} v${packageJson.version}\n`);
 
@@ -49,8 +50,8 @@ async function compileIcons() {
         contents = contents.replace(new RegExp(`${icon}:\\w+(,|\\})`), `${icon}:${(icons[icon as FluidIcon] as any).name}$1`);
     }
 
-    const imports = Array.from(text.matchAll(/import\s*(.+?)from\s*(?:"|')([^"']+)(?:"|')/gs))
-        .concat(Array.from(text.matchAll(/(?:const|let|var)\s*(.+?)\s*=\s*require\((?:'|")([^"']+)(?:"|')/gs)));
+    const imports = Array.from(text.matchAll(/import\s*(.+?)from\s*(?:"|')([^"']+)(?:"|')/g))
+        .concat(Array.from(text.matchAll(/(?:const|let|var)\s*(.+?)\s*=\s*require\((?:'|")([^"']+)(?:"|')/g)));
 
     contents = imports.map(([_, value, path]) => `import ${value.replace(/:/g, ' as ')} from "${path}";`).join('') + contents; // replace local paths
 
