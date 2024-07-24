@@ -12,43 +12,35 @@ const styles = createStyles('combine', {
         flexDirection: 'column'
     },
 
-    '.d__horizontal .direct:not(:last-child), .d__horizontal > *:not(:last-child) .nested': {
+    '.d__horizontal .item:not(:last-child)': {
         borderTopRightRadius: '0 !important',
         borderBottomRightRadius: '0 !important'
     },
 
-    '.d__horizontal .direct:not(:first-child), .d__horizontal > *:not(:first-child) .nested': {
+    '.d__horizontal .item:not(:first-child)': {
         borderTopLeftRadius: '0 !important',
         borderBottomLeftRadius: '0 !important'
     },
 
-    '.d__vertical .direct:not(:last-child), .d__vertical > *:not(:last-child) .nested': {
+    '.d__vertical .item:not(:last-child)': {
         borderBottomLeftRadius: '0 !important',
         borderBottomRightRadius: '0 !important'
     },
 
-    '.d__vertical .direct:not(:first-child), .d__vertical > *:not(:first-child) .nested': {
+    '.d__vertical .item:not(:first-child)': {
         borderTopLeftRadius: '0 !important',
         borderTopRightRadius: '0 !important'
     },
 
-    '.d__horizontal .direct__border + .direct__border, .d__horizontal > *:has(.nested) + .direct__border': {
-        borderLeft: 'none !important'
-    },
-
-    '.d__vertical .direct__border + .direct__border, .d__vertical > *:has(.nested) + .direct__border': {
-        borderTop: 'none !important'
-    },
-
-    '.d__horizontal .direct__border + * .nested, .d__horizontal > *:has(.nested) + * .nested': {
+    '.d__horizontal .border + .border': {
         marginLeft: '-1px'
     },
 
-    '.d__vertical .direct__border + * .nested, .d__vertical > *:has(.nested) + * .nested': {
+    '.d__vertical .border + .border': {
         marginTop: '-1px'
     },
 
-    '.nested:has(:focus)': {
+    '.border:has(:focus)': {
         zIndex: 1
     }
 });
@@ -73,11 +65,11 @@ export default function Combine({ children, cc = {}, direction = 'horizontal', .
 
             return cloneElement(child, {
                 cc: {
-                    button: style.direct,
-                    button__var__neutral: style.direct__border,
-                    toggle: style.direct,
-                    toggle__var__neutral: style.direct__border,
-                    field: style.nested
+                    button: style.item,
+                    toggle: style.item,
+                    button__var__neutral: style.border,
+                    toggle__var__neutral: style.border,
+                    field: classes(style.item, style.border)
                 }
             } as any);
         })}
