@@ -9,13 +9,13 @@ import { createStyles } from '../../core/style';
 import { Icon } from '../../core/icons';
 
 const styles = createStyles('number-field', {
-    '.wrapper .button__start': {
+    '.field .button__start': {
         marginLeft: '.3em',
         background: 'var(--f-clr-bg-100)',
         color: 'var(--f-clr-text-100)'
     },
 
-    '.wrapper .button__end': {
+    '.field .button__end': {
         marginRight: '.3em',
         background: 'var(--f-clr-bg-100)',
         color: 'var(--f-clr-text-100)'
@@ -85,7 +85,7 @@ export default function NumberField({ cc = {}, precision = 3, controls = true, d
             props.onBlur?.(e);
         }}
         cc={{
-            wrapper: style.wrapper,
+            field: style.field,
             input: style.input,
             ...cc
         }}

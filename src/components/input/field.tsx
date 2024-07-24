@@ -1,19 +1,12 @@
 'use client';
 
+import { useMemo, useState } from 'react';
 import { classes, combineClasses } from '../../../src/core/utils';
 import useInputProps from '../../../src/hooks/use-input-props';
-import { FluidError, FluidInputvalue, FluidSize, Selectors } from '../../../src/types';
-import { useId } from 'react';
+import { FluidInputvalue, FluidSize, Selectors } from '../../../src/types';
 import { createStyles } from '../../core/style';
 
 const styles = createStyles('field', {
-    '.wrapper': {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--f-spacing-xxs)',
-        minWidth: 'min(100vw, 12em)'
-    },
-
     '.input': {
         border: 'none',
         background: 'none',
@@ -36,7 +29,8 @@ const styles = createStyles('field', {
         display: 'flex',
         alignItems: 'center',
         overflow: 'hidden',
-        outline: 'solid 3px transparent'
+        outline: 'solid 3px transparent',
+        minWidth: 'min(var(--width, 100vw), 12em)'
     },
 
     '.content': {
@@ -45,18 +39,6 @@ const styles = createStyles('field', {
         gap: 'var(--f-spacing-xsm)',
         padding: '.675em',
         flexGrow: 1
-    },
-
-    '.label': {
-        fontSize: '.8em',
-        fontWeight: 500,
-        color: 'var(--f-clr-text-100)'
-    },
-
-    '.error': {
-        fontSize: '.8em',
-        fontWeight: 500,
-        color: 'var(--f-clr-error-100)'
     },
 
     '.field:focus-within': {
@@ -106,63 +88,108 @@ const styles = createStyles('field', {
         fontSize: 'var(--f-font-size-med)'
     },
 
-    '.wrapper.round .field': {
+    '.field.round': {
         borderRadius: '999px'
     }
 });
 
-export type FieldSelectors = Selectors<'wrapper' | 'input' | 'field' | 'content' | 'label' | 'error' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
+export type FieldSelectors = Selectors<'input' | 'field' | 'content' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
 export type FieldProps = {
     ref?: React.Ref<HTMLDivElement>;
-    defaultValue?: FluidInputvalue;
+    inputRef?: React.Ref<HTMLInputElement>;
     cc?: FieldSelectors;
+    defaultValue?: FluidInputvalue;
     round?: boolean;
     size?: FluidSize;
-    error?: FluidError;
-    showError?: boolean;
     icon?: React.ReactNode;
-    label?: string;
     left?: React.ReactNode;
     right?: React.ReactNode;
     onEnter?: () => void;
-    inputRef?: React.Ref<HTMLInputElement>;
+    error?: any;
+    shape?: string;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>;
 
-export default function Field({ cc = {}, round = false, size = 'med', error, showError, icon, label, left, right, onEnter, inputRef, ...props }: FieldProps) {
+export default function Field({ cc = {}, round = false, size = 'med', error, icon, left, right, onEnter, inputRef, shape, defaultValue, ...props }: FieldProps) {
     const style = combineClasses(styles, cc);
 
-    const id = useId();
     const [split, rest] = useInputProps(props);
+    const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(defaultValue || '');
 
-    return <div {...rest} className={classes(
-        style.wrapper,
-        style[`s__${size}`],
-        round && style.round,
-        props.className
-    )}>
-        {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
+    const masks = useMemo(() => {
+        return shape?.split('')
+            .map(char => {
+                if (/0/.test(char)) return /[0-9]/;
+                if (/\*/.test(char)) return /[a-zA-Z0-9]/;
 
-        <div className={style.field} data-error={!!error} data-disabled={props.disabled}>
-            {left}
+                return char;
+            }) || [];
+    }, [shape]);
 
-            <label className={style.content}>
-                {icon}
+    return <div
+        {...rest}
+        className={classes(
+            style.field,
+            style[`s__${size}`],
+            round && style.round,
+            props.className
+        )}
+        data-error={!!error}
+        data-disabled={props.disabled}>
+        {left}
 
-                <input
-                    {...split}
-                    className={style.input}
-                    ref={inputRef}
-                    aria-labelledby={label ? id : undefined}
-                    aria-invalid={!!error}
-                    onKeyDown={e => {
-                        if (e.key === 'Enter') onEnter?.();
-                    }} />
-            </label>
+        <label className={style.content}>
+            {icon}
 
-            {right}
-        </div>
+            <input
+                {...split}
+                ref={inputRef}
+                value={value}
+                onChange={e => {
+                    let input = e.target.value.split(''),
+                        output = '',
+                        len = 0;
 
-        {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
+                    for (let i = 0, j = 0; i < input.length; i++) {
+                        const char = input[i],
+                            mask = masks[j];
+
+                        if (!mask) {
+                            if (j === 0) {
+                                output = e.target.value;
+                                len = output.length;
+                            }
+
+                            break;
+                        }
+
+                        if (typeof mask === 'string') {
+                            output += mask;
+
+                            if (mask !== char || i !== j) i--;
+                        } else
+                            if (mask.test(char)) {
+                                output += char;
+                                len = output.length;
+                            } else {
+                                break;
+                            }
+
+                        j++;
+                    }
+
+                    e.target.value = output.slice(0, len);
+                    setValue?.(e.target.value);
+
+                    props.onChange?.(e);
+                }}
+                className={style.input}
+                aria-invalid={!!error}
+                onKeyDown={e => {
+                    if (e.key === 'Enter') onEnter?.();
+                }} />
+        </label>
+
+        {right}
     </div>;
 }

@@ -2,23 +2,11 @@
 
 import { classes, combineClasses } from "../../../src/core/utils";
 import useInputProps from "../../../src/hooks/use-input-props";
-import { FluidError, FluidInputvalue, FluidSize, Selectors } from "../../../src/types";
-import { useId, useRef, useState } from "react";
+import { FluidInputvalue, FluidSize, Selectors } from "../../../src/types";
+import { useRef, useState } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('pincode', {
-    '.wrapper': {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--f-spacing-xxs)'
-    },
-
-    '.label': {
-        fontSize: '.8em',
-        fontWeight: 500,
-        color: 'var(--f-clr-text-100)'
-    },
-
     '.pincode': {
         display: 'flex',
         gap: 'var(--f-spacing-xsm)'
@@ -83,12 +71,12 @@ const styles = createStyles('pincode', {
         fontSize: 'var(--f-font-size-med)'
     },
 
-    '.wrapper.round .field:first-child': {
+    '.pincode.round .field:first-child': {
         borderTopLeftRadius: '999px',
         borderBottomLeftRadius: '999px'
     },
 
-    '.wrapper.round .field:last-child': {
+    '.pincode.round .field:last-child': {
         borderTopRightRadius: '999px',
         borderBottomRightRadius: '999px'
     },
@@ -115,9 +103,9 @@ const styles = createStyles('pincode', {
     }
 });
 
-export type PincodeSelectors = Selectors<'wrapper' | 'label' | 'pincode' | 'field' | 'input' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
+export type PincodeSelectors = Selectors<'pincode' | 'field' | 'input' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
-export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size = 'med', round = false, label, value, error, onChange, defaultvalue, autoFocus, ...props }:
+export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size = 'med', round = false, value, error, onChange, defaultvalue, autoFocus, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: PincodeSelectors;
@@ -126,14 +114,12 @@ export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size =
         masked?: boolean;
         size?: FluidSize;
         round?: boolean;
-        label?: string;
         value?: string;
-        error?: FluidError;
+        error?: any;
         onChange?: (value: string) => void;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'size' | 'value' | 'defaultValue' | 'onChange' | 'type'>) {
     const style = combineClasses(styles, cc);
 
-    const id = useId();
     const refs = useRef<(HTMLInputElement | null)[]>([]);
 
     const length = format.reduce((len, val) => len + val, 0);
@@ -180,43 +166,44 @@ export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size =
 
     const [split, rest] = useInputProps(props);
 
-    return <div {...rest}
+    return <div
+        {...rest}
         className={classes(
-            style.wrapper,
+            style.pincode,
             style[`s__${size}`],
             round && style.round,
             props.className
-        )}>
-        {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
+        )}
+        data-error={!!error}
+        data-disabled={props.disabled}>
 
-        <div className={style.pincode} data-error={!!error} data-disabled={props.disabled}>
-            {format.map((count, i) => {
-                const min = format.slice(0, i).reduce((len, val) => len + val, 0);
+        {format.map((count, i) => {
+            const min = format.slice(0, i).reduce((len, val) => len + val, 0);
 
-                return <div key={i} className={style.group}>
-                    {new Array(count).fill(0).map((_, i) => {
-                        i += min;
+            return <div key={i} className={style.group}>
+                {new Array(count).fill(0).map((_, i) => {
+                    i += min;
 
-                        return <div key={i} className={style.field}>
-                            <input ref={el => {
-                                refs.current[i] = el;
-                            }}
-                                aria-labelledby={label ? id : undefined}
-                                autoFocus={i === 0 && autoFocus}
-                                disabled={props.disabled}
-                                className={style.input}
-                                aria-invalid={!!error}
-                                inputMode="numeric"
-                                type={masked ? 'password' : 'text'}
-                                value={state.charAt(i)}
-                                onChange={handleChange}
-                                onKeyDown={e => handleKey(e, i)} />
-                        </div>;
-                    })}
-                </div>;
-            })}
-        </div>
+                    return <div key={i} className={style.field}>
+                        <input ref={el => {
+                            refs.current[i] = el;
+                        }}
+                            aria-label={split['aria-label']}
+                            aria-labelledby={split['aria-labelledby']}
+                            autoFocus={i === 0 && autoFocus}
+                            disabled={props.disabled}
+                            className={style.input}
+                            aria-invalid={!!error}
+                            inputMode="numeric"
+                            type={masked ? 'password' : 'text'}
+                            value={state.charAt(i)}
+                            onChange={handleChange}
+                            onKeyDown={e => handleKey(e, i)} />
+                    </div>;
+                })}
+            </div>;
+        })}
 
-        <input {...split} type="hidden" aria-labelledby={label ? id : undefined} value={state} />
+        <input {...split} type="hidden" value={state} />
     </div>;
 }

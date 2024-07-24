@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useId, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { FieldProps } from './field';
 import Button from './button';
 import { FluidInputvalue, FluidSize, PopoverRootReference, Selectors } from '../../../src/types';
@@ -12,25 +12,6 @@ import { createStyles } from '../../core/style';
 import { Icon } from '../../core/icons';
 
 const styles = createStyles('select', {
-    '.wrapper': {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--f-spacing-xxs)',
-        minWidth: 'min(100vw, 12em)'
-    },
-
-    '.label': {
-        fontSize: '.8em',
-        fontWeight: 500,
-        color: 'var(--f-clr-text-100)'
-    },
-
-    '.error': {
-        fontSize: '.8em',
-        fontWeight: 500,
-        color: 'var(--f-clr-error-100)'
-    },
-
     '.field': {
         backgroundColor: 'var(--f-clr-fg-100)',
         border: 'solid 1px var(--f-clr-fg-200)',
@@ -38,7 +19,8 @@ const styles = createStyles('select', {
         color: 'var(--f-clr-grey-200)',
         transition: 'border-color .2s, color .2s',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        minWidth: 'min(var(--width, 100vw), 12em)'
     },
 
     '.field:focus-within': {
@@ -131,7 +113,7 @@ const styles = createStyles('select', {
         fontSize: 'var(--f-font-size-med)'
     },
 
-    '.wrapper.round .field': {
+    '.field.round': {
         borderRadius: '999px'
     },
 
@@ -153,7 +135,7 @@ const styles = createStyles('select', {
     }
 });
 
-export type SelectSelectors = Selectors<'wrapper' | 'label' | 'error' | 'field' | 'content' | 'placeholder' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'badge' | 'icon'>;
+export type SelectSelectors = Selectors<'field' | 'content' | 'placeholder' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'badge' | 'icon'>;
 
 type SelectProps<T> = {
     cc?: SelectSelectors;
@@ -184,9 +166,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
         defaultValue,
         onChange,
         readOnly,
-        label,
         error,
-        showError,
         icon,
         size = 'med',
         contentSize,
@@ -196,7 +176,6 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
     }: SelectProps<T>) {
     const style = combineClasses(styles, cc);
 
-    const id = useId();
     const selfInputRef = useRef<HTMLInputElement>(null);
     const popover = useRef<PopoverRootReference>(null);
     const [state, setState] = value !== undefined ? [value, onChange] : useState<T>(defaultValue || (multiple ? [] as any : '' as T));
@@ -207,49 +186,52 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
     }, [multiple]);
 
     return <Combobox.Root ref={popover} stretch>
-        <div {...rest}
-            className={classes(
-                style.wrapper,
-                style[`s__${size}`],
-                round && style.round,
-                props.className
-            )}
-            aria-haspopup="listbox">
-            {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
+        <Combobox.Trigger disabled={props.disabled || readOnly}>
+            <div
+                {...rest}
+                aria-haspopup="listbox"
+                className={classes(
+                    style.field,
+                    style[`s__${size}`],
+                    round && style.round,
+                    props.className
+                )}
+                data-error={!!error}
+                data-disabled={props.disabled}>
+                <div className={style.content__wrapper}>
+                    {icon}
 
-            <Combobox.Trigger disabled={props.disabled || readOnly}>
-                <div className={style.field} data-error={!!error} data-disabled={props.disabled}>
-                    <div className={style.content__wrapper}>
-                        {icon}
+                    <div className={style.content}>
+                        {(Array.isArray(state) ? !state.length : state === null || state === undefined || state === '') && <div className={style.placeholder}>{placeholder}</div>}
 
-                        <div className={style.content}>
-                            {(Array.isArray(state) ? !state.length : state === null || state === undefined || state === '') && <div className={style.placeholder}>{placeholder}</div>}
-
-                            {Array.isArray(state) ?
-                                (state.length < 3 ?
-                                    state.map((val, i) => <Badge key={i} round={round} cc={{ badge: style.badge }}>{val}</Badge>) :
-                                    <>
-                                        <Badge round={round} cc={{ badge: style.badge }}>{state[0]}</Badge>
-                                        <Badge round={round} cc={{ badge: style.badge }}>+{state.length - 1} more</Badge>
-                                    </>
-                                ) :
-                                options.find(option => option.value === state)?.label // TESTING!!
-                            }
-                        </div>
-
-                        <input ref={combineRefs(inputRef, selfInputRef)} {...split} value={state?.toString()} readOnly aria-labelledby={label ? id : undefined} aria-invalid={!!error} className={style.input} />
+                        {Array.isArray(state) ?
+                            (state.length < 3 ?
+                                state.map((val, i) => <Badge key={i} round={round} cc={{ badge: style.badge }}>{val}</Badge>) :
+                                <>
+                                    <Badge round={round} cc={{ badge: style.badge }}>{state[0]}</Badge>
+                                    <Badge round={round} cc={{ badge: style.badge }}>+{state.length - 1} more</Badge>
+                                </>
+                            ) :
+                            options.find(option => option.value === state)?.label // TESTING!!
+                        }
                     </div>
 
-                    <Button compact aria-label={split['aria-label'] || label} round={round} size={size} disabled={props.disabled || readOnly} variant="minimal" style={{
-                        marginRight: '.2em'
-                    }}>
-                        <Icon type="expand" />
-                    </Button>
+                    <input
+                        {...split}
+                        ref={combineRefs(inputRef, selfInputRef)}
+                        readOnly
+                        className={style.input}
+                        value={state?.toString()}
+                        aria-invalid={!!error} />
                 </div>
-            </Combobox.Trigger>
 
-            {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
-        </div>
+                <Button compact aria-label={split['aria-label']} aria-labelledby={split['aria-labelledby']} round={round} size={size} disabled={props.disabled || readOnly} variant="minimal" style={{
+                    marginRight: '.2em'
+                }}>
+                    <Icon type="expand" />
+                </Button>
+            </div>
+        </Combobox.Trigger>
 
         <Combobox.Content size={contentSize} aria-multiselectable={multiple} searchable={searchable} emptyMessage={emptyMessage} round={round}>
             {options.map(({ label, value, disabled }, i) => {

@@ -24,7 +24,8 @@ const InputProps = {
     multiple: 20,
     enterKeyHint: 21,
     inputMode: 22,
-    'aria-label': 23
+    'aria-label': 23,
+    'aria-labelledby': 24
 };
 
 export default function useInputProps<T = any>(props: React.InputHTMLAttributes<T>): [Pick<React.InputHTMLAttributes<T>, keyof typeof InputProps>, React.HTMLAttributes<any>] {

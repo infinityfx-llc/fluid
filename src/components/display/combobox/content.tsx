@@ -56,15 +56,12 @@ const styles = createStyles('combobox.content', {
         lineHeight: 1.25
     },
 
-    '.container .wrapper': {
-        padding: '.25em',
-        paddingBottom: 0
-    },
-
     '.container .field': {
         border: 'none',
         outline: 'none',
-        background: 'var(--f-clr-bg-100)'
+        background: 'var(--f-clr-bg-100)',
+        margin: '.25em',
+        marginBottom: 0
     },
 
     '.container .field__content': {
@@ -160,7 +157,6 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
                     }}
                     icon={<Icon type="search" />}
                     cc={{
-                        wrapper: style.wrapper,
                         field: style.field,
                         content: style.field__content,
                         ...cc

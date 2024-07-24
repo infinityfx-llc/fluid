@@ -13,32 +13,26 @@ import { Icon } from '../../core/icons';
 const colors = ['#eb2a1c', '#eb2a1c', '#e8831e', '#f0d030', '#fff952', '#5aff54'];
 
 const styles = createStyles('password-field', {
-    '.container': {
-        minWidth: 'min(100vw, 12em)'
+    '.wrapper': {
+        minWidth: 'min(var(--width, 100vw), 12em)'
     },
 
-    '.container .wrapper': {
-        width: '100%'
+    '.field': {
+        ['--width' as any]: '100%'
     },
 
-    '.error': {
-        fontSize: '.8em',
-        fontWeight: 500,
-        color: 'var(--f-clr-error-100)'
-    },
-
-    '.container .track': {
+    '.wrapper .track': {
         width: '100%',
         marginTop: 'var(--f-spacing-xsm)'
     },
 
-    '.wrapper .toggle': {
+    '.field .toggle': {
         marginRight: '.3em'
     }
 });
 
 // optimize prop splitting
-export default function PasswordField({ cc = {}, strengthBar = false, size = 'med', round, error, showError, icon, label, left, right, defaultValue, onEnter, inputRef, ref, ...props }: {
+export default function PasswordField({ cc = {}, strengthBar = false, size = 'med', round, error, icon, left, right, defaultValue, onEnter, inputRef, ref, ...props }: {
     strengthBar?: boolean;
 } & Omit<FieldProps, 'type'>) {
     const style = combineClasses(styles, cc);
@@ -58,20 +52,20 @@ export default function PasswordField({ cc = {}, strengthBar = false, size = 'me
 
     const [split, rest] = useInputProps(props);
 
-    return <div ref={ref} {...rest} className={classes(style.container, props.className)}>
-        <Field {...split}
+    return <div ref={ref} {...rest} className={classes(style.wrapper, props.className)}>
+        <Field
+            {...split}
             inputRef={inputRef}
             type={visible ? 'text' : 'password'}
             round={round}
             size={size}
             error={error}
             icon={icon}
-            label={label}
             left={left}
             value={value}
             onEnter={onEnter}
             cc={{
-                wrapper: style.wrapper,
+                field: style.field,
                 ...cc
             }}
             onChange={e => {
@@ -95,7 +89,5 @@ export default function PasswordField({ cc = {}, strengthBar = false, size = 'me
             </Toggle>} />
 
         {strengthBar && <ProgressBar size="sml" value={strength / 5} color={colors[strength]} cc={{ track: style.track }} aria-label="Password strength" />}
-
-        {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
     </div>;
 }

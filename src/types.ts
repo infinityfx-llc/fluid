@@ -10,8 +10,6 @@ export type FluidBreakpoint = 'mob' | 'tab' | 'lap' | 'dsk';
 
 export type FluidInputvalue = string | number | readonly string[] | undefined;
 
-export type FluidError = null | boolean | string;
-
 type SharedKeys<T, P> = keyof Omit<T | P, keyof (Omit<T, keyof P> & Omit<P, keyof T>)>;
 
 type MergeObjects<T, P> = T & P & { [K in SharedKeys<T, P>]: Merged<T[K], P[K]> };
@@ -31,12 +29,13 @@ export type Selectors<T extends string = string> = {
 type FluidSelectorStyles<T> = FluidStyles<T extends Selectors<infer K> ? `.${K}` : never>;
 
 export type FluidComponents = {
-    'combobox.content'?: FluidSelectorStyles<import('./components/display/combobox/content').ComboboxContentSelectors>;
-    'combobox.option'?: FluidSelectorStyles<import('./components/display/combobox/option').ComboboxOptionSelectors>;
     'action-menu.menu'?: FluidSelectorStyles<import('./components/display/action-menu/menu').ActionMenuMenuSelectors>;
     'action-menu.group'?: FluidSelectorStyles<import('./components/display/action-menu/group').ActionMenuGroupSelectors>;
     'action-menu.item'?: FluidSelectorStyles<import('./components/display/action-menu/item').ActionMenuItemSelectors>;
     'action-menu.heading'?: FluidSelectorStyles<import('./components/display/action-menu/heading').ActionMenuHeadingSelectors>;
+    'combobox.content'?: FluidSelectorStyles<import('./components/display/combobox/content').ComboboxContentSelectors>;
+    'combobox.option'?: FluidSelectorStyles<import('./components/display/combobox/option').ComboboxOptionSelectors>;
+    annotation?: FluidSelectorStyles<import('./components/display/annotation').AnnotationSelectors>;
     badge?: FluidSelectorStyles<import('./components/display/badge').BadgeSelectors>;
     code?: FluidSelectorStyles<import('./components/display/code').CodeSelectors>;
     frame?: FluidSelectorStyles<import('./components/display/frame').FrameSelectors>;

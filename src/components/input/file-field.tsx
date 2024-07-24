@@ -1,21 +1,14 @@
 'use client';
 
-import { useId, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import Button from './button';
 import useInputProps from '../../../src/hooks/use-input-props';
-import { FluidError, FluidSize, Selectors } from '../../../src/types';
+import { FluidSize, Selectors } from '../../../src/types';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
 import { Icon } from '../../core/icons';
 
 const styles = createStyles('file-field', {
-    '.wrapper': {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--f-spacing-xxs)',
-        minWidth: 'min(100vw, 12em)'
-    },
-
     '.input': {
         position: 'absolute',
         opacity: 0
@@ -41,6 +34,7 @@ const styles = createStyles('file-field', {
         alignItems: 'center',
         overflow: 'hidden',
         outline: 'solid 3px transparent',
+        minWidth: 'min(var(--width, 100vw), 12em)'
     },
 
     '.content': {
@@ -49,18 +43,6 @@ const styles = createStyles('file-field', {
         gap: 'var(--f-spacing-xsm)',
         padding: '.675em',
         flexGrow: 1
-    },
-
-    '.label': {
-        fontSize: '.8em',
-        fontWeight: 500,
-        color: 'var(--f-clr-text-100)'
-    },
-
-    '.error': {
-        fontSize: '.8em',
-        fontWeight: 500,
-        color: 'var(--f-clr-error-100)'
     },
 
     '.field:focus-within': {
@@ -110,7 +92,7 @@ const styles = createStyles('file-field', {
         fontSize: 'var(--f-font-size-med)'
     },
 
-    '.wrapper.round .field': {
+    '.field.round': {
         borderRadius: '999px'
     },
 
@@ -119,65 +101,69 @@ const styles = createStyles('file-field', {
     }
 });
 
-export type FileFieldSelectors = Selectors<'wrapper' | 'input' | 'placeholder' | 'field' | 'content' | 'label' | 'error' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
+export type FileFieldSelectors = Selectors<'input' | 'placeholder' | 'field' | 'content' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
-export default function FileField({ cc = {}, size = 'med', round, icon, label, error, showError, loading = false, inputRef, ...props }:
+export default function FileField({ cc = {}, size = 'med', round, icon, error, loading = false, inputRef, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
+        inputRef?: React.Ref<HTMLInputElement>;
         cc?: FileFieldSelectors;
         round?: boolean;
         size?: FluidSize;
-        error?: FluidError;
-        showError?: boolean;
+        error?: any;
         loading?: boolean;
         icon?: React.ReactNode;
-        label?: string;
-        inputRef?: React.Ref<HTMLInputElement>;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children' | 'type'>) {
     const style = combineClasses(styles, cc);
 
     const [files, setFiles] = useState<File[]>([]);
 
-    const id = useId();
     const input = useRef<HTMLInputElement>(null);
     const [split, rest] = useInputProps(props);
 
-    return <div {...rest} className={classes(
-        style.wrapper,
-        style[`s__${size}`],
-        round && style.round,
-        props.className
-    )}>
-        {label && <div id={id} className={style.label}>{label}{props.required ? ' *' : ''}</div>}
+    return <label
+        {...rest}
+        className={classes(
+            style.field,
+            style[`s__${size}`],
+            round && style.round,
+            props.className
+        )}
+        data-error={!!error}
+        data-disabled={props.disabled}>
 
-        <label className={style.field} data-error={!!error} data-disabled={props.disabled}>
+        <div className={style.content}>
+            {icon}
 
-            <div className={style.content}>
-                {icon}
-
-                <input ref={combineRefs(input, inputRef)} {...split} disabled={props.disabled || loading} type="file" aria-labelledby={label ? id : undefined} aria-invalid={!!error} className={style.input} onChange={e => {
+            <input
+                {...split}
+                ref={combineRefs(input, inputRef)}
+                type="file"
+                className={style.input}
+                disabled={props.disabled || loading}
+                aria-invalid={!!error}
+                onChange={e => {
                     setFiles?.(Array.from(e.target.files || []));
                     props.onChange?.(e);
                 }} />
-                <input className={style.placeholder} tabIndex={-1} role="none" value={files.map(file => file.name)} readOnly />
-            </div>
 
-            <Button
-                compact
-                aria-label={split['aria-label'] || label}
-                disabled={props.disabled}
-                round={round}
-                size={size}
-                loading={loading}
-                cc={{
-                    button: style.button,
-                    ...cc
-                }}
-                onClick={() => input.current?.click()}>
-                <Icon type="upload" />
-            </Button>
-        </label>
+            <input className={style.placeholder} tabIndex={-1} role="none" value={files.map(file => file.name)} readOnly />
+        </div>
 
-        {typeof error === 'string' && showError && error.length ? <div className={style.error}>{error}</div> : null}
-    </div>;
+        <Button
+            compact
+            aria-label={split['aria-label']}
+            aria-labelledby={split['aria-labelledby']}
+            disabled={props.disabled}
+            round={round}
+            size={size}
+            loading={loading}
+            cc={{
+                button: style.button,
+                ...cc
+            }}
+            onClick={() => input.current?.click()}>
+            <Icon type="upload" />
+        </Button>
+    </label>;
 }

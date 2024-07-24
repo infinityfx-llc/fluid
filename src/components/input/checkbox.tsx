@@ -1,7 +1,7 @@
 'use client';
 
 import { classes, combineClasses } from "../../../src/core/utils";
-import { FluidError, FluidSize, Selectors } from "../../../src/types";
+import { FluidSize, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { useState, useEffect } from "react";
@@ -103,7 +103,7 @@ export default function Checkbox({ cc = {}, error, size = 'med', color = 'var(--
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: CheckboxSelectors;
-        error?: FluidError;
+        error?: any;
         size?: FluidSize;
         color?: string;
         intermediate?: boolean;

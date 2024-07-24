@@ -1,4 +1,5 @@
 import Key from "./key";
+import Annotation from "./annotation";
 import Badge from "./badge";
 import Tooltip from "./tooltip";
 import Swatch from "./swatch";
@@ -12,16 +13,17 @@ import Frame from "./frame";
 import Ticker from "./ticker";
 
 export {
-    Key,
-    Badge,
-    Tooltip,
-    Swatch,
     ActionMenu,
     Combobox,
-    Timeline,
+    Annotation,
+    Badge,
     Code,
-    Toast,
-    Table,
     Frame,
-    Ticker
+    Key,
+    Swatch,
+    Table,
+    Ticker,
+    Timeline,
+    Toast,
+    Tooltip
 }

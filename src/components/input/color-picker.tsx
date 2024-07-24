@@ -3,7 +3,8 @@
 import { FluidSize, Selectors } from "../../../src/types";
 import { useEffect, useRef, useState } from "react";
 import { classes, combineClasses } from "../../../src/core/utils";
-import { Swatch } from "../display";
+import Annotation from "../display/annotation";
+import Swatch from "../display/swatch";
 import { createStyles } from "../../core/style";
 import Slider from "./slider";
 import Field from "./field";
@@ -181,7 +182,7 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
 
     function pick(e: MouseEvent | TouchEvent) {
         if (!picking.current || !spaceRef.current || disabled) return;
-        
+
         const { clientX, clientY } = 'touches' in e ? e.changedTouches[0] : e;
         let { x, y, width, height } = spaceRef.current.getBoundingClientRect();
 
@@ -254,36 +255,37 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
             <div className={style.column}>
                 <Swatch color={`rgb(${rgb.join(',')})`} cc={{ swatch: style.swatch, ...cc }} />
 
-                <Field
-                    disabled={disabled}
-                    label="Hex"
-                    size="sml"
-                    icon="#"
-                    className={style.hex}
-                    value={partialHex !== null ? partialHex : hex}
-                    onChange={e => {
-                        const str = e.target.value.replace(/[^\da-f]/g, '').slice(0, 6);
+                <Annotation label="Hex">
+                    <Field
+                        disabled={disabled}
+                        size="sml"
+                        icon="#"
+                        className={style.hex}
+                        value={partialHex !== null ? partialHex : hex}
+                        onChange={e => {
+                            const str = e.target.value.replace(/[^\da-f]/g, '').slice(0, 6);
 
-                        setPartialHex(str);
-                        update(rgbToHsv(hexToRgb(str)));
-                    }}
-                    onBlur={() => setPartialHex(null)} />
+                            setPartialHex(str);
+                            update(rgbToHsv(hexToRgb(str)));
+                        }}
+                        onBlur={() => setPartialHex(null)} />
+                </Annotation>
 
                 <div className={style.rgb}>
-                    {rgb.map((val, i) => <NumberField
-                        key={i}
-                        cc={cc}
-                        disabled={disabled}
-                        max={255}
-                        precision={0}
-                        controls={false}
-                        label={'RGB'.charAt(i)}
-                        size="sml"
-                        value={val}
-                        onChange={e => {
-                            rgb[i] = parseInt(e.target.value) || 0;
-                            update(rgbToHsv(rgb));
-                        }} />)}
+                    {rgb.map((val, i) => <Annotation key={i} label={'RGB'.charAt(i)}>
+                        <NumberField
+                            cc={cc}
+                            disabled={disabled}
+                            max={255}
+                            precision={0}
+                            controls={false}
+                            size="sml"
+                            value={val}
+                            onChange={e => {
+                                rgb[i] = parseInt(e.target.value) || 0;
+                                update(rgbToHsv(rgb));
+                            }} />
+                    </Annotation>)}
                 </div>
             </div>
         </div>

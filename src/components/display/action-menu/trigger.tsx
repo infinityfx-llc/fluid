@@ -17,7 +17,7 @@ export default function Trigger(props: PopoverTrigger) {
             props.children.props.onKeyDown?.(e);
             props.onKeyDown?.(e);
 
-            if ((e.key === 'Tab' && !e.shiftKey) || e.key === 'ArrowDown') {
+            if ((e.key === 'Tab' && !e.shiftKey) || e.key === 'ArrowDown') { // maybe also on arrow up?
                 const child = getFocusable(content.current, false);
 
                 if (child) {

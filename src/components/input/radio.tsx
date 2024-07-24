@@ -1,5 +1,5 @@
 import { classes, combineClasses } from "../../../src/core/utils";
-import { FluidError, FluidSize, Selectors } from "../../../src/types";
+import { FluidSize, Selectors } from "../../../src/types";
 import Halo from "../feedback/halo";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { createStyles } from "../../core/style";
@@ -116,7 +116,7 @@ export default function Radio({ cc = {}, error, size = 'med', color = 'var(--f-c
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: RadioSelectors;
-        error?: FluidError;
+        error?: any;
         size?: FluidSize;
         color?: string;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'>) {

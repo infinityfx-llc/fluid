@@ -1,6 +1,6 @@
 'use client';
 
-import { FluidError, FluidInputvalue, FluidSize, Selectors } from "../../../src/types";
+import { FluidInputvalue, FluidSize, Selectors } from "../../../src/types";
 import { useId, useState } from "react";
 import { Morph } from '@infinityfx/lively/layout';
 import { classes, combineClasses } from "../../../src/core/utils";
@@ -144,7 +144,7 @@ type SegmentedProps<T> = {
     value?: T;
     defaultValue?: T;
     onChange?: (value: T) => void;
-    error?: FluidError;
+    error?: any;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>;
 
 export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant = 'default', size = 'med', round = false, uniform, vertical, options, name, value, defaultValue, onChange, error, ...props }: SegmentedProps<T>) {

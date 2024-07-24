@@ -29,7 +29,7 @@ export default function Menu({ children, cc = {}, className, ...props }:
     const style = combineClasses(styles, cc);
 
     return <Popover.Content role="menu">
-        <Animate
+        <Animate // look into replacing this with seperate animatable to fix Table cascade animation
             id="action-menu"
             animations={[
                 {

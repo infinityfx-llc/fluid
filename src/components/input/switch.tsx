@@ -1,7 +1,7 @@
 'use client';
 
 import { classes, combineClasses } from '../../../src/core/utils';
-import { FluidError, FluidSize, Selectors } from '../../../src/types';
+import { FluidSize, Selectors } from '../../../src/types';
 import { useRef, useState } from 'react';
 import Halo from '../feedback/halo';
 import useInputProps from '../../../src/hooks/use-input-props';
@@ -137,7 +137,7 @@ export default function Switch({ cc = {}, error, size = 'med', color = 'var(--f-
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: SwitchSelectors;
-        error?: FluidError;
+        error?: any;
         size?: FluidSize;
         color?: string;
         round?: boolean;

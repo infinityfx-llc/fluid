@@ -49,17 +49,14 @@ const styles = createStyles('calendar', {
     },
 
     '.calendar .year': {
-        flexGrow: 1,
-        minWidth: 'auto'
+        minWidth: 'auto',
+        background: 'transparent',
+        outline: 'none',
+        flexGrow: 1
     },
 
     '.calendar .year__content': {
         padding: '.475em'
-    },
-
-    '.calendar .field': {
-        background: 'transparent',
-        outline: 'none'
     },
 
     '.grid': {
@@ -166,8 +163,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                 precision={0}
                 controls={false}
                 cc={{
-                    wrapper: style.year,
-                    field: style.field,
+                    field: style.year,
                     content: style.year__content,
                     ...cc
                 }}
