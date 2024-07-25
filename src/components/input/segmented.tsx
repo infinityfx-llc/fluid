@@ -147,6 +147,11 @@ type SegmentedProps<T> = {
     error?: any;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>;
 
+/**
+ * An input with multiple options of which only 1 can be selected at a time.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/segmented}
+ */
 export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant = 'default', size = 'med', round = false, uniform, vertical, options, name, value, defaultValue, onChange, error, ...props }: SegmentedProps<T>) {
     const style = combineClasses(styles, cc);
 

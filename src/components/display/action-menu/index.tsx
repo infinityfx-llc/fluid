@@ -5,6 +5,11 @@ import Group from "./group";
 import Item from "./item";
 import Heading from "./heading";
 
+/**
+ * Displays a menu with actions or options.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/action-menu}
+ */
 const ActionMenu = {
     Root,
     Trigger,

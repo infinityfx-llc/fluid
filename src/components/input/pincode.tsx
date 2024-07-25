@@ -105,6 +105,11 @@ const styles = createStyles('pincode', {
 
 export type PincodeSelectors = Selectors<'pincode' | 'field' | 'input' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
+/**
+ * An input used for entering numerical codes.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/pincode}
+ */
 export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size = 'med', round = false, value, error, onChange, defaultvalue, autoFocus, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
@@ -125,10 +130,12 @@ export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size =
     const length = format.reduce((len, val) => len + val, 0);
     const [state, setState] = value !== undefined ? [value] : useState(defaultvalue?.toString().slice(0, length) || '');
 
+    // update value and focus when user is typing
     function handleKey(e: React.KeyboardEvent<HTMLInputElement>, index: number) {
         let updated = state.slice();
 
         if (/^\d$/.test(e.key)) {
+            // append a valid number character and move focus to next input
             e.preventDefault();
 
             if (state.length <= index) {
@@ -141,6 +148,7 @@ export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size =
         }
 
         if (e.key === 'Backspace') {
+            // delete the last character and move focus to previous input
             e.preventDefault();
             updated = updated.slice(0, updated.length - 1);
 
@@ -151,8 +159,9 @@ export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size =
         onChange?.(updated);
     }
 
+    // update value when user pastes from their clipboard
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-        let updated = e.target.value.replace(/\D/g, '');
+        let updated = e.target.value.replace(/\D/g, ''); // keep only number characters
 
         if (updated) {
             if (updated.length < length) updated = state + updated;

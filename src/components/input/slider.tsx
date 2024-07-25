@@ -123,6 +123,11 @@ const styles = createStyles('slider', {
 
 export type SliderSelectors = Selectors<'wrapper' | 'vertical' | 'label' | 'slider' | 'track' | 'progress' | 'handle'>;
 
+/**
+ * An input that allows for selecting 1 or multiple values from a given range.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/slider}
+ */
 export default function Slider({ cc = {}, handles = 1, vertical = false, tooltips = 'interact', formatTooltip, label, value, defaultValue, onChange, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
@@ -148,6 +153,7 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
     const toOffset = (val: number) => (val - min) / (max - min);
     const toValue = (val: number) => min + val * (max - min);
 
+    // get the initialization values based on the amount of handles and the "defaultValue" prop
     function fromHandles() {
         const arr = new Array(handles).fill(1).map((_, i) => toValue(i / Math.max(handles - 1, 1)));
 
@@ -162,6 +168,7 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
 
     useEffect(() => setValues?.(fromHandles()), [handles]);
 
+    // update the value of a handle depending on mouse position
     function change(e: MouseEvent | TouchEvent) {
         if (!track.current || props.disabled) return;
         e.stopPropagation();
@@ -172,6 +179,8 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
         const { y, height, x, width } = track.current.getBoundingClientRect();
         const value = toValue(vertical ? 1 - (dp - y) / height : (dp - x) / width);
 
+        // if a handle is currently being dragged use that one
+        // else find the handle nearest to the current mouse position
         const idx = dragging.current === null || dragging.current < 0 ?
             values.reduce((res, val, i) => {
                 const d = Math.abs(val - value);
@@ -182,10 +191,11 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
         update(idx, value);
     }
 
+    // update the value of a handle given and index
     function update(index: number, value: number) {
-        if (index > 0) value = Math.max(value, values[index - 1] + step);
-        if (index < handles - 1) value = Math.min(value, values[index + 1] - step);
-        value = Math.min(Math.max(Math.round(value / step) * step, min), max);
+        if (index > 0) value = Math.max(value, values[index - 1] + step); // value can not be smaller than previous handle's value 
+        if (index < handles - 1) value = Math.min(value, values[index + 1] - step); // value can not be larger than next handle's value
+        value = Math.min(Math.max(Math.round(value / step) * step, min), max); // round value to the nearest step size
 
         if (value === values[index]) return;
 

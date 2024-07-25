@@ -140,6 +140,11 @@ const styles = createStyles('stepper', {
 
 export type StepperSelectors = Selectors<'stepper' | 'step' | 'header' | 'bullet' | 'icon' | 'icons' | 'progress' | 'content' | 'name' | 'label'>;
 
+/**
+ * An ordered list of completable steps.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/stepper}
+ */
 export default function Stepper({ cc = {}, steps, completed, setCompleted, navigation = 'backwards', variant = 'default', ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

@@ -75,6 +75,11 @@ const styles = createStyles('modal', (fluid) => ({
 
 export type ModalSelectors = Selectors<'modal' | 'header' | 'handle' | 'title'>;
 
+/**
+ * Displays a container with content overlayed onto the page.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/modal}
+ */
 export default function Modal({ children, cc = {}, show, onClose, title, mobileClosing = 'handle', ref, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
@@ -96,13 +101,14 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
     const isMobile = useMediaQuery(`(max-width: ${fluid.breakpoints.mob}px)`);
 
     useEffect(() => {
+        // animate the modal when dragging on mobile devices
         function update(e: TouchEvent) {
             if (!touch.current || !modalRef.current) return;
 
             if (!e.touches.length) {
                 const py = offset() / modalRef.current.clientHeight;
 
-                if (py > 0.35) {
+                if (py > 0.35) { // close the modal when dragged below 35% the size of the modal
                     onClose();
                 } else {
                     offset.set(0, { duration: .25 });

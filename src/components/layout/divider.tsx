@@ -32,6 +32,11 @@ const styles = createStyles('divider', {
 
 export type DividerSelectors = Selectors<'divider' | 'line'>;
 
+/**
+ * A divider.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/divider}
+ */
 export default function Divider({ cc = {}, vertical = false, label, labelPosition = 'center', size = 'med', ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

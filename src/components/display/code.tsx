@@ -69,6 +69,11 @@ const styles = createStyles('code', {
 
 export type CodeSelectors = Selectors<'wrapper' | 'header' | 'code' | 'numbers' | 'tab' | 'content'>;
 
+/**
+ * Displays formatted code.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/code}
+ */
 export default function Code({ children, cc = {}, title, dangerouslyInject, ...props }: {
     children: string;
     ref?: React.Ref<HTMLDivElement>;
@@ -108,6 +113,8 @@ export default function Code({ children, cc = {}, title, dangerouslyInject, ...p
                 }}
                 aria-label="Copy code"
                 onClick={() => {
+                    // copy code content to clipboard
+
                     const range = document.createRange(),
                         el = document.getElementById(id) as HTMLDivElement;
                     range.selectNodeContents(el);
@@ -119,6 +126,7 @@ export default function Code({ children, cc = {}, title, dangerouslyInject, ...p
                         document.execCommand('copy');
                     }
 
+                    // toggle copy button visual state
                     setCopied(true);
                     setTimeout(() => setCopied(false), 2000);
                 }}>

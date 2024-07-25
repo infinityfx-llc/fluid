@@ -31,6 +31,11 @@ const styles = createStyles('indicator', {
 
 export type IndicatorSelectors = Selectors<'indicator'>;
 
+/**
+ * Displays an activity indicator at the corner of an element.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/halo}
+ */
 export default function Indicator<T extends React.ReactElement<any>>({ children, cc = {}, content, color, outline, ref, ...props }:
     {
         children: T;
@@ -46,6 +51,7 @@ export default function Indicator<T extends React.ReactElement<any>>({ children,
 
     useEffect(() => {
         if (container.current instanceof HTMLElement) {
+            // get corner radius from target element
             const radius = parseFloat(getComputedStyle(container.current).borderTopRightRadius) || 0;
             const max = Math.min(container.current.offsetWidth, container.current.offsetHeight) / 2;
 
@@ -56,6 +62,7 @@ export default function Indicator<T extends React.ReactElement<any>>({ children,
     children = Array.isArray(children) ? children[0] : children;
     if (!isValidElement(children)) return children;
 
+    // calculate where to display indicator based on target element corner radius
     const offset = Math.max(Math.SQRT2 * radius - radius - 1, 0);
 
     return <>

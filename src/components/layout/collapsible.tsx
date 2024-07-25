@@ -12,6 +12,11 @@ const styles = createStyles('collapsible', {
 
 export type CollapsibleSelectors = Selectors<'content'>;
 
+/**
+ * An animated container which can hide its contents.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/collapsible}
+ */
 export default function Collapsible({ children, cc = {}, shown, ...props }: {
     ref?: React.Ref<HTMLDivElement>;
     cc?: CollapsibleSelectors;
@@ -20,7 +25,7 @@ export default function Collapsible({ children, cc = {}, shown, ...props }: {
     const style = combineClasses(styles, cc);
 
     return <LayoutGroup>
-        <Animatable id="collapsible" cachable={['height', 'opacity', 'visibility']} adaptive>
+        <Animatable id="collapsible" cachable={['height', 'visibility']} adaptive>
             <div {...props}
                 aria-hidden={!shown}
                 className={classes(style.content, props.className)}

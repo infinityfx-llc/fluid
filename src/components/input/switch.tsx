@@ -133,6 +133,11 @@ const styles = createStyles('switch', {
 
 export type SwitchSelectors = Selectors<'wrapper' | 'input' | 'switch' | 'icons' | 'icon' | 'hanlde' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
+/**
+ * An input that switches between an on and off state.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/switch}
+ */
 export default function Switch({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', round = true, iconOff, iconOn, checked, defaultChecked, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

@@ -122,6 +122,11 @@ const styles = createStyles('panel', {
 
 export type PanelSelectors = Selectors<'panel' | 'd__horizontal' | 'd__vertical' | 'divider' | 'focus' | 'handle'>;
 
+/**
+ * Resizable panels.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/panel}
+ */
 export default function Panel({ cc = {}, children, variant = 'default', direction = 'horizontal', handles, defaultSizes, ref, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

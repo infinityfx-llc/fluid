@@ -88,6 +88,11 @@ const styles = createStyles('scrollarea', {
 
 export type ScrollareaSelectors = Selectors<'track' | 'v__hover' | 'v__permanent' | 'handle'>;
 
+/**
+ * A scrollable container.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/scrollarea}
+ */
 export default function Scrollarea({ children, cc = {}, horizontal = false, variant = 'hover', behavior = 'normal', disabled = false, ref, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
@@ -108,6 +113,7 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
     const dragging = useRef<{ x: number; y: number; }>(null);
     const [scrollable, setScrollable] = useState(false);
 
+    // update scroll position when using scroll wheel
     function wheel(e: WheelEvent) {
         const el = area.current;
         if (!el || (!e.shiftKey && behavior === 'shift')) return;
@@ -117,7 +123,7 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
         const val = el[horizontal ? 'scrollLeft' : 'scrollTop'];
         const max = el[horizontal ? 'scrollWidth' : 'scrollHeight'] - el[horizontal ? 'offsetWidth' : 'offsetHeight'];
 
-        if ((amount > 0 ? val < max : val > 0) || e.timeStamp - lastWheel.current < 350) {
+        if ((amount > 0 ? val < max : val > 0) || e.timeStamp - lastWheel.current < 350) { // prevent overscrolling
             e.stopPropagation();
             e.preventDefault();
             lastWheel.current = e.timeStamp;
@@ -126,6 +132,7 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
         scroll(amount);
     }
 
+    // update scroll position based on mouse position when dragging scrollbar handle
     function drag(e: MouseEvent) {
         if (e.type === 'mouseup') return dragging.current = null;
         if (e.type === 'mousedown') {
@@ -144,9 +151,10 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
         dragging.current = e;
     }
 
+    // update the scroll position and scrollbar handle position
     function scroll(value: number) {
         const el = area.current;
-        if (!el || !handle.current || !track.current || matchMedia('(pointer: coarse)').matches || disabled) return;
+        if (!el || !handle.current || !track.current || matchMedia('(pointer: coarse)').matches || disabled) return; // use default behaviour for touch based devices.
 
         const wKey = horizontal ? 'offsetWidth' : 'offsetHeight';
         const sKey = horizontal ? 'scrollLeft' : 'scrollTop';
@@ -164,6 +172,7 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
         track.current.style.translate = `${horizontal ? updated : el.scrollLeft}px ${horizontal ? el.scrollTop : updated}px`;
     }
 
+    // update the scrollbar size based on how much the container can be scrolled
     function resize() {
         const el = area.current;
         if (!el || !handle.current || !track.current) return;
@@ -173,7 +182,7 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
         handle.current.style[horizontal ? 'height' : 'width'] = '';
         track.current.style.translate = '0px 0px';
         handle.current.style.translate = '0px 0px';
-        setScrollable(size < 1);
+        setScrollable(size < 1); // only show the scrollbar when the content overflows the container (there is something to scroll)
 
         scroll(0);
     }

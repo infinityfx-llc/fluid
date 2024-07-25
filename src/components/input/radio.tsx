@@ -112,6 +112,11 @@ const styles = createStyles('radio', {
 
 export type RadioSelectors = Selectors<'wrapper' | 'input' | 'radio' | 'selection' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
+/**
+ * A selectable input, of which 1 must be selected at all times within a group.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/radio}
+ */
 export default function Radio({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

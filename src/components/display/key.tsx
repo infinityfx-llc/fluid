@@ -17,6 +17,11 @@ const styles = createStyles('key', {
 
 export type KeySelectors = Selectors<'key'>;
 
+/**
+ * Displays a keyboard input.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/key}
+ */
 export default function Key({ children, cc = {}, ...props }: {
     children: string;
     ref?: React.Ref<HTMLDivElement>;

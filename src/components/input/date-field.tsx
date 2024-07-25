@@ -10,12 +10,14 @@ import { combineClasses } from '../../core/utils';
 import Button from './button';
 import { Icon } from '../../core/icons';
 
+// format a date in yyyy-mm-dd format
 function toString(date?: Date | null) {
     if (!date) return '';
 
     return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
 }
 
+// format a string in yyyy-mm-dd format
 function format(value: string) {
     const nums = value.replace(/\D/g, '');
 
@@ -31,6 +33,11 @@ const styles = createStyles('date-field', fluid => ({
     }
 }));
 
+/**
+ * An input used for entering dates.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/date-field}
+ */
 export default function DateField({ cc = {}, value, defaultValue, onChange, disabled, clearable, ...props }:
     {
         value?: Date | null;

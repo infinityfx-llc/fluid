@@ -84,6 +84,11 @@ type TabsProps<T> = {
     onChange?: (value: T) => void;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange'>;
 
+/**
+ * An input with multiple options of which only 1 can be selected at a time.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/tabs}
+ */
 export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, variant = 'default', value, defaultValue, onChange, ...props }: TabsProps<T>) {
     const style = combineClasses(styles, cc);
 

@@ -32,6 +32,12 @@ const styles = createStyles('password-field', {
 });
 
 // optimize prop splitting
+
+/**
+ * An input used for entering passwords.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/password-field}
+ */
 export default function PasswordField({ cc = {}, strengthBar = false, size = 'med', round, error, icon, left, right, defaultValue, onEnter, inputRef, ref, ...props }: {
     strengthBar?: boolean;
 } & Omit<FieldProps, 'type'>) {
@@ -40,6 +46,12 @@ export default function PasswordField({ cc = {}, strengthBar = false, size = 'me
     const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(defaultValue || '');
     const [visible, setVisible] = useState(false);
 
+    // calculate how much 'strength' a password has based on the following:
+    // 1. contains a lowercase letter
+    // 2. contains an uppercase letter
+    // 3. contains a number
+    // 4. contains a special character
+    // 5. has a minimum length according to the "minLength" prop
     const strength = useMemo(() => {
         let strength = 0;
 

@@ -18,6 +18,11 @@ type FluidContext = FluidTheme & {
 
 export const FluidContext = createContext<FluidContext | null>(null);
 
+/**
+ * Provides theme data to other Fluid components.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/get-started}
+ */
 export default function FluidProvider({ children, initialColorScheme }: {
     children: React.ReactElement<any>;
     initialColorScheme?: FluidColorScheme;

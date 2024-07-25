@@ -29,6 +29,11 @@ const styles = createStyles('ticker', {
 
 export type TickerSelectors = Selectors<'text' | 'column'>;
 
+/**
+ * Animated text display.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/ticker}
+ */
 export default function Ticker({ children, cc = {}, align = 'right', selective, duration = .7, stagger = .1, ...props }: {
     children: number | string | (number | string)[];
     ref?: React.Ref<HTMLDivElement>;
@@ -47,6 +52,7 @@ export default function Ticker({ children, cc = {}, align = 'right', selective, 
     const [state, setState] = useState(mutable.current);
 
     function trim() {
+        // trim character arrays to remove characters that are out of view
         const trimmed = [];
 
         for (let i = 0; i < mutable.current.length; i++) {
@@ -61,7 +67,7 @@ export default function Ticker({ children, cc = {}, align = 'right', selective, 
     }
 
     useEffect(() => {
-        if (prev.current === children.toString()) return;
+        if (prev.current === children.toString()) return; // if content hasn't changed return
         prev.current = children.toString();
 
         const chars = prev.current.split(''),
@@ -70,16 +76,21 @@ export default function Ticker({ children, cc = {}, align = 'right', selective, 
 
         prevLastRow.current = updated.map(col => col[col.length - 1]);
 
+        // match length between previous and current content by filling from left or right with null values
         if (diff > 0) chars[align === 'right' ? 'unshift' : 'push'](...new Array(diff).fill(null));
 
+        // loop over new content character by character
         for (let i = chars.length - 1; i >= 0; i--) {
             if (i < updated.length) {
+                // if character index already exists in previous content, append to array
                 updated[i].push(chars[i]);
             } else {
+                // else add a new array at the left or right
                 updated[align === 'right' ? 'unshift' : 'push']([chars[i]]);
             }
         }
 
+        // after animation ends remove previous characters that are out of view
         setTimeout(trim, (duration + (updated.length - 1) * stagger) * 1000);
         setState(updated.slice());
         trigger();

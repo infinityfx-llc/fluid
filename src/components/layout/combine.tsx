@@ -47,6 +47,11 @@ const styles = createStyles('combine', {
 
 export type CombineSelectors = Selectors<'combine' | 'd__horizontal' | 'd__vertical'>;
 
+/**
+ * Merges multiple toggle, button or field inputs.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/combine}
+ */
 export default function Combine({ children, cc = {}, direction = 'horizontal', ...props }: {
     ref?: React.Ref<HTMLDivElement>;
     cc?: CombineSelectors;

@@ -54,6 +54,11 @@ const styles = createStyles('halo', {
 
 export type HaloSelectors = Selectors<'halo' | 'ripple'>;
 
+/**
+ * Displays a translucent overlay when an element is hovered over or has focus.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/halo}
+ */
 export default function Halo<T extends React.ReactElement<any>, P extends HTMLElement>({ children, cc = {}, color, hover = true, disabled = false, target, ref, ...props }:
     {
         children: T;
@@ -73,6 +78,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
     const clickTrigger = useTrigger();
     const translate = useLink('0% 0%');
 
+    // show or hide halo (for touch devices)
     function toggleHalo(value: boolean) {
         const h = halo.current;
         if (!h) return;
@@ -90,6 +96,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
         const focusEl = target?.current || container.current;
         if (!focusEl) return;
 
+        // trigger ripple animation at mouse position on click
         function click(e: MouseEvent) {
             if (halo.current) {
                 const { x, y, width, height } = halo.current.getBoundingClientRect();

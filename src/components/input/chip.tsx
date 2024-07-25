@@ -119,6 +119,11 @@ const styles = createStyles('chip', {
 
 export type ChipSelectors = Selectors<'wrapper' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'chip' | 'checkmark'>;
 
+/**
+ * An input that switches between a selected and unselected state.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/chip}
+ */
 export default function Chip({ children, cc = {}, size = 'med', type = 'checkbox', round, checked, defaultChecked, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

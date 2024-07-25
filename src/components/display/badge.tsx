@@ -72,6 +72,11 @@ const styles = createStyles('badge', {
 
 export type BadgeSelectors = Selectors<'badge' | 'v__default' | 'v__light' | 'v__neutral' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
+/**
+ * A badge used for displaying attributes or small information snippets.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/badge}
+ */
 export default function Badge({ children, cc = {}, variant = 'default', round = false, size = 'sml', color, onClose, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

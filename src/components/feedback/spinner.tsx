@@ -1,5 +1,10 @@
 import { Animatable } from "@infinityfx/lively";
 
+/**
+ * A spinning loading indicator.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/spinner}
+ */
 export default function Spinner({ color, ...props }: Omit<React.HTMLAttributes<SVGSVGElement>, 'children'> & {
     ref?: React.Ref<SVGSVGElement>;
 }) {

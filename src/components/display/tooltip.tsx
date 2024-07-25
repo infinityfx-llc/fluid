@@ -55,6 +55,11 @@ const styles = createStyles('tooltip', {
 
 export type TooltipSelectors = Selectors<'tooltip'>;
 
+/**
+ * Displays an information popup next to an element when that element is hovered or receives focus.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/tooltip}
+ */
 export default function Tooltip({ children, cc = {}, content, position = 'auto', visibility = 'interact', delay = .3, ...props }:
     {
         children: React.ReactElement<any>;
@@ -79,10 +84,12 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
     const displayPosition = position === 'auto' ? computed : position;
     const timeout = useRef<any>(undefined);
 
+    // hide or show tooltip and update position if needed
     function toggle(value: boolean | null, delay = 0) {
         clearTimeout(timeout.current);
         if (value === null) return;
 
+        // if position == 'auto' calculate best position based on available space
         if (position === 'auto' && element.current) {
             let { left, top, right, bottom } = element.current.getBoundingClientRect();
             right = window.innerWidth - right;
@@ -101,6 +108,8 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
     }
 
     let frame: number;
+    
+    // update tooltip position based on anchor position
     function update() {
         if (anchor.current && tooltip.current) {
             const { x, y } = anchor.current.getBoundingClientRect();
@@ -122,7 +131,7 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
         if (!el) return;
 
         cancelAnimationFrame(frame);
-        frame = requestAnimationFrame(update);
+        frame = requestAnimationFrame(update); // call position update function every animation frame
 
         const hide = () => {
             toggle(false);

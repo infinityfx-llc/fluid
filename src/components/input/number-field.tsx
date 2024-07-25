@@ -31,6 +31,11 @@ const styles = createStyles('number-field', {
     }
 });
 
+/**
+ * An input used for entering numerical values.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/number-field}
+ */
 export default function NumberField({ cc = {}, precision = 3, controls = true, defaultValue, ...props }: {
     precision?: number;
     controls?: boolean;
@@ -44,6 +49,7 @@ export default function NumberField({ cc = {}, precision = 3, controls = true, d
     const min = toNumber(props.min, -Number.MAX_VALUE);
     const max = toNumber(props.max, Number.MAX_VALUE);
 
+    // format a string as a valid number, adhering to the min, max and precision requirements
     const format = useCallback((value: FluidInputvalue, increment?: number) => {
         let num = value ? parseFloat(value.toString()) : undefined;
         if (increment !== undefined) {

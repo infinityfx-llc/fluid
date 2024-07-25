@@ -115,6 +115,11 @@ export type ToggleProps = {
     checkedContent?: React.ReactNode;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>;
 
+/**
+ * A button which toggles between an on and off state.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/toggle}
+ */
 export default function Toggle({ children, cc = {}, size = 'med', compact = false, round = false, variant = 'default', checkedContent, ...props }: ToggleProps) {
     const style = combineClasses(styles, cc);
 

@@ -91,6 +91,11 @@ const styles = createStyles('button', {
 
 export type ButtonSelectors = Selectors<'button' | 'content' | 'loader' | 'round' | 'compact' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'v__default' | 'v__neutral' | 'v__light' | 'v__minimal'>;
 
+/**
+ * A button.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/button}
+ */
 export default function Button({ children, cc = {}, round = false, compact = false, size = 'med', variant = 'default', loading = false, ...props }:
     {
         ref?: React.Ref<HTMLButtonElement>;

@@ -45,6 +45,11 @@ export type ProgressBarSelectors = Selectors<'track' | 'progress' | 's__xsm' | '
 
 // vertical variant?
 
+/**
+ * An indicator displaying the progress of something.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/progress-bar}
+ */
 export default function ProgressBar({ cc = {}, size = 'med', value, defaultValue = 0, color, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

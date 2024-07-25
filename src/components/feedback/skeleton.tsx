@@ -21,6 +21,11 @@ const styles = createStyles('skeleton', {
 
 export type SkeletonSelectors = Selectors<'skeleton'>;
 
+/**
+ * Used to show a placeholder while content is loading.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/skeleton}
+ */
 export default function Skeleton({ cc = {}, w, h, ar, radius = 'sml', ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

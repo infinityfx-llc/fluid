@@ -153,6 +153,11 @@ type SelectProps<T> = {
     contentSize?: FluidSize;
 } & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'onEnter'>;
 
+/**
+ * Displays a list of selectable options.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/select}
+ */
 export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
     {
         cc = {},
@@ -237,22 +242,31 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
             {options.map(({ label, value, disabled }, i) => {
                 const selected = (Array.isArray(state) ? state.includes(value) : state === value);
 
-                return <Combobox.Option key={i} value={label} disabled={disabled} aria-selected={selected} onSelect={() => {
-                    if (!Array.isArray(state)) {
-                        popover.current?.close();
-                        selfInputRef.current?.focus();
+                return <Combobox.Option
+                    key={i}
+                    value={label}
+                    disabled={disabled}
+                    aria-selected={selected}
+                    onSelect={() => {
+                        // select or deselect this option
 
-                        setState?.(value as any);
-                    } else {
-                        const updated = state.slice();
-                        const idx = updated.indexOf(value);
-                        if (idx < 0) {
-                            if (!limit || updated.length < limit) updated.push(value);
-                        } else updated.splice(idx, 1);
+                        if (!Array.isArray(state)) {
+                            // if only one selection is allowed replace currently selected option
+                            popover.current?.close();
+                            selfInputRef.current?.focus();
 
-                        setState?.(updated as any);
-                    }
-                }}>
+                            setState?.(value as any);
+                        } else {
+                            // if multiple selections are allowed add or remove this option from the selected options
+                            const updated = state.slice();
+                            const idx = updated.indexOf(value);
+                            if (idx < 0) {
+                                if (!limit || updated.length < limit) updated.push(value);
+                            } else updated.splice(idx, 1);
+
+                            setState?.(updated as any);
+                        }
+                    }}>
                     {label}
 
                     {selected && <div className={style.icon}>

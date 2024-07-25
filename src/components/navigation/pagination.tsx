@@ -21,6 +21,11 @@ const styles = createStyles('pagination', {
 
 export type PaginationSelectors = Selectors<'pagination'>;
 
+/**
+ * A set of inputs used for navigation between pages.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/pagination}
+ */
 export default function Pagination({ cc = {}, page, setPage, pages, compact, skipable, round, size, variant, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

@@ -4,6 +4,11 @@ import Toggle, { ToggleProps } from "./toggle";
 import useFluid from "../../../src/hooks/use-fluid";
 import { Icon } from "../../core/icons";
 
+/**
+ * A toggle button which switches between a light and dark color theme.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/theme-toggle}
+ */
 export default function ThemeToggle(props: Omit<ToggleProps, 'checkedContent' | 'checked'>) {
     const { appliedColorScheme, setColorScheme } = useFluid();
 

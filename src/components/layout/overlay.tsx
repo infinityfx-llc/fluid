@@ -46,6 +46,11 @@ const styles = createStyles('overlay', {
 
 export type OverlaySelectors = Selectors<'tint'>;
 
+/**
+ * Displays content overlayed onto the page.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/overlay}
+ */
 export default function Overlay({ children, cc = {}, show, onClose }: {
     children?: React.ReactNode;
     cc?: OverlaySelectors;
@@ -61,16 +66,16 @@ export default function Overlay({ children, cc = {}, show, onClose }: {
     useEffect(() => {
         setMounted(true);
 
-        if (previous.current !== show) OverlayData.count += show ? 1 : -1;
+        if (previous.current !== show) OverlayData.count += show ? 1 : -1; // update the amount of open overlays
         previous.current = show;
 
         if (mounted && show) {
-            toggleScroll(false);
+            toggleScroll(false); // disable page scrolling when overlay opens
 
-            if (trap.current) trap.current.style.zIndex = (OverlayData.count + 999).toString();
+            if (trap.current) trap.current.style.zIndex = (OverlayData.count + 999).toString(); // update the zIndex position based on the amount of open overlays
         }
 
-        if (!show && !OverlayData.count) toggleScroll(true);
+        if (!show && !OverlayData.count) toggleScroll(true); // enable page scrolling again if no more overlays are open
 
         function keypress(e: KeyboardEvent) {
             if (show && e.key === 'Escape') onClose();
@@ -86,7 +91,7 @@ export default function Overlay({ children, cc = {}, show, onClose }: {
                 previous.current = false;
             }
 
-            if (!OverlayData.count) toggleScroll(true);
+            if (!OverlayData.count) toggleScroll(true); // enable page scrolling again if no more overlays are open
         }
     }, [show]);
 

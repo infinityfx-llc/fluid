@@ -74,6 +74,11 @@ const styles = createStyles('textarea', {
 
 export type TextareaSelectors = Selectors<'textarea' | 'input' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
+/**
+ * A form textarea.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/textarea}
+ */
 export default function Textarea({ cc = {}, size = 'med', error, resize = 'both', ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
@@ -106,6 +111,7 @@ export default function Textarea({ cc = {}, size = 'med', error, resize = 'both'
             className={style.input}
             aria-invalid={!!error}
             onChange={e => {
+                // update the row count based on the amount of newline characters
                 split.onChange?.(e);
 
                 setRows(e.target.value.split(/\n/g).length);

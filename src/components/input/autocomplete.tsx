@@ -6,6 +6,11 @@ import { FluidInputvalue, FluidSize, PopoverRootReference } from '../../../src/t
 import Combobox from '../display/combobox';
 import { changeInputValue } from '../../core/utils';
 
+/**
+ * A text input which shows autocomplete suggestions.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/autocomplete}
+ */
 export default function Autocomplete({ completions, emptyMessage, value, defaultValue, onChange, contentSize, ...props }: {
     completions: string[] | { label: string; value: string; }[];
     emptyMessage?: string;
@@ -18,6 +23,7 @@ export default function Autocomplete({ completions, emptyMessage, value, default
     const [state, setState] = value !== undefined ? [value] : useState<FluidInputvalue>(defaultValue || '');
 
     useEffect(() => {
+        // show suggestions when they are available and field has focus
         if (focus.current) popover.current?.[completions.length ? 'open' : 'close']();
     }, [completions]);
 

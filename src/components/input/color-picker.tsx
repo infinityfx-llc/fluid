@@ -162,6 +162,11 @@ type ColorPickerProps<T> = {
     disabled?: boolean;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>;
 
+/**
+ * An input used for picking a color.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/color-picker}
+ */
 export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format, defaultValue, value, onChange, disabled, ...props }: ColorPickerProps<T>) {
     const style = combineClasses(styles, cc);
 
@@ -180,6 +185,7 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
         onChange?.(format === 'rgb' ? rgb : rgbToHex(rgb) as any);
     }
 
+    // pick color from color space based on mouse position
     function pick(e: MouseEvent | TouchEvent) {
         if (!picking.current || !spaceRef.current || disabled) return;
 

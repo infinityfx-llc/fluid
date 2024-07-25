@@ -65,6 +65,11 @@ const styles = createStyles('drawer', {
 
 export type DrawerSelectors = Selectors<'drawer' | 'header' | 'title' | 'content'>;
 
+/**
+ * Displays a container with content overlayed onto the side of the page.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/drawer}
+ */
 export default function Drawer({ children, cc = {}, show, onClose, position = 'right', title, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
@@ -79,6 +84,7 @@ export default function Drawer({ children, cc = {}, show, onClose, position = 'r
     const id = useId();
     const prev = useRef({ clientX: 0, clientY: 0 });
 
+    // detect a sideward swipe to close the drawer
     function touch(e: React.TouchEvent) {
         if (e.type == 'touchstart') return prev.current = e.changedTouches[0];
 

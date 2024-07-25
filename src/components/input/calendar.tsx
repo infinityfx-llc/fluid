@@ -103,6 +103,11 @@ const styles = createStyles('calendar', {
 
 export type CalendarSelectors = Selectors<'calendar' | 'header' | 'text' | 'years' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
+/**
+ * An input used for selecting a date.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/calendar}
+ */
 export default function Calendar({ cc = {}, locale, size = 'med', round, defaultValue, value, onChange, disabled, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
@@ -127,6 +132,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
     monday.setDate(first.getDate() - (day || 7) + 1);
 
     try {
+        // make sure locale is valid
         new Intl.Locale(locale as any);
     } catch (ex) {
         locale = 'en';
@@ -175,6 +181,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                     const updated = new Date(date);
                     updated.setFullYear(parseInt(e.target.value));
 
+                    // check if entered year is valid, if so update the selected date
                     if (!isNaN(updated.getTime()) && setDate) setDate(updated);
                 }}
                 onBlur={() => setPartialYear(null)} />
@@ -221,6 +228,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                 aria-label={day.toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' })}
                                 onClick={() => setDate?.(day)}
                                 onKeyDown={e => {
+                                    // control focus with keyboard
                                     let next: number | null = null;
 
                                     switch (e.key) {

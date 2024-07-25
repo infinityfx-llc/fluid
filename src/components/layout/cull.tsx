@@ -28,6 +28,11 @@ const style = createStyles('cull', fluid => ({
     }
 }));
 
+/**
+ * Hides an element from the page for selected screen sizes.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/cull}
+ */
 export default function Cull({ children, include, ref, ...props }: {
     children: React.ReactElement<any>;
     include: FluidBreakpoint[];

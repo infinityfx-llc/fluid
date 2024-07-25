@@ -99,6 +99,11 @@ const styles = createStyles('checkbox', {
 
 export type CheckboxSelectors = Selectors<'wrapper' | 'checkbox' | 'checkmark' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
+/**
+ * An input that switches between a checked and unchecked state.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/checkbox}
+ */
 export default function Checkbox({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', intermediate, checked, defaultChecked, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

@@ -114,6 +114,11 @@ type TableProps<T> = {
     emptyMessage?: string;
 } & React.HTMLAttributes<HTMLDivElement>;
 
+/**
+ * A table displaying data.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/table}
+ */
 export default function Table<T extends { [key: string]: string | number | Date; }>({ cc = {}, data, columns, selectable, sortable, selected, onSelect,
     columnFormatters = {}, rowActions, emptyMessage = 'Nothing to display', ...props }: TableProps<T>) {
     const style = combineClasses(styles, cc);
@@ -127,6 +132,7 @@ export default function Table<T extends { [key: string]: string | number | Date;
         onSelect?.(value);
     }
 
+    // get a sorted list of rows according to the specified sorting
     const rows = sorting !== 'nil' ?
         data.slice().sort((a, b) => {
             if (b[column] < a[column]) return sorting === 'asc' ? 1 : -1;
@@ -146,16 +152,26 @@ export default function Table<T extends { [key: string]: string | number | Date;
         <div role="rowgroup" className={style.rows}>
             <div role="row" className={classes(style.row, style.header)} style={{ gridTemplateColumns }}>
                 {selectable && <div className={style.collapsed}>
-                    <Checkbox size="xsm" color="var(--f-clr-text-100)" cc={{ checkbox: style.checkbox, checkmark: style.checkmark }} checked={selectedIndices.length === rows.length} onChange={e => {
-                        if (!e.target.checked) return updateSelected([]);
+                    <Checkbox
+                        size="xsm"
+                        color="var(--f-clr-text-100)"
+                        cc={{
+                            checkbox: style.checkbox,
+                            checkmark: style.checkmark
+                        }}
+                        checked={selectedIndices.length === rows.length}
+                        onChange={e => {
+                            // select or deselect all rows
+                            if (!e.target.checked) return updateSelected([]);
 
-                        updateSelected(new Array(rows.length).fill(0).map((_, i) => i));
-                    }} />
+                            updateSelected(new Array(rows.length).fill(0).map((_, i) => i));
+                        }} />
                 </div>}
 
                 {columns.map((col, i) => {
                     const sort = Array.isArray(sortable) ? sortable.includes(col) : sortable;
 
+                    // returns a column header button
                     return <div key={i} role="columnheader">
                         <Halo disabled={!sort}>
                             <button
@@ -163,6 +179,7 @@ export default function Table<T extends { [key: string]: string | number | Date;
                                 type="button"
                                 disabled={!sort}
                                 onClick={() => {
+                                    // if sorting is enabled for this column, toggles between ascending, descending and no sorting
                                     setColumn(col as string);
 
                                     if (column !== col || sorting === 'nil') {
@@ -192,15 +209,22 @@ export default function Table<T extends { [key: string]: string | number | Date;
                 return <Halo key={i} disabled={!selectable}>
                     <div role="row" className={style.row} style={{ gridTemplateColumns }}>
                         {selectable && <div className={style.collapsed}>
-                            <Checkbox size="xsm" color="var(--f-clr-text-100)" cc={{ checkbox: style.checkbox, checkmark: style.checkmark }} checked={selectedIndices.includes(i)} onChange={e => {
-                                const updated = selectedIndices.slice();
-                                e.target.checked ? updated.push(i) : updated.splice(updated.indexOf(i), 1);
+                            <Checkbox
+                                size="xsm"
+                                color="var(--f-clr-text-100)"
+                                cc={{ checkbox: style.checkbox, checkmark: style.checkmark }}
+                                checked={selectedIndices.includes(i)}
+                                onChange={e => {
+                                    // select or deselect the i'th row
+                                    const updated = selectedIndices.slice();
+                                    e.target.checked ? updated.push(i) : updated.splice(updated.indexOf(i), 1);
 
-                                updateSelected(updated);
-                            }} />
+                                    updateSelected(updated);
+                                }} />
                         </div>}
 
                         {columns.map((col, i) => {
+                            // format row data into string values
                             const formatter = columnFormatters[col] || (val => val.toString());
 
                             return <div key={i} role="gridcell">

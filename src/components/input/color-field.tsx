@@ -29,6 +29,11 @@ const styles = createStyles('color-field', fluid => ({
     }
 }));
 
+/**
+ * An input field which displays a color picker.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/color-field}
+ */
 export default function ColorField({ cc = {}, value, defaultValue, onChange, disabled, ...props }:
     {
         value?: string;

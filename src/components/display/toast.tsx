@@ -61,6 +61,11 @@ const styles = createStyles('toast', {
 
 export type ToastSelectors = Selectors<'toast' | 'icon' | 'background' | 'content' | 'text'>;
 
+/**
+ * Used to display a temporary message to a user.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/toast}
+ */
 export default function Toast({ children, cc = {}, icon, color, title, round, action = <Icon type="close" />, onClose, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

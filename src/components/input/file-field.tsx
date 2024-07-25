@@ -103,6 +103,11 @@ const styles = createStyles('file-field', {
 
 export type FileFieldSelectors = Selectors<'input' | 'placeholder' | 'field' | 'content' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
+/**
+ * An input used for selecting files.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/file-field}
+ */
 export default function FileField({ cc = {}, size = 'med', round, icon, error, loading = false, inputRef, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

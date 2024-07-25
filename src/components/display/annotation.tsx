@@ -41,6 +41,11 @@ const styles = createStyles('annotation', {
 
 export type AnnotationSelectors = Selectors<'wrapper' | 'label' | 'error' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
+/**
+ * Displays a label or error message for an input field.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/annotation}
+ */
 export default function Annotation({ children, cc = {}, label, error, ...props }: {
     ref?: React.Ref<HTMLDivElement>;
     children: React.ReactElement<any>;

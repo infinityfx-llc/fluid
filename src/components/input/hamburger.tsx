@@ -57,6 +57,11 @@ const styles = createStyles('hamburger', {
 
 export type HamburgerSelectors = Selectors<'hamburger' | 'line' | 'cross'>
 
+/**
+ * A button which switches between an open and closed state.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/hamburger}
+ */
 export default function Hamburger({ cc = {}, open, color = 'var(--f-clr-text-100)', ...props }: {
     ref?: React.Ref<HTMLButtonElement>;
     cc?: HamburgerSelectors;

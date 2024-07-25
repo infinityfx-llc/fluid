@@ -45,6 +45,11 @@ const styles = createStyles('swatch', {
 
 export type SwatchSelectors = Selectors<'swatch' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
+/**
+ * Displays one or multiple colors.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/swatch}
+ */
 export default function Swatch({ cc = {}, size = 'med', round = false, color = ['transparent'], ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

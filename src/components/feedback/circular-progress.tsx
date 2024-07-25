@@ -54,6 +54,11 @@ const styles = createStyles('circular-progress', {
 
 export type CircularProgressSelectors = Selectors<'wrapper' | 'track' | 'progress' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
+/**
+ * A circular indicator displaying the progress of something.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/circular-progress}
+ */
 export default function CircularProgress({ children, cc = {}, size = 'med', slice = 0, value, defaultValue = 0, color, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

@@ -31,6 +31,11 @@ const styles = createStyles('frame', {
 
 export type FrameSelectors = Selectors<'frame' | 'shadow' | 'border' | 'bg__light' | 'bg__dark'>;
 
+/**
+ * A styled container.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/frame}
+ */
 export default function Frame({ children, cc = {}, radius = 'sml', shadow, border, background = 'none', ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;

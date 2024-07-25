@@ -110,17 +110,23 @@ export type FieldProps = {
     shape?: string;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>;
 
+/**
+ * An input used for entering text based information.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/field}
+ */
 export default function Field({ cc = {}, round = false, size = 'med', error, icon, left, right, onEnter, inputRef, shape, defaultValue, ...props }: FieldProps) {
     const style = combineClasses(styles, cc);
 
     const [split, rest] = useInputProps(props);
     const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(defaultValue || '');
 
+    // parse a shape string into an array of mandatory characters and regex filters.
     const masks = useMemo(() => {
         return shape?.split('')
             .map(char => {
-                if (/0/.test(char)) return /[0-9]/;
-                if (/\*/.test(char)) return /[a-zA-Z0-9]/;
+                if (/0/.test(char)) return /[0-9]/; // a "0" character filters out only numbers
+                if (/\*/.test(char)) return /\w/; // "*" character filters out only word characters
 
                 return char;
             }) || [];
@@ -150,12 +156,13 @@ export default function Field({ cc = {}, round = false, size = 'med', error, ico
                         output = '',
                         len = 0;
 
+                    // loop over input value to see if it matches the wanted shape
                     for (let i = 0, j = 0; i < input.length; i++) {
                         const char = input[i],
                             mask = masks[j];
 
                         if (!mask) {
-                            if (j === 0) {
+                            if (j === 0) { // if no shape is specified just return value as is
                                 output = e.target.value;
                                 len = output.length;
                             }
@@ -163,15 +170,15 @@ export default function Field({ cc = {}, round = false, size = 'med', error, ico
                             break;
                         }
 
-                        if (typeof mask === 'string') {
+                        if (typeof mask === 'string') { // if the shape entry is a mandatory character append it
                             output += mask;
 
                             if (mask !== char || i !== j) i--;
                         } else
-                            if (mask.test(char)) {
+                            if (mask.test(char)) { // else if it matches a regex filter append input value character
                                 output += char;
                                 len = output.length;
-                            } else {
+                            } else { // else, it doesn't match, thus stop parsing
                                 break;
                             }
 

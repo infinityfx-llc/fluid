@@ -115,6 +115,11 @@ const styles = createStyles('timeline', {
 
 export type TimelineSelectors = Selectors<'timeline' | 'uniform' | 'd__horizontal' | 'd__vertical' | 'event' | 'content' | 'axis' | 'bullet' | 'segment'>;
 
+/**
+ * An ordered timeline of events.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/timeline}
+ */
 export default function Timeline({ children, cc = {}, active, direction = 'horizontal', uniform, reverse, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
