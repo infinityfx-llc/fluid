@@ -25,7 +25,7 @@ export default function Collapsible({ children, cc = {}, shown, ...props }: {
     const style = combineClasses(styles, cc);
 
     return <LayoutGroup>
-        <Animatable id="collapsible" cachable={['height', 'visibility']} adaptive>
+        <Animatable id="collapsible" cachable={['height', 'opacity', 'visibility']} adaptive>
             <div {...props}
                 aria-hidden={!shown}
                 className={classes(style.content, props.className)}

@@ -129,6 +129,6 @@ export function mixColors(base: string, mixer: string, outputLength: number) {
             colorA[0] * (1 - n) + colorB[0] * n,
             colorA[1] * (1 - n) + colorB[1] * n,
             colorA[2] * (1 - n) + colorB[2] * n
-        ].map(val => Math.round(val).toString(16)).join('')}`;
+        ].map(val => Math.round(val).toString(16).padStart(2, '0')).join('')}`;
     });
 }

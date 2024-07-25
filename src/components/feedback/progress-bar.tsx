@@ -10,7 +10,7 @@ import { createStyles } from "../../core/style";
 const styles = createStyles('progress-bar', {
     '.track': {
         height: '.4em',
-        width: 'min(100vw, 12em)',
+        minWidth: 'min(100vw, 12em)',
         borderRadius: '999px',
         overflow: 'hidden',
         backgroundColor: 'var(--f-clr-fg-100)'

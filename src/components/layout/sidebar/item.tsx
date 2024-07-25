@@ -122,7 +122,7 @@ const styles = createStyles('sidebar.item', {
 
     '.children': {
         paddingLeft: '1.5em',
-        transition: 'padding-left .3s, margin-bottom .3s, opacity .35s !important',
+        transition: 'padding-left .3s',
         flexShrink: 0
     },
 

@@ -37,7 +37,7 @@ const styles = createStyles('field', {
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--f-spacing-xsm)',
-        padding: '.675em',
+        padding: '.675em', // test: calc(.675em - 1px)
         flexGrow: 1
     },
 
