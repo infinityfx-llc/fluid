@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, use, useEffect, useId, useRef, useState, useImperativeHandle } from "react";
+import { createContext, use, useEffect, useId, useRef, useState, useImperativeHandle, useCallback } from "react";
 import useFluid from "../../../hooks/use-fluid";
 import useMediaQuery from "../../../hooks/use-media-query";
 
@@ -51,7 +51,7 @@ export default function Root({ children, position = 'auto', mobileContainer = 'p
     const isMobile = useMediaQuery(`(max-width: ${fluid.breakpoints.mob}px)`);
     const isModal = mobileContainer === 'modal' && isMobile;
 
-    function toggle(value: boolean) {
+    const toggle = useCallback((value: boolean) => {
         if (isModal) return setOpened(value);
         if (!value || !trigger.current || !content.current) return setOpened(false);
 
@@ -71,7 +71,7 @@ export default function Root({ children, position = 'auto', mobileContainer = 'p
         content.current.style[isTop ? 'top' : 'bottom'] = '';
 
         return setOpened(value);
-    }
+    }, [stretch, opened, isModal]);
 
     useImperativeHandle(ref, () => ({
         open: toggle.bind({}, true),
@@ -80,6 +80,7 @@ export default function Root({ children, position = 'auto', mobileContainer = 'p
 
     useEffect(() => {
         setMounted(true);
+        
         const resize = () => toggle(opened);
         window.addEventListener('resize', resize);
         window.addEventListener('scroll', resize);
@@ -91,7 +92,7 @@ export default function Root({ children, position = 'auto', mobileContainer = 'p
             window.removeEventListener('resize', resize);
             window.removeEventListener('scroll', resize);
         }
-    }, [opened, toggle]);
+    }, [toggle, opened, parent]);
 
     useEffect(() => {
         function click(e: MouseEvent) {

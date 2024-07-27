@@ -4,7 +4,11 @@ import { combineRefs } from "../../../../src/core/utils";
 import { cloneElement, useRef, useEffect } from "react";
 import { usePopover } from "./root";
 
-export type PopoverTrigger = { children: React.ReactElement<any>; longpress?: boolean; disabled?: boolean; } & React.HTMLAttributes<any>;
+export type PopoverTrigger = {
+    children: React.ReactElement<any>;
+    longpress?: boolean;
+    disabled?: boolean;
+} & Omit<React.HTMLAttributes<any>, 'children'>;
 
 export default function Trigger({ children, longpress, disabled, ...props }: PopoverTrigger) {
     const { id, trigger, opened, toggle } = usePopover();
@@ -12,17 +16,18 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
     const touch = useRef({ clientX: 0, clientY: 0 });
     const pressed = useRef(false);
     const touchOnly = useRef(false);
-
-    function action(delay?: number) {
-        if (disabled || children.props.disabled) return;
-
-        clearTimeout(timeout.current);
-        delay ? timeout.current = setTimeout(action, delay) : toggle(!opened);
-    }
+    const isDisabled = disabled || children.props.disabled;
 
     useEffect(() => {
         const el = trigger.current;
         if (!el) return;
+
+        function action(delay?: number) {
+            if (isDisabled) return;
+
+            clearTimeout(timeout.current);
+            delay ? timeout.current = setTimeout(action, delay) : toggle(!opened);
+        }
 
         function start(e: MouseEvent | TouchEvent | KeyboardEvent) {
             const isTouch = 'changedTouches' in e;
@@ -70,14 +75,14 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
             el.removeEventListener('keydown', start);
             el.removeEventListener('keyup', end);
         }
-    }, [action]);
+    }, [toggle, isDisabled, opened]);
 
     return cloneElement(children, {
         ...props,
         ref: combineRefs(trigger, children.props.ref),
         'aria-expanded': opened,
         'aria-controls': id,
-        'aria-disabled': disabled
+        'aria-disabled': isDisabled
     });
 }
 

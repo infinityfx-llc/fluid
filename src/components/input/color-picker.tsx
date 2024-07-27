@@ -1,61 +1,14 @@
 'use client';
 
-import { FluidSize, Selectors } from "../../../src/types";
+import { Selectors } from "../../../src/types";
 import { useEffect, useRef, useState } from "react";
-import { classes, combineClasses } from "../../../src/core/utils";
+import { classes, combineClasses, hexToRgb, hsvToRgb, rgbToHex, rgbToHsv } from "../../../src/core/utils";
 import Annotation from "../display/annotation";
 import Swatch from "../display/swatch";
 import { createStyles } from "../../core/style";
 import Slider from "./slider";
 import Field from "./field";
 import NumberField from "./number-field";
-
-type color = [number, number, number];
-
-function hsvToRgb([h, s, v]: color): color {
-    s /= 100;
-    v /= 100;
-
-    const k = (val: number) => (val + h / 60) % 6;
-    const f = (val: number) => Math.round(255 * v * (1 - s * Math.max(0, Math.min(k(val), 4 - k(val), 1))));
-
-    return [f(5), f(3), f(1)]
-}
-
-function rgbToHsv([r, g, b]: color): color {
-    r /= 255;
-    g /= 255;
-    b /= 255;
-
-    const v = Math.max(r, g, b);
-    const c = v - Math.min(r, g, b);
-
-    let h = 0;
-    if (c && v === r) h = (g - b) / c;
-    if (c && v === g) h = 2 + (b - r) / c;
-    if (c && v === b) h = 4 + (r - g) / c;
-
-    return [
-        60 * (h < 0 ? h + 6 : h),
-        v && (c / v) * 100,
-        v * 100
-    ];
-}
-
-function rgbToHex(rgb: color) {
-    return `${rgb.map(val => val.toString(16).padStart(2, '0')).join('')}`;
-}
-
-function hexToRgb(str: string): color {
-    const hex = str.match(/^([\da-f]{1,2})([\da-f]{1,2})([\da-f]{1,2})([\da-f]{2})?$/i);
-    if (!hex) return [0, 0, 0];
-
-    return hex.slice(1, 4).map(val => parseInt(val.padStart(2, val), 16)) as color;
-}
-
-export function parsePartialHex(str: string) {
-    return rgbToHex(hexToRgb(str.replace(/[^\da-f]/g, '').slice(0, 6)));
-}
 
 // maybe sizes?
 
@@ -95,7 +48,7 @@ const styles = createStyles('color-picker', {
         position: 'absolute',
         width: '1.2em',
         height: '1.2em',
-        borderRadius: '99px',
+        borderRadius: 'var(--f-radius-sml)',
         backgroundColor: 'var(--color)',
         border: 'solid 2px white',
         boxShadow: 'var(--f-shadow-sml)',
@@ -133,12 +86,19 @@ const styles = createStyles('color-picker', {
     },
 
     '.hue__track': {
-        background: 'linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)'
+        background: 'linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)',
+        height: '100%',
+        borderRadius: 'var(--f-radius-sml)'
+    },
+
+    '.wrapper .hue__handle': {
+        borderRadius: 'var(--f-radius-med)'
     },
 
     '.hue__handle::after': {
         boxSizing: 'border-box',
-        border: 'solid 2px white'
+        border: 'solid 2px white',
+        borderRadius: 'var(--f-radius-sml)'
     },
 
     '.hue__handle[aria-disabled="true"]::after': {
@@ -152,15 +112,24 @@ const styles = createStyles('color-picker', {
 
 export type ColorPickerSelectors = Selectors<'wrapper'>;
 
+type RGB = [number, number, number];
+type HSV = [number, number, number];
+
 type ColorPickerProps<T> = {
     ref?: React.Ref<HTMLDivElement>;
     cc?: Selectors<'wrapper'>;
     format?: T;
-    value?: T extends 'hex' ? string : [number, number, number];
-    defaultValue?: T extends 'hex' ? string : [number, number, number];
-    onChange?: (value: T extends 'hex' ? string : [number, number, number]) => void;
+    value?: T extends 'hex' ? string : RGB;
+    defaultValue?: T extends 'hex' ? string : RGB;
+    onChange?: (value: T extends 'hex' ? string : RGB) => void;
     disabled?: boolean;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>;
+
+function rgbEqualsHsv(rgb: RGB, hsv: HSV) {
+    const [r, g, b] = hsvToRgb(hsv);
+
+    return r == rgb[0] && g == rgb[1] && b == rgb[2];
+}
 
 /**
  * An input used for picking a color.
@@ -170,19 +139,27 @@ type ColorPickerProps<T> = {
 export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format, defaultValue, value, onChange, disabled, ...props }: ColorPickerProps<T>) {
     const style = combineClasses(styles, cc);
 
+    const mutableColor = useRef<HSV>([0, 100, 100]);
     const picking = useRef(false);
     const spaceRef = useRef<HTMLDivElement>(null);
 
+    const rgbValue = value === undefined ?
+        null :
+        typeof value === 'string' ?
+            hexToRgb(value) :
+            value as RGB;
+
+    const [color, setColor] = useState(mutableColor.current);
     const [partialHex, setPartialHex] = useState<string | null>(null);
-    const [hsv, setHsv] = useState<color>([0, 100, 100]);
-    const rgb = hsvToRgb(hsv);
-    const hex = rgbToHex(rgb);
+    const [rgb, setRgb] = rgbValue ? [rgbValue] : useState<RGB>([255, 0, 0]);
+    const hsv = rgbEqualsHsv(rgb, color) ? color : rgbToHsv(rgb);
 
-    function update(hsv: color) {
-        setHsv(hsv);
-        const rgb = hsvToRgb(hsv);
-
+    function update(rgb: RGB, mutate = false) {
+        setRgb?.(rgb);
         onChange?.(format === 'rgb' ? rgb : rgbToHex(rgb) as any);
+
+        if (mutate) mutableColor.current = rgbToHsv(rgb);
+        setColor(mutableColor.current);
     }
 
     // pick color from color space based on mouse position
@@ -192,11 +169,10 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
         const { clientX, clientY } = 'touches' in e ? e.changedTouches[0] : e;
         let { x, y, width, height } = spaceRef.current.getBoundingClientRect();
 
-        update([
-            hsv[0],
-            Math.min(Math.max(clientX - x + .5, 0) / width, 1) * 100,
-            (1 - Math.min(Math.max(clientY - y + .5, 0) / height, 1)) * 100
-        ]);
+        mutableColor.current[1] = Math.min(Math.max(clientX - x + .5, 0) / width, 1) * 100;
+        mutableColor.current[2] = (1 - Math.min(Math.max(clientY - y + .5, 0) / height, 1)) * 100;
+
+        update(hsvToRgb(mutableColor.current));
     }
 
     useEffect(() => {
@@ -216,13 +192,7 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
             window.removeEventListener('mousemove', pick);
             window.removeEventListener('touchmove', pick);
         }
-    }, [hsv, disabled]);
-
-    useEffect(() => {
-        if (!value) return;
-
-        setHsv(typeof value === 'string' ? rgbToHsv(hexToRgb(value)) : rgbToHsv(value));
-    }, [value]);
+    }, [disabled]);
 
     return <div {...props}
         style={{
@@ -250,7 +220,6 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
                 }}>
                 <div
                     aria-disabled={disabled}
-                    onMouseDown={() => picking.current = true}
                     className={style.selection}
                     style={{
                         left: `${hsv[1]}%`,
@@ -267,12 +236,12 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
                         size="sml"
                         icon="#"
                         className={style.hex}
-                        value={partialHex !== null ? partialHex : hex}
+                        value={partialHex !== null ? partialHex : rgbToHex(rgb)}
                         onChange={e => {
-                            const str = e.target.value.replace(/[^\da-f]/g, '').slice(0, 6);
+                            const str = e.target.value.replace(/[^\da-fA-F]/g, '').slice(0, 6);
 
                             setPartialHex(str);
-                            update(rgbToHsv(hexToRgb(str)));
+                            update(hexToRgb(str), true);
                         }}
                         onBlur={() => setPartialHex(null)} />
                 </Annotation>
@@ -288,8 +257,10 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
                             size="sml"
                             value={val}
                             onChange={e => {
-                                rgb[i] = parseInt(e.target.value) || 0;
-                                update(rgbToHsv(rgb));
+                                const updated = rgb.slice() as RGB;
+                                updated[i] = parseInt(e.target.value) || 0;
+
+                                update(updated, true);
                             }} />
                     </Annotation>)}
                 </div>
@@ -301,7 +272,11 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
             tooltips="never"
             disabled={disabled}
             value={[hsv[0]]}
-            onChange={values => update([values[0], hsv[1], hsv[2]])}
+            onChange={values => {
+                mutableColor.current[0] = values[0];
+
+                update(hsvToRgb(mutableColor.current));
+            }}
             cc={{
                 progress: style.hue__progress,
                 track: style.hue__track,

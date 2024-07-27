@@ -15,15 +15,15 @@ export default function Content({ children, ref, ...props }: React.HTMLAttribute
     const zIndex = useMemo(() => {
         if (!mounted || !trigger.current) return 1;
 
-        let index = 1, parent: HTMLElement | null = trigger.current;
+        let index = 0, parent: HTMLElement | null = trigger.current;
         while (parent) {
             const i = parseInt(getComputedStyle(parent).zIndex);
-            if (!isNaN(i)) index += i;
+            if (!isNaN(i)) index = Math.max(index, i);
 
             parent = parent.parentElement;
         }
 
-        return index;
+        return index + 2;
     }, [mounted]);
 
     if (!mounted) return null;

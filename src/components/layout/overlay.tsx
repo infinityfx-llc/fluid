@@ -62,6 +62,11 @@ export default function Overlay({ children, cc = {}, show, onClose }: {
     const previous = useRef(false);
     const trap = useFocusTrap<HTMLDivElement>(show);
     const [mounted, setMounted] = useState(false);
+    const [opened, setOpened] = useState(false); // not ideal solution..
+
+    useEffect(() => {
+        if (!show) setOpened(false);
+    }, [show]);
 
     useEffect(() => {
         setMounted(true);
@@ -97,8 +102,22 @@ export default function Overlay({ children, cc = {}, show, onClose }: {
 
     return mounted ? createPortal(<LayoutGroup>
         <div ref={trap} className={style.wrapper}>
-            {show && <div className={style.overlay}>
-                <Animatable id="overlay" animate={{ opacity: [0, 1], duration: .25 }} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
+            {show && <div
+                className={style.overlay}
+                style={{
+                    pointerEvents: opened ? undefined : 'none'
+                }}>
+                <Animatable
+                    id="overlay"
+                    animations={{
+                        mount: { opacity: [0, 1], duration: .25 },
+                        unmount: { opacity: [0, 1], duration: .25 }
+                    }}
+                    triggers={[
+                        { on: 'mount', name: 'mount' },
+                        { on: 'unmount', name: 'unmount', reverse: true }
+                    ]}
+                    onAnimationEnd={name => name === 'mount' && setOpened(true)}>
                     <div className={style.tint} onClick={onClose} />
                 </Animatable>
 

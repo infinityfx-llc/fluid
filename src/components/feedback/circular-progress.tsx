@@ -9,10 +9,12 @@ import { createStyles } from "../../core/style";
 
 const styles = createStyles('circular-progress', {
     '.wrapper': {
+        position: 'relative',
         width: '3.2em',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        flexShrink: 0
     },
 
     '.track': {

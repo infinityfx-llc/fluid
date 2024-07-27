@@ -5,10 +5,13 @@ import Field, { FieldProps } from './field';
 import { Animatable } from '@infinityfx/lively';
 import Popover from '../layout/popover';
 import { createStyles } from '../../core/style';
-import { combineClasses } from '../../core/utils';
+import { combineClasses, hexToRgb, rgbToHex } from '../../core/utils';
 import ColorPicker from './color-picker';
-import { parsePartialHex } from './color-picker';
 import Swatch from '../display/swatch';
+
+function parsePartialHex(str: string) {
+    return rgbToHex(hexToRgb(str.replace(/[^\da-f]/g, '').slice(0, 6)));
+}
 
 const styles = createStyles('color-field', fluid => ({
     '.picker': {
@@ -24,7 +27,7 @@ const styles = createStyles('color-field', fluid => ({
             boxShadow: 'var(--f-shadow-med)',
             backgroundColor: 'var(--f-clr-fg-100)',
             border: 'solid 1px var(--f-clr-fg-200)',
-            borderRadius: 'var(--f-radius-sml)'
+            borderRadius: 'var(--f-radius-med)'
         }
     }
 }));
@@ -46,12 +49,6 @@ export default function ColorField({ cc = {}, value, defaultValue, onChange, dis
     const [state, setState] = value !== undefined ? [value, onChange] : useState(defaultValue || '');
     const [partial, setPartial] = useState<string | null>(null);
 
-    function update(value: string) {
-        value = `#${value}`;
-
-        setState?.(value);
-    }
-
     return <Popover.Root position="center" mobileContainer="modal">
         <Popover.Trigger disabled={disabled}>
             <Field {...props}
@@ -68,7 +65,7 @@ export default function ColorField({ cc = {}, value, defaultValue, onChange, dis
                     const hex = parsePartialHex(e.target.value);
 
                     setPartial(e.target.value);
-                    update(hex);
+                    setState?.(hex);
                 }}
                 onBlur={() => setPartial(null)}
             />
@@ -86,9 +83,9 @@ export default function ColorField({ cc = {}, value, defaultValue, onChange, dis
                     { on: 'mount' },
                     { on: 'unmount', reverse: true }
                 ]}>
-                    
+
                 <div className={style.picker}>
-                    <ColorPicker value={state?.replace('#', '')} onChange={update} disabled={props.readOnly || disabled} />
+                    <ColorPicker value={state} onChange={hex => setState?.(`#${hex}`)} disabled={props.readOnly || disabled} />
                 </div>
             </Animatable>
         </Popover.Content>

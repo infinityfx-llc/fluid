@@ -182,7 +182,7 @@ export default function Panel({ cc = {}, children, variant = 'default', directio
             window.removeEventListener('touchmove', drag);
             window.removeEventListener('touchend', cancel);
         }
-    }, [update, direction]);
+    }, [dividers, direction]);
 
     return <div
         {...props}

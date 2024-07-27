@@ -111,11 +111,48 @@ export function filterFocusable(elements: Element[], types = true) {
         .filter(el => el !== null);
 }
 
-function hexToRgb(str: string) {
-    const hex = str.match(/^#([\da-f]{1,2})([\da-f]{1,2})([\da-f]{1,2})([\da-f]{2})?$/i);
-    if (hex) return hex.slice(1, 4).map(val => parseInt(val.padStart(2, val), 16));
+type RGB = [number, number, number];
+type HSV = [number, number, number];
 
-    return [0, 0, 0];
+export function rgbToHex(rgb: RGB) {
+    return `${rgb.map(val => val.toString(16).padStart(2, '0')).join('')}`;
+}
+
+export function hexToRgb(str: string): RGB {
+    const hex = str.toLowerCase().match(/^#?([\da-f]{1,2})([\da-f]{1,2})([\da-f]{1,2})([\da-f]{2})?$/i);
+    if (!hex) return [0, 0, 0];
+
+    return hex.slice(1, 4).map(val => parseInt(val.padStart(2, val), 16)) as RGB;
+}
+
+export function hsvToRgb([h, s, v]: HSV): RGB {
+    s /= 100;
+    v /= 100;
+
+    const k = (val: number) => (val + h / 60) % 6;
+    const f = (val: number) => Math.round(255 * v * (1 - s * Math.max(0, Math.min(k(val), 4 - k(val), 1))));
+
+    return [f(5), f(3), f(1)];
+}
+
+export function rgbToHsv([r, g, b]: RGB): HSV {
+    r /= 255;
+    g /= 255;
+    b /= 255;
+
+    const v = Math.max(r, g, b);
+    const c = v - Math.min(r, g, b);
+
+    let h = 0;
+    if (c && v === r) h = (g - b) / c;
+    if (c && v === g) h = 2 + (b - r) / c;
+    if (c && v === b) h = 4 + (r - g) / c;
+
+    return [
+        60 * (h < 0 ? h + 6 : h),
+        v && (c / v) * 100,
+        v * 100
+    ];
 }
 
 export function mixColors(base: string, mixer: string, outputLength: number) {
@@ -131,4 +168,19 @@ export function mixColors(base: string, mixer: string, outputLength: number) {
             colorA[2] * (1 - n) + colorB[2] * n
         ].map(val => Math.round(val).toString(16).padStart(2, '0')).join('')}`;
     });
+}
+
+const channels = {
+    hue: 0,
+    saturation: 1,
+    lightness: 2
+};
+
+export function invertColorChannel(hex: string, channel: keyof typeof channels) {
+    const hsv = rgbToHsv(hexToRgb(hex));
+
+    hsv[channels[channel]] = (channel === 'hue' ? 180 : 100) - hsv[channels[channel]];
+    if (hsv[0] < 0) hsv[0] = 360 - hsv[0];
+
+    return rgbToHex(hsvToRgb(hsv));
 }
