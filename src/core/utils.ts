@@ -182,5 +182,5 @@ export function invertColorChannel(hex: string, channel: keyof typeof channels) 
     hsv[channels[channel]] = (channel === 'hue' ? 180 : 100) - hsv[channels[channel]];
     if (hsv[0] < 0) hsv[0] = 360 - hsv[0];
 
-    return rgbToHex(hsvToRgb(hsv));
+    return `#${rgbToHex(hsvToRgb(hsv))}`;
 }
