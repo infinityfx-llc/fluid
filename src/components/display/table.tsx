@@ -159,7 +159,8 @@ export default function Table<T extends { [key: string]: string | number | Date;
                             checkbox: style.checkbox,
                             checkmark: style.checkmark
                         }}
-                        checked={selectedIndices.length === rows.length}
+                        intermediate={selectedIndices.length !== rows.length}
+                        checked={!!selectedIndices.length}
                         onChange={e => {
                             // select or deselect all rows
                             if (!e.target.checked) return updateSelected([]);

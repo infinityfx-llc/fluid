@@ -95,7 +95,7 @@ const styles = createStyles('slider', {
         boxShadow: 'var(--f-shadow-med)'
     },
 
-    '.slider[data-disabled="false"] .track': {
+    '.slider[data-disabled="false"]': {
         cursor: 'pointer'
     },
 
@@ -237,17 +237,19 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
 
         {label && <div id={id} className={style.label}>{label}</div>}
 
-        <div className={style.slider} data-disabled={!!props.disabled}>
-            <div ref={track} className={style.track}
-                onTouchEnd={() => dragging.current = null}
-                onMouseDown={e => {
-                    dragging.current = -1;
-                    change(e.nativeEvent);
-                }}
-                onTouchStart={e => {
-                    dragging.current = -1;
-                    change(e.nativeEvent);
-                }}>
+        <div
+            className={style.slider}
+            data-disabled={!!props.disabled}
+            onTouchEnd={() => dragging.current = null}
+            onMouseDown={e => {
+                dragging.current = -1;
+                change(e.nativeEvent);
+            }}
+            onTouchStart={e => {
+                dragging.current = -1;
+                change(e.nativeEvent);
+            }}>
+            <div ref={track} className={style.track}>
                 <div className={style.progress} style={{
                     scale: vertical ? `1 ${scale}` : `${scale} 1`,
                     translate: vertical ? `0% ${offset * -100}%` : `${offset * 100}% 0%`

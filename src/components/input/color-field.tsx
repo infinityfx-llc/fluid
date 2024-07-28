@@ -10,7 +10,7 @@ import ColorPicker from './color-picker';
 import Swatch from '../display/swatch';
 
 function parsePartialHex(str: string) {
-    return rgbToHex(hexToRgb(str.replace(/[^\da-f]/g, '').slice(0, 6)));
+    return `#${rgbToHex(hexToRgb(str.replace(/[^\da-f]/g, '').slice(0, 6)))}`;
 }
 
 const styles = createStyles('color-field', fluid => ({

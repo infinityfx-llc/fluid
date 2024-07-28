@@ -139,7 +139,6 @@ function rgbEqualsHsv(rgb: RGB, hsv: HSV) {
 export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, format, defaultValue, value, onChange, disabled, ...props }: ColorPickerProps<T>) {
     const style = combineClasses(styles, cc);
 
-    const mutableColor = useRef<HSV>([0, 100, 100]);
     const picking = useRef(false);
     const spaceRef = useRef<HTMLDivElement>(null);
 
@@ -148,11 +147,17 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
         typeof value === 'string' ?
             hexToRgb(value) :
             value as RGB;
+    const initial = defaultValue === undefined ?
+        [255, 0, 0] as RGB :
+        typeof defaultValue === 'string' ?
+            hexToRgb(defaultValue) :
+            defaultValue as RGB;
 
-    const [color, setColor] = useState(mutableColor.current);
+    const [color, setColor] = useState<HSV>(rgbToHsv(initial));
     const [partialHex, setPartialHex] = useState<string | null>(null);
-    const [rgb, setRgb] = rgbValue ? [rgbValue] : useState<RGB>([255, 0, 0]);
+    const [rgb, setRgb] = rgbValue ? [rgbValue] : useState<RGB>(initial);
     const hsv = rgbEqualsHsv(rgb, color) ? color : rgbToHsv(rgb);
+    const mutableColor = useRef(hsv);
 
     function update(rgb: RGB, mutate = false) {
         setRgb?.(rgb);
@@ -268,7 +273,7 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
         </div>
         <Slider
             max={360}
-            step={1}
+            step={.25}
             tooltips="never"
             disabled={disabled}
             value={[hsv[0]]}
