@@ -6,9 +6,10 @@ import { useState, useRef, useEffect } from 'react';
 import { createStyles } from '../../core/style';
 import { useTrigger } from '@infinityfx/lively/hooks';
 import { Animatable } from '@infinityfx/lively';
+import { LayoutGroup } from '@infinityfx/lively/layout';
 
 const styles = createStyles('ticker', {
-    '.text': {
+    '.ticker': {
         display: 'flex',
         alignItems: 'flex-end',
         height: '1.2em',
@@ -23,7 +24,12 @@ const styles = createStyles('ticker', {
 
     '.column > *': {
         height: '1.2em',
-        lineHeight: 1.2
+        lineHeight: 1.2,
+        width: '100%'
+    },
+
+    '.column > :not(:last-child) > *': {
+        position: 'absolute'
     }
 });
 
@@ -96,18 +102,37 @@ export default function Ticker({ children, cc = {}, align = 'right', selective, 
         trigger();
     }, [children]);
 
-    return <div {...props} className={classes(style.text, props.className)}>
-        {state.map((column, i) => {
+    return <div {...props} className={classes(style.ticker, props.className)}>
+        <LayoutGroup transition={{ duration }}>
+            {state.map((column, i) => {
+                return <Animatable
+                    key={i}
+                    id={i.toString()}
+                    adaptive
+                    deform={false}
+                    cachable={['x', 'sx']}
+                    initial={{ translate: '0em 0em' }}
+                    animate={{
+                        translate: ['0em 1.2em', '0em 0em'],
+                        composite: 'combine',
+                        duration,
+                        delay: i * stagger
+                    }}
+                    triggers={[{
+                        on: trigger,
+                        name: !selective || prevLastRow.current[i] !== column[column.length - 1] ? 'animate' : 'undefined',
+                        commit: false
+                    }]}>
 
-            return <Animatable key={i}
-                initial={{ translate: '0em 0em' }}
-                animate={{ translate: ['0em 1.2em', '0em 0em'], composite: 'combine', duration, delay: i * stagger }}
-                triggers={[{ on: trigger, name: !selective || prevLastRow.current[i] !== column[column.length - 1] ? 'animate' : 'undefined', commit: false }]}>
-
-                <pre className={style.column}>
-                    {column.map((char, i) => <div key={i}>{char || ' '}</div>)}
-                </pre>
-            </Animatable>
-        })}
+                    <div className={style.column}>
+                        {column.map((char, i) => <div key={i}>
+                            <div>
+                                {char || ' '}
+                            </div>
+                        </div>)}
+                    </div>
+                </Animatable>
+            })}
+        </LayoutGroup>
     </div>;
 }
