@@ -26,10 +26,6 @@ const styles = createStyles('ticker', {
         height: '1.2em',
         lineHeight: 1.2,
         width: '100%'
-    },
-
-    '.column > :not(:last-child) > *': {
-        position: 'absolute'
     }
 });
 
@@ -53,7 +49,13 @@ export default function Ticker({ children, cc = {}, align = 'right', selective, 
 
     const trigger = useTrigger();
     const prev = useRef(children.toString());
-    const mutable = useRef<(string | null)[][]>(children.toString().split('').map(char => [char]));
+    const mutable = useRef<{
+        char: string | null;
+        active: 0 | 1;
+    }[][]>(children.toString().split('').map(char => [{
+        char,
+        active: 1
+    }]));
     const prevLastRow = useRef<(string | null)[]>([]);
     const [state, setState] = useState(mutable.current);
 
@@ -80,7 +82,7 @@ export default function Ticker({ children, cc = {}, align = 'right', selective, 
             updated = mutable.current,
             diff = updated.length - chars.length;
 
-        prevLastRow.current = updated.map(col => col[col.length - 1]);
+        prevLastRow.current = updated.map(col => col[col.length - 1].char);
 
         // match length between previous and current content by filling from left or right with null values
         if (diff > 0) chars[align === 'right' ? 'unshift' : 'push'](...new Array(diff).fill(null));
@@ -89,16 +91,29 @@ export default function Ticker({ children, cc = {}, align = 'right', selective, 
         for (let i = chars.length - 1; i >= 0; i--) {
             if (i < updated.length) {
                 // if character index already exists in previous content, append to array
-                updated[i].push(chars[i]);
+                updated[i].push({
+                    char: chars[i],
+                    active: 1
+                });
             } else {
                 // else add a new array at the left or right
-                updated[align === 'right' ? 'unshift' : 'push']([chars[i]]);
+                updated[align === 'right' ? 'unshift' : 'push']([{
+                    char: chars[i],
+                    active: 1
+                }]);
             }
+
+            setTimeout(() => {
+                // set offscreen characters to "inactive", so they don't take up width
+                const col = mutable.current[i];
+                if (col.length > 1) col[col.length - 2].active = 0;
+
+                setState(mutable.current.slice());
+            }, i * stagger * 1000);
         }
 
         // after animation ends remove previous characters that are out of view
         setTimeout(trim, (duration + (updated.length - 1) * stagger) * 1000);
-        setState(updated.slice());
         trigger();
     }, [children]);
 
@@ -120,13 +135,15 @@ export default function Ticker({ children, cc = {}, align = 'right', selective, 
                     }}
                     triggers={[{
                         on: trigger,
-                        name: !selective || prevLastRow.current[i] !== column[column.length - 1] ? 'animate' : 'undefined',
+                        name: !selective || prevLastRow.current[i] !== column[column.length - 1].char ? 'animate' : '_',
                         commit: false
                     }]}>
 
                     <div className={style.column}>
-                        {column.map((char, i) => <div key={i}>
-                            <div>
+                        {column.map(({ char, active }, j) => <div key={j}>
+                            <div style={{
+                                position: active ? undefined : 'absolute'
+                            }}>
                                 {char || ' '}
                             </div>
                         </div>)}

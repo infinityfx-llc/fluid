@@ -183,12 +183,14 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
 
     const selfInputRef = useRef<HTMLInputElement>(null);
     const popover = useRef<PopoverRootReference>(null);
-    const [state, setState] = value !== undefined ? [value, onChange] : useState<T>(defaultValue || (multiple ? [] as any : '' as T));
     const [split, rest] = useInputProps(props);
 
+    const [state, setState] = value !== undefined ? [value, onChange] : useState<T>(defaultValue || (multiple ? [] as any : '' as T));
+    const isMult = Array.isArray(state);
+
     useEffect(() => {
-        if (value === undefined) setState?.(multiple ? [] as any : '' as T);
-    }, [multiple]);
+        if (multiple !== isMult) setState?.(multiple ? [state] as any : (state as any)[0]);
+    }, [multiple, isMult]);
 
     return <Combobox.Root ref={popover} stretch>
         <Combobox.Trigger disabled={props.disabled || readOnly}>
@@ -207,9 +209,9 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                     {icon}
 
                     <div className={style.content}>
-                        {(Array.isArray(state) ? !state.length : state === null || state === undefined || state === '') && <div className={style.placeholder}>{placeholder}</div>}
+                        {(isMult ? !state.length : state === null || state === undefined || state === '') && <div className={style.placeholder}>{placeholder}</div>}
 
-                        {Array.isArray(state) ?
+                        {isMult ?
                             (state.length < 3 ?
                                 state.map((val, i) => <Badge key={i} round={round} cc={{ badge: style.badge }}>{val}</Badge>) :
                                 <>
@@ -240,7 +242,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
 
         <Combobox.Content size={contentSize} aria-multiselectable={multiple} searchable={searchable} emptyMessage={emptyMessage} round={round}>
             {options.map(({ label, value, disabled }, i) => {
-                const selected = (Array.isArray(state) ? state.includes(value) : state === value);
+                const selected = isMult ? state.includes(value) : state === value;
 
                 return <Combobox.Option
                     key={i}
@@ -250,7 +252,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                     onSelect={() => {
                         // select or deselect this option
 
-                        if (!Array.isArray(state)) {
+                        if (!isMult) {
                             // if only one selection is allowed replace currently selected option
                             popover.current?.close();
                             selfInputRef.current?.focus();
