@@ -12,7 +12,7 @@ const styles = createStyles('ticker', {
     '.ticker': {
         display: 'flex',
         alignItems: 'flex-end',
-        height: '1.2em',
+        height: '1.25em',
         overflow: 'hidden'
     },
 
@@ -23,9 +23,10 @@ const styles = createStyles('ticker', {
     },
 
     '.column > *': {
-        height: '1.2em',
+        height: '1.25em',
         lineHeight: 1.2,
-        width: '100%'
+        width: '100%',
+        whiteSpace: 'pre'
     }
 });
 
@@ -36,7 +37,7 @@ export type TickerSelectors = Selectors<'text' | 'column'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/ticker}
  */
-export default function Ticker({ children, cc = {}, align = 'right', selective, duration = .7, stagger = .1, ...props }: {
+export default function Ticker({ children, cc = {}, align = 'left', selective, duration = .7, stagger = .1, ...props }: {
     children: number | string | (number | string)[];
     ref?: React.Ref<HTMLDivElement>;
     cc?: TickerSelectors;
@@ -67,7 +68,7 @@ export default function Ticker({ children, cc = {}, align = 'right', selective, 
             let chars = mutable.current[i];
             chars = chars.slice(chars.length > 2 ? 1 : 0);
 
-            if (chars[0] !== null || chars.length > 1) trimmed.push(chars);
+            if (chars[chars.length - 1].char !== null || chars.length > 2) trimmed.push(chars);
         }
 
         mutable.current = trimmed;
@@ -89,24 +90,30 @@ export default function Ticker({ children, cc = {}, align = 'right', selective, 
 
         // loop over new content character by character
         for (let i = chars.length - 1; i >= 0; i--) {
-            if (i < updated.length) {
+            const columnIndex = align == 'right' ? i + Math.min(diff, 0) : i;
+
+            if (Array.isArray(updated[columnIndex])) {
                 // if character index already exists in previous content, append to array
-                updated[i].push({
+                updated[columnIndex].push({
                     char: chars[i],
                     active: 1
                 });
             } else {
                 // else add a new array at the left or right
-                updated[align === 'right' ? 'unshift' : 'push']([{
+                const newColumn = [{
                     char: chars[i],
-                    active: 1
-                }]);
+                    active: 1 as const
+                }];
+
+                align === 'right' ?
+                    updated.unshift(newColumn) :
+                    updated[columnIndex] = newColumn;
             }
 
             setTimeout(() => {
                 // set offscreen characters to "inactive", so they don't take up width
                 const col = mutable.current[i];
-                if (col.length > 1) col[col.length - 2].active = 0;
+                if (col?.length > 1) col[col.length - 2].active = 0;
 
                 setState(mutable.current.slice());
             }, i * stagger * 1000);
@@ -118,11 +125,15 @@ export default function Ticker({ children, cc = {}, align = 'right', selective, 
     }, [children]);
 
     return <div {...props} className={classes(style.ticker, props.className)}>
-        <LayoutGroup transition={{ duration }}>
+        <LayoutGroup
+            initialMount={false}
+            transition={{ duration }}>
             {state.map((column, i) => {
+                const key = (align === 'right' ? state.length - 1 - i : i).toString();
+
                 return <Animatable
-                    key={i}
-                    id={i.toString()}
+                    key={key}
+                    id={key}
                     adaptive
                     deform={false}
                     cachable={['x', 'sx']}
@@ -133,11 +144,17 @@ export default function Ticker({ children, cc = {}, align = 'right', selective, 
                         duration,
                         delay: i * stagger
                     }}
-                    triggers={[{
-                        on: trigger,
-                        name: !selective || prevLastRow.current[i] !== column[column.length - 1].char ? 'animate' : '_',
-                        commit: false
-                    }]}>
+                    triggers={[
+                        {
+                            on: trigger,
+                            name: !selective || prevLastRow.current[i] !== column[column.length - 1].char ? 'animate' : '_',
+                            commit: false
+                        },
+                        {
+                            on: 'mount',
+                            commit: false
+                        }
+                    ]}>
 
                     <div className={style.column}>
                         {column.map(({ char, active }, j) => <div key={j}>

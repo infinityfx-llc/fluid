@@ -68,13 +68,16 @@ export default function Combine({ children, cc = {}, direction = 'horizontal', .
         {Children.map(children, child => {
             if (!isValidElement(child)) return child;
 
+            const cc = (child as React.ReactElement<any>).props.cc || {};
+
             return cloneElement(child, {
                 cc: {
-                    button: style.item,
-                    toggle: style.item,
-                    button__var__neutral: style.border,
-                    toggle__var__neutral: style.border,
-                    field: classes(style.item, style.border)
+                    ...cc,
+                    button: classes(style.item, cc.button),
+                    toggle: classes(style.item, cc.toggle),
+                    button__var__neutral: classes(style.border, cc.button__var__neutral),
+                    toggle__var__neutral: classes(style.border, cc.toggle__var__neutral),
+                    field: classes(style.item, style.border, cc.field)
                 }
             } as any);
         })}

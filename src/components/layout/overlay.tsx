@@ -41,6 +41,10 @@ const styles = createStyles('overlay', {
         position: 'absolute',
         inset: 0,
         backgroundColor: 'rgb(0, 0, 0, .35)'
+    },
+
+    '.overlay > *:not(:first-child)': {
+        isolation: 'isolate'
     }
 });
 
