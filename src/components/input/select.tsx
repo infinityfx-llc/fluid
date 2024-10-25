@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useId } from 'react';
 import { FieldProps } from './field';
 import Button from './button';
 import { FluidInputvalue, FluidSize, PopoverRootReference, Selectors } from '../../../src/types';
@@ -181,6 +181,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
     }: SelectProps<T>) {
     const style = combineClasses(styles, cc);
 
+    const placeholderId = useId();
     const selfInputRef = useRef<HTMLInputElement>(null);
     const popover = useRef<PopoverRootReference>(null);
     const [split, rest] = useInputProps(props);
@@ -209,7 +210,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                     {icon}
 
                     <div className={style.content}>
-                        {(isMult ? !state.length : state === null || state === undefined || state === '') && <div className={style.placeholder}>{placeholder}</div>}
+                        {(isMult ? !state.length : state === null || state === undefined || state === '') && <div className={style.placeholder} id={placeholderId}>{placeholder}</div>}
 
                         {isMult ?
                             (state.length < 3 ?
@@ -224,6 +225,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                     </div>
 
                     <input
+                        aria-labelledby={placeholder ? placeholderId : undefined}
                         {...split}
                         ref={combineRefs(inputRef, selfInputRef)}
                         readOnly

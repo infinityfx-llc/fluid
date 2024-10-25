@@ -30,6 +30,10 @@ const styles = createStyles('navigation-menu.group', {
         gap: 'var(--f-spacing-xsm)'
     },
 
+    '.link.round': {
+        borderRadius: '1em'
+    },
+
     '.arrow': {
         display: 'flex',
         transition: 'rotate .35s',
@@ -39,7 +43,7 @@ const styles = createStyles('navigation-menu.group', {
     '.selection': {
         position: 'absolute',
         inset: 0,
-        borderRadius: 'var(--f-radius-sml)',
+        borderRadius: 'inherit',
         backgroundColor: 'var(--f-clr-primary-400)',
         zIndex: -1
     },
@@ -61,11 +65,12 @@ export type NavigationMenuGroupSelectors = Selectors<'group' | 'link' | 'arrow' 
 
 type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a';
 
-export default function Group({ children, cc = {}, label, href, target, active = false, position = 'center', Link = 'a', ...props }:
+export default function Group({ children, cc = {}, label, round = false, href, target, active = false, position = 'center', Link = 'a', ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: NavigationMenuGroupSelectors;
         label: React.ReactNode;
+        round?: boolean;
         href?: string;
         target?: '_blank' | '_parent' | '_self' | '_top';
         active?: boolean;
@@ -79,7 +84,10 @@ export default function Group({ children, cc = {}, label, href, target, active =
     const hasLinks = Children.count(children) > 0;
 
     return <div className={style.group}>
-        <Link className={style.link}
+        <Link className={classes(
+            style.link,
+            round && style.round
+        )}
             role="menuitem"
             href={href}
             target={target}
@@ -106,7 +114,7 @@ export default function Group({ children, cc = {}, label, href, target, active =
                 {(selection ? linkId === selection : active) && <Morph
                     id="fluid-navigation-menu-selection"
                     group={`fluid-navigation-menu-selection-${id}`}
-                    cachable={['x', 'sx']}
+                    cachable={['x', 'sx', 'borderRadius']}
                     deform={false}
                     transition={{ duration: .35 }}
                     animate={{ opacity: [1, 0], duration: .25 }}
