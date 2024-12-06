@@ -23,6 +23,22 @@ const styles = createStyles('frame', {
         background: 'var(--f-clr-bg-100)'
     },
 
+    '.r__xsm': {
+        borderRadius: 'var(--f-radius-xsm)'
+    },
+
+    '.r__sml': {
+        borderRadius: 'var(--f-radius-sml)'
+    },
+
+    '.r__med': {
+        borderRadius: 'var(--f-radius-med)'
+    },
+
+    '.r__lrg': {
+        borderRadius: 'var(--f-radius-lrg)'
+    },
+
     '.frame img': {
         objectFit: 'cover',
         display: 'block'
@@ -53,12 +69,9 @@ export default function Frame({ children, cc = {}, radius = 'sml', shadow, borde
             shadow && style.shadow,
             border && style.border,
             style[`bg__${background}`],
+            style[`r__${radius}`],
             props.className
-        )}
-        style={{
-            borderRadius: `var(--f-radius-${radius})`,
-            ...props.style
-        }}>
+        )}>
         {children}
     </div>;
 }
