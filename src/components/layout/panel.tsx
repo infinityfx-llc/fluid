@@ -158,6 +158,9 @@ export default function Panel({ cc = {}, children, variant = 'default', directio
     }
 
     useEffect(() => {
+        const ctrl = new AbortController(),
+            signal = ctrl.signal;
+
         function drag(e: MouseEvent | TouchEvent) {
             if (!dragging.current || !container.current) return;
 
@@ -171,17 +174,12 @@ export default function Panel({ cc = {}, children, variant = 'default', directio
 
         const cancel = () => dragging.current = 0;
 
-        window.addEventListener('mousemove', drag);
-        window.addEventListener('mouseup', cancel);
-        window.addEventListener('touchmove', drag);
-        window.addEventListener('touchend', cancel);
+        window.addEventListener('mousemove', drag, { signal });
+        window.addEventListener('mouseup', cancel, { signal });
+        window.addEventListener('touchmove', drag, { signal });
+        window.addEventListener('touchend', cancel, { signal });
 
-        return () => {
-            window.removeEventListener('mousemove', drag);
-            window.removeEventListener('mouseup', cancel);
-            window.removeEventListener('touchmove', drag);
-            window.removeEventListener('touchend', cancel);
-        }
+        return () => ctrl.abort();
     }, [dividers, direction]);
 
     return <div

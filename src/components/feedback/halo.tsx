@@ -93,23 +93,11 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
     }
 
     useEffect(() => {
-        const focusEl = target?.current || container.current;
+        const focusEl = target?.current || container.current,
+            ctrl = new AbortController(),
+            signal = ctrl.signal;
+            
         if (!focusEl) return;
-
-        // trigger ripple animation at mouse position on click
-        function click(e: MouseEvent) {
-            if (halo.current) {
-                const { x, y, width, height } = halo.current.getBoundingClientRect();
-
-                const max = Math.max(width, height) * 2.41;
-                const dx = ((e.clientX - x) / width - .5) * (width / max);
-                const dy = ((e.clientY - y) / height - .5) * (height / max);
-
-                translate.set(`${e.clientX ? dx * 100 : 0}% ${e.clientY ? dy * 100 : 0}px`);
-            }
-
-            clickTrigger();
-        }
 
         function focus(e: FocusEvent) {
             if (!halo.current) return;
@@ -124,22 +112,27 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
                 }
         }
 
-        const showHalo = () => toggleHalo(true);
-        const hideHalo = () => toggleHalo(false);
+        // trigger ripple animation at mouse position on click
+        focusEl.addEventListener('click', (e: MouseEvent) => {
+            if (halo.current) {
+                const { x, y, width, height } = halo.current.getBoundingClientRect();
 
-        focusEl.addEventListener('click', click);
-        focusEl.addEventListener('touchstart', showHalo);
-        focusEl.addEventListener('touchend', hideHalo);
-        focusEl.addEventListener('focusin', focus);
-        focusEl.addEventListener('focusout', focus);
+                const max = Math.max(width, height) * 2.41;
+                const dx = ((e.clientX - x) / width - .5) * (width / max);
+                const dy = ((e.clientY - y) / height - .5) * (height / max);
 
-        return () => {
-            focusEl.removeEventListener('click', click);
-            focusEl.removeEventListener('touchstart', showHalo);
-            focusEl.removeEventListener('touchend', hideHalo);
-            focusEl.removeEventListener('focusin', focus);
-            focusEl.removeEventListener('focusout', focus);
-        }
+                translate.set(`${e.clientX ? dx * 100 : 0}% ${e.clientY ? dy * 100 : 0}px`);
+            }
+
+            clickTrigger();
+        }, { signal });
+
+        focusEl.addEventListener('touchstart', () => toggleHalo(true), { signal });
+        focusEl.addEventListener('touchend', () => toggleHalo(false), { signal });
+        focusEl.addEventListener('focusin', focus, { signal });
+        focusEl.addEventListener('focusout', focus, { signal });
+
+        return () => ctrl.abort();
     }, []);
 
     children = Array.isArray(children) ? children[0] : children;

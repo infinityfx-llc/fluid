@@ -108,7 +108,7 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
     }
 
     let frame: number;
-    
+
     // update tooltip position based on anchor position
     function update() {
         if (anchor.current && tooltip.current) {
@@ -127,43 +127,39 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
     }
 
     useEffect(() => {
-        const el = element.current;
+        const el = element.current,
+            ctrl = new AbortController(),
+            signal = ctrl.signal;
+
         if (!el) return;
 
         cancelAnimationFrame(frame);
         frame = requestAnimationFrame(update); // call position update function every animation frame
 
-        const hide = () => {
-            toggle(false);
-            touchOnly.current = false;
-        }
-        const show = () => !touchOnly.current && toggle(true, delay);
-        const lift = () => toggle(null);
-        const touch = (e: TouchEvent) => {
+        window.addEventListener('touchstart', (e: TouchEvent) => {
             if (e.target === el || el.contains(e.target as HTMLElement)) { // Needs more testing
                 touchOnly.current = true;
                 toggle(true, delay + 0.25);
             } else {
                 toggle(false);
             }
-        }
+        }, { signal });
 
-        window.addEventListener('touchstart', touch);
-        el.addEventListener('mouseenter', show);
-        el.addEventListener('focus', show);
-        el.addEventListener('mouseleave', hide);
-        el.addEventListener('blur', hide);
-        el.addEventListener('touchend', lift);
+        const hide = () => {
+            toggle(false);
+            touchOnly.current = false;
+        };
+        const show = () => !touchOnly.current && toggle(true, delay);
+
+        el.addEventListener('mouseenter', show, { signal });
+        el.addEventListener('focus', show, { signal });
+        el.addEventListener('mouseleave', hide, { signal });
+        el.addEventListener('blur', hide, { signal });
+        el.addEventListener('touchend', () => toggle(null), { signal });
 
         return () => {
             cancelAnimationFrame(frame);
-
-            window.removeEventListener('touchstart', touch);
-            el.removeEventListener('mouseenter', show);
-            el.removeEventListener('focus', show);
-            el.removeEventListener('mouseleave', hide);
-            el.removeEventListener('blur', hide);
-            el.removeEventListener('touchend', lift);
+            ctrl.abort();
         }
     }, [visibility, displayPosition, delay]);
 

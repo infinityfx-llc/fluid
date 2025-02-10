@@ -178,6 +178,7 @@ export function parseCSSVariables<T extends FluidTheme>(theme: T) {
 
 export function parseColorPalettes<T extends FluidTheme>(theme: T) {
     const ruleset: FluidStyles = {};
+    const mediaset: FluidStyles = {};
 
     for (const name in theme.palettes) {
         const vars = {};
@@ -190,13 +191,13 @@ export function parseColorPalettes<T extends FluidTheme>(theme: T) {
         ruleset[key] = vars;
 
         if (name === 'light' || name === 'dark') {
-            ruleset[`@media(prefers-color-scheme: ${name})`] = {
+            mediaset[`@media(prefers-color-scheme: ${name})`] = {
                 '#__fluid.scheme-system': vars
             };
         }
     }
 
-    return ruleset;
+    return Object.assign(ruleset, mediaset);
 }
 
 export const COLOR_SCHEME_COOKIE = 'FLUID_PREF_COLOR_SCHEME';

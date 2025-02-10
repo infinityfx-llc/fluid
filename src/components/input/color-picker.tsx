@@ -181,22 +181,20 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
     }
 
     useEffect(() => {
+        const ctrl = new AbortController(),
+            signal = ctrl.signal;
+
         const end = (e: MouseEvent | TouchEvent) => {
             pick(e);
             picking.current = false;
-        }
+        };
 
-        window.addEventListener('mouseup', end);
-        window.addEventListener('touchend', end);
-        window.addEventListener('mousemove', pick);
-        window.addEventListener('touchmove', pick);
+        window.addEventListener('mouseup', end, { signal });
+        window.addEventListener('touchend', end, { signal });
+        window.addEventListener('mousemove', pick, { signal });
+        window.addEventListener('touchmove', pick, { signal });
 
-        return () => {
-            window.removeEventListener('mouseup', end);
-            window.removeEventListener('touchend', end);
-            window.removeEventListener('mousemove', pick);
-            window.removeEventListener('touchmove', pick);
-        }
+        return () => ctrl.abort();
     }, [disabled]);
 
     return <div {...props}

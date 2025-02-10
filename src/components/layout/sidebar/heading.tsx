@@ -12,7 +12,7 @@ const styles = createStyles('sidebar.heading', {
         fontWeight: 800,
         width: 'max-content',
         transition: 'opacity .3s',
-        padding: '0 1rem'
+        paddingInline: '1rem'
     },
 
     '.heading.collapsed': {

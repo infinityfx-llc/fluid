@@ -20,23 +20,25 @@ const styles = createStyles('code', {
     },
 
     '.header': {
-        backgroundColor: 'var(--f-clr-primary-500)',
+        backgroundColor: 'var(--f-clr-primary-400)',
         padding: '.8em 1em',
         fontWeight: 500
     },
 
     '.code': {
         display: 'flex',
-        padding: '1em',
         backgroundColor: 'var(--f-clr-fg-100)',
-        flexGrow: 1
+        flexGrow: 1,
+        paddingInline: '1em'
     },
 
     '.numbers': {
         userSelect: 'none',
         textAlign: 'right',
-        marginRight: 'var(--f-spacing-sml)',
-        color: 'var(--f-clr-grey-500)'
+        color: 'var(--f-clr-grey-500)',
+        paddingBlock: '1em',
+        paddingRight: '.5em',
+        borderRight: 'solid 1px var(--f-clr-fg-200)'
     },
 
     '.tab': {
@@ -45,7 +47,12 @@ const styles = createStyles('code', {
     },
 
     '.content': {
-        width: 'max-content'
+        width: 'max-content',
+        paddingBlock: '1em'
+    },
+
+    '.content[data-numbered="true"]': {
+        paddingLeft: '1em'
     },
 
     '.button__align': {
@@ -74,10 +81,11 @@ export type CodeSelectors = Selectors<'wrapper' | 'header' | 'code' | 'numbers' 
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/code}
  */
-export default function Code({ children, cc = {}, title, dangerouslyInject, ...props }: {
+export default function Code({ children, cc = {}, title, lineNumbers = true, dangerouslyInject, ...props }: {
     children: string;
     ref?: React.Ref<HTMLDivElement>;
     cc?: CodeSelectors;
+    lineNumbers?: boolean;
     dangerouslyInject?: boolean;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
@@ -90,13 +98,17 @@ export default function Code({ children, cc = {}, title, dangerouslyInject, ...p
             {title}
         </div>}
         <code className={style.code}>
-            <div className={style.numbers}>
+            {lineNumbers && <div className={style.numbers}>
                 {children.split(/\n/).map((_, i) => <Fragment key={i}>
                     {i + 1} <br />
                 </Fragment>)}
-            </div>
+            </div>}
             <Scrollarea horizontal behavior="shift">
-                <pre id={id} className={style.content} dangerouslySetInnerHTML={dangerouslyInject ? { __html: children } : undefined}>
+                <pre
+                    id={id}
+                    className={style.content}
+                    data-numbered={lineNumbers}
+                    dangerouslySetInnerHTML={dangerouslyInject ? { __html: children } : undefined}>
                     {dangerouslyInject ? undefined : children}
                 </pre>
             </Scrollarea>

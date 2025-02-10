@@ -19,7 +19,10 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
     const isDisabled = disabled || children.props.disabled;
 
     useEffect(() => {
-        const el = trigger.current;
+        const el = trigger.current,
+            ctrl = new AbortController(),
+            signal = ctrl.signal;
+
         if (!el) return;
 
         function action(delay?: number) {
@@ -60,21 +63,14 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
             pressed.current = false;
         }
 
-        el.addEventListener('mousedown', start);
-        el.addEventListener('mouseup', end);
-        el.addEventListener('touchstart', start);
-        el.addEventListener('touchend', end);
-        el.addEventListener('keydown', start);
-        el.addEventListener('keyup', end);
+        el.addEventListener('mousedown', start, { signal });
+        el.addEventListener('mouseup', end, { signal });
+        el.addEventListener('touchstart', start, { signal });
+        el.addEventListener('touchend', end, { signal });
+        el.addEventListener('keydown', start, { signal });
+        el.addEventListener('keyup', end, { signal });
 
-        return () => {
-            el.removeEventListener('mousedown', start);
-            el.removeEventListener('mouseup', end);
-            el.removeEventListener('touchstart', start);
-            el.removeEventListener('touchend', end);
-            el.removeEventListener('keydown', start);
-            el.removeEventListener('keyup', end);
-        }
+        return () => ctrl.abort();
     }, [toggle, isDisabled, opened]);
 
     return cloneElement(children, {

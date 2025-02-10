@@ -31,7 +31,7 @@ export default function FluidProvider({ children, initialColorScheme }: {
     const colorSchemes = Object.keys(fluid.palettes).concat('system');
     const { colorScheme, setColorScheme } = useColorScheme(initialColorScheme, colorSchemes);
     const preferred = useMediaQuery('(prefers-color-scheme: dark)') ? 'dark' : 'light';
-    const systemColorScheme = preferred in fluid.palettes ? preferred : fluid.defaultColorScheme as FluidColorScheme;
+    const systemColorScheme = preferred in fluid.palettes ? preferred : fluid.defaultColorScheme;
 
     createGlobalStyles(() => {
         const __fluid = STYLE_CONTEXT.THEME;
