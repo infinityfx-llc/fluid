@@ -152,7 +152,13 @@ export default function FileField({ cc = {}, size = 'med', round, icon, error, l
                     props.onChange?.(e);
                 }} />
 
-            <input className={style.placeholder} tabIndex={-1} role="none" value={files.map(file => file.name)} readOnly />
+            <input
+                readOnly
+                role="none"
+                tabIndex={-1}
+                className={style.placeholder}
+                placeholder={split.placeholder}
+                value={files.map(file => file.name)} />
         </div>
 
         <Button

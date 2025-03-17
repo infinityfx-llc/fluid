@@ -11,7 +11,7 @@ import { changeInputValue } from '../../core/utils';
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/autocomplete}
  */
-export default function Autocomplete({ completions, emptyMessage, value, defaultValue, onChange, contentSize, ...props }: {
+export default function Autocomplete({ completions, emptyMessage = 'No suggestions', value, defaultValue, onChange, contentSize, ...props }: {
     completions: string[] | { label: string; value: string; }[];
     emptyMessage?: string;
     contentSize?: FluidSize;
@@ -58,12 +58,15 @@ export default function Autocomplete({ completions, emptyMessage, value, default
             {completions.map(entry => {
                 const { label, value } = typeof entry === 'string' ? { label: entry, value: entry } : entry;
 
-                return <Combobox.Option key={value} value={value} onSelect={val => {
-                    if (!field.current) return;
+                return <Combobox.Option
+                    key={value}
+                    value={value}
+                    onSelect={val => {
+                        if (!field.current) return;
 
-                    changeInputValue(field.current, val);
-                    field.current.focus();
-                }}>
+                        changeInputValue(field.current, val);
+                        field.current.focus();
+                    }}>
                     {label}
                 </Combobox.Option>;
             })}

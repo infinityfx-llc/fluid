@@ -84,6 +84,10 @@ function createRenderableElement(components: any, name: string, parent?: any) {
     return createElement(components.FluidProvider, undefined, createElement('div', { key: 0 }, Element));
 }
 
+const EXTERNAL_PATHS = [
+    'node_modules/@infinityfx/splash/dist/**/*.{js}'
+];
+
 async function emitCss() {
     const { isDev, isInternal, output } = getRoots();
     let usedComponents: {
@@ -91,7 +95,7 @@ async function emitCss() {
     } | null = null;
 
     if (!isInternal && !isDev) {
-        const files = await glob(STYLE_CONTEXT.PATHS);
+        const files = await glob(EXTERNAL_PATHS.concat(STYLE_CONTEXT.PATHS));
         usedComponents = {};
 
         outer: for (const file of files) {
