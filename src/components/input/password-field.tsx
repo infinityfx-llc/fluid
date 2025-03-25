@@ -27,7 +27,7 @@ const styles = createStyles('password-field', {
     },
 
     '.field .toggle': {
-        marginRight: '.3em'
+        marginRight: '.25em'
     }
 });
 

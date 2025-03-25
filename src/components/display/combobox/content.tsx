@@ -18,8 +18,7 @@ const styles = createStyles('combobox.content', {
         borderRadius: 'calc(.25em + var(--f-radius-sml))',
         boxShadow: 'var(--f-shadow-med)',
         minWidth: 'min(100vw, 10em)',
-        width: '100%',
-        overflow: 'hidden'
+        width: '100%'
     },
 
     '.container.round': {

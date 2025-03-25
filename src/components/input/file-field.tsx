@@ -97,7 +97,7 @@ const styles = createStyles('file-field', {
     },
 
     '.button': {
-        marginRight: '.3em'
+        marginRight: '.25em'
     }
 });
 

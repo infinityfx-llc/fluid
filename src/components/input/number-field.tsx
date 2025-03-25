@@ -10,13 +10,13 @@ import { Icon } from '../../core/icons';
 
 const styles = createStyles('number-field', {
     '.field .button__start': {
-        marginLeft: '.3em',
+        marginLeft: '.25em',
         background: 'var(--f-clr-bg-100)',
         color: 'var(--f-clr-text-100)'
     },
 
     '.field .button__end': {
-        marginRight: '.3em',
+        marginRight: '.25em',
         background: 'var(--f-clr-bg-100)',
         color: 'var(--f-clr-text-100)'
     },
