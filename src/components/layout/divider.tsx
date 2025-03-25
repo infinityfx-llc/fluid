@@ -12,7 +12,7 @@ const styles = createStyles('divider', {
         color: 'var(--f-clr-grey-200)'
     },
 
-    '.divider[data-vertical="true"]': {
+    '.divider[aria-orientation="vertical"]': {
         writingMode: 'vertical-lr'
     },
 
@@ -21,13 +21,13 @@ const styles = createStyles('divider', {
         flexGrow: 1
     },
 
-    '.divider[data-vertical="false"] .line': {
+    '.divider[aria-orientation="horizontal"] .line': {
         height: '1px'
     },
 
-    '.divider[data-vertical="true"] .line': {
+    '.divider[aria-orientation="vertical"] .line': {
         width: '1px'
-    },
+    }
 });
 
 export type DividerSelectors = Selectors<'divider' | 'line'>;
@@ -44,17 +44,18 @@ export default function Divider({ cc = {}, vertical = false, label, labelPositio
         vertical?: boolean;
         label?: string;
         labelPosition?: 'start' | 'center' | 'end';
-        size?: FluidSize;
+        size?: FluidSize | 'inherit';
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    return <div {...props} role="separator" aria-orientation={vertical ? 'vertical' : 'horizontal'}
+    return <div {...props}
+        role="separator"
+        aria-orientation={vertical ? 'vertical' : 'horizontal'}
         className={classes(style.divider, props.className)}
         style={{
-            paddingBlock: `var(--f-spacing-${size})`,
+            paddingBlock: size == 'inherit' ? size : `var(--f-spacing-${size})`,
             ...props.style
-        }}
-        data-vertical={vertical}>
+        }}>
         {label && labelPosition !== 'start' && <div className={style.line} />}
 
         {label}

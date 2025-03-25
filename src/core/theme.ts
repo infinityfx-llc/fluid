@@ -102,8 +102,8 @@ export const DEFAULT_THEME = {
             grey: ['#e6e6e6', '#cccccc', '#b3b3b3', '#999999', '#808080', '#666666', '#4d4d4d', '#333333', '#191919'],
             heading: ['#000'],
             text: ['#000', '#fff'],
-            bg: ['#fff'],
-            fg: ['#f5fafa', '#e6f0f0'],
+            bg: ['#f5fafa'],
+            fg: ['#fff', '#e6f0f0'],
             error: ['#ff1f1f', '#ff5454', '#ff8c8c', '#ffbdbd']
         },
         dark: {

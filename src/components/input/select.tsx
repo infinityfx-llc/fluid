@@ -14,23 +14,40 @@ import { Icon } from '../../core/icons';
 const styles = createStyles('select', {
     '.field': {
         backgroundColor: 'var(--f-clr-fg-100)',
-        border: 'solid 1px var(--f-clr-fg-200)',
         borderRadius: 'var(--f-radius-sml)',
         color: 'var(--f-clr-grey-200)',
-        transition: 'border-color .2s, color .2s',
+        transition: 'background-color .2s, border-color .2s, color .2s, outline-color .2s',
         display: 'flex',
         alignItems: 'center',
-        minWidth: 'min(var(--width, 100vw), 12em)'
+        minWidth: 'min(var(--width, 100vw), 12em)',
+        outline: 'solid 3px transparent'
     },
 
-    '.field:focus-within': {
+    '.v__default': {
+        border: 'solid 1px var(--f-clr-fg-200)'
+    },
+
+    '.v__minimal': {
+        backgroundColor: 'var(--f-clr-fg-100)'
+    },
+
+    '.v__default:focus-within': {
         borderColor: 'var(--f-clr-primary-100)',
-        color: 'var(--f-clr-primary-100)'
+        color: 'var(--f-clr-primary-100)',
+        outlineColor: 'var(--f-clr-primary-500)'
+    },
+
+    '.v__minimal:focus-within': {
+        backgroundColor: 'var(--f-clr-fg-200)'
     },
 
     '.field[data-error="true"]': {
         borderColor: 'var(--f-clr-error-100)',
         color: 'var(--f-clr-error-200)'
+    },
+
+    '.field[data-error="true"]:focus-within': {
+        outlineColor: 'var(--f-clr-error-400)'
     },
 
     '.field[data-error="true"] .content': {
@@ -151,7 +168,7 @@ type SelectProps<T> = {
     defaultValue?: T;
     onChange?: (value: T) => void;
     contentSize?: FluidSize;
-} & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'onEnter'>;
+} & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'onEnter' | 'left' | 'right' | 'shape'>;
 
 /**
  * Displays a list of selectable options.
@@ -174,6 +191,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
         error,
         icon,
         size = 'med',
+        variant = 'default',
         contentSize,
         round,
         inputRef,
@@ -201,6 +219,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                 className={classes(
                     style.field,
                     style[`s__${size}`],
+                    style[`v__${variant}`],
                     round && style.round,
                     props.className
                 )}

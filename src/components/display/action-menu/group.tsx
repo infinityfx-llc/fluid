@@ -22,7 +22,6 @@ const styles = createStyles('action-menu.group', {
         boxShadow: 'var(--f-shadow-med)',
         fontSize: 'var(--f-font-size-sml)',
         minWidth: 'min(100vw, 10em)',
-        width: '100%',
         top: 'calc(-1px - .25em)'
     },
 
@@ -65,7 +64,9 @@ export default function Group({ children, cc = {}, label, className, ...props }:
         onFocus={openMenu}
         onMouseEnter={openMenu}
         onMouseLeave={() => setState({ ...state, open: false })}
-        onBlur={() => setState({ ...state, open: false })}>
+        onBlur={() => {
+            if (!element.current?.matches(':focus-within')) setState({ ...state, open: false });
+        }}>
         <Item
             {...props}
             aria-haspopup="menu"

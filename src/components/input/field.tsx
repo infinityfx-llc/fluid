@@ -22,15 +22,22 @@ const styles = createStyles('field', {
 
     '.field': {
         backgroundColor: 'var(--f-clr-fg-100)',
-        border: 'solid 1px var(--f-clr-fg-200)',
         borderRadius: 'var(--f-radius-sml)',
         color: 'var(--f-clr-grey-200)',
-        transition: 'border-color .2s, color .2s, outline-color .2s',
+        transition: 'background-color .2s, border-color .2s, color .2s, outline-color .2s',
         display: 'flex',
         alignItems: 'center',
         overflow: 'hidden',
         outline: 'solid 3px transparent',
         minWidth: 'min(var(--width, 100vw), 12em)'
+    },
+
+    '.v__default': {
+        border: 'solid 1px var(--f-clr-fg-200)'
+    },
+
+    '.v__minimal': {
+        backgroundColor: 'var(--f-clr-fg-100)'
     },
 
     '.content': {
@@ -41,10 +48,14 @@ const styles = createStyles('field', {
         flexGrow: 1
     },
 
-    '.field:focus-within': {
+    '.v__default:focus-within': {
         borderColor: 'var(--f-clr-primary-100)',
         color: 'var(--f-clr-primary-100)',
         outlineColor: 'var(--f-clr-primary-500)'
+    },
+
+    '.v__minimal:focus-within': {
+        backgroundColor: 'var(--f-clr-fg-200)'
     },
 
     '.field[data-error="true"]': {
@@ -102,6 +113,7 @@ export type FieldProps = {
     defaultValue?: FluidInputvalue;
     round?: boolean;
     size?: FluidSize;
+    variant?: 'default' | 'minimal';
     icon?: React.ReactNode;
     left?: React.ReactNode;
     right?: React.ReactNode;
@@ -115,7 +127,7 @@ export type FieldProps = {
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/field}
  */
-export default function Field({ cc = {}, round = false, size = 'med', error, icon, left, right, onEnter, inputRef, shape, defaultValue, ...props }: FieldProps) {
+export default function Field({ cc = {}, round = false, size = 'med', variant = 'default', error, icon, left, right, onEnter, inputRef, shape, defaultValue, ...props }: FieldProps) {
     const style = combineClasses(styles, cc);
 
     const [split, rest] = useInputProps(props);
@@ -137,6 +149,7 @@ export default function Field({ cc = {}, round = false, size = 'med', error, ico
         className={classes(
             style.field,
             style[`s__${size}`],
+            style[`v__${variant}`],
             round && style.round,
             props.className
         )}

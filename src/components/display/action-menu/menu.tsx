@@ -14,9 +14,8 @@ const styles = createStyles('action-menu.menu', {
         borderRadius: 'calc(.25em + var(--f-radius-sml))',
         boxShadow: 'var(--f-shadow-med)',
         fontSize: 'var(--f-font-size-sml)',
-        minWidth: 'min(100vw, 10em)',
-        width: '100%'
-    },
+        minWidth: 'min(100vw, 10em)'
+    }
 });
 
 export type ActionMenuMenuSelectors = Selectors<'menu'>;
