@@ -41,8 +41,11 @@ export function combineClasses(initial: Selectors, override: Selectors) {
 export function combineRefs(...refs: (React.Ref<any> | undefined)[]) {
     return (el: any) => {
         refs.forEach(ref => {
-            if (ref && 'current' in ref) (ref as React.RefObject<any>).current = el;
-            if (ref instanceof Function) ref(el);
+            if (!ref) return;
+
+            ref instanceof Function ?
+                ref(el) :
+                ref.current = el;
         });
     };
 }
@@ -86,7 +89,7 @@ export function formatCookie(key: string, value: string, options: CookieOptions 
 const selector = 'a[href], button, input, textarea, [tabindex]';
 
 export function getFocusable<T extends boolean = true>(element: HTMLElement | null, list: T = true as T): T extends true | undefined ? HTMLElement[] : HTMLElement | null {
-    if (!element) return list ? [] : null as any;
+    if (!element) return (list ? [] : null) as any;
 
     const elements = filterFocusable(Array.from(element.querySelectorAll(selector)), false);
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, use, useEffect, useId, useRef, useState, useImperativeHandle, useCallback } from "react";
+import { createContext, use, useEffect, useId, useRef, useState, useImperativeHandle, useLayoutEffect } from "react";
 import useFluid from "../../../hooks/use-fluid";
 import useMediaQuery from "../../../hooks/use-media-query";
 
@@ -39,6 +39,31 @@ export type PopoverRoot = {
     onClose?: () => void;
 };
 
+function getPosition(anchor: Element, element: Element, margin = '0px') {
+    const { x, y, width, bottom } = anchor.getBoundingClientRect(),
+        cx = x + width / 2,
+        dy = y > window.innerHeight - bottom,
+        dx = cx > window.innerWidth / 2,
+        space = dx ? window.innerWidth - width - x : x;
+
+    return {
+        w: width + 'px',
+        style: {
+            left: !dx ? space + 'px' : 'auto',
+            right: dx ? space + 'px' : 'auto',
+            top: !dy ? `calc(${bottom}px + ${margin})` : 'auto',
+            bottom: dy ? `calc(${window.innerHeight - y}px + ${margin})` : 'auto',
+            transform: ''
+        },
+        centered: {
+            left: cx + 'px',
+            right: 'auto',
+            transform: 'translateX(-50%)'
+        },
+        overflow: space < (element.getBoundingClientRect().width - width) / 2
+    };
+}
+
 export default function Root({ children, position = 'auto', mobileContainer = 'popover', stretch, onClose, ref }: PopoverRoot) {
     const id = useId();
     const fluid = useFluid();
@@ -46,53 +71,43 @@ export default function Root({ children, position = 'auto', mobileContainer = 'p
     const trigger = useRef<HTMLElement>(null);
     const content = useRef<HTMLElement>(null);
     const [mounted, setMounted] = useState(false);
-    const [opened, setOpened] = useState(false);
+    const [opened, toggle] = useState(false);
     const parent = usePopover(true);
-    const isMobile = useMediaQuery(`(max-width: ${fluid.breakpoints.mob}px)`);
-    const isModal = mobileContainer === 'modal' && isMobile;
+    const isModal = useMediaQuery(`(max-width: ${fluid.breakpoints.mob}px)`) &&
+        mobileContainer === 'modal';
 
-    const toggle = useCallback((value: boolean) => {
-        if (isModal) return setOpened(value);
-        if (!value || !trigger.current || !content.current) return setOpened(false);
+    function reposition() {
+        if (isModal || !opened || !trigger.current || !content.current) return;
 
-        const { x, y, right, width, height } = trigger.current.getBoundingClientRect();
-        const bottom = window.innerHeight - height - y;
-        const isLeft = x + width / 2 < window.innerWidth / 2;
-        const isTop = y > bottom;
+        const { w, style, centered, overflow } = getPosition(trigger.current, content.current, 'var(--f-spacing-xsm)');
+        const shouldCenter = position === 'center' && !overflow;
 
-        content.current.style.left = (position === 'auto' ?
-            isLeft ? x : right :
-            x + width / 2) + 'px';
-        content.current.style.transform = position === 'center' ?
-            'translateX(-50%)' :
-            isLeft ? '' : 'translateX(-100%)';
-        content.current.style.minWidth = stretch ? `${width}px` : '';
-        content.current.style[isTop ? 'bottom' : 'top'] = `calc(${isTop ? bottom + height : y + height}px + var(--f-spacing-xsm))`;
-        content.current.style[isTop ? 'top' : 'bottom'] = '';
+        Object.assign(content.current.style, style);
+        if (shouldCenter) Object.assign(content.current.style, centered);
+        if (stretch) content.current.style.minWidth = w;
+    }
 
-        return setOpened(value);
-    }, [stretch, opened, isModal]);
+    useLayoutEffect(reposition, [opened, stretch, isModal]);
 
     useImperativeHandle(ref, () => ({
         open: toggle.bind({}, true),
         close: toggle.bind({}, false)
-    }), [toggle]);
+    }), []);
 
     useEffect(() => {
         setMounted(true);
-        
-        const resize = () => toggle(opened);
-        window.addEventListener('resize', resize);
-        window.addEventListener('scroll', resize);
+
+        window.addEventListener('resize', reposition);
+        window.addEventListener('scroll', reposition);
 
         if (mounted && !opened) onClose?.();
         if (!mounted && parent) parent.children.current.push(content);
 
         return () => {
-            window.removeEventListener('resize', resize);
-            window.removeEventListener('scroll', resize);
+            window.removeEventListener('resize', reposition);
+            window.removeEventListener('scroll', reposition);
         }
-    }, [toggle, opened, parent]);
+    }, [opened, parent]);
 
     useEffect(() => {
         function click(e: MouseEvent) {
