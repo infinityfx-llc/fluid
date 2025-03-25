@@ -3,16 +3,16 @@
 import { Selectors } from "../../../src/types";
 import { useEffect, useRef, useState } from "react";
 import { classes, combineClasses, hexToRgb, hsvToRgb, rgbToHex, rgbToHsv } from "../../../src/core/utils";
-import Annotation from "../display/annotation";
 import Swatch from "../display/swatch";
 import { createStyles } from "../../core/style";
 import Slider from "./slider";
 import Field from "./field";
 import NumberField from "./number-field";
+import Combine from "../layout/combine";
 
 // maybe sizes?
 
-const styles = createStyles('color-picker', {
+const styles = createStyles('color-picker', fluid => ({
     '.wrapper': {
         display: 'flex',
         flexDirection: 'column',
@@ -24,10 +24,13 @@ const styles = createStyles('color-picker', {
         gap: 'var(--f-spacing-sml)'
     },
 
-    '.column': {
+    '.column, .fields': {
         display: 'flex',
         flexDirection: 'column',
-        gap: 'var(--f-spacing-sml)',
+        gap: 'var(--f-spacing-sml)'
+    },
+
+    '.column': {
         flexGrow: 1
     },
 
@@ -64,20 +67,16 @@ const styles = createStyles('color-picker', {
 
     '.wrapper .swatch': {
         width: 'auto',
+        height: 'auto',
         flexGrow: 1
     },
 
-    '.wrapper .hex ': {
-        minWidth: '3.2em'
-    },
-
-    '.rgb': {
-        display: 'flex',
-        gap: 'var(--f-spacing-sml)'
+    '.wrapper .hex': {
+        minWidth: '4.2em'
     },
 
     '.wrapper .rgb > * ': {
-        minWidth: '3.2em',
+        minWidth: '4.2em',
         flexGrow: 1
     },
 
@@ -107,10 +106,30 @@ const styles = createStyles('color-picker', {
 
     '.wrapper .hue__handle[aria-disabled="false"]::after': {
         backgroundColor: 'var(--hue)'
-    }
-});
+    },
 
-export type ColorPickerSelectors = Selectors<'wrapper'>;
+    [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {
+        '.row': {
+            flexDirection: 'column'
+        },
+
+        '.column': {
+            flexDirection: 'row-reverse'
+        },
+
+        '.fields': {
+            flexDirection: 'column',
+            flexGrow: 1
+        },
+
+        '.wrapper .swatch': {
+            aspectRatio: 1,
+            maxHeight: '5.3em'
+        }
+    }
+}));
+
+export type ColorPickerSelectors = Selectors<'wrapper' | 'space'>;
 
 type RGB = [number, number, number];
 type HSV = [number, number, number];
@@ -233,7 +252,7 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
             <div className={style.column}>
                 <Swatch color={`rgb(${rgb.join(',')})`} cc={{ swatch: style.swatch, ...cc }} />
 
-                <Annotation label="Hex">
+                <div className={style.fields}>
                     <Field
                         disabled={disabled}
                         size="sml"
@@ -247,25 +266,25 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
                             update(hexToRgb(str), true);
                         }}
                         onBlur={() => setPartialHex(null)} />
-                </Annotation>
 
-                <div className={style.rgb}>
-                    {rgb.map((val, i) => <Annotation key={i} label={'RGB'.charAt(i)}>
-                        <NumberField
+                    <Combine className={style.rgb}>
+                        {rgb.map((val, i) => <NumberField
+                            key={i}
                             cc={cc}
                             disabled={disabled}
                             max={255}
                             precision={0}
                             controls={false}
                             size="sml"
+                            icon={'RGB'.charAt(i)}
                             value={val}
                             onChange={e => {
                                 const updated = rgb.slice() as RGB;
                                 updated[i] = parseInt(e.target.value) || 0;
 
                                 update(updated, true);
-                            }} />
-                    </Annotation>)}
+                            }} />)}
+                    </Combine>
                 </div>
             </div>
         </div>
