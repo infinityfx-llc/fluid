@@ -1,34 +1,7 @@
 import { FluidComponents, FluidStyles, Selectors } from "../types";
-import { DEFAULT_THEME, FluidTheme } from "./theme";
+import { GLOBAL_CONTEXT } from "./shared";
+import { FluidTheme } from "./theme";
 import { mergeRecursive } from "./utils";
-
-export const STYLE_CONTEXT: {
-    STYLES: {
-        [key: string]: {
-            rules: string;
-            selectors: Selectors;
-        };
-    };
-    COMPONENTS: FluidComponents;
-    DEPENDENTS: {
-        [key: string]: string[];
-    };
-    THEME: FluidTheme;
-    PATHS: string[];
-    OUTPUT: 'automatic' | 'manual';
-} = {
-    STYLES: {},
-    COMPONENTS: {},
-    DEPENDENTS: {},
-    THEME: DEFAULT_THEME,
-    PATHS: [
-        './src/**/*.{jsx,tsx}',
-        './app/**/*.{jsx,tsx}',
-        './pages/**/*.{jsx,tsx}',
-        './components/**/*.{jsx,tsx}'
-    ],
-    OUTPUT: 'automatic'
-};
 
 function hash(str: string) {
     let l = 0xdeadbeef, r = 0x41c6ce57;
@@ -62,7 +35,7 @@ function mergeStyles(...styles: FluidStyles[]) {
 function rulesToString(ruleset: React.CSSProperties | { [key: string]: React.CSSProperties } | FluidStyles, postfix?: string, selectors: Selectors = {}): { rules: string; selectors: Selectors; } {
     const rules = Object.entries(ruleset).reduce((str, [attr, value]) => {
         if (value === undefined || value === null) return str;
-        
+
         if (typeof value === 'object') {
             const prefixed = (postfix ?
                 attr.split(/((?::global\()?[.#][\w\-_][\w\d\-_]*)/gi)
@@ -88,27 +61,27 @@ function rulesToString(ruleset: React.CSSProperties | { [key: string]: React.CSS
 }
 
 export function createStyles(key: keyof FluidComponents, styles: ((fluid: FluidTheme) => FluidStyles) | FluidStyles): Selectors {
-    const ruleset = styles instanceof Function ? styles(STYLE_CONTEXT.THEME) : styles;
+    const ruleset = styles instanceof Function ? styles(GLOBAL_CONTEXT.theme) : styles;
 
-    const override = STYLE_CONTEXT.COMPONENTS[key] || {};
-    const hashKey = hash(STYLE_CONTEXT.OUTPUT === 'automatic' ? JSON.stringify([override, ruleset]) : key);
+    const override = GLOBAL_CONTEXT.components[key] || {};
+    const hashKey = hash(GLOBAL_CONTEXT.cssOutput === 'automatic' ? JSON.stringify([override, ruleset]) : key);
 
-    STYLE_CONTEXT.STYLES[key] = rulesToString(mergeStyles(override, ruleset), hashKey);
+    GLOBAL_CONTEXT.styles[key] = rulesToString(mergeStyles(override, ruleset), hashKey);
 
-    return STYLE_CONTEXT.STYLES[key].selectors;
+    return GLOBAL_CONTEXT.styles[key].selectors;
 }
 
 export function createGlobalStyles(styles: ((fluid: FluidTheme) => FluidStyles) | FluidStyles) {
-    const ruleset = styles instanceof Function ? styles(STYLE_CONTEXT.THEME) : styles;
+    const ruleset = styles instanceof Function ? styles(GLOBAL_CONTEXT.theme) : styles;
     const key = hash(JSON.stringify(ruleset));
     const { rules } = rulesToString(ruleset);
 
-    if (!(key in STYLE_CONTEXT.STYLES)) {
-        STYLE_CONTEXT.STYLES.__globals = {
-            rules: (STYLE_CONTEXT.STYLES.__globals?.rules || '') + rules,
+    if (!(key in GLOBAL_CONTEXT.styles)) {
+        GLOBAL_CONTEXT.styles.__globals = {
+            rules: (GLOBAL_CONTEXT.styles.__globals?.rules || '') + rules,
             selectors: {}
         };
-        STYLE_CONTEXT.STYLES[key] = {
+        GLOBAL_CONTEXT.styles[key] = {
             rules: '',
             selectors: {}
         };

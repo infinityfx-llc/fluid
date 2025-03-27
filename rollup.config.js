@@ -5,7 +5,6 @@ import del from 'rollup-plugin-delete';
 import typescript from '@rollup/plugin-typescript';
 import preserveDirectives from 'rollup-plugin-preserve-directives';
 import { preserveShebangs } from 'rollup-plugin-preserve-shebangs';
-import json from '@rollup/plugin-json';
 
 const plugins = [
     process.env.NODE_ENV === 'production' ? del({
@@ -13,7 +12,6 @@ const plugins = [
     }) : undefined,
     resolve(),
     commonjs(),
-    json(),
     typescript({
         tsconfig: './tsconfig.json'
     }),

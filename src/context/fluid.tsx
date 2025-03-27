@@ -4,11 +4,12 @@ import { cloneElement, createContext } from "react";
 import { FluidTheme, parseCSSVariables, parseColorPalettes } from "../../src/core/theme";
 import global from "../../src/styles/global";
 import useColorScheme from "../../src/hooks/use-color-scheme";
-import { STYLE_CONTEXT, createGlobalStyles } from "../core/style";
+import { createGlobalStyles } from "../core/style";
 import useMediaQuery from "../hooks/use-media-query";
 import type { FluidColorScheme } from "../types";
+import { GLOBAL_CONTEXT } from "../core/shared";
 
-const fluid = STYLE_CONTEXT.THEME;
+const fluid = GLOBAL_CONTEXT.theme;
 
 type FluidContext = FluidTheme & {
     colorScheme: FluidColorScheme;
@@ -34,7 +35,7 @@ export default function FluidProvider({ children, initialColorScheme }: {
     const systemColorScheme = preferred in fluid.palettes ? preferred : fluid.defaultColorScheme;
 
     createGlobalStyles(() => {
-        const __fluid = STYLE_CONTEXT.THEME;
+        const __fluid = GLOBAL_CONTEXT.theme;
 
         return {
             ...parseColorPalettes(__fluid),

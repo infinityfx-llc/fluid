@@ -1,116 +1,86 @@
 import fs from 'fs';
-import { CONFIG, getConfig, getRoots, processFile } from './utils';
-import { STYLE_CONTEXT } from '../src/core/style';
-import { mergeRecursive } from '../src/core/utils';
-import packageJson from '../package.json';
-import readline from 'readline';
+import { compileFile, emitCss } from './core';
 import { FluidIcon } from '../src/core/icons';
+import { getContext, IOHelper, printProgress } from './utils';
 
-export default async function (flag: string) {
-    CONFIG.isDev = /^-{1,2}d(ev)?/.test(flag);
+export async function compileTypes(io: IOHelper) {
+    const { theme } = await getContext();
 
-    sanitizeImports();
-
-    const { config } = await getConfig();
-    STYLE_CONTEXT.THEME = mergeRecursive(config.theme || {}, STYLE_CONTEXT.THEME);
-    STYLE_CONTEXT.COMPONENTS = config.components || {};
-    STYLE_CONTEXT.PATHS = config.paths || STYLE_CONTEXT.PATHS;
-    STYLE_CONTEXT.OUTPUT = config.cssOutput || STYLE_CONTEXT.OUTPUT;
-
-    console.log(`\r\n> ${packageJson.name} v${packageJson.version}\n`);
-
-    await compileStyles();
-    await compileIcons();
-
-    compileImports();
-    compileTypes();
-
-    console.log('\n');
-}
-
-function compileTypes() {
-    const { dist } = getRoots();
-
-    let palettes = Array.from(new Set([...Object.keys(STYLE_CONTEXT.THEME.palettes), 'light', 'dark', 'system']).keys()),
-        types = fs.readFileSync(dist + './types/src/types.d.ts', { encoding: 'ascii' });
+    let palettes = Array.from(new Set([...Object.keys(theme.palettes), 'light', 'dark', 'system']).keys()),
+        types = io.source('./types/src/types.d.ts');
 
     types = types.replace(/(FluidColorScheme\s*=\s*).+?(;)/, `$1${palettes.map(name => `'${name}'`).join(' | ')}$2`);
 
-    fs.writeFileSync(dist + './types/src/types.d.ts', types);
+    io.override('./types/src/types.d.ts', types);
 }
 
-async function compileIcons() {
-    const { dist, output } = getRoots();
-    let { config, text } = await getConfig(),
-        icons = config.icons || {};
+export async function compileIcons(io: IOHelper) {
+    const { icons, rawConfig } = await getContext();
 
-    let contents = fs.readFileSync(dist + './core/icons.js', { encoding: 'ascii' });
+    let contents = io.source('./core/icons.js');
 
     for (const icon in icons) {
         contents = contents.replace(new RegExp(`${icon}:\\w+(,|\\})`), `${icon}:${(icons[icon as FluidIcon] as any).name}$1`);
     }
 
-    const imports = Array.from(text.matchAll(/import\s*(.+?)from\s*(?:"|')([^"']+)(?:"|')/g))
-        .concat(Array.from(text.matchAll(/(?:const|let|var)\s*(.+?)\s*=\s*require\((?:'|")([^"']+)(?:"|')/g)));
+    const imports = Array.from(rawConfig.matchAll(/import\s*(.+?)from\s*(?:"|')([^"']+)(?:"|')/g))
+        .concat(Array.from(rawConfig.matchAll(/(?:const|let|var)\s*(.+?)\s*=\s*require\((?:'|")([^"']+)(?:"|')/g)));
 
     contents = imports.map(([_, value, path]) => `import ${value.replace(/:/g, ' as ')} from "${path}";`).join('') + contents; // replace local paths
 
-    fs.writeFileSync(output + './core/icons.js', contents);
+    io.output('./core/icons.js', contents);
 }
 
-function sanitizeImports() {
-    const { dist, output } = getRoots();
+export function sanitizeImports(io: IOHelper, entries: {
+    file: string;
+    shallow?: boolean;
+}[]) {
+    for (const { file } of entries) {
+        const content = io.source(file).replace(/\.\/compiled/g, '');
 
-    for (const file of ['index.js', 'hooks.js']) {
-        const content = fs.readFileSync(dist + file, { encoding: 'ascii' })
-            .replace(/\.\/compiled/g, '');
-
-        fs.writeFileSync(dist + file, content);
+        io.override(file, content);
     }
 
-    if (fs.existsSync(output)) fs.rmSync(output, { recursive: true });
-    fs.cpSync(dist, output, { recursive: true });
+    if (fs.existsSync(io.root + './compiled/')) fs.rmSync(io.root + './compiled/', { recursive: true });
+    fs.cpSync(io.root + './dist/', io.root + './compiled/', { recursive: true });
 }
 
-function compileImports() {
-    const { dist } = getRoots();
+export async function compileComponents(io: IOHelper, entries: {
+    file: string;
+    shallow?: boolean;
+}[]) {
+    for (let i = 0; i < entries.length; i++) {
+        const file = io.source(entries[i].file);
 
-    for (const file of ['index.js', 'hooks.js']) {
-        const content = fs.readFileSync(dist + file, { encoding: 'ascii' })
-            .replace(/(from\s*(?:'|"))\.\/(.*?(?:'|");)/g, '$1../compiled/$2');
+        if (!entries[i].shallow) {
+            let imports = Array.from(file.matchAll(/as\s*(.+?)\s*\}\s*from\s*(?:'|")(.+?)(?:'|");/g)),
+                entry, j = 0, len = imports.length;
 
-        fs.writeFileSync(dist + file, content);
-    }
-}
+            while (entry = imports.shift()) {
+                const [_, name, path] = entry;
 
-async function compileStyles() {
-    const { dist } = getRoots();
-    const COMPONENTS = await import('../src/index');
+                if (imports.length > 0 && /context\/fluid\.js$/.test(path)) {
+                    imports.push(entry);
+                    continue;
+                }
 
-    const imports = Array.from(fs.readFileSync(dist + 'index.js', { encoding: 'ascii' })
-        .matchAll(/as\s*(.+?)\s*\}\s*from\s*(?:'|")(.+?)(?:'|");/g));
+                if (/index.js$/.test(path)) {
+                    const parent = await io.module(path);
 
-    for (let i = 0; i < imports.length; i++) {
+                    for (const subName in parent) {
+                        await compileFile(io, `${name}.${subName}`, path);
+                    }
+                } else {
+                    await compileFile(io, name, path, name === 'FluidProvider'); // dont hardcode this..
+                }
 
-        const [_, name, path] = imports[i];
-
-        if (/index.js$/.test(path)) {
-            const Component = (COMPONENTS as any)[name.replace(/.*\./, '')];
-
-            for (const subName in Component) {
-                const localPath = path.replace(/index\.js/, `${subName.toLowerCase()}.js`);
-
-                await processFile(`${name}.${subName}`, localPath, COMPONENTS, Component);
+                printProgress(++j / len);
             }
-        } else
-            if (!/context\/fluid\.js$/.test(path)) {
-                await processFile(name, path, COMPONENTS);
-            }
+        }
 
-        const total = imports.length - 1;
-        readline.cursorTo(process.stdout, 0);
-        process.stdout.write(`${(i / total * 100).toFixed(1)}% ` + new Array(Math.round(i / total * 40)).fill('=').join(''));
+        io.override(entries[i].file, file.replace(/(from\s*(?:'|"))\.\/(.*?(?:'|");)/g, '$1../compiled/$2'));
     }
 
-    await processFile('FluidProvider', './context/fluid.js', COMPONENTS);
+    await emitCss(io);
+    // reset GLOBAL_CONTEXT (styles) in between different base paths
 }
