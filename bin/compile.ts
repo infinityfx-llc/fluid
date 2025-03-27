@@ -82,5 +82,5 @@ export async function compileComponents(io: IOHelper, entries: {
     }
 
     await emitCss(io);
-    // reset GLOBAL_CONTEXT (styles) in between different base paths
+    // reset GLOBAL_CONTEXT (styles) in between different base paths (or dont if all in 1 big file/manual mode)
 }

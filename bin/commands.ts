@@ -19,7 +19,7 @@ export async function compile(flag: string) {
             { file: 'hooks.js', shallow: true }
         ]
     }];
-    // if (!isInternal) packages.push(...external);
+    if (!isInternal) packages.unshift(...external);
 
     console.log(`\r\n> ${name} v${version}\n`);
 

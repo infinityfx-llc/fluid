@@ -30,7 +30,7 @@ const onwarn = (msg, handler) => {
 
 export default [
     {
-        input: ['src/index.ts', 'src/hooks.ts', 'bin/cli.ts'],
+        input: ['src/index.ts', 'src/hooks.ts', 'src/css.ts', 'bin/cli.ts'],
         external,
         output: {
             dir: 'dist',

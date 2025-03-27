@@ -1,4 +1,4 @@
-import { FluidComponents, Selectors } from "../types";
+import { FluidComponents, FluidSelectorStyles, Selectors } from "../types";
 import { FluidIcon } from "./icons";
 import { DEFAULT_THEME, FluidTheme } from "./theme";
 
@@ -9,7 +9,9 @@ export const GLOBAL_CONTEXT: {
             selectors: Selectors;
         };
     };
-    components: FluidComponents;
+    components: FluidComponents & {
+        [key: string]: FluidSelectorStyles<Selectors>;
+    };
     dependents: {
         [key: string]: string[];
     };

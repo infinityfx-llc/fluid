@@ -4,7 +4,7 @@ import { renderToString } from "react-dom/server";
 import { glob } from "glob";
 import { getContext, getIOHelper, IOHelper, keyFromImport, matchBrackets, replace, stripImports } from "./utils";
 
-async function extractDependents(name: string, content: string) {
+async function extractDependents(name: string, content: string) { // external will import from (@infinityfx/fluid) (add support!!)
     const { dependents } = await getContext();
 
     name = keyFromImport(name);

@@ -19,12 +19,17 @@
 			"types": "./dist/types/src/utils.d.ts",
 			"require": "./dist/utils.cjs",
 			"import": "./dist/utils.mjs"
+		},
+		"./css": {
+			"types": "./dist/types/src/css.d.ts",
+			"default": "./dist/css.js"
 		}
 	},
 	"typesVersions": {
 		"*": {
 			"hooks": ["./dist/types/src/hooks.d.ts"],
-			"utils": ["./dist/types/src/utils.d.ts"]
+			"utils": ["./dist/types/src/utils.d.ts"],
+			"css": ["./dist/types/src/css.d.ts"]
 		}
 	},
 	"repository": "infinityfx-llc/fluid",

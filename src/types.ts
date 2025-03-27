@@ -26,7 +26,7 @@ export type Selectors<T extends string = string> = {
     [key in (T | string & {})]?: string;
 }
 
-type FluidSelectorStyles<T> = FluidStyles<T extends Selectors<infer K> ? `.${K}` : never>;
+export type FluidSelectorStyles<T> = FluidStyles<T extends Selectors<infer K> ? `.${K}` : never>;
 
 export type FluidComponents = {
     'action-menu.menu'?: FluidSelectorStyles<import('./components/display/action-menu/menu').ActionMenuMenuSelectors>;

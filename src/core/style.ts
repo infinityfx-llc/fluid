@@ -60,7 +60,7 @@ function rulesToString(ruleset: React.CSSProperties | { [key: string]: React.CSS
     return { rules, selectors };
 }
 
-export function createStyles(key: keyof FluidComponents, styles: ((fluid: FluidTheme) => FluidStyles) | FluidStyles): Selectors {
+export function createStyles(key: (string & {}) | keyof FluidComponents, styles: ((fluid: FluidTheme) => FluidStyles) | FluidStyles): Selectors {
     const ruleset = styles instanceof Function ? styles(GLOBAL_CONTEXT.theme) : styles;
 
     const override = GLOBAL_CONTEXT.components[key] || {};
