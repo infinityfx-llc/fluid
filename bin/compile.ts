@@ -36,30 +36,35 @@ export function sanitizeImports(io: IOHelper, entries: {
     shallow?: boolean;
 }[]) {
     for (const { file } of entries) {
-        const content = io.source(file).replace(/\.\/compiled/g, '');
+        const content = io.source(file).replace(/\.\/compiled/g, ''); // doesnt remove compiled paths sometimes??
 
         io.override(file, content);
     }
 
-    if (fs.existsSync(io.root + './compiled/')) fs.rmSync(io.root + './compiled/', { recursive: true });
-    fs.cpSync(io.root + './dist/', io.root + './compiled/', { recursive: true });
+    if (fs.existsSync(io.root + 'compiled/')) fs.rmSync(io.root + 'compiled/', { recursive: true }); // sometimes throws no empty error..??
+    fs.cpSync(io.root + 'dist/', io.root + 'compiled/', { recursive: true });
 }
 
 export async function compileComponents(io: IOHelper, entries: {
     file: string;
     shallow?: boolean;
-}[]) {
-    for (let i = 0; i < entries.length; i++) {
-        const file = io.source(entries[i].file);
+    inject?: string;
+}[], index: number, total: number) {
+    const context = await getContext();
+    context.styles = {}; // dont reset when in manual css output mode
 
-        if (!entries[i].shallow) {
-            let imports = Array.from(file.matchAll(/as\s*(.+?)\s*\}\s*from\s*(?:'|")(.+?)(?:'|");/g)),
+    for (let i = 0; i < entries.length; i++) {
+        const { file, shallow, inject } = entries[i];
+        const content = io.source(file);
+
+        if (!shallow) {
+            let imports = Array.from(content.matchAll(/as\s*(.+?)\s*\}\s*from\s*(?:'|")(.+?)(?:'|");/g)),
                 entry, j = 0, len = imports.length;
 
             while (entry = imports.shift()) {
                 const [_, name, path] = entry;
 
-                if (imports.length > 0 && /context\/fluid\.js$/.test(path)) {
+                if (imports.length > 0 && name === inject) {
                     imports.push(entry);
                     continue;
                 }
@@ -71,16 +76,15 @@ export async function compileComponents(io: IOHelper, entries: {
                         await compileFile(io, `${name}.${subName}`, path);
                     }
                 } else {
-                    await compileFile(io, name, path, name === 'FluidProvider'); // dont hardcode this..
+                    await compileFile(io, name, path, name === inject);
                 }
 
-                printProgress(++j / len);
+                printProgress((index / total) + (++j / len) / total); // not fully correct
             }
         }
 
-        io.override(entries[i].file, file.replace(/(from\s*(?:'|"))\.\/(.*?(?:'|");)/g, '$1../compiled/$2'));
+        io.override(file, content.replace(/(from\s*(?:'|"))\.\/(.*?(?:'|");)/g, '$1../compiled/$2'));
     }
 
     await emitCss(io);
-    // reset GLOBAL_CONTEXT (styles) in between different base paths (or dont if all in 1 big file/manual mode)
 }

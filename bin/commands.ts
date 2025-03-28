@@ -5,7 +5,13 @@ const external = [
     {
         name: '@infinityfx/splash',
         entries: [
-            { file: 'index.js' }
+            { file: 'index.js', inject: 'Splash' }
+        ]
+    },
+    {
+        name: '@infinityfx/rte',
+        entries: [
+            { file: 'index.js', inject: 'TextEditor' }
         ]
     }
 ];
@@ -15,7 +21,7 @@ export async function compile(flag: string) {
     const packages = [{
         name: '@infinityfx/fluid',
         entries: [
-            { file: 'index.js' },
+            { file: 'index.js', inject: 'FluidProvider' },
             { file: 'hooks.js', shallow: true }
         ]
     }];
@@ -23,11 +29,14 @@ export async function compile(flag: string) {
 
     console.log(`\r\n> ${name} v${version}\n`);
 
-    for (const { name, entries } of packages) {
+    for (let i = 0; i < packages.length; i++) {
+        const { name, entries } = packages[i];
+
         const io = await getIOHelper(`node_modules/${name}/`);
+        if (!io) continue;
 
         sanitizeImports(io, entries);
-        await compileComponents(io, entries);
+        await compileComponents(io, entries, i, packages.length);
 
         if (name === '@infinityfx/fluid') {
             await compileIcons(io);

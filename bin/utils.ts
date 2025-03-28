@@ -26,7 +26,7 @@ export function replace(content: string, from: number, to: number, by: string) {
 }
 
 export function stripImports(content: string) {
-    return content.replace(/import[^;]*?core(?:\/|\\)style\.js(?:"|');?/g, '');
+    return content.replace(/import[^;]*?(core(\/|\\)style\.js|(\/|\\)fluid(\/|\\)css)("|');?/g, '');
 }
 
 export const keyFromImport = (str: string) => str
@@ -77,23 +77,25 @@ export type IOHelper = {
     override(file: string, content: string): void;
 }
 
-export async function getIOHelper(root: string): Promise<IOHelper> {
+export async function getIOHelper(base: string): Promise<IOHelper | null> {
     const { isInternal } = await getContext();
-    const path = isInternal ? './' : root;
+    const root = isInternal && /@infinityfx\/fluid\/$/.test(base) ? './' : base;
+
+    if (!fs.existsSync(root)) return null;
 
     return {
         root,
         async module(file: string) {
-            return (await import(`file://${process.cwd()}/${path}dist/${file}`)).default;
+            return (await import(`file://${process.cwd()}/${root}dist/${file}?nonce=${Math.random()}`)).default;
         },
         source(file: string) {
-            return fs.readFileSync(path + 'dist/' + file, { encoding: 'ascii' });
+            return fs.readFileSync(root + 'dist/' + file, { encoding: 'ascii' });
         },
         output(file: string, content: string) {
-            fs.writeFileSync(path + 'compiled/' + file, content);
+            fs.writeFileSync(root + 'compiled/' + file, content);
         },
         override(file: string, content: string) {
-            fs.writeFileSync(path + 'dist/' + file, content);
+            fs.writeFileSync(root + 'dist/' + file, content);
         }
     }
 }
