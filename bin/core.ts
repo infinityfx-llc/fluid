@@ -6,15 +6,12 @@ import { getContext, getIOHelper, IOHelper, keyFromImport, matchBrackets, replac
 
 async function extractDependents(name: string, content: string) {
     const { dependents } = await getContext();
-
     name = keyFromImport(name);
 
     if (!(name in dependents)) dependents[name] = [];
 
-    Array.from(content.matchAll(/import\s+\w+\s+from\s*(?:'|").*?\/([^\/]+)(\/index)?\.js(?:'|")/g))
+    Array.from(content.matchAll(/import\s+\w+\s+from\s*(?:'|").*?\/([^\/]+)(\/index)?\.js(?:'|")/g)) // could test for @infinityfx/fluid imports as well, but (need to figure out how to test for external during usedComponents)
         .forEach(([_, entry]) => {
-            entry = keyFromImport(entry); // maybe not needed?
-
             if (!entry.startsWith('use')) dependents[name].push(entry);
         });
 }
@@ -54,7 +51,7 @@ export async function compileFile(io: IOHelper, name: string, path: string, appe
 
     await extractDependents(name, contents);
     contents = await processFileCSS(name, contents);
-    if (appendCssImport) contents = await insertCssImport(path, contents);
+    if (appendCssImport) contents = await insertCssImport(io.parent, path, contents);
 
     io.output(path, stripImports(contents));
 }
@@ -88,7 +85,7 @@ async function processFileCSS(name: string, content: string) {
     return content;
 }
 
-async function insertCssImport(path: string, contents: string) {
+async function insertCssImport(base: string, path: string, contents: string) {
     const { theme, cssOutput } = await getContext();
 
     const context = contents.match(/import\s*\{[^{]*(GLOBAL_CONTEXT(?:\s*as\s*([^\s},]+))?)[^}]*\}/);
@@ -99,13 +96,14 @@ async function insertCssImport(path: string, contents: string) {
     if (cssInsert?.index === undefined || cssOutput === 'manual') return contents;
 
     const idx = cssInsert.index + cssInsert[0].length;
-    return replace(contents, idx, idx, `import "./${path.split(/\/|\\/g).slice(2).map(() => '../').join('')}fluid.css";`); // dont hardcode name?
+    return replace(contents, idx, idx, `import "./${path.split(/\/|\\/g).slice(2).map(() => '../').join('')}${base}.css";`);
 }
 
 async function appendFileDependents(file: string, map: { [key: string]: any; }) {
     const { dependents } = await getContext();
 
     const contents = fs.readFileSync(file, { encoding: 'ascii' });
+    // when matching @infintyfx/fluid only do this when compiling inside fluid itself, otherwise these styles get appended to external packages stylesheets..
     const statements = Array.from(contents.matchAll(/import\s*(?:\{([^\}]+)\}|\*\s+as.*|\w+)\s*from\s*(?:'|")@infinityfx\/fluid(?:'|")/g)); // external module components (dynamic names) are not accounted for..
     const imports = statements.map(([_, names]) => {
         return names ? names.split(',').map(keyFromImport) : null;
@@ -113,7 +111,7 @@ async function appendFileDependents(file: string, map: { [key: string]: any; }) 
 
     while (imports.length) {
         const entry = imports.pop();
-        if (!entry) return null;
+        if (!entry) return null; // doesnt work for external imports.. (because will include everything even tho maybe not used)
 
         if (entry in map) continue;
         if (entry in dependents) imports.push(...dependents[entry]);
@@ -151,11 +149,13 @@ export async function emitCss(io: IOHelper, stats: Stats, omitGlobals = false) {
         }, '');
 
     stats.files.push({
-        name: 'fluid.css',
+        name: `${io.parent}.css`,
         size: new Blob([stylesheet], { type: 'text/css' }).size
     })
 
     cssOutput === 'automatic' ?
-        io.output('./fluid.css', stylesheet) :
-        fs.writeFileSync(process.cwd() + './fluid.css', stylesheet); // if multiple packages, this overrides previous file.. (need different names/merge into 1 file)
+        io.output(`./${io.parent}.css`, stylesheet) :
+        fs.writeFileSync(process.cwd() + './fluid.css', stylesheet, {
+            flag: !stats.index ? 'w' : 'a'
+        });
 }

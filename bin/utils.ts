@@ -67,14 +67,6 @@ export const keyFromImport = (str: string) => str
     .replace(/([a-z])([A-Z])/, '$1-$2')
     .toLowerCase();
 
-export function getComponentImports(content: string) {
-    return Array.from(content.matchAll(/as\s*(.+?)\s*\}\s*from\s*(?:'|")(.+?)(?:'|");/g))
-        .map(([_, name, path]) => ({
-            name,
-            path: path.replace(/\.\/compiled/g, '')
-        }));
-}
-
 let config: any;
 
 export async function getContext(isDev?: boolean): Promise<typeof GLOBAL_CONTEXT> {
@@ -111,7 +103,7 @@ export async function getContext(isDev?: boolean): Promise<typeof GLOBAL_CONTEXT
 
 export type IOHelper = {
     root: string;
-    isPrimary: boolean;
+    parent: string;
     module(file: string): Promise<React.FunctionComponent<any>>;
     source(file: string): string;
     output(file: string, content: string): void;
@@ -120,14 +112,13 @@ export type IOHelper = {
 
 export async function getIOHelper(base: string): Promise<IOHelper | null> {
     const { isInternal } = await getContext();
-    const isPrimary = /@infinityfx\/fluid\/$/.test(base),
-        root = isInternal && isPrimary ? './' : base;
+    const root = isInternal && /@infinityfx\/fluid\/$/.test(base) ? './' : base;
 
     if (!fs.existsSync(root)) return null;
 
     return {
         root,
-        isPrimary,
+        parent: base.match(/.+\/(.+)\/$/)?.[1] || '',
         async module(file: string) {
             return (await import(`file://${process.cwd()}/${root}dist/${file}?nonce=${Math.random()}`)).default;
         },

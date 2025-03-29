@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { compileFile, emitCss } from './core';
 import { FluidIcon } from '../src/core/icons';
-import { getComponentImports, getContext, IOHelper, printProgress, Stats } from './utils';
+import { getContext, IOHelper, printProgress, Stats } from './utils';
 
 export async function compileTypes(io: IOHelper) {
     const { theme } = await getContext();
@@ -31,11 +31,18 @@ export async function compileIcons(io: IOHelper) {
     io.output('./core/icons.js', contents);
 }
 
-export function createCompiledFolder(io: IOHelper) {
-    fs.cpSync(io.root + 'dist/', io.root + 'compiled/', { // sometimes not allowed to copy? (probably because node module loaded in memory)
+export async function purge(io: IOHelper, entries: {
+    file: string;
+}[]) {
+    for (const { file } of entries) {
+        const content = io.source(file).replace(/\.\/compiled/g, '');
+        io.override(file, content);
+    }
+
+    fs.cpSync(io.root + 'dist/', io.root + 'compiled/', {
         recursive: true,
         filter(src) {
-            return !/(bin|styles|types)$/.test(src); // add \.map\.js wip!!
+            return !/((bin|styles|types)$|\.map$)/.test(src);
         }
     });
 }
@@ -46,18 +53,17 @@ export async function compileComponents(io: IOHelper, entries: {
     inject?: string;
 }[], stats: Stats) {
     const context = await getContext();
-    context.styles = {}; // dont reset when in manual css output mode
+    context.styles = {};
 
-    for (let i = 0; i < entries.length; i++) {
-        const { file, shallow, inject } = entries[i];
+    for (const { file, shallow, inject } of entries) {
         const content = io.source(file);
 
         if (!shallow) {
-            let imports = getComponentImports(content),
+            let imports = Array.from(content.matchAll(/as\s*(.+?)\s*\}\s*from\s*(?:'|")(.+?)(?:'|");/g)),
                 entry, j = 0, len = imports.length;
 
             while (entry = imports.shift()) {
-                const { name, path } = entry;
+                const [_, name, path] = entry;
 
                 if (imports.length > 0 && name === inject) {
                     imports.push(entry);
@@ -81,5 +87,5 @@ export async function compileComponents(io: IOHelper, entries: {
         io.override(file, content.replace(/(from\s*(?:'|"))\.\/(.*?(?:'|");)/g, '$1../compiled/$2'));
     }
 
-    await emitCss(io, stats, !io.isPrimary);
+    await emitCss(io, stats, io.parent !== 'fluid');
 }

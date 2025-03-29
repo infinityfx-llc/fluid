@@ -1,7 +1,7 @@
-import { compileComponents, compileIcons, compileTypes, createCompiledFolder } from "./compile";
+import { compileComponents, compileIcons, compileTypes, purge } from "./compile";
 import { emptyStats, getContext, getIOHelper, printStats } from "./utils";
 
-const external = [
+const external = [ // don't hardcode this in the future?
     {
         name: '@infinityfx/splash',
         entries: [
@@ -29,21 +29,24 @@ export async function compile(flag: string) {
 
     console.log(`\r\n> ${name} v${version}\n`);
 
-    const stats = emptyStats(packages.length);
-
-    for (stats.index = 0; stats.index < packages.length; stats.index++) {
-        const { name, entries } = packages[stats.index];
-
+    const list = [];
+    for (const { name, entries } of packages) {
         const io = await getIOHelper(`node_modules/${name}/`);
         if (!io) continue;
 
-        createCompiledFolder(io);
-        await compileComponents(io, entries, stats);
+        await purge(io, entries);
+        list.push({ io, entries });
 
         if (name === '@infinityfx/fluid') {
             await compileIcons(io);
             await compileTypes(io);
         }
+    }
+    
+    const stats = emptyStats(list.length);
+    for (stats.index = 0; stats.index < list.length; stats.index++) {
+        const { io, entries } = list[stats.index];
+        await compileComponents(io, entries, stats);
     }
 
     printStats(stats);
