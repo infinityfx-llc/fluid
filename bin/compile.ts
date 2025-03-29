@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { compileFile, emitCss } from './core';
 import { FluidIcon } from '../src/core/icons';
-import { getContext, IOHelper, printProgress } from './utils';
+import { getComponentImports, getContext, IOHelper, printProgress, Stats } from './utils';
 
 export async function compileTypes(io: IOHelper) {
     const { theme } = await getContext();
@@ -31,25 +31,20 @@ export async function compileIcons(io: IOHelper) {
     io.output('./core/icons.js', contents);
 }
 
-export function sanitizeImports(io: IOHelper, entries: {
-    file: string;
-    shallow?: boolean;
-}[]) {
-    for (const { file } of entries) {
-        const content = io.source(file).replace(/\.\/compiled/g, ''); // doesnt remove compiled paths sometimes??
-
-        io.override(file, content);
-    }
-
-    if (fs.existsSync(io.root + 'compiled/')) fs.rmSync(io.root + 'compiled/', { recursive: true }); // sometimes throws no empty error..??
-    fs.cpSync(io.root + 'dist/', io.root + 'compiled/', { recursive: true });
+export function createCompiledFolder(io: IOHelper) {
+    fs.cpSync(io.root + 'dist/', io.root + 'compiled/', { // sometimes not allowed to copy? (probably because node module loaded in memory)
+        recursive: true,
+        filter(src) {
+            return !/(bin|styles|types)$/.test(src); // add \.map\.js wip!!
+        }
+    });
 }
 
 export async function compileComponents(io: IOHelper, entries: {
     file: string;
     shallow?: boolean;
     inject?: string;
-}[], index: number, total: number) {
+}[], stats: Stats) {
     const context = await getContext();
     context.styles = {}; // dont reset when in manual css output mode
 
@@ -58,18 +53,18 @@ export async function compileComponents(io: IOHelper, entries: {
         const content = io.source(file);
 
         if (!shallow) {
-            let imports = Array.from(content.matchAll(/as\s*(.+?)\s*\}\s*from\s*(?:'|")(.+?)(?:'|");/g)),
+            let imports = getComponentImports(content),
                 entry, j = 0, len = imports.length;
 
             while (entry = imports.shift()) {
-                const [_, name, path] = entry;
+                const { name, path } = entry;
 
                 if (imports.length > 0 && name === inject) {
                     imports.push(entry);
                     continue;
                 }
 
-                if (/index.js$/.test(path)) {
+                if (/index.js$/.test(path)) { // maybe check for Root in module (inside compileFile)??
                     const parent = await io.module(path);
 
                     for (const subName in parent) {
@@ -79,12 +74,12 @@ export async function compileComponents(io: IOHelper, entries: {
                     await compileFile(io, name, path, name === inject);
                 }
 
-                printProgress((index / total) + (++j / len) / total); // not fully correct
+                printProgress((stats.index / stats.entries) + (++j / len) / stats.entries); // not fully correct
             }
         }
 
         io.override(file, content.replace(/(from\s*(?:'|"))\.\/(.*?(?:'|");)/g, '$1../compiled/$2'));
     }
 
-    await emitCss(io);
+    await emitCss(io, stats, !io.isPrimary);
 }

@@ -2,7 +2,7 @@ import fs from 'fs';
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
 import { glob } from "glob";
-import { getContext, getIOHelper, IOHelper, keyFromImport, matchBrackets, replace, stripImports } from "./utils";
+import { getContext, getIOHelper, IOHelper, keyFromImport, matchBrackets, replace, Stats, stripImports } from "./utils";
 
 async function extractDependents(name: string, content: string) {
     const { dependents } = await getContext();
@@ -21,7 +21,7 @@ async function extractDependents(name: string, content: string) {
 
 async function createRenderableElement(components: React.FunctionComponent<any>[]) {
     const io = await getIOHelper('node_modules/@infinityfx/fluid/');
-    if (!io) throw new Error();
+    if (!io) throw new Error('Unable to access FluidProvider module');
 
     const FluidProvider = await io.module('./context/fluid.js');
 
@@ -54,7 +54,7 @@ export async function compileFile(io: IOHelper, name: string, path: string, appe
 
     await extractDependents(name, contents);
     contents = await processFileCSS(name, contents);
-    if (appendCssImport) contents = await insertCssImport(contents);
+    if (appendCssImport) contents = await insertCssImport(path, contents);
 
     io.output(path, stripImports(contents));
 }
@@ -88,7 +88,7 @@ async function processFileCSS(name: string, content: string) {
     return content;
 }
 
-async function insertCssImport(contents: string) {
+async function insertCssImport(path: string, contents: string) {
     const { theme, cssOutput } = await getContext();
 
     const context = contents.match(/import\s*\{[^{]*(GLOBAL_CONTEXT(?:\s*as\s*([^\s},]+))?)[^}]*\}/);
@@ -99,7 +99,7 @@ async function insertCssImport(contents: string) {
     if (cssInsert?.index === undefined || cssOutput === 'manual') return contents;
 
     const idx = cssInsert.index + cssInsert[0].length;
-    return replace(contents, idx, idx, 'import "../fluid.css";'); // dont hardcode name?
+    return replace(contents, idx, idx, `import "./${path.split(/\/|\\/g).slice(2).map(() => '../').join('')}fluid.css";`); // dont hardcode name?
 }
 
 async function appendFileDependents(file: string, map: { [key: string]: any; }) {
@@ -124,7 +124,7 @@ async function appendFileDependents(file: string, map: { [key: string]: any; }) 
     return map;
 }
 
-export async function emitCss(io: IOHelper, omitGlobals = false) {
+export async function emitCss(io: IOHelper, stats: Stats, omitGlobals = false) {
     const { paths, styles, cssOutput, isDev, isInternal } = await getContext();
 
     let usedComponents = null;
@@ -146,8 +146,14 @@ export async function emitCss(io: IOHelper, omitGlobals = false) {
             if (key !== '__globals' && usedComponents !== null && !(key in usedComponents)) return stylesheet;
             if (omitGlobals && key === '__globals') return stylesheet;
 
-            return stylesheet += entry.rules
+            stats.compiled++;
+            return stylesheet += entry.rules;
         }, '');
+
+    stats.files.push({
+        name: 'fluid.css',
+        size: new Blob([stylesheet], { type: 'text/css' }).size
+    })
 
     cssOutput === 'automatic' ?
         io.output('./fluid.css', stylesheet) :

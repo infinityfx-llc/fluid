@@ -1,5 +1,5 @@
-import { compileComponents, compileIcons, compileTypes, sanitizeImports } from "./compile";
-import { getContext, getIOHelper } from "./utils";
+import { compileComponents, compileIcons, compileTypes, createCompiledFolder } from "./compile";
+import { emptyStats, getContext, getIOHelper, printStats } from "./utils";
 
 const external = [
     {
@@ -29,14 +29,16 @@ export async function compile(flag: string) {
 
     console.log(`\r\n> ${name} v${version}\n`);
 
-    for (let i = 0; i < packages.length; i++) {
-        const { name, entries } = packages[i];
+    const stats = emptyStats(packages.length);
+
+    for (stats.index = 0; stats.index < packages.length; stats.index++) {
+        const { name, entries } = packages[stats.index];
 
         const io = await getIOHelper(`node_modules/${name}/`);
         if (!io) continue;
 
-        sanitizeImports(io, entries);
-        await compileComponents(io, entries, i, packages.length);
+        createCompiledFolder(io);
+        await compileComponents(io, entries, stats);
 
         if (name === '@infinityfx/fluid') {
             await compileIcons(io);
@@ -44,7 +46,7 @@ export async function compile(flag: string) {
         }
     }
 
-    console.log('\n');
+    printStats(stats);
 }
 
 export function help() {

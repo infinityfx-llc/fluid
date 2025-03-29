@@ -9,6 +9,34 @@ export function printProgress(progress: number) {
     process.stdout.write(`${(progress * 100).toFixed(1)}% ` + new Array(Math.round(progress * 40)).fill('=').join(''));
 }
 
+export type Stats = {
+    index: number;
+    entries: number;
+    start: number;
+    compiled: number;
+    files: {
+        name: string;
+        size: number;
+    }[];
+}
+
+export const emptyStats = (entries: number): Stats => ({
+    index: 0,
+    entries,
+    start: performance.now(),
+    compiled: 0,
+    files: []
+});
+
+export function printStats(stats: Stats) {
+    console.log('\n');
+    console.log(`Compiled \x1b[1m${stats.compiled}\x1b[0m components in \x1b[1m${((performance.now() - stats.start) / 1000).toFixed(2)}\x1b[0m sec.`);
+    console.log();
+    console.log('\x1b[4mFile\x1b[0m                   \x1b[4mSize\x1b[0m');
+    stats.files.forEach(({ name, size }) => console.log(`${name.padEnd(23, ' ')}${(size / 1024).toFixed(1)}kb`));
+    console.log('');
+}
+
 export function matchBrackets(content: string, start: number, type: '{}' | '()' | '[]' = '{}') {
     let count = 1;
 
@@ -26,7 +54,11 @@ export function replace(content: string, from: number, to: number, by: string) {
 }
 
 export function stripImports(content: string) {
-    return content.replace(/import[^;]*?(core(\/|\\)style\.js|(\/|\\)fluid(\/|\\)css)("|');?/g, '');
+    ['core(\\/|\\\\)style\\.js', '(\\/|\\\\)fluid(\\/|\\\\)css', 'styles(\\/|\\\\).+?']
+        .map(val => new RegExp(`import[^;]*?${val}("|');?`, 'g'))
+        .forEach(pattern => content = content.replace(pattern, ''));
+
+    return content;
 }
 
 export const keyFromImport = (str: string) => str
@@ -35,6 +67,14 @@ export const keyFromImport = (str: string) => str
     .replace(/([a-z])([A-Z])/, '$1-$2')
     .toLowerCase();
 
+export function getComponentImports(content: string) {
+    return Array.from(content.matchAll(/as\s*(.+?)\s*\}\s*from\s*(?:'|")(.+?)(?:'|");/g))
+        .map(([_, name, path]) => ({
+            name,
+            path: path.replace(/\.\/compiled/g, '')
+        }));
+}
+
 let config: any;
 
 export async function getContext(isDev?: boolean): Promise<typeof GLOBAL_CONTEXT> {
@@ -42,7 +82,7 @@ export async function getContext(isDev?: boolean): Promise<typeof GLOBAL_CONTEXT
         const [configFile] = await glob('./fluid.config.{js,mjs}');
 
         try {
-            config = (await import('file://' + process.cwd() + `/${configFile}`)).default;
+            config = (await import(`file://${process.cwd()}/${configFile}?nonce=${Math.random()}`)).default;
             const rawConfig = fs.readFileSync(process.cwd() + `/${configFile}`, { encoding: 'ascii' });
 
             GLOBAL_CONTEXT.theme = mergeRecursive(config.theme, GLOBAL_CONTEXT.theme);
@@ -71,6 +111,7 @@ export async function getContext(isDev?: boolean): Promise<typeof GLOBAL_CONTEXT
 
 export type IOHelper = {
     root: string;
+    isPrimary: boolean;
     module(file: string): Promise<React.FunctionComponent<any>>;
     source(file: string): string;
     output(file: string, content: string): void;
@@ -79,12 +120,14 @@ export type IOHelper = {
 
 export async function getIOHelper(base: string): Promise<IOHelper | null> {
     const { isInternal } = await getContext();
-    const root = isInternal && /@infinityfx\/fluid\/$/.test(base) ? './' : base;
+    const isPrimary = /@infinityfx\/fluid\/$/.test(base),
+        root = isInternal && isPrimary ? './' : base;
 
     if (!fs.existsSync(root)) return null;
 
     return {
         root,
+        isPrimary,
         async module(file: string) {
             return (await import(`file://${process.cwd()}/${root}dist/${file}?nonce=${Math.random()}`)).default;
         },
