@@ -67,6 +67,13 @@ export const keyFromImport = (str: string) => str
     .replace(/([a-z])([A-Z])/, '$1-$2')
     .toLowerCase();
 
+export function extractImports(content: string, namespace: string) {
+    return Array.from(content.matchAll(new RegExp(`import\\s*(?:\\{([^\\}]+)\\}|\\*\\s+as.*|\\w+)\\s*from\\s*(?:'|")@infinityfx\\/${namespace}(?:'|")`, 'g')))
+        .map(([_, names]) => {
+            return names ? names.split(',').map(keyFromImport) : null;
+        }).flat();
+}
+
 let config: any;
 
 export async function getContext(isDev?: boolean): Promise<typeof GLOBAL_CONTEXT> {

@@ -2,18 +2,22 @@ import fs from 'fs';
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
 import { glob } from "glob";
-import { getContext, getIOHelper, IOHelper, keyFromImport, matchBrackets, replace, Stats, stripImports } from "./utils";
+import { extractImports, getContext, getIOHelper, IOHelper, keyFromImport, matchBrackets, replace, Stats, stripImports } from "./utils";
 
-async function extractDependents(name: string, content: string) {
+async function extractDependents(name: string, content: string, external = false) {
     const { dependents } = await getContext();
     name = keyFromImport(name);
 
     if (!(name in dependents)) dependents[name] = [];
 
-    Array.from(content.matchAll(/import\s+\w+\s+from\s*(?:'|").*?\/([^\/]+)(\/index)?\.js(?:'|")/g)) // could test for @infinityfx/fluid imports as well, but (need to figure out how to test for external during usedComponents)
-        .forEach(([_, entry]) => {
-            if (!entry.startsWith('use')) dependents[name].push(entry);
-        });
+    if (external) { // optimize
+        extractImports(content, 'fluid').forEach(key => key && dependents[name].push(key));
+    } else {
+        Array.from(content.matchAll(/import\s+\w+\s+from\s*(?:'|").*?\/([^\/]+)(\/index)?\.js(?:'|")/g))
+            .forEach(([_, entry]) => {
+                if (!entry.startsWith('use')) dependents[name].push(entry);
+            });
+    }
 }
 
 async function createRenderableElement(components: React.FunctionComponent<any>[]) {
@@ -39,17 +43,15 @@ export async function compileFile(io: IOHelper, name: string, path: string, appe
     let contents = io.source(path);
 
     try {
-        const components = [await io.module(path)]; // when importing on second run still has .css import somehow which throws error..
+        const components = [await io.module(path)];
         const [_, subName] = name.split('.');
 
         if (subName) components.unshift(await io.module(path.replace(/index\.js/, `${subName.toLowerCase()}.js`)));
 
         renderToString(await createRenderableElement(components));
-    } catch (err) {
-        console.log('test', io.root, path, err); // TEMP!
-    }
+    } catch { }
 
-    await extractDependents(name, contents);
+    await extractDependents(name, contents, io.parent !== 'fluid');
     contents = await processFileCSS(name, contents);
     if (appendCssImport) contents = await insertCssImport(io.parent, path, contents);
 
@@ -99,15 +101,15 @@ async function insertCssImport(base: string, path: string, contents: string) {
     return replace(contents, idx, idx, `import "./${path.split(/\/|\\/g).slice(2).map(() => '../').join('')}${base}.css";`);
 }
 
-async function appendFileDependents(file: string, map: { [key: string]: any; }) {
+// 3. ?? (figure out how to handle * import, where all components need to be included..)
+// 4. ?? (check all used components before compilation??)
+// 4.1 that way sub dependents of external components are accounted for in main fluid styles
+
+async function appendFileDependents(namespace: string, file: string, map: { [key: string]: any; }) {
     const { dependents } = await getContext();
 
     const contents = fs.readFileSync(file, { encoding: 'ascii' });
-    // when matching @infintyfx/fluid only do this when compiling inside fluid itself, otherwise these styles get appended to external packages stylesheets..
-    const statements = Array.from(contents.matchAll(/import\s*(?:\{([^\}]+)\}|\*\s+as.*|\w+)\s*from\s*(?:'|")@infinityfx\/fluid(?:'|")/g)); // external module components (dynamic names) are not accounted for..
-    const imports = statements.map(([_, names]) => {
-        return names ? names.split(',').map(keyFromImport) : null;
-    }).flat();
+    const imports = extractImports(contents, namespace);
 
     while (imports.length) {
         const entry = imports.pop();
@@ -128,12 +130,10 @@ export async function emitCss(io: IOHelper, stats: Stats, omitGlobals = false) {
     let usedComponents = null;
 
     if (!isInternal && !isDev) {
-        const files = await glob([
-            'node_modules/@infinityfx/splash/dist/**/*.{js}'
-        ].concat(paths));
+        const files = await glob(paths);
 
         for (const file of files) {
-            usedComponents = await appendFileDependents(file, usedComponents || {});
+            usedComponents = await appendFileDependents(io.parent, file, usedComponents || {});
             if (!usedComponents) break;
         }
     }

@@ -30,7 +30,7 @@ export async function compile(flag: string) {
     console.log(`\r\n> ${name} v${version}\n`);
 
     const list = [];
-    for (const { name, entries } of packages) {
+    for (const { name, entries } of packages) { // dont do all this work before logging first percentage? (cause makes compilation feel slow../create stats object before this stuff, duh..)
         const io = await getIOHelper(`node_modules/${name}/`);
         if (!io) continue;
 
