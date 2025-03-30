@@ -82,20 +82,21 @@ export async function getContext(isDev?: boolean): Promise<typeof GLOBAL_CONTEXT
         const [configFile] = await glob('./fluid.config.{js,mjs}');
 
         try {
-            const [conf, files, rawConfig] = await Promise.all([
-                import(`file://${process.cwd()}/${configFile}?nonce=${Math.random()}`),
-                glob(['./node_modules/@infinityfx/fluid/package.json', './package.json']),
-                readFile(process.cwd() + `/${configFile}`, { encoding: 'ascii' })
+            const [conf, rawConfig, files] = await Promise.all([
+                configFile && import(`file://${process.cwd()}/${configFile}?nonce=${Math.random()}`),
+                configFile && readFile(process.cwd() + `/${configFile}`, { encoding: 'ascii' }),
+                glob(['./node_modules/@infinityfx/fluid/package.json', './package.json'])
             ]);
 
-            config = conf.default;
-
-            GLOBAL_CONTEXT.theme = mergeRecursive(config.theme, GLOBAL_CONTEXT.theme);
-            GLOBAL_CONTEXT.components = config.components || {};
-            GLOBAL_CONTEXT.paths = config.paths || GLOBAL_CONTEXT.paths;
-            GLOBAL_CONTEXT.cssOutput = config.cssOutput || GLOBAL_CONTEXT.cssOutput;
-            GLOBAL_CONTEXT.icons = config.icons || {};
-            GLOBAL_CONTEXT.rawConfig = rawConfig;
+            if (conf && rawConfig) {
+                config = conf.default;
+                GLOBAL_CONTEXT.theme = mergeRecursive(config.theme, GLOBAL_CONTEXT.theme);
+                GLOBAL_CONTEXT.components = config.components || {};
+                GLOBAL_CONTEXT.paths = config.paths || GLOBAL_CONTEXT.paths;
+                GLOBAL_CONTEXT.cssOutput = config.cssOutput || GLOBAL_CONTEXT.cssOutput;
+                GLOBAL_CONTEXT.icons = config.icons || {};
+                GLOBAL_CONTEXT.rawConfig = rawConfig;
+            }
 
             const file = files.length > 1 ?
                 files.find(file => file.startsWith('node_modules')) as string :

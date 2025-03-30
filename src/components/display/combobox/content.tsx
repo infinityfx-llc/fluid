@@ -56,9 +56,6 @@ const styles = createStyles('combobox.content', {
     },
 
     '.container .field': {
-        border: 'none',
-        outline: 'none',
-        background: 'var(--f-clr-bg-100)',
         margin: '.25em',
         marginBottom: 0
     },
@@ -146,6 +143,7 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
                 {searchable && <Field
                     round={round}
                     size={size}
+                    variant="minimal"
                     inputRef={(el: any) => options.current[0] = el}
                     autoFocus={autoFocus}
                     placeholder={placeholder}
