@@ -29,24 +29,24 @@ export async function compile(flag: string) {
 
     console.log(`\r\n> ${name} v${version}\n`);
 
-    const list = [];
-    for (const { name, entries } of packages) { // dont do all this work before logging first percentage? (cause makes compilation feel slow../create stats object before this stuff, duh..)
-        const io = await getIOHelper(`node_modules/${name}/`);
-        if (!io) continue;
+    const list = packages.map(({ name, entries }) => {
+        const io = getIOHelper(`node_modules/${name}/`, isInternal);
+        if (!io) return null;
 
-        await purge(io, entries);
-        list.push({ io, entries });
+        return { io, entries };
+    }).filter(val => !!val),
+        stats = emptyStats(list.length);
 
-        if (name === '@infinityfx/fluid') {
+    await Promise.all(list.map(({ io, entries }) => purge(io, entries)));
+
+    for (stats.index = 0; stats.index < stats.entries; stats.index++) {
+        const { io, entries } = list[stats.index];
+        await compileComponents(io, entries, stats);
+
+        if (io.parent === 'fluid') {
             await compileIcons(io);
             await compileTypes(io);
         }
-    }
-    
-    const stats = emptyStats(list.length);
-    for (stats.index = 0; stats.index < list.length; stats.index++) {
-        const { io, entries } = list[stats.index];
-        await compileComponents(io, entries, stats);
     }
 
     printStats(stats);

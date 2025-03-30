@@ -21,7 +21,8 @@ async function extractDependents(name: string, content: string, external = false
 }
 
 async function createRenderableElement(components: React.FunctionComponent<any>[]) {
-    const io = await getIOHelper('node_modules/@infinityfx/fluid/');
+    const { isInternal } = await getContext();
+    const io = getIOHelper('node_modules/@infinityfx/fluid/', isInternal);
     if (!io) throw new Error('Unable to access FluidProvider module');
 
     const FluidProvider = await io.module('./context/fluid.js');
@@ -101,9 +102,9 @@ async function insertCssImport(base: string, path: string, contents: string) {
     return replace(contents, idx, idx, `import "./${path.split(/\/|\\/g).slice(2).map(() => '../').join('')}${base}.css";`);
 }
 
-// 3. ?? (figure out how to handle * import, where all components need to be included..)
-// 4. ?? (check all used components before compilation??)
-// 4.1 that way sub dependents of external components are accounted for in main fluid styles
+// - figure out how to handle * import, where all components need to be included..
+// - check all used components before compilation??
+//   that way sub dependents of external components are accounted for in main fluid styles
 
 async function appendFileDependents(namespace: string, file: string, map: { [key: string]: any; }) {
     const { dependents } = await getContext();

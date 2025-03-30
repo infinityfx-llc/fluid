@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { readFile } from 'fs/promises';
 import readline from 'readline';
 import { glob } from "glob";
 import { mergeRecursive } from '../src/core/utils';
@@ -81,8 +82,13 @@ export async function getContext(isDev?: boolean): Promise<typeof GLOBAL_CONTEXT
         const [configFile] = await glob('./fluid.config.{js,mjs}');
 
         try {
-            config = (await import(`file://${process.cwd()}/${configFile}?nonce=${Math.random()}`)).default;
-            const rawConfig = fs.readFileSync(process.cwd() + `/${configFile}`, { encoding: 'ascii' });
+            const [conf, files, rawConfig] = await Promise.all([
+                import(`file://${process.cwd()}/${configFile}?nonce=${Math.random()}`),
+                glob(['./node_modules/@infinityfx/fluid/package.json', './package.json']),
+                readFile(process.cwd() + `/${configFile}`, { encoding: 'ascii' })
+            ]);
+
+            config = conf.default;
 
             GLOBAL_CONTEXT.theme = mergeRecursive(config.theme, GLOBAL_CONTEXT.theme);
             GLOBAL_CONTEXT.components = config.components || {};
@@ -91,7 +97,6 @@ export async function getContext(isDev?: boolean): Promise<typeof GLOBAL_CONTEXT
             GLOBAL_CONTEXT.icons = config.icons || {};
             GLOBAL_CONTEXT.rawConfig = rawConfig;
 
-            const files = await glob(['./node_modules/@infinityfx/fluid/package.json', './package.json']);
             const file = files.length > 1 ?
                 files.find(file => file.startsWith('node_modules')) as string :
                 files[0];
@@ -117,8 +122,7 @@ export type IOHelper = {
     override(file: string, content: string): void;
 }
 
-export async function getIOHelper(base: string): Promise<IOHelper | null> {
-    const { isInternal } = await getContext();
+export function getIOHelper(base: string, isInternal = false): IOHelper | null {
     const root = isInternal && /@infinityfx\/fluid\/$/.test(base) ? './' : base;
 
     if (!fs.existsSync(root)) return null;
