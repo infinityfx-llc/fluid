@@ -33,8 +33,8 @@ export function printStats(stats: Stats) {
     console.log('\n');
     console.log(`Compiled \x1b[1m${stats.compiled}\x1b[0m components in \x1b[1m${((performance.now() - stats.start) / 1000).toFixed(2)}\x1b[0m sec.`);
     console.log();
-    console.log('\x1b[4mFile\x1b[0m                   \x1b[4mSize\x1b[0m');
-    stats.files.forEach(({ name, size }) => console.log(`${name.padEnd(23, ' ')}${(size / 1024).toFixed(1)}kb`));
+    console.log('\x1b[4mFile\x1b[0m                                     \x1b[4mSize\x1b[0m');
+    stats.files.forEach(({ name, size }) => console.log(`${name.padEnd(41, ' ')}${(size / 1024).toFixed(1)}kb`));
     console.log('');
 }
 
@@ -117,6 +117,7 @@ export async function getContext(isDev?: boolean): Promise<typeof GLOBAL_CONTEXT
 export type IOHelper = {
     root: string;
     parent: string;
+    timestamp: number;
     module(file: string): Promise<React.FunctionComponent<any>>;
     source(file: string): string;
     output(file: string, content: string): void;
@@ -131,6 +132,7 @@ export function getIOHelper(base: string, isInternal = false): IOHelper | null {
     return {
         root,
         parent: base.match(/.+\/(.+)\/$/)?.[1] || '',
+        timestamp: Date.now(),
         async module(file: string) {
             return (await import(`file://${process.cwd()}/${root}dist/${file}?nonce=${Math.random()}`)).default;
         },

@@ -54,7 +54,7 @@ export async function compileFile(io: IOHelper, name: string, path: string, appe
 
     await extractDependents(name, contents, io.parent !== 'fluid');
     contents = await processFileCSS(name, contents);
-    if (appendCssImport) contents = await insertCssImport(io.parent, path, contents);
+    if (appendCssImport) contents = await insertCssImport(path, contents, `${io.parent}-${io.timestamp}`);
 
     io.output(path, stripImports(contents));
 }
@@ -88,7 +88,7 @@ async function processFileCSS(name: string, content: string) {
     return content;
 }
 
-async function insertCssImport(base: string, path: string, contents: string) {
+async function insertCssImport(path: string, contents: string, name: string) {
     const { theme, cssOutput } = await getContext();
 
     const context = contents.match(/import\s*\{[^{]*(GLOBAL_CONTEXT(?:\s*as\s*([^\s},]+))?)[^}]*\}/);
@@ -99,7 +99,7 @@ async function insertCssImport(base: string, path: string, contents: string) {
     if (cssInsert?.index === undefined || cssOutput === 'manual') return contents;
 
     const idx = cssInsert.index + cssInsert[0].length;
-    return replace(contents, idx, idx, `import "./${path.split(/\/|\\/g).slice(2).map(() => '../').join('')}${base}.css";`);
+    return replace(contents, idx, idx, `import "./${path.split(/\/|\\/g).slice(2).map(() => '../').join('')}${name}.css";`);
 }
 
 // - figure out how to handle * import, where all components need to be included..
@@ -151,12 +151,12 @@ export async function emitCss(io: IOHelper, stats: Stats, omitGlobals = false) {
         }, '');
 
     stats.files.push({ // not correct for manual css output mode
-        name: `${io.parent}.css`,
+        name: `${io.parent}-${io.timestamp}.css`,
         size: new Blob([stylesheet], { type: 'text/css' }).size
     })
 
     cssOutput === 'automatic' ?
-        io.output(`./${io.parent}.css`, stylesheet) :
+        io.output(`./${io.parent}-${io.timestamp}.css`, stylesheet) :
         fs.writeFileSync(process.cwd() + '/fluid.css', stylesheet, {
             flag: !stats.index ? 'w' : 'a'
         });

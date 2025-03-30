@@ -49,11 +49,10 @@ function getPosition(anchor: Element, element: Element, margin = '0px') {
     return {
         w: width + 'px',
         style: {
-            left: !dx ? space + 'px' : 'auto',
-            right: dx ? space + 'px' : 'auto',
+            left: (dx ? (x + width) : space) + 'px',
             top: !dy ? `calc(${bottom}px + ${margin})` : 'auto',
             bottom: dy ? `calc(${window.innerHeight - y}px + ${margin})` : 'auto',
-            transform: ''
+            transform: dx ? 'translateX(-100%)' : ''
         },
         centered: {
             left: cx + 'px',
