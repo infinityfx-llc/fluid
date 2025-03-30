@@ -132,9 +132,10 @@ export async function emitCss(io: IOHelper, stats: Stats, omitGlobals = false) {
 
     if (!isInternal && !isDev) {
         const files = await glob(paths);
+        usedComponents = {};
 
         for (const file of files) {
-            usedComponents = await appendFileDependents(io.parent, file, usedComponents || {});
+            usedComponents = await appendFileDependents(io.parent, file, usedComponents);
             if (!usedComponents) break;
         }
     }
@@ -149,14 +150,14 @@ export async function emitCss(io: IOHelper, stats: Stats, omitGlobals = false) {
             return stylesheet += entry.rules;
         }, '');
 
-    stats.files.push({
+    stats.files.push({ // not correct for manual css output mode
         name: `${io.parent}.css`,
         size: new Blob([stylesheet], { type: 'text/css' }).size
     })
 
     cssOutput === 'automatic' ?
         io.output(`./${io.parent}.css`, stylesheet) :
-        fs.writeFileSync(process.cwd() + './fluid.css', stylesheet, {
+        fs.writeFileSync(process.cwd() + '/fluid.css', stylesheet, {
             flag: !stats.index ? 'w' : 'a'
         });
 }

@@ -1,5 +1,5 @@
 import { compileComponents, compileIcons, compileTypes, purge } from "./compile";
-import { emptyStats, getContext, getIOHelper, printStats } from "./utils";
+import { emptyStats, getContext, getIOHelper, printProgress, printStats } from "./utils";
 
 const external = [ // don't hardcode this in the future?
     {
@@ -28,6 +28,7 @@ export async function compile(flag: string) {
     if (!isInternal) packages.unshift(...external);
 
     console.log(`\r\n> ${name} v${version}\n`);
+    printProgress(0);
 
     const list = packages.map(({ name, entries }) => {
         const io = getIOHelper(`node_modules/${name}/`, isInternal);
