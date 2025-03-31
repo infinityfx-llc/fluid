@@ -2,12 +2,12 @@ import { cloneElement, useId } from "react";
 import { classes, combineClasses } from "../../core/utils";
 import { createStyles } from "../../core/style";
 import { Selectors } from "../../types";
+import Collapsible from "../layout/collapsible";
 
 const styles = createStyles('annotation', {
     '.wrapper': {
         display: 'flex',
         flexDirection: 'column',
-        gap: 'var(--f-spacing-xxs)',
         color: 'var(--f-clr-text-100)',
         minWidth: 'min(100vw, 12em)',
         ['--width' as any]: '100%'
@@ -31,11 +31,16 @@ const styles = createStyles('annotation', {
 
     '.label, .error': {
         fontSize: '.8em',
-        fontWeight: 500,
+        fontWeight: 500
+    },
+
+    '.label': {
+        paddingBottom: 'var(--f-spacing-xxs)'
     },
 
     '.error': {
-        color: 'var(--f-clr-error-100)'
+        color: 'var(--f-clr-error-100)',
+        paddingTop: 'var(--f-spacing-xxs)'
     }
 });
 
@@ -74,8 +79,10 @@ export default function Annotation({ children, cc = {}, label, error, ...props }
             'aria-labelledby': id
         }) : children}
 
-        {error && <div className={style.error}>
-            {error}
-        </div>}
+        <Collapsible shown={!!error}>
+            <div className={style.error}>
+                {error}
+            </div>
+        </Collapsible>
     </div>;
 }

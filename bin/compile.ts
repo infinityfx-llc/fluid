@@ -1,7 +1,9 @@
 import fs from 'fs';
+import { unlink } from 'fs/promises';
 import { compileFile, emitCss } from './core';
 import { FluidIcon } from '../src/core/icons';
 import { getContext, IOHelper, printProgress, Stats } from './utils';
+import { glob } from 'glob';
 
 export async function compileTypes(io: IOHelper) {
     const { theme } = await getContext();
@@ -38,6 +40,9 @@ export async function purge(io: IOHelper, entries: {
         const content = io.source(file).replace(/\.\/compiled/g, '');
         io.override(file, content);
     }
+
+    const files = await glob(io.root + 'compiled/*.css');
+    await Promise.all(files.map(unlink));
 
     fs.cpSync(io.root + 'dist/', io.root + 'compiled/', {
         recursive: true,
