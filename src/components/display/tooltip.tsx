@@ -100,7 +100,10 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
             setComputed(max);
         }
 
-        if (!value || visibility === 'never') return setVisible(visibility === 'always');
+        if (!value || visibility === 'never') {
+            touchOnly.current = false;
+            return setVisible(visibility === 'always');
+        }
 
         timeout.current = setTimeout(() => {
             setVisible(true);
@@ -145,16 +148,19 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
             }
         }, { signal });
 
-        const hide = () => {
-            toggle(false);
-            touchOnly.current = false;
-        };
-        const show = () => !touchOnly.current && toggle(true, delay);
+        const show = (e: any) => {
+            if (touchOnly.current ||
+                (e instanceof FocusEvent &&
+                    e.target instanceof Element &&
+                    !e.target.matches(':focus-visible'))) return;
+
+            toggle(true, delay);
+        }
 
         el.addEventListener('mouseenter', show, { signal });
         el.addEventListener('focus', show, { signal });
-        el.addEventListener('mouseleave', hide, { signal });
-        el.addEventListener('blur', hide, { signal });
+        el.addEventListener('mouseleave', () => toggle(false), { signal });
+        el.addEventListener('blur', () => toggle(false), { signal });
         el.addEventListener('touchend', () => toggle(null), { signal });
 
         return () => {

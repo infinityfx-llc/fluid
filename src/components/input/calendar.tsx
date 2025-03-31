@@ -11,14 +11,23 @@ import { Icon } from "../../core/icons";
 // multiple/range select
 
 function isEqual(a: Date, b: Date) {
-    return a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    return a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate();
+}
+
+function offsetDate(date: Date, days: number) {
+    const offset = new Date(date);
+    offset.setDate(date.getDate() + days);
+
+    return offset;
 }
 
 const styles = createStyles('calendar', {
     '.calendar': {
         backgroundColor: 'var(--f-clr-fg-100)',
         padding: '.6em',
-        borderRadius: 'var(--f-radius-sml)'
+        borderRadius: 'var(--f-radius-med)'
     },
 
     '.s__xsm': {
@@ -50,9 +59,13 @@ const styles = createStyles('calendar', {
 
     '.calendar .year': {
         minWidth: 'auto',
-        background: 'transparent',
-        outline: 'none',
+        backgroundColor: 'var(--f-clr-bg-100)',
+        color: 'var(--f-clr-grey-500)',
         flexGrow: 1
+    },
+
+    '.calendar .year:focus-within': {
+        backgroundColor: 'var(--f-clr-fg-200)'
     },
 
     '.calendar .year__content': {
@@ -61,7 +74,8 @@ const styles = createStyles('calendar', {
 
     '.grid': {
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        gap: 'var(--f-spacing-xxs)'
     },
 
     '.row': {
@@ -127,9 +141,8 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
     const [dateState, setDate] = value !== undefined ? [value, onChange] : useState(defaultValue);
     const date = dateState || new Date();
 
-    const first = new Date(date.getFullYear(), date.getMonth(), 1);
-    const monday = new Date(first), day = first.getDay();
-    monday.setDate(first.getDate() - (day || 7) + 1);
+    const firstOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const firstMonday = offsetDate(firstOfMonth, -(firstOfMonth.getDay() || 7) + 1);
 
     try {
         // make sure locale is valid
@@ -167,6 +180,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                 size={size}
                 round={round}
                 precision={0}
+                variant="minimal"
                 controls={false}
                 cc={{
                     field: style.year,
@@ -193,24 +207,19 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
 
         <div className={style.grid} role="grid">
             <div className={style.row} role="row">
-                {new Array(7).fill(0).map((_, i) => {
-                    const day = new Date(monday);
-                    day.setDate(monday.getDate() + i);
-
-                    return <div key={i} className={style.label} role="columnheader">
-                        {day.toLocaleString(locale, { weekday: 'short' })}
-                    </div>;
-                })}
+                {new Array(7).fill(0).map((_, i) => (
+                    <div key={i} className={style.label} role="columnheader">
+                        {offsetDate(firstMonday, i).toLocaleString(locale, { weekday: 'short' })}
+                    </div>
+                ))}
             </div>
 
             {new Array(6).fill(0).map((_, ri) => (
                 <div key={ri} className={style.row} role="row">
                     {new Array(7).fill(0).map((_, ci) => {
-                        const day = new Date(monday), index = ri * 7 + ci;
-                        day.setDate(monday.getDate() + index);
-                        const isMonth = day.getMonth() === date.getMonth();
-
-                        const isDisabled = Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled;
+                        const index = ri * 7 + ci,
+                            day = offsetDate(firstMonday, index),
+                            isDisabled = Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled;
 
                         return <div key={ci} role="gridcell">
                             <Button
@@ -223,8 +232,11 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                     button: style.date,
                                     v__minimal: style.date__v__minimal
                                 }}
-                                data-present={isMonth}
-                                variant={isEqual(date, day) ? 'default' : 'minimal'}
+                                data-present={day.getMonth() === date.getMonth()}
+                                variant={isEqual(date, day) ?
+                                    'default' :
+                                    isEqual(new Date(), day) && !isDisabled ? 'light' :
+                                        'minimal'}
                                 aria-label={day.toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' })}
                                 onClick={() => setDate?.(day)}
                                 onKeyDown={e => {
