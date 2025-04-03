@@ -87,19 +87,6 @@ const styles = createStyles('select', {
         minHeight: '1.375em'
     },
 
-    '.content::after': {
-        content: '""',
-        position: 'absolute',
-        height: '100%',
-        width: '16px',
-        right: 0,
-        background: 'linear-gradient(90deg, transparent, var(--f-clr-fg-100))'
-    },
-
-    '.field[data-disabled="true"] .content::after': {
-        background: 'linear-gradient(90deg, transparent, var(--f-clr-grey-100))'
-    },
-
     '.content > *': {
         flexShrink: 0
     },
@@ -208,7 +195,9 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
     const isMult = Array.isArray(state);
 
     useEffect(() => {
-        if (multiple !== isMult) setState?.(multiple ? [state] as any : (state as any)[0]);
+        if (multiple !== isMult) setState?.(multiple ?
+            (state ? [state] : []) :
+            (state as any)[0]);
     }, [multiple, isMult]);
 
     return <Combobox.Root ref={popover} stretch>
@@ -239,7 +228,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                                     <Badge round={round} cc={{ badge: style.badge }}>+{state.length - 1} more</Badge>
                                 </>
                             ) :
-                            options.find(option => option.value === state)?.label // TESTING!!
+                            options.find(option => option.value === state)?.label // Optimze?
                         }
                     </div>
 
@@ -266,7 +255,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                 const selected = isMult ? state.includes(value) : state === value;
 
                 return <Combobox.Option
-                    key={i}
+                    key={'' + value} // can't have duplicate values (desired behaviour?)
                     value={label}
                     disabled={disabled}
                     aria-selected={selected}

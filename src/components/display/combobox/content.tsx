@@ -1,6 +1,6 @@
 'use client';
 
-import { Children, useState, isValidElement, useRef, cloneElement } from 'react';
+import { Children, useState, isValidElement, useRef, cloneElement, useMemo } from 'react';
 import Popover from '../../layout/popover';
 import Scrollarea from '../../layout/scrollarea';
 import Field from '../../input/field';
@@ -10,6 +10,7 @@ import { FluidSize, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { usePopover } from '../../layout/popover/root';
 import { Icon } from '../../../core/icons';
+import { useDebounce } from '../../../hooks';
 
 const styles = createStyles('combobox.content', {
     '.container': {
@@ -84,10 +85,14 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
     const selected = useRef(searchable ? 0 : -1);
     const options = useRef<HTMLElement[]>([]);
     const [search, setSearch] = useState<string>('');
+    const setDebouncedSearch = useDebounce(setSearch, 200);
 
     let optionIndex = searchable ? 1 : 0;
-    const filtered = Children.map(children, child => { // memo?
-        if (isValidElement(child) && (child as React.ReactElement<any>).props.value.toString().toLowerCase().includes(search.toLowerCase())) {
+    const filtered = useMemo(() => {
+        const query = search.toLowerCase();
+
+        return Children.map(children, child => {
+            if (!isValidElement(child) || !('' + (child as React.ReactElement<any>).props.value).toLowerCase().includes(query)) return null;
             if ((child as React.ReactElement<any>).props.disabled) return child;
 
             const i = optionIndex++;
@@ -100,10 +105,8 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
             });
 
             return clone;
-        }
-
-        return null;
-    });
+        });
+    }, [children, autoFocus, search]);
 
     return <Popover.Content>
         <Animatable id="combobox-options-outer"
@@ -147,11 +150,8 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
                     inputRef={(el: any) => options.current[0] = el}
                     autoFocus={autoFocus}
                     placeholder={placeholder}
-                    value={search}
                     onFocus={() => selected.current = 0}
-                    onChange={e => {
-                        setSearch(e.target.value);
-                    }}
+                    onChange={e => setDebouncedSearch(e.target.value)}
                     icon={<Icon type="search" />}
                     cc={{
                         field: style.field,
