@@ -9,9 +9,9 @@ const external = [ // don't hardcode this in the future?
         ]
     },
     {
-        name: '@infinityfx/rte',
+        name: '@infinityfx/text-editor',
         entries: [
-            { file: 'index.js', inject: 'TextEditor' }
+            { file: 'index.js', inject: 'Editor' }
         ]
     }
 ];

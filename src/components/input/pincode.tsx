@@ -23,7 +23,6 @@ const styles = createStyles('pincode', {
         border: 'solid 1px var(--f-clr-fg-200)',
         borderRadius: 'var(--f-radius-sml)',
         transition: 'border-color .2s, outline-color .2s',
-        padding: '.675em',
         display: 'flex',
         flexGrow: 1
     },
@@ -46,10 +45,12 @@ const styles = createStyles('pincode', {
     },
 
     '.input': {
+        boxSizing: 'content-box',
         border: 'none',
         outline: 'none',
         width: '1em',
         flexGrow: 1,
+        padding: '.675em',
         background: 'none',
         textAlign: 'center',
         color: 'var(--f-clr-text-100)'
