@@ -23,7 +23,12 @@ const styles = createStyles('accordion.item', {
         outline: 'none',
         border: 'none',
         background: 'none',
-        color: 'var(--f-clr-text-100)'
+        color: 'var(--f-clr-text-100)',
+        transition: 'background-color .5s'
+    },
+
+    '.v__minimal[aria-expanded="true"]': {
+        backgroundColor: 'var(--f-clr-fg-100)'
     },
 
     '.button:enabled': {
@@ -32,6 +37,10 @@ const styles = createStyles('accordion.item', {
 
     '.button:disabled': {
         color: 'var(--f-clr-grey-500)'
+    },
+
+    '.v__minimal:disabled[aria-expanded="true"]': {
+        backgroundColor: 'var(--f-clr-fg-200)'
     },
 
     '.content': {
@@ -64,7 +73,7 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
     const style = combineClasses(styles, cc);
 
     const id = useId();
-    const { open, toggle } = useAccordion();
+    const { variant, open, toggle } = useAccordion();
     const mounted = useRef(false);
     const isOpen = mounted.current ? open.indexOf(id) >= 0 : defaultOpen;
 
@@ -75,7 +84,16 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
 
     return <>
         <Halo disabled={disabled} color="var(--f-clr-primary-400)">
-            <button disabled={disabled} className={style.button} type="button" aria-expanded={isOpen} aria-controls={id} onClick={() => toggle(id, !isOpen)}>
+            <button
+                type="button"
+                disabled={disabled}
+                aria-expanded={isOpen}
+                aria-controls={id}
+                className={classes(
+                    style.button,
+                    style[`v__${variant}`]
+                )}
+                onClick={() => toggle(id, !isOpen)}>
                 {label}
 
                 <div className={style.icon}>

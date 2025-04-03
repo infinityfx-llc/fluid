@@ -7,6 +7,7 @@ import { createStyles } from "../../../core/style";
 import { combineClasses } from "../../../core/utils";
 
 export const AccordionContext = createContext<{
+    variant: 'default' | 'isolated' | 'minimal';
     open: string[];
     toggle: (id: string, open: boolean) => void;
 } | null>(null);
@@ -20,31 +21,42 @@ export function useAccordion() {
 }
 
 const styles = createStyles('accordion.root', {
-    '.accordion': {
+    '.accordion, .item': {
         display: 'flex',
         flexDirection: 'column'
     },
 
     '.v__default': {
         backgroundColor: 'var(--f-clr-fg-100)',
-        borderRadius: 'var(--f-radius-sml)',
+        borderRadius: 'var(--f-radius-med)',
         padding: '.4em'
     },
 
-    '.divider': {
-        height: '1px',
-        backgroundColor: 'var(--f-clr-fg-200)'
+    '.v__default .divider': {
+        marginInline: 'var(--f-radius-sml)',
+        backgroundColor: 'var(--f-clr-fg-200)',
+        height: '1px'
+    },
+
+    '.v__isolated .divider': {
+        height: 'var(--f-spacing-xsm)'
+    },
+
+    '.item': {
+        borderRadius: 'calc(var(--f-radius-sml) + .25em)',
+        backgroundColor: 'var(--f-clr-fg-100)',
+        padding: '.25em'
     }
 });
 
-export type AccordionRootSelectors = Selectors<'accordion' | 'v__default' | 'v__minimal' | 'divider'>;
+export type AccordionRootSelectors = Selectors<'accordion' | 'v__default' | 'v__isolated' | 'v__minimal' | 'divider'>;
 
 export default function Root({ children, cc = {}, multiple = false, variant = 'default', ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: AccordionRootSelectors;
         multiple?: boolean;
-        variant?: 'default' | 'minimal';
+        variant?: 'default' | 'isolated' | 'minimal';
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
@@ -70,13 +82,18 @@ export default function Root({ children, cc = {}, multiple = false, variant = 'd
             style[`v__${variant}`],
             props.className
         )}>
-        <AccordionContext value={{ open, toggle }}>
+        <AccordionContext value={{ variant, open, toggle }}>
             {arr.map((child, i) => {
 
                 return <Fragment key={i}>
-                    {child}
+                    {variant === 'isolated' ?
+                        <div className={style.item}>
+                            {child}
+                        </div> :
+                        child}
 
-                    {i < arr.length - 1 && <div className={style.divider} />}
+                    {i < arr.length - 1 &&
+                        <div className={style.divider} />}
                 </Fragment>
             })}
         </AccordionContext>
