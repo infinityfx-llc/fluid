@@ -144,8 +144,9 @@ export type SelectSelectors = Selectors<'field' | 'content' | 'placeholder' | 's
 type SelectProps<T> = {
     cc?: SelectSelectors;
     options: {
-        label: string;
+        label: React.ReactNode;
         value: FluidInputvalue;
+        key?: string;
         disabled?: boolean;
     }[];
     searchable?: boolean;
@@ -155,6 +156,7 @@ type SelectProps<T> = {
     defaultValue?: T;
     onChange?: (value: T) => void;
     contentSize?: FluidSize;
+    mobileContainer?: 'popover' | 'modal';
 } & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'onEnter' | 'left' | 'right' | 'shape'>;
 
 /**
@@ -182,6 +184,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
         contentSize,
         round,
         inputRef,
+        mobileContainer,
         ...props
     }: SelectProps<T>) {
     const style = combineClasses(styles, cc);
@@ -200,7 +203,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
             (state as any)[0]);
     }, [multiple, isMult]);
 
-    return <Combobox.Root ref={popover} stretch>
+    return <Combobox.Root ref={popover} stretch mobileContainer={mobileContainer}>
         <Combobox.Trigger disabled={props.disabled || readOnly}>
             <div
                 {...rest}
@@ -251,12 +254,12 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
         </Combobox.Trigger>
 
         <Combobox.Content size={contentSize} aria-multiselectable={multiple} searchable={searchable} emptyMessage={emptyMessage} round={round}>
-            {options.map(({ label, value, disabled }, i) => {
+            {options.map(({ label, value, key, disabled }) => {
                 const selected = isMult ? state.includes(value) : state === value;
 
                 return <Combobox.Option
-                    key={'' + value} // can't have duplicate values (desired behaviour?)
-                    value={label}
+                    key={'' + value}
+                    value={key || ('' + label)}
                     disabled={disabled}
                     aria-selected={selected}
                     onSelect={() => {

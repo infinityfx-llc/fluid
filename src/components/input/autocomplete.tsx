@@ -11,10 +11,11 @@ import { changeInputValue } from '../../core/utils';
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/autocomplete}
  */
-export default function Autocomplete({ completions, emptyMessage = 'No suggestions', value, defaultValue, onChange, contentSize, ...props }: {
+export default function Autocomplete({ completions, emptyMessage = 'No suggestions', value, defaultValue, onChange, contentSize, mobileContainer, ...props }: {
     completions: string[] | { label: string; value: string; }[];
     emptyMessage?: string;
     contentSize?: FluidSize;
+    mobileContainer?: 'popover' | 'modal';
 } & FieldProps) {
     const field = useRef<HTMLInputElement>(null);
     const popover = useRef<PopoverRootReference>(null);
@@ -27,9 +28,13 @@ export default function Autocomplete({ completions, emptyMessage = 'No suggestio
         if (focus.current) popover.current?.[completions.length ? 'open' : 'close']();
     }, [completions]);
 
-    return <Combobox.Root ref={popover} stretch onClose={() => {
-        if (focus.current < 2) focus.current = 0;
-    }}>
+    return <Combobox.Root
+        ref={popover}
+        stretch
+        mobileContainer={mobileContainer}
+        onClose={() => {
+            if (focus.current < 2) focus.current = 0;
+        }}>
         <Combobox.Trigger disabled>
             <Field
                 {...props}

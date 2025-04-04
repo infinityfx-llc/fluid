@@ -3,7 +3,10 @@
 import Halo from '../../feedback/halo';
 import { FluidInputvalue, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
-import { classes, combineClasses } from '../../../core/utils';
+import { classes, combineClasses, combineRefs } from '../../../core/utils';
+import { usePopover } from '../../layout/popover/root';
+import { ComboboxContext } from './root';
+import { useId, useRef } from 'react';
 
 const styles = createStyles('combobox.option', {
     '.option': {
@@ -46,16 +49,30 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
         onSelect?: (value: T) => void;
     } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onSelect'>) {
     const style = combineClasses(styles, cc);
+    const id = useId();
 
+    const { query, view, selection, getIndex } = usePopover<ComboboxContext>();
+    const index = getIndex(id);
+
+    if (!('' + value).toLowerCase().includes(query) ||
+        index < view.from || index > view.to) return null;
+
+    // get round prop from parent?
+    // fix autofocus
     return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
         <button
             {...props}
+            ref={combineRefs(el => {
+                selection.current.list[index] = el;
+            }, props.ref)}
             type="button"
             role="option"
             className={classes(
                 style.option,
-                round && style.round
+                round && style.round,
+                props.className
             )}
+            onFocus={() => selection.current.index = index}
             onClick={e => {
                 props.onClick?.(e);
 
