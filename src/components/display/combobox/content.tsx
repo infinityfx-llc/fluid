@@ -1,6 +1,6 @@
 'use client';
 
-import { Children, isValidElement, useLayoutEffect } from 'react';
+import { Children, isValidElement, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Popover from '../../layout/popover';
 import Scrollarea from '../../layout/scrollarea';
 import Field from '../../input/field';
@@ -11,6 +11,7 @@ import { createStyles } from '../../../core/style';
 import { usePopover } from '../../layout/popover/root';
 import { Icon } from '../../../core/icons';
 import { ComboboxContext } from './root';
+import { useDebounce } from '../../../hooks';
 
 const styles = createStyles('combobox.content', {
     '.container:not(.modal)': {
@@ -72,46 +73,75 @@ const styles = createStyles('combobox.content', {
 
 export type ComboboxContentSelectors = Selectors<'container' | 'modal' | 'content' | 'message'>;
 
-// some props move to Root.. might be weird (maybe move all of them?)
-export default function Content({ children, cc = {}, size = 'med', autoFocus = true, searchable, placeholder = 'Search..', emptyMessage = 'Nothing found', round, ...props }:
+// fix focus indexing
+// fix extra empty elements add end of list??
+export default function Content({
+    children,
+    cc = {},
+    round,
+    size = 'med',
+    autoFocus = true,
+    searchable,
+    placeholder = 'Search..',
+    emptyMessage = 'Nothing found',
+    virtualItemHeight = 0,
+    ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: ComboboxContentSelectors;
+        round?: boolean;
         size?: FluidSize;
         autoFocus?: boolean;
         searchable?: boolean;
         placeholder?: string;
         emptyMessage?: string;
-        round?: boolean;
+        virtualItemHeight?: number;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    const { opened, trigger, isModal, query, search, view, setView, selection } = usePopover<ComboboxContext>();
+    const itemCount = useRef(0);
+    const [query, setQuery] = useState('');
+    const search = useDebounce(value => {
+        setQuery(value);
+        updateView(0);
+    }, 200);
+    const [view, setView] = useState({ start: 0, end: Infinity });
+
+    const { opened, trigger, content, isModal, selection } = usePopover<ComboboxContext>();
+
+    function updateView(scrollPosition: number) {
+        if (!virtualItemHeight || !content.current) return setView({ start: 0, end: Infinity });
+
+        const inView = Math.ceil(content.current.offsetHeight / virtualItemHeight),
+            padding = Math.floor(inView / 2),
+            index = padding + Math.floor(scrollPosition / (virtualItemHeight * padding)) * padding,
+            start = Math.max(0, index - padding),
+            end = Math.min(itemCount.current - 1, start + inView + padding);
+
+        if (view.end !== end) setView({
+            start,
+            end
+        });
+    }
 
     useLayoutEffect(() => {
-        if (opened) {
-            selection.current.map.clear(); // optimize?
-
-            const numInView = Math.ceil((isModal ? window.innerHeight / 2 : 152) / h), // 152 == placeholder (calculate with em values??)
-                pad = Math.floor(numInView / 2);
-            setView({ from: 0, to: numInView + pad });
-        }
+        if (opened) updateView(0);
     }, [opened]);
 
-    // todo:
-    // just use let index here (way easier...)
-    // also check against view here, but still increment index
-    // also keep track of num of items in this loop, used for correct container height
-    const filtered = Children.map(children, (child: any) => {
-        if (isValidElement<any>(child) &&
-            'value' in child.props &&
-            !('' + child.props.value).toLowerCase().includes(query)) return null;
+    const filteredChildren = useMemo(() => {
+        itemCount.current = 0;
 
-        return child;
-    });
+        return Children.map(children, (child: any) => {
+            if (!isValidElement<any>(child)) return child;
+            if ('value' in child.props &&
+                !('' + child.props.value).toLowerCase().includes(query)) return null;
 
-    const h = 36, // placeholder (use itemHeight prop or something??)
-        length = Children.count(filtered); // doesnt work with filtering..
+            const index = itemCount.current++;
+            if (index < view.start || index > view.end) return null;
+
+            return child;
+        });
+    }, [children, view, query]);
 
     return <Popover.Content>
         <Animatable id="combobox-options-outer"
@@ -168,17 +198,11 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
                         ...cc
                     }} />}
 
-                <Scrollarea className={style.content} onScroll={e => { // doesnt get called when searching (manually reset scroll position when searching and height changes)
-                    const numInView = Math.ceil((isModal ? window.innerHeight / 2 : 152) / h), // 152 == placeholder
-                        pad = Math.floor(numInView / 2),
-                        index = pad + Math.floor(e.currentTarget.scrollTop / (h * pad)) * pad,
-                        from = Math.max(0, index - pad),
-                        to = Math.min(length - 1, from + numInView + pad);
-
-                    if (view.from !== from || view.to !== to) setView({ from, to });
-                }}>
-                    <div style={{ height: h * length }}>
-                        <div style={{ height: h * view.from }} />
+                <Scrollarea
+                    className={style.content}
+                    onScroll={e => updateView(e.currentTarget.scrollTop)}>
+                    <div style={virtualItemHeight ? { height: virtualItemHeight * itemCount.current } : undefined}>
+                        <div style={{ height: virtualItemHeight * view.start }} />
                         <Animatable
                             inherit
                             animate={{
@@ -188,10 +212,10 @@ export default function Content({ children, cc = {}, size = 'med', autoFocus = t
                             }}
                             staggerLimit={4}
                             stagger={.05}>
-                            {filtered}
+                            {filteredChildren}
                         </Animatable>
 
-                        {!length && <div className={style.message}>
+                        {!itemCount.current && <div className={style.message}>
                             {emptyMessage}
                         </div>}
                     </div>

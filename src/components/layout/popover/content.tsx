@@ -28,7 +28,7 @@ export default function Content({ children, ref, ...props }: React.HTMLAttribute
 
     if (!mounted) return null;
 
-    if (isModal) return <Modal ref={ref} {...props} id={id} show={opened} onClose={() => toggle(false)}>
+    if (isModal) return <Modal ref={combineRefs(content, ref)} {...props} id={id} show={opened} onClose={() => toggle(false)}>
         {children}
     </Modal>;
 
