@@ -1,42 +1,48 @@
 'use client';
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Popover from "../../layout/popover";
 import type { PopoverRoot } from "../../layout/popover/root";
 
 export type ComboboxContext = {
+    searchable: boolean;
     query: string;
-    search: (value: string) => void;
+    setQuery: (value: string) => void;
     view: {
-        from: number;
-        to: number;
+        start: number;
+        end: number;
     };
     setView: (view: {
-        from: number;
-        to: number;
+        start: number;
+        end: number;
     }) => void;
-    selection: React.RefObject<{ // rename??
+    focus: React.RefObject<{
         list: (HTMLElement | null)[];
-        map: Map<string, number>;
         index: number;
     }>;
-    getIndex: (id: string) => number;
 }
 
-export default function Root({ autoFocus, round, ...props }: {
+export default function Root({ autoFocus = true, searchable = false, ...props }: {
     autoFocus?: boolean;
-    round?: boolean;
+    searchable?: boolean;
 } & PopoverRoot) {
-    const selection = useRef({
+    const focus = useRef({
         list: [],
-        map: new Map<string, number>(),
-        index: autoFocus ? 0 : -1 // not correct when has search field..
+        index: autoFocus ? 0 : -1
     });
+
+    const [query, setQuery] = useState('');
+    const [view, setView] = useState({ start: 0, end: Infinity });
 
     return <Popover.Root
         {...props}
         data={{
-            selection
+            searchable,
+            query,
+            setQuery,
+            view,
+            setView,
+            focus
         }}>
         {props.children}
     </Popover.Root>;

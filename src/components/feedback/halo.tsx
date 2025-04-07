@@ -78,38 +78,17 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
     const clickTrigger = useTrigger();
     const translate = useLink('0% 0%');
 
-    // show or hide halo (for touch devices)
-    function toggleHalo(value: boolean) {
-        const h = halo.current;
-        if (!h) return;
-
-        if (value) {
-            clearTimeout(endTouch.current);
-
-            h.style.opacity = '0.25';
-        } else {
-            endTouch.current = setTimeout(() => h.style.opacity = '', 250);
-        }
-    }
-
     useEffect(() => {
         const focusEl = target?.current || container.current,
             ctrl = new AbortController(),
             signal = ctrl.signal;
-            
+
         if (!focusEl) return;
 
-        function focus(e: FocusEvent) {
-            if (!halo.current) return;
+        function focus(selector = ':focus-visible') {
+            if (!halo.current || !focusEl) return;
 
-            const visible = (e.target as HTMLElement).matches(':focus-visible');
-
-            if (e.type === 'focusin' && visible) {
-                halo.current.dataset.focused = 'true';
-            } else
-                if (e.type === 'focusout') {
-                    halo.current.dataset.focused = 'false';
-                }
+            halo.current.dataset.focused = '' + focusEl.matches(selector);
         }
 
         // trigger ripple animation at mouse position on click
@@ -127,10 +106,20 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
             clickTrigger();
         }, { signal });
 
-        focusEl.addEventListener('touchstart', () => toggleHalo(true), { signal });
-        focusEl.addEventListener('touchend', () => toggleHalo(false), { signal });
-        focusEl.addEventListener('focusin', focus, { signal });
-        focusEl.addEventListener('focusout', focus, { signal });
+        // show halo on touch devices
+        focusEl.addEventListener('touchstart', () => {
+            clearTimeout(endTouch.current);
+            if (halo.current) halo.current.style.opacity = '0.25';
+        }, { signal });
+        // hide halo on touch devices
+        focusEl.addEventListener('touchend', () => {
+            endTouch.current = setTimeout(() => {
+                if (halo.current) halo.current.style.opacity = '';
+            }, 250);
+        }, { signal });
+        focusEl.addEventListener('focusin', () => focus(), { signal });
+        focusEl.addEventListener('focusout', () => focus(), { signal });
+        focus(':focus');
 
         return () => ctrl.abort();
     }, []);

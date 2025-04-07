@@ -1,6 +1,6 @@
 'use client';
 
-import { Children, isValidElement, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { Children, cloneElement, isValidElement, useLayoutEffect, useMemo, useRef } from 'react';
 import Popover from '../../layout/popover';
 import Scrollarea from '../../layout/scrollarea';
 import Field from '../../input/field';
@@ -73,15 +73,11 @@ const styles = createStyles('combobox.content', {
 
 export type ComboboxContentSelectors = Selectors<'container' | 'modal' | 'content' | 'message'>;
 
-// fix focus indexing
-// fix extra empty elements add end of list??
 export default function Content({
     children,
     cc = {},
     round,
     size = 'med',
-    autoFocus = true,
-    searchable,
     placeholder = 'Search..',
     emptyMessage = 'Nothing found',
     virtualItemHeight = 0,
@@ -91,8 +87,6 @@ export default function Content({
         cc?: ComboboxContentSelectors;
         round?: boolean;
         size?: FluidSize;
-        autoFocus?: boolean;
-        searchable?: boolean;
         placeholder?: string;
         emptyMessage?: string;
         virtualItemHeight?: number;
@@ -100,14 +94,12 @@ export default function Content({
     const style = combineClasses(styles, cc);
 
     const itemCount = useRef(0);
-    const [query, setQuery] = useState('');
-    const search = useDebounce(value => {
-        setQuery(value);
-        updateView(0);
-    }, 200);
-    const [view, setView] = useState({ start: 0, end: Infinity });
+    const { opened, trigger, content, isModal, searchable, query, setQuery, view, setView, focus } = usePopover<ComboboxContext>();
 
-    const { opened, trigger, content, isModal, selection } = usePopover<ComboboxContext>();
+    const search = useDebounce(value => {
+        updateView(0);
+        setQuery(value);
+    }, 200);
 
     function updateView(scrollPosition: number) {
         if (!virtualItemHeight || !content.current) return setView({ start: 0, end: Infinity });
@@ -115,8 +107,8 @@ export default function Content({
         const inView = Math.ceil(content.current.offsetHeight / virtualItemHeight),
             padding = Math.floor(inView / 2),
             index = padding + Math.floor(scrollPosition / (virtualItemHeight * padding)) * padding,
-            start = Math.max(0, index - padding),
-            end = Math.min(itemCount.current - 1, start + inView + padding);
+            start = Math.max(0, index - inView),
+            end = Math.min(itemCount.current - 1, start + inView * 2);
 
         if (view.end !== end) setView({
             start,
@@ -128,18 +120,21 @@ export default function Content({
         if (opened) updateView(0);
     }, [opened]);
 
-    const filteredChildren = useMemo(() => {
+    const indexedChildren = useMemo(() => {
         itemCount.current = 0;
 
         return Children.map(children, (child: any) => {
             if (!isValidElement<any>(child)) return child;
-            if ('value' in child.props &&
-                !('' + child.props.value).toLowerCase().includes(query)) return null;
 
-            const index = itemCount.current++;
-            if (index < view.start || index > view.end) return null;
+            const listIndex = !('value' in child.props) ||
+                ('' + child.props.value).toLowerCase().includes(query) ?
+                itemCount.current++ :
+                itemCount.current;
 
-            return child;
+            return cloneElement(child, {
+                listIndex,
+                round
+            });
         });
     }, [children, view, query]);
 
@@ -165,33 +160,29 @@ export default function Content({
                 onKeyDown={e => {
                     props.onKeyDown?.(e);
 
-                    let { index, list } = selection.current,
-                        reverse = e.key === 'ArrowUp' || e.shiftKey,
-                        updatedIndex = reverse ?
+                    if (e.key !== 'Tab' && e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+
+                    const { index, list } = focus.current,
+                        updatedIndex = (e.key === 'ArrowUp' || e.shiftKey) ?
                             Math.max(index - 1, -1) :
-                            Math.min(index + 1, list.length - 1);
+                            Math.min(index + 1, list.length - 1),
+                        child = updatedIndex < 0 ?
+                            getFocusable(trigger.current, false) :
+                            list[focus.current.index = updatedIndex];
 
-                    if (e.key === 'Tab' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-                        let child = list[selection.current.index = updatedIndex];
-
-                        if (updatedIndex < 0) {
-                            child = getFocusable(trigger.current, false);
-                        }
-
-                        child ? child.focus() : selection.current.index = 0;
-                        if (child || e.key !== 'Tab') e.preventDefault();
-                    }
+                    child ? child.focus() : focus.current.index = 0;
+                    if (child || e.key !== 'Tab') e.preventDefault();
                 }}>
                 {searchable && <Field
                     round={round}
                     size={size}
                     variant="minimal"
-                    inputRef={(el: any) => selection.current.list[0] = el}
-                    autoFocus={autoFocus}
                     placeholder={placeholder}
-                    onFocus={() => selection.current.index = 0}
-                    onChange={e => search(e.target.value.toLowerCase())}
                     icon={<Icon type="search" />}
+                    inputRef={(el: any) => focus.current.list[0] = el}
+                    autoFocus={focus.current.index == 0}
+                    onFocus={() => focus.current.index = 0}
+                    onChange={e => search(e.target.value.toLowerCase())}
                     cc={{
                         field: style.field,
                         content: style.field__content,
@@ -201,7 +192,7 @@ export default function Content({
                 <Scrollarea
                     className={style.content}
                     onScroll={e => updateView(e.currentTarget.scrollTop)}>
-                    <div style={virtualItemHeight ? { height: virtualItemHeight * itemCount.current } : undefined}>
+                    <div style={virtualItemHeight ? { minHeight: virtualItemHeight * itemCount.current } : undefined}>
                         <div style={{ height: virtualItemHeight * view.start }} />
                         <Animatable
                             inherit
@@ -212,7 +203,7 @@ export default function Content({
                             }}
                             staggerLimit={4}
                             stagger={.05}>
-                            {filteredChildren}
+                            {indexedChildren}
                         </Animatable>
 
                         {!itemCount.current && <div className={style.message}>

@@ -11,11 +11,12 @@ import { changeInputValue } from '../../core/utils';
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/autocomplete}
  */
-export default function Autocomplete({ completions, emptyMessage = 'No suggestions', value, defaultValue, onChange, contentSize, mobileContainer, ...props }: {
+export default function Autocomplete({ completions, emptyMessage = 'No suggestions', value, defaultValue, onChange, contentSize, mobileContainer, virtualItemHeight, ...props }: {
     completions: string[] | { label: string; value: string; }[];
     emptyMessage?: string;
     contentSize?: FluidSize;
     mobileContainer?: 'popover' | 'modal';
+    virtualItemHeight?: number;
 } & FieldProps) {
     const field = useRef<HTMLInputElement>(null);
     const popover = useRef<PopoverRootReference>(null);
@@ -31,6 +32,7 @@ export default function Autocomplete({ completions, emptyMessage = 'No suggestio
     return <Combobox.Root
         ref={popover}
         stretch
+        autoFocus={false}
         mobileContainer={mobileContainer}
         onClose={() => {
             if (focus.current < 2) focus.current = 0;
@@ -59,7 +61,11 @@ export default function Autocomplete({ completions, emptyMessage = 'No suggestio
                 }} />
         </Combobox.Trigger>
 
-        <Combobox.Content size={contentSize} autoFocus={false} emptyMessage={emptyMessage} round={props.round}>
+        <Combobox.Content
+            size={contentSize}
+            round={props.round}
+            emptyMessage={emptyMessage}
+            virtualItemHeight={virtualItemHeight}>
             {completions.map(entry => {
                 const { label, value } = typeof entry === 'string' ? { label: entry, value: entry } : entry;
 

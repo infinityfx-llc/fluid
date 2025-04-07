@@ -157,6 +157,7 @@ type SelectProps<T> = {
     onChange?: (value: T) => void;
     contentSize?: FluidSize;
     mobileContainer?: 'popover' | 'modal';
+    virtualItemHeight?: number;
 } & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'onEnter' | 'left' | 'right' | 'shape'>;
 
 /**
@@ -185,6 +186,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
         round,
         inputRef,
         mobileContainer,
+        virtualItemHeight,
         ...props
     }: SelectProps<T>) {
     const style = combineClasses(styles, cc);
@@ -203,7 +205,11 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
             (state as any)[0]);
     }, [multiple, isMult]);
 
-    return <Combobox.Root ref={popover} stretch mobileContainer={mobileContainer}>
+    return <Combobox.Root
+        ref={popover}
+        stretch
+        searchable={searchable}
+        mobileContainer={mobileContainer}>
         <Combobox.Trigger disabled={props.disabled || readOnly}>
             <div
                 {...rest}
@@ -253,7 +259,12 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
             </div>
         </Combobox.Trigger>
 
-        <Combobox.Content size={contentSize} aria-multiselectable={multiple} searchable={searchable} emptyMessage={emptyMessage} round={round}>
+        <Combobox.Content
+            round={round}
+            size={contentSize}
+            aria-multiselectable={multiple}
+            emptyMessage={emptyMessage}
+            virtualItemHeight={virtualItemHeight}>
             {options.map(({ label, value, key, disabled }) => {
                 const selected = isMult ? state.includes(value) : state === value;
 
