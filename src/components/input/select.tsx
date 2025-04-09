@@ -208,7 +208,6 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
     return <Combobox.Root
         ref={popover}
         stretch
-        searchable={searchable}
         mobileContainer={mobileContainer}>
         <Combobox.Trigger disabled={props.disabled || readOnly}>
             <div
@@ -263,6 +262,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
             round={round}
             size={contentSize}
             aria-multiselectable={multiple}
+            searchable={searchable}
             emptyMessage={emptyMessage}
             virtualItemHeight={virtualItemHeight}>
             {options.map(({ label, value, key, disabled }) => {

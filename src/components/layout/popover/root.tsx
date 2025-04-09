@@ -4,7 +4,7 @@ import { createContext, use, useEffect, useId, useRef, useState, useImperativeHa
 import useFluid from "../../../hooks/use-fluid";
 import useMediaQuery from "../../../hooks/use-media-query";
 
-type PopoverContext<T extends {} = {}> = {
+type PopoverContext = {
     id: string;
     mounted: boolean;
     isModal: boolean;
@@ -13,11 +13,11 @@ type PopoverContext<T extends {} = {}> = {
     opened: boolean;
     toggle: (value: boolean) => void;
     children: React.RefObject<React.RefObject<HTMLElement | null>[]>;
-} & T;
+};
 
 export const PopoverContext = createContext<PopoverContext | null>(null);
 
-export function usePopover<P extends {} = {}, T extends boolean = false>(nullable?: T): T extends true ? PopoverContext<P> | null : PopoverContext<P> {
+export function usePopover<T extends boolean = false>(nullable?: T): T extends true ? PopoverContext | null : PopoverContext {
     const context = use(PopoverContext);
 
     if (!nullable && !context) throw new Error('Unable to access PopoverRoot context');
@@ -30,14 +30,13 @@ export type PopoverRootReference = {
     close: () => void;
 }
 
-export type PopoverRoot<T extends {} = {}> = {
+export type PopoverRoot = {
     children: React.ReactNode;
     ref?: React.Ref<PopoverRootReference>;
     position?: 'auto' | 'center';
     mobileContainer?: 'popover' | 'modal';
     stretch?: boolean;
     onClose?: () => void;
-    data?: T;
 };
 
 function getPosition(anchor: Element, element: Element, margin = '0px') {
@@ -64,7 +63,7 @@ function getPosition(anchor: Element, element: Element, margin = '0px') {
     };
 }
 
-export default function Root<T extends {}>({ children, ref, position = 'auto', mobileContainer = 'popover', stretch, onClose, data }: PopoverRoot<T>) {
+export default function Root({ children, ref, position = 'auto', mobileContainer = 'popover', stretch, onClose }: PopoverRoot) {
     const id = useId();
     const fluid = useFluid();
     const childrenRef = useRef<React.RefObject<HTMLElement>[]>([]);
@@ -122,7 +121,7 @@ export default function Root<T extends {}>({ children, ref, position = 'auto', m
         return () => window.removeEventListener('click', click);
     }, [isModal]);
 
-    return <PopoverContext value={{ id, mounted, isModal, trigger, content, opened, toggle, children: childrenRef, ...data }}>
+    return <PopoverContext value={{ id, mounted, isModal, trigger, content, opened, toggle, children: childrenRef }}>
         {children}
     </PopoverContext>;
 }

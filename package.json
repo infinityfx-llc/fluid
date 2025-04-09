@@ -59,13 +59,13 @@
 		"glob": "^11.0.1"
 	},
 	"peerDependencies": {
-		"@infinityfx/lively": "^4.0.1",
+		"@infinityfx/lively": "^4.0.2",
 		"react": ">=19.0.0",
 		"react-dom": ">=19.0.0",
 		"react-icons": ">=5.4.0"
 	},
 	"devDependencies": {
-		"@infinityfx/lively": "^4.0.1",
+		"@infinityfx/lively": "^4.0.2",
 		"@rollup/plugin-commonjs": "^26.0.1",
 		"@rollup/plugin-node-resolve": "^15.2.3",
 		"@rollup/plugin-terser": "^0.4.4",
