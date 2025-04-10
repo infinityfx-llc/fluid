@@ -10,7 +10,7 @@ import { createStyles } from "../../core/style";
 
 const styles = createStyles('tabs', {
     '.v__default': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-bg-200)',
         borderRadius: 'var(--f-radius-sml)'
     },
 

@@ -25,7 +25,7 @@ const styles = createStyles('toggle', {
     '.toggle': {
         position: 'relative',
         display: 'block',
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-bg-200)',
         color: 'var(--f-clr-text-100)',
         borderRadius: 'var(--f-radius-sml)',
         transition: 'background-color .25s, color .25s'
@@ -56,7 +56,7 @@ const styles = createStyles('toggle', {
     },
 
     '.v__neutral': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-bg-200)',
         border: 'solid 1px var(--f-clr-fg-200)'
     },
 
@@ -86,7 +86,7 @@ const styles = createStyles('toggle', {
     },
 
     '.v__neutral[data-checked="true"]': {
-        backgroundColor: 'var(--f-clr-fg-200)'
+        backgroundColor: 'var(--f-clr-fg-100)'
     },
 
     '.v__minimal[data-checked="true"]': {

@@ -15,7 +15,7 @@ import { Icon } from "../../core/icons";
 
 const styles = createStyles('table', {
     '.table': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-bg-200)',
         borderRadius: 'var(--f-radius-sml)',
         border: 'solid 1px var(--f-clr-fg-200)',
         display: 'flex'
@@ -58,7 +58,7 @@ const styles = createStyles('table', {
     '.header': {
         fontSize: '.9em',
         fontWeight: 700,
-        background: 'var(--f-clr-fg-200)'
+        background: 'var(--f-clr-fg-100)'
     },
 
     '.label': {

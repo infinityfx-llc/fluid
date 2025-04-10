@@ -27,7 +27,7 @@ const styles = createStyles('code', {
 
     '.code': {
         display: 'flex',
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-bg-200)',
         flexGrow: 1,
         paddingInline: '1em'
     },

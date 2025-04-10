@@ -27,7 +27,7 @@ const styles = createStyles('accordion.root', {
     },
 
     '.v__default': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-bg-200)',
         borderRadius: 'var(--f-radius-med)',
         padding: '.4em'
     },
@@ -44,7 +44,7 @@ const styles = createStyles('accordion.root', {
 
     '.item': {
         borderRadius: 'calc(var(--f-radius-sml) + .25em)',
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-bg-200)',
         padding: '.25em'
     }
 });

@@ -100,20 +100,20 @@ export const DEFAULT_THEME = {
             primary: ['#22e39f', '#45e6ad', '#60f0bd', '#8cf5d0', '#baf7e2', '#dcfcf1'],
             accent: ['#1dddf2'],
             grey: ['#e6e6e6', '#cccccc', '#b3b3b3', '#999999', '#808080', '#666666', '#4d4d4d', '#333333', '#191919'],
-            heading: ['#000'],
-            text: ['#000', '#fff'],
-            bg: ['#f5fafa'],
-            fg: ['#fff', '#e6f0f0'],
+            heading: ['#000000'],
+            text: ['#000000', '#ffffff'],
+            bg: ['#f7f6f5', '#ffffff'],
+            fg: ['#f2edeb', '#ede6e4'],
             error: ['#ff1f1f', '#ff5454', '#ff8c8c', '#ffbdbd']
         },
         dark: {
             primary: ['#1dddf2', '#1ac4d6', '#15a1b0', '#0e838f', '#064f57', '#043136'],
             accent: ['#22e39f'],
             grey: ['#191919', '#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#b3b3b3', '#cccccc', '#e6e6e6'],
-            heading: ['fff'],
-            text: ['#fff', '#000'],
-            bg: ['#000'],
-            fg: ['#161717', '#292b2b'],
+            heading: ['#ffffff'],
+            text: ['#ffffff', '#000000'],
+            bg: ['#000000', '#171616'],
+            fg: ['#212020', '#2e2c2c'],
             error: ['#ff1f1f', '#b32727', '#822f2f', '#632c2c']
         }
     },

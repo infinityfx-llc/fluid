@@ -52,7 +52,7 @@ const styles = createStyles('button', {
     },
 
     '.v__neutral': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-bg-200)',
         border: 'solid 1px var(--f-clr-fg-200)'
     },
 

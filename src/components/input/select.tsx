@@ -13,7 +13,7 @@ import { Icon } from '../../core/icons';
 
 const styles = createStyles('select', {
     '.field': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-bg-200)',
         borderRadius: 'var(--f-radius-sml)',
         color: 'var(--f-clr-grey-200)',
         transition: 'background-color .2s, border-color .2s, color .2s, outline-color .2s',
@@ -28,7 +28,7 @@ const styles = createStyles('select', {
     },
 
     '.v__minimal': {
-        backgroundColor: 'var(--f-clr-fg-100)'
+        backgroundColor: 'var(--f-clr-bg-200)'
     },
 
     '.v__default:focus-within': {
@@ -38,7 +38,7 @@ const styles = createStyles('select', {
     },
 
     '.v__minimal:focus-within': {
-        backgroundColor: 'var(--f-clr-fg-200)'
+        backgroundColor: 'var(--f-clr-fg-100)'
     },
 
     '.field[data-error="true"]': {
@@ -122,7 +122,7 @@ const styles = createStyles('select', {
     },
 
     '.field .badge': {
-        backgroundColor: 'var(--f-clr-fg-200)'
+        backgroundColor: 'var(--f-clr-fg-100)'
     },
 
     '.field[data-error="true"] .badge': {

@@ -37,7 +37,7 @@ const styles = createStyles('tooltip', {
         left: 0,
         top: 0,
         zIndex: 999,
-        backgroundColor: 'var(--f-clr-fg-200)',
+        backgroundColor: 'var(--f-clr-fg-100)',
         color: 'var(--f-clr-text-100)',
         fontSize: '.8rem',
         fontWeight: 600,

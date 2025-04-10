@@ -14,7 +14,7 @@ import { useDebounce } from '../../../hooks';
 
 const styles = createStyles('combobox.content', {
     '.container:not(.modal)': {
-        background: 'var(--f-clr-fg-100)',
+        background: 'var(--f-clr-bg-200)',
         border: 'solid 1px var(--f-clr-fg-200)',
         borderRadius: 'calc(.25em + var(--f-radius-sml))',
         boxShadow: 'var(--f-shadow-med)',

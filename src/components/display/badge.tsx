@@ -25,7 +25,7 @@ const styles = createStyles('badge', {
     },
 
     '.v__light': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-bg-200)',
         color: 'var(--f-clr-primary-100)'
     },
 
@@ -34,13 +34,13 @@ const styles = createStyles('badge', {
     },
 
     '.v__neutral': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-bg-200)',
         border: 'solid 1px var(--f-clr-fg-200)',
         color: 'var(--f-clr-text-100)'
     },
 
     '.v__neutral:hover': {
-        backgroundColor: 'var(--f-clr-fg-200)'
+        backgroundColor: 'var(--f-clr-fg-100)'
     },
 
     '.s__xsm': {

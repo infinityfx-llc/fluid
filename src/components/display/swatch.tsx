@@ -10,7 +10,7 @@ const styles = createStyles('swatch', {
         border: 'solid 1px var(--f-clr-fg-200)',
         borderRadius: 'var(--f-radius-sml)',
         overflow: 'hidden',
-        background: 'linear-gradient(45deg, var(--f-clr-grey-100) 25%, transparent 25%, transparent 75%, var(--f-clr-grey-100) 75%, var(--f-clr-grey-100) 100%), linear-gradient(45deg, var(--f-clr-grey-100) 25%, var(--f-clr-bg-100) 25%, var(--f-clr-bg-100) 75%, var(--f-clr-grey-100) 75%, var(--f-clr-grey-100) 100%)',
+        background: 'linear-gradient(45deg, var(--f-clr-grey-100) 25%, transparent 25%, transparent 75%, var(--f-clr-grey-100) 75%, var(--f-clr-grey-100) 100%), linear-gradient(45deg, var(--f-clr-grey-100) 25%, var(--f-clr-bg-200) 25%, var(--f-clr-bg-200) 75%, var(--f-clr-grey-100) 75%, var(--f-clr-grey-100) 100%)',
         backgroundPosition: '0 0, 1em 1em',
         backgroundSize: '2em 2em',
         backgroundRepeat: 'repeat',

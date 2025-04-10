@@ -20,7 +20,7 @@ const styles = createStyles('frame', {
     },
 
     '.bg__dark': {
-        background: 'var(--f-clr-bg-100)'
+        background: 'var(--f-clr-bg-200)'
     },
 
     '.r__xsm': {

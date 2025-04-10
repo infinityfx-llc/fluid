@@ -115,7 +115,7 @@ export default function User({ children, cc = {}, name, status, indicator = fals
             collapsed && style.collapsed,
             props.className
         )}>
-            <Indicator outline="var(--f-clr-bg-100)" content={indicator}>
+            <Indicator outline="var(--f-clr-bg-200)" content={indicator}>
                 <div className={style.avatar}>
                     <div className={style.frame}>
                         {children ? children : name.slice(0, 2)}

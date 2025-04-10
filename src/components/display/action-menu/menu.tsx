@@ -9,7 +9,7 @@ import { createStyles } from '../../../core/style';
 const styles = createStyles('action-menu.menu', {
     '.menu': {
         padding: '.25em',
-        background: 'var(--f-clr-fg-100)',
+        background: 'var(--f-clr-bg-200)',
         border: 'solid 1px var(--f-clr-fg-200)',
         borderRadius: 'calc(.25em + var(--f-radius-sml))',
         boxShadow: 'var(--f-shadow-med)',

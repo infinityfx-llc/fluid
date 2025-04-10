@@ -54,7 +54,7 @@ const styles = createStyles('chip', {
     '.chip': {
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-bg-200)',
         borderRadius: 'inherit',
         color: 'var(--f-clr-text-100)',
         fontWeight: 600,
@@ -96,16 +96,17 @@ const styles = createStyles('chip', {
     },
 
     '.input:disabled + .chip .checkmark': {
-        backgroundColor: 'var(--f-clr-grey-200)'
+        backgroundColor: 'var(--f-clr-grey-100)'
     },
 
     '.input:checked:disabled + .chip': {
+        backgroundColor: 'var(--f-clr-grey-200)',
         color: 'var(--f-clr-grey-500)'
     },
 
     '.input:checked:disabled + .chip .checkmark': {
-        backgroundColor: 'var(--f-clr-grey-500)',
-        stroke: 'var(--f-clr-grey-300)'
+        backgroundColor: 'var(--f-clr-grey-300)',
+        stroke: 'var(--f-clr-grey-500)'
     },
 
     '.input:enabled:focus-visible + .chip': {

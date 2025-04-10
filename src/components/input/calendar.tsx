@@ -25,7 +25,7 @@ function offsetDate(date: Date, days: number) {
 
 const styles = createStyles('calendar', {
     '.calendar': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-bg-200)',
         padding: '.6em',
         borderRadius: 'var(--f-radius-med)'
     },
@@ -65,7 +65,7 @@ const styles = createStyles('calendar', {
     },
 
     '.calendar .year:focus-within': {
-        backgroundColor: 'var(--f-clr-fg-200)'
+        backgroundColor: 'var(--f-clr-fg-100)'
     },
 
     '.calendar .year__content': {

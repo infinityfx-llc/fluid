@@ -14,7 +14,7 @@ const styles = createStyles('segmented', {
 
     '.v__default, .v__neutral': {
         borderRadius: 'calc(var(--f-radius-sml) + .3em)',
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-bg-200)',
         border: 'solid 1px var(--f-clr-fg-200)',
         padding: '.3em'
     },
@@ -92,7 +92,7 @@ const styles = createStyles('segmented', {
     },
 
     '.v__neutral .selection': {
-        backgroundColor: 'var(--f-clr-fg-200)'
+        backgroundColor: 'var(--f-clr-fg-100)'
     },
 
     '.v__minimal .selection': {

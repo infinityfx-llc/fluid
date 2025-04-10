@@ -28,7 +28,7 @@ const styles = createStyles('accordion.item', {
     },
 
     '.v__minimal[aria-expanded="true"]': {
-        backgroundColor: 'var(--f-clr-fg-100)'
+        backgroundColor: 'var(--f-clr-bg-200)'
     },
 
     '.button:enabled': {
@@ -40,7 +40,7 @@ const styles = createStyles('accordion.item', {
     },
 
     '.v__minimal:disabled[aria-expanded="true"]': {
-        backgroundColor: 'var(--f-clr-fg-200)'
+        backgroundColor: 'var(--f-clr-fg-100)'
     },
 
     '.content': {

@@ -53,7 +53,7 @@ const styles = createStyles('slider', {
         position: 'relative',
         height: '.4em',
         borderRadius: '999px',
-        backgroundColor: 'var(--f-clr-fg-200)',
+        backgroundColor: 'var(--f-clr-fg-100)',
         overflow: 'hidden',
         touchAction: 'none',
         flexGrow: 1
