@@ -11,7 +11,7 @@ const styles = createStyles('button', {
         outline: 'none',
         borderRadius: 'var(--f-radius-sml)',
         padding: '.8em',
-        backgroundColor: 'var(--f-clr-primary-100)',
+        backgroundColor: 'var(--color, var(--f-clr-primary-100))',
         color: 'var(--f-clr-text-100)',
         fontWeight: 600,
         display: 'flex',
@@ -48,7 +48,7 @@ const styles = createStyles('button', {
     },
 
     '.v__light': {
-        backgroundColor: 'var(--f-clr-primary-500)'
+        backgroundColor: 'var(--color, var(--f-clr-primary-500))'
     },
 
     '.v__neutral': {
@@ -62,16 +62,13 @@ const styles = createStyles('button', {
     },
 
     '.v__minimal': {
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
+        color: 'var(--color, var(--f-clr-text-100))'
     },
 
     '.button:enabled:hover': {
         cursor: 'pointer'
     },
-
-    // '.button:enabled:active': {
-    //     translate: '0px 1px'
-    // },
 
     '.content': {
         display: 'flex',
@@ -96,7 +93,7 @@ export type ButtonSelectors = Selectors<'button' | 'content' | 'loader' | 'round
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/button}
  */
-export default function Button({ children, cc = {}, round = false, compact = false, size = 'med', variant = 'default', loading = false, ...props }:
+export default function Button({ children, cc = {}, round = false, compact = false, size = 'med', variant = 'default', color, loading = false, ...props }:
     {
         ref?: React.Ref<HTMLButtonElement>;
         cc?: ButtonSelectors;
@@ -120,6 +117,10 @@ export default function Button({ children, cc = {}, round = false, compact = fal
                 style[`v__${variant}`],
                 props.className
             )}
+            style={{
+                '--color': color,
+                ...props.style
+            } as any}
             data-loading={loading}>
             <span className={style.content}>{children}</span>
 

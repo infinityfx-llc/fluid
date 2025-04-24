@@ -11,7 +11,7 @@ import { Icon } from "../../core/icons";
 const styles = createStyles('code', {
     '.wrapper': {
         fontSize: 'var(--f-font-size-sml)',
-        borderRadius: 'var(--f-radius-sml)',
+        borderRadius: 'var(--f-radius-med)',
         overflow: 'hidden',
         position: 'relative',
         display: 'flex',
@@ -25,11 +25,15 @@ const styles = createStyles('code', {
         fontWeight: 500
     },
 
+    '.body': {
+        backgroundColor: 'var(--f-clr-bg-200)',
+        flexGrow: 1
+    },
+
     '.code': {
         display: 'flex',
-        backgroundColor: 'var(--f-clr-fg-100)',
-        flexGrow: 1,
-        paddingInline: '1em'
+        paddingInline: '1em',
+        minHeight: '100%'
     },
 
     '.numbers': {
@@ -74,7 +78,7 @@ const styles = createStyles('code', {
     }
 });
 
-export type CodeSelectors = Selectors<'wrapper' | 'header' | 'code' | 'numbers' | 'tab' | 'content'>;
+export type CodeSelectors = Selectors<'wrapper' | 'header' | 'body' | 'code' | 'numbers' | 'tab' | 'content'>;
 
 /**
  * Displays formatted code.
@@ -97,22 +101,24 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
         {title && <div className={style.header}>
             {title}
         </div>}
-        <code className={style.code}>
-            {lineNumbers && <div className={style.numbers}>
-                {children.split(/\n/).map((_, i) => <Fragment key={i}>
-                    {i + 1} <br />
-                </Fragment>)}
-            </div>}
-            <Scrollarea horizontal behavior="shift">
-                <pre
-                    id={id}
-                    className={style.content}
-                    data-numbered={lineNumbers}
-                    dangerouslySetInnerHTML={dangerouslyInject ? { __html: children } : undefined}>
-                    {dangerouslyInject ? undefined : children}
-                </pre>
-            </Scrollarea>
-        </code>
+        <Scrollarea className={style.body}>
+            <code className={style.code}>
+                {lineNumbers && <div className={style.numbers}>
+                    {children.split(/\n/).map((_, i) => <Fragment key={i}>
+                        {i + 1} <br />
+                    </Fragment>)}
+                </div>}
+                <Scrollarea horizontal behavior="shift">
+                    <pre
+                        id={id}
+                        className={style.content}
+                        data-numbered={lineNumbers}
+                        dangerouslySetInnerHTML={dangerouslyInject ? { __html: children } : undefined}>
+                        {dangerouslyInject ? undefined : children}
+                    </pre>
+                </Scrollarea>
+            </code>
+        </Scrollarea>
 
         <div className={style.button__align}>
             <Toggle
