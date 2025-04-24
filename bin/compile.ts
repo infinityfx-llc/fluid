@@ -79,7 +79,7 @@ export async function compileComponents(io: IOHelper, entries: {
                     const parent = await io.module(path);
 
                     for (const subName in parent) {
-                        await compileFile(io, `${name}.${subName}`, path);
+                        await compileFile(io, `${name}.${subName}`, path.replace(/index\.js$/, `${subName.toLowerCase()}.js`));
                     }
                 } else {
                     await compileFile(io, name, path, name === inject);
