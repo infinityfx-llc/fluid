@@ -112,7 +112,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
             if (halo.current) halo.current.style.opacity = '0.25';
         }, { signal });
         // hide halo on touch devices
-        focusEl.addEventListener('touchend', () => {
+        window.addEventListener('touchend', () => {
             endTouch.current = setTimeout(() => {
                 if (halo.current) halo.current.style.opacity = '';
             }, 250);

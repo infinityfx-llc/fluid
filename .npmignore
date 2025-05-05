@@ -1,6 +1,6 @@
 node_modules/
-src/
-bin/
+/src/
+/bin/
 compiled/
 
 rollup.config.js
