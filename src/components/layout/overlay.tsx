@@ -40,7 +40,8 @@ const styles = createStyles('overlay', {
     '.tint': {
         position: 'absolute',
         inset: 0,
-        backgroundColor: 'rgb(0, 0, 0, .35)'
+        backgroundColor: 'rgb(0, 0, 0, .35)',
+        backdropFilter: 'blur(6px)'
     },
 
     '.overlay > *:not(:first-child)': {
