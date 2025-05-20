@@ -1,6 +1,6 @@
 {
 	"name": "@infinityfx/fluid",
-	"version": "1.1.11",
+	"version": "1.1.12",
 	"type": "module",
 	"description": "React UI library, using zero-runtime CSS-in-JS.",
 	"main": "dist/index.js",

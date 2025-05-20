@@ -11,6 +11,7 @@ import { createStyles } from '../../../core/style';
 import { usePopover } from '../../layout/popover/root';
 import { Icon } from '../../../core/icons';
 import { useDebounce } from '../../../hooks';
+import Option from './option';
 
 const styles = createStyles('combobox.content', {
     '.container:not(.modal)': {
@@ -132,7 +133,7 @@ export default function Content({
         itemCount.current = 0;
 
         return Children.map(children, (child: any) => {
-            if (!isValidElement<any>(child)) return child;
+            if (!isValidElement<any>(child) || child.type !== Option) return child;
 
             const value = ('value' in child.props && ('' + child.props.value).toLowerCase()) || '';
             if (!value.includes(query)) return null;
