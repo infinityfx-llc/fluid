@@ -43,7 +43,6 @@ const styles = createStyles('combobox.content', {
     },
 
     '.content': {
-        padding: '.25em',
         maxHeight: '9.5em'
     },
 
@@ -207,10 +206,12 @@ export default function Content({
                         ...cc
                     }} />}
 
-                <Scrollarea
-                    className={style.content}
-                    onScroll={e => updateView(e.currentTarget.scrollTop)}>
-                    <div style={virtualItemHeight ? { minHeight: virtualItemHeight * itemCount.current } : undefined}>
+                <Scrollarea className={style.content} onScroll={e => updateView(e.currentTarget.scrollTop)}>
+                    <div
+                        style={{
+                            padding: '.25em',
+                            minHeight: virtualItemHeight ? virtualItemHeight * itemCount.current : undefined
+                        }}>
                         <div style={{ height: virtualItemHeight * view.start }} />
                         <Animatable id="combobox-options-inner"
                             inherit

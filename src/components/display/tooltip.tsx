@@ -142,7 +142,7 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
         window.addEventListener('touchstart', (e: TouchEvent) => {
             if (e.target === el || el.contains(e.target as HTMLElement)) { // Needs more testing
                 touchOnly.current = true;
-                toggle(true, delay + 0.25);
+                toggle(true, delay + .05);
             } else {
                 toggle(false);
             }
