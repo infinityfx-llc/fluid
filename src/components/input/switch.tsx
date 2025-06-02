@@ -183,6 +183,9 @@ export default function Switch({ cc = {}, error, size = 'med', color = 'var(--f-
 
             <Animatable
                 order={-1}
+                initial={{
+                    translate: state ? '100% 0%' : '0% 0%'
+                }}
                 animate={{
                     translate: ['0% 0%', '100% 0%'],
                     duration: .35
@@ -197,6 +200,7 @@ export default function Switch({ cc = {}, error, size = 'med', color = 'var(--f-
                             inherit
                             order={-1}
                             deform={false}
+                            initial={{}}
                             animate={{
                                 scale: [1, '1.6 1', 1],
                                 duration: .35

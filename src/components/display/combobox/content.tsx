@@ -133,7 +133,7 @@ export default function Content({
         itemCount.current = 0;
 
         return Children.map(children, (child: any) => {
-            if (!isValidElement<any>(child) || child.type !== Option) return child;
+            if (!isValidElement<any>(child) || !('value' in child.props)) return child;
 
             const value = ('value' in child.props && ('' + child.props.value).toLowerCase()) || '';
             if (!value.includes(query)) return null;
@@ -200,6 +200,7 @@ export default function Content({
                     inputRef={(el: any) => focus.current.list[0] = el}
                     autoFocus={focus.current.index == 0}
                     onFocus={() => focus.current.index = 0}
+                    defaultValue={query}
                     onChange={e => search(e.target.value.toLowerCase())}
                     cc={{
                         field: style.field,
