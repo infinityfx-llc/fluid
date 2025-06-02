@@ -8,7 +8,7 @@ import { createStyles } from "../../core/style";
 import Slider from "./slider";
 import Field from "./field";
 import NumberField from "./number-field";
-import Combine from "../layout/combine";
+import Group from "../layout/group";
 
 // maybe sizes?
 
@@ -267,7 +267,7 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
                         }}
                         onBlur={() => setPartialHex(null)} />
 
-                    <Combine className={style.rgb}>
+                    <Group className={style.rgb}>
                         {rgb.map((val, i) => <NumberField
                             key={i}
                             cc={cc}
@@ -284,7 +284,7 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
 
                                 update(updated, true);
                             }} />)}
-                    </Combine>
+                    </Group>
                 </div>
             </div>
         </div>
