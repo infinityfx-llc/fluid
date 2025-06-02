@@ -79,7 +79,7 @@ export type FluidComponents = {
     'sidebar.toggle'?: FluidSelectorStyles<import('./components/layout/sidebar/toggle').SidebarToggleSelectors>;
     'sidebar.user'?: FluidSelectorStyles<import('./components/layout/sidebar/user').SidebarUserSelectors>;
     collapsible?: FluidSelectorStyles<import('./components/layout/collapsible').CollapsibleSelectors>;
-    combine?: FluidSelectorStyles<import('./components/layout/combine').CombineSelectors>;
+    group?: FluidSelectorStyles<import('./components/layout/group').GroupSelectors>;
     cull?: FluidStyles;
     divider?: FluidSelectorStyles<import('./components/layout/divider').DividerSelectors>;
     drawer?: FluidSelectorStyles<import('./components/layout/drawer').DrawerSelectors>;

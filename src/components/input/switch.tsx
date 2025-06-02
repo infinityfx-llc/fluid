@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 import Halo from '../feedback/halo';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { createStyles } from '../../core/style';
+import { Animatable } from '@infinityfx/lively';
 
 const styles = createStyles('switch', {
     '.wrapper': {
@@ -50,7 +51,7 @@ const styles = createStyles('switch', {
         aspectRatio: 2,
         backgroundColor: 'var(--f-clr-fg-200)',
         borderRadius: 'var(--f-radius-sml)',
-        transition: 'background-color .25s'
+        transition: 'background-color .35s'
     },
 
     '.icons': {
@@ -81,7 +82,6 @@ const styles = createStyles('switch', {
         borderRadius: 'calc(var(--f-radius-sml) - 1px)',
         height: '100%',
         aspectRatio: 1,
-        transition: 'translate .25s',
         zIndex: 1,
     },
 
@@ -91,10 +91,6 @@ const styles = createStyles('switch', {
         borderRadius: 'inherit',
         backgroundColor: 'white',
         boxShadow: 'var(--f-shadow-sml)'
-    },
-
-    '.input:checked + .switch .handle__wrapper': {
-        translate: '100% 0%'
     },
 
     '.wrapper.round .switch': {
@@ -185,11 +181,31 @@ export default function Switch({ cc = {}, error, size = 'med', color = 'var(--f-
                 </div>
             </div>
 
-            <Halo target={inputRef} hover={false} cc={{ halo: style.halo, ...cc }}>
-                <div className={style.handle__wrapper}>
-                    <div className={style.handle} />
-                </div>
-            </Halo>
+            <Animatable
+                order={-1}
+                animate={{
+                    translate: ['0% 0%', '100% 0%'],
+                    duration: .35
+                }}
+                triggers={[
+                    { on: state, immediate: true },
+                    { on: !state, reverse: true, immediate: true }
+                ]}>
+                <Halo target={inputRef} hover={false} cc={{ halo: style.halo, ...cc }}>
+                    <div className={style.handle__wrapper}>
+                        <Animatable
+                            inherit
+                            order={-1}
+                            deform={false}
+                            animate={{
+                                scale: [1, '1.6 1', 1],
+                                duration: .35
+                            }}>
+                            <div className={style.handle} />
+                        </Animatable>
+                    </div>
+                </Halo>
+            </Animatable>
         </div>
     </div>;
 }
