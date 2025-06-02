@@ -26,7 +26,7 @@ const styles = createStyles('code', {
     },
 
     '.body': {
-        backgroundColor: 'var(--f-clr-bg-200)',
+        backgroundColor: 'var(--f-clr-fg-100)',
         flexGrow: 1
     },
 
