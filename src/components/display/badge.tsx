@@ -16,31 +16,19 @@ const styles = createStyles('badge', {
     },
 
     '.v__default': {
-        backgroundColor: 'var(--f-clr-primary-300)',
+        backgroundColor: 'var(--color, var(--f-clr-primary-300))',
         color: 'var(--f-clr-text-100)'
-    },
-
-    '.v__default:hover': {
-        backgroundColor: 'var(--f-clr-primary-400)'
     },
 
     '.v__light': {
         backgroundColor: 'var(--f-clr-fg-100)',
-        color: 'var(--f-clr-primary-100)'
-    },
-
-    '.v__light:hover': {
-        backgroundColor: 'var(--f-clr-primary-600)'
+        color: 'var(--color, var(--f-clr-primary-100))'
     },
 
     '.v__neutral': {
         backgroundColor: 'var(--f-clr-fg-100)',
         border: 'solid 1px var(--f-clr-fg-200)',
         color: 'var(--f-clr-text-100)'
-    },
-
-    '.v__neutral:hover': {
-        backgroundColor: 'var(--f-clr-fg-200)'
     },
 
     '.s__xsm': {
@@ -97,10 +85,9 @@ export default function Badge({ children, cc = {}, variant = 'default', round = 
             props.className
         )}
         style={{
-            backgroundColor: variant === 'default' ? color : undefined,
-            color: variant === 'light' ? color : undefined,
+            '--color': color,
             ...props.style
-        }}>
+        } as any}>
         {children}
 
         {onClose ? <div className={styles.close} onClick={onClose}>

@@ -18,7 +18,6 @@ const styles = createStyles('combobox.option', {
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--f-spacing-xsm)',
-        justifyContent: 'space-between',
         lineHeight: 1.25
     },
 

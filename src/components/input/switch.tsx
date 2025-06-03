@@ -106,7 +106,7 @@ const styles = createStyles('switch', {
     },
 
     '.input:checked:enabled + .switch': {
-        backgroundColor: 'var(--color)'
+        backgroundColor: 'var(--color, var(--f-clr-primary-300))'
     },
 
     '.wrapper[data-error="true"] .input:checked:enabled + .switch': {
@@ -134,7 +134,7 @@ export type SwitchSelectors = Selectors<'wrapper' | 'input' | 'switch' | 'icons'
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/switch}
  */
-export default function Switch({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', round = true, iconOff, iconOn, checked, defaultChecked, ...props }:
+export default function Switch({ cc = {}, error, size = 'med', color, round = true, iconOff, iconOn, checked, defaultChecked, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: SwitchSelectors;

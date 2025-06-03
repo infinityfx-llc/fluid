@@ -83,8 +83,8 @@ const styles = createStyles('checkbox', {
     },
 
     '.input:checked:enabled + .checkbox': {
-        backgroundColor: 'var(--color)',
-        borderColor: 'var(--color)'
+        backgroundColor: 'var(--color, var(--f-clr-primary-300))',
+        borderColor: 'var(--color, var(--f-clr-primary-300))'
     },
 
     '.wrapper[data-error="true"] .input:checked:enabled + .checkbox': {
@@ -104,7 +104,7 @@ export type CheckboxSelectors = Selectors<'wrapper' | 'checkbox' | 'checkmark' |
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/checkbox}
  */
-export default function Checkbox({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', intermediate, checked, defaultChecked, ...props }:
+export default function Checkbox({ cc = {}, error, size = 'med', color, intermediate, checked, defaultChecked, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: CheckboxSelectors;

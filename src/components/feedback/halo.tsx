@@ -43,8 +43,8 @@ const styles = createStyles('halo', {
     },
 
     '.ripple': {
-        minWidth: '241%',
-        minHeight: '241%',
+        minWidth: '280%',
+        minHeight: '280%',
         aspectRatio: 1,
         backgroundColor: 'var(--f-clr-grey-500)',
         borderRadius: '9999px',
@@ -75,7 +75,8 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
     const container = useRef<HTMLElement>(null);
     const halo = useRef<HTMLDivElement>(null);
 
-    const clickTrigger = useTrigger();
+    const ripple = useTrigger();
+    const opacity = useLink(1);
     const translate = useLink('0% 0%');
 
     useEffect(() => {
@@ -91,19 +92,25 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
             halo.current.dataset.focused = '' + focusEl.matches(selector);
         }
 
+        focusEl.addEventListener('mousedown', () => {
+            opacity.set(.5, {
+                duration: .1
+            });
+        }, { signal });
+
         // trigger ripple animation at mouse position on click
-        focusEl.addEventListener('click', (e: MouseEvent) => {
-            if (halo.current) {
-                const { x, y, width, height } = halo.current.getBoundingClientRect();
+        focusEl.addEventListener('click', e => {
+            opacity.set(1);
+            ripple();
 
-                const max = Math.max(width, height) * 2.41;
-                const dx = ((e.clientX - x) / width - .5) * (width / max);
-                const dy = ((e.clientY - y) / height - .5) * (height / max);
+            if (!halo.current) return;
+            const { x, y, width, height } = halo.current.getBoundingClientRect();
 
-                translate.set(`${e.clientX ? dx * 100 : 0}% ${e.clientY ? dy * 100 : 0}px`);
-            }
+            const max = Math.max(width, height) * 2.8;
+            const dx = ((e.clientX - x) / width - .5) * (width / max);
+            const dy = ((e.clientY - y) / height - .5) * (height / max);
 
-            clickTrigger();
+            translate.set(`${e.clientX ? dx * 100 : 0}% ${e.clientY ? dy * 100 : 0}%`);
         }, { signal });
 
         // show halo on touch devices
@@ -131,15 +138,21 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
 
     childrenArray.unshift(<div ref={halo} key="halo" className={style.halo} data-hover={hover} data-disabled={disabled}>
         <Animatable
-            initial={{ opacity: 1, scale: 1 }}
             animate={{
                 translate,
-                opacity: [0, 1],
-                scale: [0, 1],
-                duration: .4,
-                easing: 'ease-in'
+                opacity
             }}
-            triggers={[{ on: clickTrigger, immediate: true }]}>
+            animations={{
+                ripple: {
+                    opacity: [0, 1],
+                    scale: [0, 1],
+                    duration: .4,
+                    easing: 'ease-in'
+                }
+            }}
+            triggers={[
+                { on: ripple, name: 'ripple', immediate: true }
+            ]}>
 
             <div className={style.ripple} style={{ backgroundColor: color }} />
         </Animatable>

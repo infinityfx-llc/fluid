@@ -26,7 +26,7 @@ const styles = createStyles('hamburger', {
     '.line': {
         width: '100%',
         height: '3px',
-        backgroundColor: 'var(--color)',
+        backgroundColor: 'var(--color, var(--f-clr-text-100))',
         transformOrigin: 'bottom right',
         borderRadius: '99px'
     },
@@ -62,7 +62,7 @@ export type HamburgerSelectors = Selectors<'hamburger' | 'line' | 'cross'>
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/hamburger}
  */
-export default function Hamburger({ cc = {}, open, color = 'var(--f-clr-text-100)', ...props }: {
+export default function Hamburger({ cc = {}, open, color, ...props }: {
     ref?: React.Ref<HTMLButtonElement>;
     cc?: HamburgerSelectors;
     open?: boolean;

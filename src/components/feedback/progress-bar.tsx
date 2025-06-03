@@ -18,7 +18,7 @@ const styles = createStyles('progress-bar', {
 
     '.progress': {
         height: '100%',
-        backgroundColor: 'var(--f-clr-primary-100)',
+        backgroundColor: 'var(--color, var(--f-clr-primary-100))',
         transformOrigin: 'left',
         transition: 'background-color .3s',
         borderRadius: '999px'
@@ -72,7 +72,7 @@ export default function ProgressBar({ cc = {}, size = 'med', value, defaultValue
         props.className
     )}>
         <Animatable animate={{ scale: link(val => `${val} 1`) }} initial={{ scale: `${link()} 1` }} deform={false}>
-            <div className={style.progress} style={{ backgroundColor: color }} />
+            <div className={style.progress} style={{ '--color': color } as any} />
         </Animatable>
     </div>;
 }

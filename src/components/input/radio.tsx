@@ -50,8 +50,8 @@ const styles = createStyles('radio', {
     },
 
     '.input:checked:enabled + .radio': {
-        backgroundColor: 'var(--color)',
-        borderColor: 'var(--color)'
+        backgroundColor: 'var(--color, var(--f-clr-primary-300))',
+        borderColor: 'var(--color, var(--f-clr-primary-300))'
     },
 
     '.selection': {
@@ -117,7 +117,7 @@ export type RadioSelectors = Selectors<'wrapper' | 'input' | 'radio' | 'selectio
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/radio}
  */
-export default function Radio({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', ...props }:
+export default function Radio({ cc = {}, error, size = 'med', color, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: RadioSelectors;

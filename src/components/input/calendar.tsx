@@ -7,6 +7,7 @@ import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 import NumberField from "./number-field";
 import { Icon } from "../../core/icons";
+import Halo from "../feedback/halo";
 
 // multiple/range select
 
@@ -95,23 +96,55 @@ const styles = createStyles('calendar', {
         marginBottom: 'var(--f-spacing-xxs)'
     },
 
-    '.calendar .date': {
+    '.date': {
+        position: 'relative',
+        border: 'none',
+        outline: 'none',
+        background: 'transparent',
         fontSize: '1em',
-        width: '2.3em',
-        height: '2.3em'
+        width: '2.2em',
+        height: '2.2em',
+        borderRadius: 'var(--f-radius-sml)',
+        color: 'var(--f-clr-grey-300)',
+        transition: 'background-color .25s, color .25s'
     },
 
-    '.calendar .date[data-present="false"]': {
-        color: 'var(--f-clr-grey-400)',
-        fontWeight: 400
+    '.round .date': {
+        borderRadius: '99px'
     },
 
-    '.calendar .date__v__minimal:disabled': {
-        background: 'none'
+    '.date:enabled': {
+        cursor: 'pointer'
     },
 
-    '.calendar .button, .calendar .button:disabled': {
-        background: 'var(--f-clr-bg-100)'
+    '.date:disabled': {
+        color: 'var(--f-clr-grey-500)'
+    },
+
+    '.date.unavailable': {
+        textDecoration: 'line-through'
+    },
+
+    '.date.month': {
+        fontWeight: 500
+    },
+
+    '.date.month:enabled': {
+        color: 'var(--f-clr-text-100)'
+    },
+
+    '.date.today:enabled': {
+        backgroundColor: 'var(--f-clr-fg-200)'
+    },
+
+    '.date.selected:enabled': {
+        backgroundColor: 'var(--f-clr-primary-100)',
+        color: 'var(--f-clr-text-200)'
+    },
+
+    '.date.selected:disabled': {
+        backgroundColor: 'var(--f-clr-grey-100)',
+        color: 'var(--f-clr-grey-500)'
     }
 });
 
@@ -122,7 +155,7 @@ export type CalendarSelectors = Selectors<'calendar' | 'header' | 'text' | 'year
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/calendar}
  */
-export default function Calendar({ cc = {}, locale, size = 'med', round, defaultValue, value, onChange, disabled, ...props }:
+export default function Calendar({ cc = {}, locale, size = 'med', round, defaultValue, value, onChange, disabled = false, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: CalendarSelectors;
@@ -209,7 +242,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
             <div className={style.row} role="row">
                 {new Array(7).fill(0).map((_, i) => (
                     <div key={i} className={style.label} role="columnheader">
-                        {offsetDate(firstMonday, i).toLocaleString(locale, { weekday: 'short' })}
+                        {offsetDate(firstMonday, i).toLocaleString(locale, { weekday: 'narrow' })}
                     </div>
                 ))}
             </div>
@@ -219,59 +252,58 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                     {new Array(7).fill(0).map((_, ci) => {
                         const index = ri * 7 + ci,
                             day = offsetDate(firstMonday, index),
-                            isDisabled = Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled;
+                            dayDisabled = Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled;
 
                         return <div key={ci} role="gridcell">
-                            <Button
-                                ref={el => {
-                                    dates.current[index] = el;
-                                }}
-                                disabled={isDisabled}
-                                round={round}
-                                cc={{
-                                    button: style.date,
-                                    v__minimal: style.date__v__minimal
-                                }}
-                                data-present={day.getMonth() === date.getMonth()}
-                                variant={isEqual(date, day) ?
-                                    'default' :
-                                    isEqual(new Date(), day) && !isDisabled ? 'light' :
-                                        'minimal'}
-                                aria-label={day.toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' })}
-                                onClick={() => setDate?.(day)}
-                                onKeyDown={e => {
-                                    // control focus with keyboard
-                                    let next: number | null = null;
+                            <Halo color="var(--f-clr-primary-300)" disabled={dayDisabled}>
+                                <button
+                                    ref={el => {
+                                        dates.current[index] = el;
+                                    }}
+                                    disabled={dayDisabled}
+                                    aria-label={day.toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' })}
+                                    className={classes(
+                                        style.date,
+                                        day.getMonth() === date.getMonth() && style.month,
+                                        isEqual(new Date(), day) && style.today,
+                                        isEqual(date, day) && style.selected,
+                                        dayDisabled && Array.isArray(disabled) && style.unavailable
+                                    )}
+                                    onClick={() => setDate?.(day)}
+                                    onKeyDown={e => {
+                                        // control focus with keyboard
+                                        let next: number | null = null;
 
-                                    switch (e.key) {
-                                        case 'ArrowRight':
-                                            next = index + 1;
-                                            break;
-                                        case 'ArrowLeft':
-                                            next = index - 1;
-                                            break;
-                                        case 'ArrowDown':
-                                            next = index + 7;
-                                            break;
-                                        case 'ArrowUp':
-                                            next = index - 7;
-                                            break;
-                                    }
+                                        switch (e.key) {
+                                            case 'ArrowRight':
+                                                next = index + 1;
+                                                break;
+                                            case 'ArrowLeft':
+                                                next = index - 1;
+                                                break;
+                                            case 'ArrowDown':
+                                                next = index + 7;
+                                                break;
+                                            case 'ArrowUp':
+                                                next = index - 7;
+                                                break;
+                                        }
 
-                                    if (next !== null) {
-                                        if (next < 0) setDate?.(prevMonth);
-                                        if (next >= 42) setDate?.(nextMonth);
+                                        if (next !== null) {
+                                            if (next < 0) setDate?.(prevMonth);
+                                            if (next >= 42) setDate?.(nextMonth);
 
-                                        next = next % 42;
-                                        next = next < 0 ? 42 + next : next;
-                                        dates.current[next]?.focus();
+                                            next = next % 42;
+                                            next = next < 0 ? 42 + next : next;
+                                            dates.current[next]?.focus();
 
-                                        e.preventDefault();
-                                    }
-                                }}>
+                                            e.preventDefault();
+                                        }
+                                    }}>
 
-                                {day.getDate()}
-                            </Button>
+                                    {day.getDate()}
+                                </button>
+                            </Halo>
                         </div>;
                     })}
                 </div>

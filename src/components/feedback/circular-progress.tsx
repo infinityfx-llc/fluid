@@ -25,7 +25,7 @@ const styles = createStyles('circular-progress', {
     },
 
     '.progress': {
-        stroke: 'var(--f-clr-primary-100)',
+        stroke: 'var(--color, var(--f-clr-primary-100))',
         strokeWidth: '10px',
         strokeLinecap: 'round',
         transition: 'background-color .3s'
@@ -94,7 +94,7 @@ export default function CircularProgress({ children, cc = {}, size = 'med', slic
             <circle r={45} cx={50} cy={50} fill="none" className={style.track} pathLength={1} style={{ strokeDashoffset: slice }} />
 
             <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: 1 - link() }}>
-                <circle r={45} cx={50} cy={50} fill="none" className={style.progress} style={{ stroke: color }} />
+                <circle r={45} cx={50} cy={50} fill="none" className={style.progress} style={{ '--color': color } as any} />
             </Animatable>
         </svg>
     </div>;
