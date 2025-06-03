@@ -176,7 +176,7 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
                 {isMobile && mobileClosing === 'handle' && <div className={style.handle} />}
 
                 <div className={style.header}>
-                    <span id={id} className={styles.title}>{title}</span>
+                    <span id={id} className={style.title}>{title}</span>
 
                     {(mobileClosing === 'button' || !isMobile) && <Button compact variant="minimal" onClick={onClose}>
                         <Icon type="close" />

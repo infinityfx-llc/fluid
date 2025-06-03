@@ -90,7 +90,7 @@ export default function Badge({ children, cc = {}, variant = 'default', round = 
         } as any}>
         {children}
 
-        {onClose ? <div className={styles.close} onClick={onClose}>
+        {onClose ? <div className={style.close} onClick={onClose}>
             <Icon type="close" />
         </div> : null}
     </div>;
