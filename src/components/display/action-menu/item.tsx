@@ -20,8 +20,9 @@ const styles = createStyles('action-menu.item', {
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--f-spacing-xsm)',
-        color: 'var(--f-clr-text-100)',
-        lineHeight: 1.25
+        color: 'var(--color, var(--f-clr-text-100))',
+        lineHeight: 1.25,
+        ['--halo-color' as any]: 'color-mix(in srgb, var(--color, var(--f-clr-primary-100)) 50%, var(--f-clr-text-200))'
     },
 
     '.item:enabled': {
@@ -37,7 +38,7 @@ export type ActionMenuItemSelectors = Selectors<'item'>;
 
 // todo: home/end/escape keys
 
-export default function Item({ children, cc = {}, keepOpen, className, ...props }:
+export default function Item({ children, cc = {}, keepOpen, className, color, ...props }:
     {
         ref?: React.Ref<HTMLButtonElement>;
         cc?: ActionMenuItemSelectors;
@@ -48,12 +49,16 @@ export default function Item({ children, cc = {}, keepOpen, className, ...props 
     const ref = useRef<HTMLButtonElement>(null);
     const popover = usePopover();
 
-    return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
+    return <Halo disabled={props.disabled} color="var(--halo-color)">
         <button
             {...props}
             ref={combineRefs(props.ref, ref)}
             type="button"
             role="menuitem"
+            style={{
+                ...props.style,
+                '--color': color
+            } as any}
             className={classes(style.item, className)}
             onClick={e => {
                 props.onClick?.(e);

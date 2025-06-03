@@ -260,6 +260,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                     ref={el => {
                                         dates.current[index] = el;
                                     }}
+                                    type="button"
                                     disabled={dayDisabled}
                                     aria-label={day.toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' })}
                                     className={classes(
