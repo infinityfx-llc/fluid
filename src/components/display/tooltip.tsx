@@ -39,8 +39,9 @@ const styles = createStyles('tooltip', {
         zIndex: 999,
         backgroundColor: 'var(--f-clr-fg-200)',
         color: 'var(--f-clr-text-100)',
-        fontSize: '.8rem',
+        fontSize: 'var(--f-font-size-xsm)',
         fontWeight: 600,
+        textAlign: 'center',
         padding: '.3em .5em',
         borderRadius: 'var(--f-radius-sml)',
         pointerEvents: 'none',
@@ -76,28 +77,44 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
     const anchor = useRef<HTMLDivElement | null>(null);
     const tooltip = useRef<HTMLDivElement | null>(null);
     const element = useRef<HTMLElement | null>(null);
-
-    const touchOnly = useRef(false);
-    const [visible, setVisible] = useState(false);
-    const [computed, setComputed] = useState<string>(position);
-
-    const displayPosition = position === 'auto' ? computed : position;
     const timeout = useRef<any>(undefined);
+    const touchOnly = useRef(false);
+
+    const [visible, setVisible] = useState(false);
+    const [computedPosition, setComputedPosition] = useState<string>(position);
+    const [maxWidth, setMaxWidth] = useState('100vw');
+    const renderedPosition = position === 'auto' ? computedPosition : position;
 
     // hide or show tooltip and update position if needed
     function toggle(value: boolean | null, delay = 0) {
         clearTimeout(timeout.current);
         if (value === null) return;
 
-        // if position == 'auto' calculate best position based on available space
-        if (position === 'auto' && element.current) {
-            let { left, top, right, bottom } = element.current.getBoundingClientRect();
+        if (element.current) {
+            let { left, top, right, bottom, width } = element.current.getBoundingClientRect();
             right = window.innerWidth - right;
             bottom = window.innerHeight - bottom;
 
-            const max = [[left, 'left'], [top, 'top'], [right, 'right'], [bottom, 'bottom']].sort((a: any, b: any) => b[0] - a[0])[0][1] as string;
+            // if position == 'auto' calculate best position based on the available space
+            const computedPosition = position !== 'auto' ? position : {
+                [left]: 'left',
+                [top]: 'top',
+                [right]: 'right',
+                [bottom]: 'bottom'
+            }[Math.max(left, top, right, bottom)];
 
-            setComputed(max);
+            // calculate the maximum width based on the available space and position
+            let maxWidth = left + width / 2;
+            switch (computedPosition) {
+                case 'left': maxWidth = left;
+                    break;
+                case 'right': maxWidth = right;
+                    break;
+                default: maxWidth = Math.min(window.innerWidth - maxWidth, maxWidth) * 2;
+            }
+
+            setMaxWidth(`calc(${maxWidth}px - var(--f-spacing-sml) * 2)`);
+            setComputedPosition(computedPosition);
         }
 
         if (!value || visibility === 'never') {
@@ -121,7 +138,7 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
                 left: '-100%, -50%',
                 right: '0%, -50%',
                 bottom: '-50%, 0%'
-            }[displayPosition];
+            }[renderedPosition];
 
             tooltip.current.style.transform = `translate(${x}px, ${y}px) translate(${offset})`;
         }
@@ -167,7 +184,7 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
             cancelAnimationFrame(frame);
             ctrl.abort();
         }
-    }, [visibility, displayPosition, delay]);
+    }, [visibility, renderedPosition, delay]);
 
     useEffect(() => toggle(visibility === 'always'), [visibility]);
 
@@ -181,9 +198,9 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
             ref: combineRefs(element, props.ref, children.props.ref)
         })}
 
-        {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={displayPosition} />, element.current)}
+        {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={renderedPosition} />, element.current)}
 
-        {element.current && createPortal(<div ref={tooltip} id={id} role="tooltip" className={style.tooltip} aria-hidden={!visible}>
+        {element.current && createPortal(<div ref={tooltip} id={id} role="tooltip" className={style.tooltip} aria-hidden={!visible} style={{ maxWidth }}>
             {content}
         </div>, document.getElementById('__fluid') as HTMLElement)}
     </>;
