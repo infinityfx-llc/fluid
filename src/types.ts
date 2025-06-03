@@ -58,6 +58,7 @@ export type FluidComponents = {
     'color-field'?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
     'color-picker'?: FluidSelectorStyles<import('./components/input/color-picker').ColorPickerSelectors>;
     'date-field'?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
+    'drop-zone'?: FluidSelectorStyles<import('./components/input/drop-zone').DropZoneSelectors>;
     field?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
     'file-field'?: FluidSelectorStyles<import('./components/input/file-field').FileFieldSelectors>;
     hamburger?: FluidSelectorStyles<import('./components/input/hamburger').HamburgerSelectors>;
