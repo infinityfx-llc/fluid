@@ -24,7 +24,8 @@ const styles = createStyles('accordion.item', {
         border: 'none',
         background: 'none',
         color: 'var(--f-clr-text-100)',
-        transition: 'background-color .5s'
+        transition: 'background-color .5s',
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.v__minimal[aria-expanded="true"]': {

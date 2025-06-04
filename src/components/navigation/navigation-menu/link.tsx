@@ -14,7 +14,8 @@ const styles = createStyles('navigation-menu.link', {
         borderRadius: 'var(--f-radius-sml)',
         fontWeight: 600,
         color: 'var(--f-clr-text-100)',
-        outline: 'none'
+        outline: 'none',
+        WebkitTapHighlightColor: 'transparent'
     }
 });
 

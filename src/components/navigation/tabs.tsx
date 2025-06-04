@@ -51,7 +51,8 @@ const styles = createStyles('tabs', {
         borderRadius: 'var(--f-radius-sml)',
         color: 'var(--f-clr-text-100)',
         fontSize: 'var(--f-font-size-sml)',
-        fontWeight: 600
+        fontWeight: 600,
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.v__minimal .button': {

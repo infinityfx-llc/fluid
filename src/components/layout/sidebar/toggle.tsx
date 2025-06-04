@@ -25,7 +25,8 @@ const styles = createStyles('sidebar.toggle', {
         border: 'none',
         color: 'var(--f-clr-text-100)',
         borderRadius: 'var(--f-radius-sml)',
-        flexShrink: 0
+        flexShrink: 0,
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.toggle:enabled': {

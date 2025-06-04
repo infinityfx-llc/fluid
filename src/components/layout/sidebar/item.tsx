@@ -21,7 +21,8 @@ const styles = createStyles('sidebar.item', {
         display: 'flex',
         transition: 'background-color .25s, color .25s',
         outline: 'none',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.item:not(.compact)': {

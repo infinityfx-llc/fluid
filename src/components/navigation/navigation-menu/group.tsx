@@ -27,7 +27,8 @@ const styles = createStyles('navigation-menu.group', {
         lineHeight: 1.25,
         display: 'flex',
         alignItems: 'center',
-        gap: 'var(--f-spacing-xsm)'
+        gap: 'var(--f-spacing-xsm)',
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.link.round': {
