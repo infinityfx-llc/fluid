@@ -19,7 +19,7 @@ const styles = createStyles('halo', {
         inset: 0,
         minWidth: '100%',
         minHeight: '100%',
-        transition: 'opacity .25s, scale .25s',
+        transition: 'opacity .25s',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -71,6 +71,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
 
+    const touch = useRef(0);
     const endTouch = useRef<any>(undefined);
     const container = useRef<HTMLElement>(null);
     const halo = useRef<HTMLDivElement>(null);
@@ -106,6 +107,11 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
             if (!halo.current) return;
             const { x, y, width, height } = halo.current.getBoundingClientRect();
 
+            // skip opacity animation for touch based devices
+            halo.current.style.transition = 'none';
+            halo.current.offsetHeight;
+            halo.current.style.transition = '';
+
             const max = Math.max(width, height) * 2.8;
             const dx = ((e.clientX - x) / width - .5) * (width / max);
             const dy = ((e.clientY - y) / height - .5) * (height / max);
@@ -116,14 +122,20 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
         // show halo on touch devices
         focusEl.addEventListener('touchstart', () => {
             clearTimeout(endTouch.current);
+            touch.current = Date.now();
+
             if (halo.current) halo.current.style.opacity = '0.25';
         }, { signal });
+
         // hide halo on touch devices
         window.addEventListener('touchend', () => {
+            const delay = Math.max(450 - Date.now() + touch.current, 0);
+
             endTouch.current = setTimeout(() => {
                 if (halo.current) halo.current.style.opacity = '';
-            }, 250);
+            }, delay);
         }, { signal });
+
         focusEl.addEventListener('focusin', () => focus(), { signal });
         focusEl.addEventListener('focusout', () => focus(), { signal });
         focus(':focus');
@@ -146,7 +158,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
                 ripple: {
                     opacity: [0, 1],
                     scale: [0, 1],
-                    duration: .4,
+                    duration: .5,
                     easing: 'ease-in'
                 }
             }}

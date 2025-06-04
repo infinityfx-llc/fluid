@@ -40,7 +40,8 @@ const styles = createStyles('chip', {
         inset: 0,
         width: '100%',
         height: '100%',
-        borderRadius: 'inherit'
+        borderRadius: 'inherit',
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.input[type="checkbox"]:enabled': {

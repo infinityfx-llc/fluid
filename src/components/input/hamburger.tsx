@@ -20,7 +20,8 @@ const styles = createStyles('hamburger', {
         width: '2.5em',
         padding: '.5em',
         borderRadius: 'var(--f-radius-sml)',
-        outline: 'none'
+        outline: 'none',
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.line': {

@@ -59,7 +59,8 @@ const styles = createStyles('segmented', {
         fontWeight: 700,
         color: 'var(--f-clr-text-100)',
         borderRadius: 'var(--f-radius-sml)',
-        flexGrow: 1
+        flexGrow: 1,
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.segmented.round .option': {

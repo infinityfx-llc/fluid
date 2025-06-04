@@ -16,7 +16,8 @@ const styles = createStyles('button', {
         fontWeight: 600,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.button.compact': {
