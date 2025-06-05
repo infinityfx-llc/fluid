@@ -71,7 +71,8 @@ const styles = createStyles('pagination', {
         justifyContent: 'center',
         borderRadius: 'var(--f-radius-sml)',
         fontWeight: 500,
-        transition: 'background-color .35s, color .35s'
+        transition: 'background-color .35s, color .35s',
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.buttons .button': {
@@ -203,6 +204,7 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
             ...props.style,
             '--color': color
         } as any}
+        role="navigation"
         aria-disabled={disabled}
         className={classes(
             style.pagination,
