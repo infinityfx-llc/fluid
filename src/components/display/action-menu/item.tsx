@@ -22,6 +22,7 @@ const styles = createStyles('action-menu.item', {
         gap: 'var(--f-spacing-xsm)',
         color: 'var(--color, var(--f-clr-text-100))',
         lineHeight: 1.25,
+        WebkitTapHighlightColor: 'transparent',
         ['--halo-color' as any]: 'color-mix(in srgb, var(--color, var(--f-clr-primary-100)) 50%, var(--f-clr-text-200))'
     },
 

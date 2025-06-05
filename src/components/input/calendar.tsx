@@ -106,7 +106,8 @@ const styles = createStyles('calendar', {
         height: '2.2em',
         borderRadius: 'var(--f-radius-sml)',
         color: 'var(--f-clr-grey-300)',
-        transition: 'background-color .25s, color .25s'
+        transition: 'background-color .25s, color .25s',
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.round .date': {

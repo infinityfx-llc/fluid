@@ -60,6 +60,7 @@ const styles = createStyles('segmented', {
         color: 'var(--f-clr-text-100)',
         borderRadius: 'var(--f-radius-sml)',
         flexGrow: 1,
+        transition: 'color .4s',
         WebkitTapHighlightColor: 'transparent'
     },
 
@@ -93,7 +94,11 @@ const styles = createStyles('segmented', {
     },
 
     '.v__neutral .selection': {
-        backgroundColor: 'var(--f-clr-fg-200)'
+        backgroundColor: 'var(--f-clr-text-100)'
+    },
+
+    '.v__neutral .option[aria-checked="true"]:enabled': {
+        color: 'var(--f-clr-text-200)'
     },
 
     '.v__minimal .selection': {
