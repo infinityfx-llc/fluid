@@ -10,6 +10,7 @@ import Halo from "../feedback/halo";
 import { Animatable } from "@infinityfx/lively";
 import { useTrigger } from "@infinityfx/lively/hooks";
 import Toggle from "./toggle";
+import { LayoutGroup } from "@infinityfx/lively/layout";
 
 // multiple/range select
 // disable from/to certain date
@@ -30,8 +31,8 @@ function offsetDate(date: Date, days: number) {
 const styles = createStyles('calendar', {
     '.calendar': {
         backgroundColor: 'var(--f-clr-fg-100)',
-        padding: '.6em',
-        borderRadius: 'var(--f-radius-med)'
+        borderRadius: 'var(--f-radius-med)',
+        padding: '.6em'
     },
 
     '.s__xsm': {
@@ -54,29 +55,37 @@ const styles = createStyles('calendar', {
         borderRadius: 'var(--f-radius-xlg)'
     },
 
+    '.toggle': {
+        fontWeight: 600,
+        flexGrow: 1
+    },
+
+    '.hidden': {
+        opacity: 0,
+        pointerEvents: 'none'
+    },
+
     '.header': {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        gap: '.6em',
         marginBottom: '.6em'
     },
 
-    '.toggle': {
-        fontWeight: 600
+    '.header > *': {
+        transition: 'opacity .35s'
     },
 
-    '.years': {
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr',
-        rowGap: 'var(--f-spacing-xxs)',
-        width: '15.4em',
-        height: '15.7125em'
+    '.content': {
+        position: 'relative',
+        display: 'grid'
     },
 
     '.grid': {
         display: 'flex',
         flexDirection: 'column',
-        gap: 'var(--f-spacing-xxs)'
+        rowGap: 'var(--f-spacing-xxs)',
+        gridArea: '1 / 1'
     },
 
     '.row': {
@@ -108,7 +117,14 @@ const styles = createStyles('calendar', {
         WebkitTapHighlightColor: 'transparent'
     },
 
-    '.grid .date': {
+    '.years.grid': {
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        zIndex: 1,
+        backgroundColor: 'var(--f-clr-fg-100)'
+    },
+
+    '.dates .date': {
         height: '2.2em',
         width: '2.2em'
     },
@@ -152,7 +168,7 @@ const styles = createStyles('calendar', {
     }
 });
 
-export type CalendarSelectors = Selectors<'calendar' | 'header' | 'text' | 'years' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
+export type CalendarSelectors = Selectors<'calendar' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'header' | 'content' | 'grid' | 'row' | 'label' | 'date' | 'dates' | 'years' | 'unavailable' | 'bold' | 'today' | 'selected'>;
 
 /**
  * An input used for selecting a date.
@@ -173,7 +189,8 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>) {
     const style = combineClasses(styles, cc);
 
-    const trigger = useTrigger();
+    const left = useTrigger();
+    const right = useTrigger();
     const dates = useRef<(HTMLButtonElement | null)[]>([]);
     const [years, setYears] = useState(false);
 
@@ -186,6 +203,14 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
     nextMonth.setMonth(date.getMonth() + 1);
     const prevMonth = new Date(date);
     prevMonth.setMonth(date.getMonth() - 1);
+
+    function update(newDate: Date) {
+        setDate?.(newDate);
+
+        const dt = date.getMonth() - newDate.getMonth();
+        if (dt > 0) left();
+        if (dt < 0) right();
+    }
 
     try {
         // make sure locale is valid
@@ -212,146 +237,197 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
         <div className={style.header}>
             <Button
                 {...buttonProps}
+                className={years ? style.hidden : undefined}
                 aria-label={prevMonth.toLocaleString(locale, { month: 'long' })}
-                onClick={() => {
-                    setDate?.(prevMonth);
-                    trigger();
-                }}>
+                onClick={() => update(prevMonth)}>
                 <Icon type="left" />
             </Button>
 
             <Toggle
                 {...buttonProps}
+                variant="default"
                 checked={years}
-                onChange={e => {
-                    setYears(e.target.checked);
-                    trigger();
-                }}
+                onChange={e => setYears(e.target.checked)}
                 className={style.toggle}>
-                {date.toLocaleString(locale, { month: 'short', year: 'numeric' })}
+                {date.toLocaleString(locale, { month: 'long', year: 'numeric' })}
+                <Icon type="expand" />
             </Toggle>
 
             <Button
                 {...buttonProps}
+                className={years ? style.hidden : undefined}
                 aria-label={nextMonth.toLocaleString(locale, { month: 'long' })}
-                onClick={() => {
-                    setDate?.(nextMonth);
-                    trigger();
-                }}>
+                onClick={() => update(nextMonth)}>
                 <Icon type="right" />
             </Button>
         </div>
 
-        {years && <div className={style.years}>
-            {new Array(21).fill(0).map((_, i) => {
-                const year = new Date(date);
-                year.setFullYear(year.getFullYear() + (i - 10));
-
-                const label = year.toLocaleString(locale, { year: 'numeric' });
-
-                return <Halo key={i}
-                    color="var(--f-clr-primary-300)"
-                    disabled={disabled === true}>
-                    <button
-                        type="button"
-                        disabled={disabled === true}
-                        aria-label={label}
+        <div className={style.content}>
+            <LayoutGroup>
+                {years && <Animatable
+                    id="years"
+                    animate={{
+                        opacity: [0, 1],
+                        duration: .35
+                    }}
+                    triggers={[
+                        { on: 'mount' },
+                        { on: 'unmount', reverse: true }
+                    ]}>
+                    <div
+                        role="grid"
                         className={classes(
-                            style.date,
-                            style.bold,
-                            year.getFullYear() === date.getFullYear() && style.selected
-                        )}
-                        onClick={() => setDate?.(year)}>
-                        {label}
-                    </button>
-                </Halo>;
-            })}
-        </div>}
+                            style.grid,
+                            style.years
+                        )}>
+                        <LayoutGroup
+                            transition={{
+                                duration: .35,
+                                easing: 'ease-out'
+                            }}>
+                            {new Array(21).fill(0).map((_, i) => {
+                                const year = new Date(date),
+                                    current = Math.round(year.getFullYear() / 3) * 3;
+                                year.setFullYear(current + i - 10);
 
-        {!years && <div className={style.grid} role="grid">
-            <div className={style.row} role="row">
-                {new Array(7).fill(0).map((_, i) => (
-                    <div key={i} className={style.label} role="columnheader">
-                        {offsetDate(firstMonday, i).toLocaleString(locale, { weekday: 'narrow' })}
+                                const label = year.toLocaleString(locale, { year: 'numeric' });
+
+                                return <Animatable
+                                    key={label}
+                                    id={label}
+                                    adaptive
+                                    cachable={['y']}
+                                    animate={{
+                                        translate: ['0px 8px', '0px 0px'],
+                                        opacity: [0, 1],
+                                        duration: .25,
+                                        easing: 'ease-out',
+                                        delay: .35 + Math.floor(i / 3) * .05 // fix delay
+                                    }}
+                                    triggers={[
+                                        { on: 'mount' }
+                                    ]}>
+                                    <Halo
+                                        color="var(--f-clr-primary-300)"
+                                        disabled={disabled === true}>
+                                        <button
+                                            type="button"
+                                            disabled={disabled === true}
+                                            aria-label={label}
+                                            className={classes(
+                                                style.date,
+                                                style.bold,
+                                                year.getFullYear() === date.getFullYear() && style.selected
+                                            )}
+                                            onClick={() => update(year)}>
+                                            {label}
+                                        </button>
+                                    </Halo>
+                                </Animatable>;
+                            })}
+                        </LayoutGroup>
                     </div>
-                ))}
+                </Animatable>}
+            </LayoutGroup>
+
+            <div
+                role="grid"
+                className={classes(
+                    style.grid,
+                    style.dates
+                )}>
+                <div className={style.row} role="row">
+                    {new Array(7).fill(0).map((_, i) => (
+                        <div key={i} className={style.label} role="columnheader">
+                            {offsetDate(firstMonday, i).toLocaleString(locale, { weekday: 'narrow' })}
+                        </div>
+                    ))}
+                </div>
+
+                <Animatable
+                    animations={{
+                        left: {
+                            translate: ['-8px 0px', '0px 0px'],
+                            opacity: [0, 1],
+                            duration: .25,
+                            easing: 'ease-out'
+                        },
+                        right: {
+                            translate: ['8px 0px', '0px 0px'],
+                            opacity: [0, 1],
+                            duration: .25,
+                            easing: 'ease-out'
+                        }
+                    }}
+                    stagger={.05}
+                    triggers={[
+                        { name: 'left', on: left, immediate: true },
+                        { name: 'right', on: right, immediate: true }
+                    ]}>
+                    {new Array(6).fill(0).map((_, ri) => (
+                        <div key={ri} className={style.row} role="row">
+                            {new Array(7).fill(0).map((_, ci) => {
+                                const index = ri * 7 + ci,
+                                    day = offsetDate(firstMonday, index),
+                                    dayDisabled = Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled;
+
+                                return <div key={ci} role="gridcell">
+                                    <Halo color="var(--f-clr-primary-300)" disabled={dayDisabled}>
+                                        <button
+                                            ref={el => {
+                                                dates.current[index] = el;
+                                            }}
+                                            type="button"
+                                            disabled={dayDisabled}
+                                            aria-label={day.toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' })}
+                                            className={classes(
+                                                style.date,
+                                                day.getMonth() === date.getMonth() && style.bold,
+                                                isEqual(new Date(), day) && style.today,
+                                                isEqual(date, day) && style.selected,
+                                                dayDisabled && Array.isArray(disabled) && style.unavailable
+                                            )}
+                                            onClick={() => update(day)}
+                                            onKeyDown={e => {
+                                                // control focus with keyboard
+                                                let next: number | null = null;
+
+                                                switch (e.key) {
+                                                    case 'ArrowRight':
+                                                        next = index + 1;
+                                                        break;
+                                                    case 'ArrowLeft':
+                                                        next = index - 1;
+                                                        break;
+                                                    case 'ArrowDown':
+                                                        next = index + 7;
+                                                        break;
+                                                    case 'ArrowUp':
+                                                        next = index - 7;
+                                                        break;
+                                                }
+
+                                                if (next !== null) {
+                                                    if (next < 0) update(prevMonth);
+                                                    if (next >= 42) update(nextMonth);
+
+                                                    next = next % 42;
+                                                    next = next < 0 ? 42 + next : next;
+                                                    dates.current[next]?.focus();
+
+                                                    e.preventDefault();
+                                                }
+                                            }}>
+
+                                            {day.getDate()}
+                                        </button>
+                                    </Halo>
+                                </div>;
+                            })}
+                        </div>
+                    ))}
+                </Animatable>
             </div>
-
-            <Animatable
-                animate={{
-                    translate: ['0px 0px', '8px 0px'],
-                    opacity: [1, 0],
-                    duration: .25,
-                    reverse: true,
-                    easing: 'ease-in'
-                }}
-                stagger={.05}
-                triggers={[
-                    { on: trigger }
-                ]}>
-                {new Array(6).fill(0).map((_, ri) => (
-                    <div key={ri} className={style.row} role="row">
-                        {new Array(7).fill(0).map((_, ci) => {
-                            const index = ri * 7 + ci,
-                                day = offsetDate(firstMonday, index),
-                                dayDisabled = Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled;
-
-                            return <div key={ci} role="gridcell">
-                                <Halo color="var(--f-clr-primary-300)" disabled={dayDisabled}>
-                                    <button
-                                        ref={el => {
-                                            dates.current[index] = el;
-                                        }}
-                                        type="button"
-                                        disabled={dayDisabled}
-                                        aria-label={day.toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' })}
-                                        className={classes(
-                                            style.date,
-                                            day.getMonth() === date.getMonth() && style.bold,
-                                            isEqual(new Date(), day) && style.today,
-                                            isEqual(date, day) && style.selected,
-                                            dayDisabled && Array.isArray(disabled) && style.unavailable
-                                        )}
-                                        onClick={() => setDate?.(day)}
-                                        onKeyDown={e => {
-                                            // control focus with keyboard
-                                            let next: number | null = null;
-
-                                            switch (e.key) {
-                                                case 'ArrowRight':
-                                                    next = index + 1;
-                                                    break;
-                                                case 'ArrowLeft':
-                                                    next = index - 1;
-                                                    break;
-                                                case 'ArrowDown':
-                                                    next = index + 7;
-                                                    break;
-                                                case 'ArrowUp':
-                                                    next = index - 7;
-                                                    break;
-                                            }
-
-                                            if (next !== null) {
-                                                if (next < 0) setDate?.(prevMonth);
-                                                if (next >= 42) setDate?.(nextMonth);
-
-                                                next = next % 42;
-                                                next = next < 0 ? 42 + next : next;
-                                                dates.current[next]?.focus();
-
-                                                e.preventDefault();
-                                            }
-                                        }}>
-
-                                        {day.getDate()}
-                                    </button>
-                                </Halo>
-                            </div>;
-                        })}
-                    </div>
-                ))}
-            </Animatable>
-        </div>}
+        </div>
     </div>;
 }

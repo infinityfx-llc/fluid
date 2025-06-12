@@ -144,7 +144,7 @@ const styles = createStyles('pagination', {
     }
 });
 
-export type PaginationSelectors = Selectors<'pagination'>;
+export type PaginationSelectors = Selectors<'pagination' | 'pill' | 'square' | 'round' | 's__xsm'  | 's__sml' | 's__med' | 's__lrg' | 'v__default' | 'v__neutral' | 'v__minimal' | 'buttons' | 'layer' | 'button' | 'selection' | 'indices'>;
 
 /**
  * A set of inputs used for navigation between pages.

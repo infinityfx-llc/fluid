@@ -1,7 +1,7 @@
 'use client';
 
 import { FluidSize, Selectors } from "../../../src/types";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Halo from "../feedback/halo";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { Animatable } from "@infinityfx/lively";
@@ -123,6 +123,7 @@ export type ToggleProps = {
 export default function Toggle({ children, cc = {}, size = 'med', compact = false, round = false, variant = 'default', checkedContent, ...props }: ToggleProps) {
     const style = combineClasses(styles, cc);
 
+    const inputRef = useRef<HTMLInputElement>(null);
     const [state, setState] = props.checked !== undefined ? [props.checked] : useState(!!props.defaultChecked);
     const [split, rest] = useInputProps(props);
 
@@ -131,8 +132,12 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
         { on: !state, reverse: true, immediate: true }
     ];
 
-    return <Halo disabled={props.disabled} color={variant === 'minimal' && !state ? 'var(--f-clr-primary-400)' : undefined}>
-        <div {...rest}
+    return <Halo
+        disabled={props.disabled}
+        color={variant === 'minimal' && !state ? 'var(--f-clr-primary-400)' : undefined}
+        target={inputRef}>
+        <div
+            {...rest}
             className={classes(
                 style.toggle,
                 round && style.round,
@@ -143,10 +148,15 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
             )}
             data-checked={state}
             data-disabled={!!props.disabled}>
-            <input {...split} type="checkbox" className={style.input} onChange={e => {
-                setState?.(e.target.checked);
-                split.onChange?.(e);
-            }} />
+            <input
+                {...split}
+                ref={inputRef}
+                type="checkbox"
+                className={style.input}
+                onChange={e => {
+                    setState?.(e.target.checked);
+                    split.onChange?.(e);
+                }} />
 
             <div className={style.container}>
                 {checkedContent ? <Animatable
