@@ -5,11 +5,14 @@ import { useRef, useState } from "react";
 import Button from "./button";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
-import NumberField from "./number-field";
 import { Icon } from "../../core/icons";
 import Halo from "../feedback/halo";
+import { Animatable } from "@infinityfx/lively";
+import { useTrigger } from "@infinityfx/lively/hooks";
+import Toggle from "./toggle";
 
 // multiple/range select
+// disable from/to certain date
 
 function isEqual(a: Date, b: Date) {
     return a.getFullYear() === b.getFullYear() &&
@@ -54,23 +57,20 @@ const styles = createStyles('calendar', {
     '.header': {
         display: 'flex',
         alignItems: 'center',
-        marginBottom: '.6em',
-        gap: '.6em'
+        justifyContent: 'space-between',
+        marginBottom: '.6em'
     },
 
-    '.calendar .year': {
-        minWidth: 'auto',
-        backgroundColor: 'var(--f-clr-bg-100)',
-        color: 'var(--f-clr-grey-500)',
-        flexGrow: 1
+    '.toggle': {
+        fontWeight: 600
     },
 
-    '.calendar .year:focus-within': {
-        backgroundColor: 'var(--f-clr-fg-200)'
-    },
-
-    '.calendar .year__content': {
-        padding: '.475em'
+    '.years': {
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        rowGap: 'var(--f-spacing-xxs)',
+        width: '15.4em',
+        height: '15.7125em'
     },
 
     '.grid': {
@@ -102,12 +102,15 @@ const styles = createStyles('calendar', {
         outline: 'none',
         background: 'transparent',
         fontSize: '1em',
-        width: '2.2em',
-        height: '2.2em',
         borderRadius: 'var(--f-radius-sml)',
         color: 'var(--f-clr-grey-300)',
         transition: 'background-color .25s, color .25s',
         WebkitTapHighlightColor: 'transparent'
+    },
+
+    '.grid .date': {
+        height: '2.2em',
+        width: '2.2em'
     },
 
     '.round .date': {
@@ -126,11 +129,11 @@ const styles = createStyles('calendar', {
         textDecoration: 'line-through'
     },
 
-    '.date.month': {
+    '.date.bold': {
         fontWeight: 500
     },
 
-    '.date.month:enabled': {
+    '.date.bold:enabled': {
         color: 'var(--f-clr-text-100)'
     },
 
@@ -170,13 +173,19 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>) {
     const style = combineClasses(styles, cc);
 
+    const trigger = useTrigger();
     const dates = useRef<(HTMLButtonElement | null)[]>([]);
-    const [partialYear, setPartialYear] = useState<null | string>(null);
+    const [years, setYears] = useState(false);
+
     const [dateState, setDate] = value !== undefined ? [value, onChange] : useState(defaultValue);
     const date = dateState || new Date();
 
     const firstOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
     const firstMonday = offsetDate(firstOfMonth, -(firstOfMonth.getDay() || 7) + 1);
+    const nextMonth = new Date(date);
+    nextMonth.setMonth(date.getMonth() + 1);
+    const prevMonth = new Date(date);
+    prevMonth.setMonth(date.getMonth() - 1);
 
     try {
         // make sure locale is valid
@@ -185,18 +194,13 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
         locale = 'en';
     }
 
-    const nextMonth = new Date(date);
-    nextMonth.setMonth(date.getMonth() + 1);
-    const prevMonth = new Date(date);
-    prevMonth.setMonth(date.getMonth() - 1);
-
     const buttonProps = {
+        ...cc,
         size,
         round,
         compact: true,
         disabled: disabled === true,
-        variant: 'minimal' as const,
-        cc: { button: style.button }
+        variant: 'minimal' as const
     };
 
     return <div {...props} className={classes(
@@ -206,40 +210,65 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
         props.className
     )}>
         <div className={style.header}>
-            <Button {...buttonProps} onClick={() => setDate?.(prevMonth)} aria-label={prevMonth.toLocaleString(locale, { month: 'long' })}>
+            <Button
+                {...buttonProps}
+                aria-label={prevMonth.toLocaleString(locale, { month: 'long' })}
+                onClick={() => {
+                    setDate?.(prevMonth);
+                    trigger();
+                }}>
                 <Icon type="left" />
             </Button>
 
-            <NumberField
-                size={size}
-                round={round}
-                precision={0}
-                variant="minimal"
-                controls={false}
-                cc={{
-                    field: style.year,
-                    content: style.year__content,
-                    ...cc
-                }}
-                disabled={disabled === true}
-                icon={date.toLocaleString(locale, { month: 'long' })}
-                value={partialYear !== null ? partialYear : date.toLocaleString(locale, { year: 'numeric' })}
+            <Toggle
+                {...buttonProps}
+                checked={years}
                 onChange={e => {
-                    setPartialYear(e.target.value);
-                    const updated = new Date(date);
-                    updated.setFullYear(parseInt(e.target.value));
-
-                    // check if entered year is valid, if so update the selected date
-                    if (!isNaN(updated.getTime()) && setDate) setDate(updated);
+                    setYears(e.target.checked);
+                    trigger();
                 }}
-                onBlur={() => setPartialYear(null)} />
+                className={style.toggle}>
+                {date.toLocaleString(locale, { month: 'short', year: 'numeric' })}
+            </Toggle>
 
-            <Button {...buttonProps} onClick={() => setDate?.(nextMonth)} aria-label={nextMonth.toLocaleString(locale, { month: 'long' })}>
+            <Button
+                {...buttonProps}
+                aria-label={nextMonth.toLocaleString(locale, { month: 'long' })}
+                onClick={() => {
+                    setDate?.(nextMonth);
+                    trigger();
+                }}>
                 <Icon type="right" />
             </Button>
         </div>
 
-        <div className={style.grid} role="grid">
+        {years && <div className={style.years}>
+            {new Array(21).fill(0).map((_, i) => {
+                const year = new Date(date);
+                year.setFullYear(year.getFullYear() + (i - 10));
+
+                const label = year.toLocaleString(locale, { year: 'numeric' });
+
+                return <Halo key={i}
+                    color="var(--f-clr-primary-300)"
+                    disabled={disabled === true}>
+                    <button
+                        type="button"
+                        disabled={disabled === true}
+                        aria-label={label}
+                        className={classes(
+                            style.date,
+                            style.bold,
+                            year.getFullYear() === date.getFullYear() && style.selected
+                        )}
+                        onClick={() => setDate?.(year)}>
+                        {label}
+                    </button>
+                </Halo>;
+            })}
+        </div>}
+
+        {!years && <div className={style.grid} role="grid">
             <div className={style.row} role="row">
                 {new Array(7).fill(0).map((_, i) => (
                     <div key={i} className={style.label} role="columnheader">
@@ -248,68 +277,81 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                 ))}
             </div>
 
-            {new Array(6).fill(0).map((_, ri) => (
-                <div key={ri} className={style.row} role="row">
-                    {new Array(7).fill(0).map((_, ci) => {
-                        const index = ri * 7 + ci,
-                            day = offsetDate(firstMonday, index),
-                            dayDisabled = Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled;
+            <Animatable
+                animate={{
+                    translate: ['0px 0px', '8px 0px'],
+                    opacity: [1, 0],
+                    duration: .25,
+                    reverse: true,
+                    easing: 'ease-in'
+                }}
+                stagger={.05}
+                triggers={[
+                    { on: trigger }
+                ]}>
+                {new Array(6).fill(0).map((_, ri) => (
+                    <div key={ri} className={style.row} role="row">
+                        {new Array(7).fill(0).map((_, ci) => {
+                            const index = ri * 7 + ci,
+                                day = offsetDate(firstMonday, index),
+                                dayDisabled = Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled;
 
-                        return <div key={ci} role="gridcell">
-                            <Halo color="var(--f-clr-primary-300)" disabled={dayDisabled}>
-                                <button
-                                    ref={el => {
-                                        dates.current[index] = el;
-                                    }}
-                                    type="button"
-                                    disabled={dayDisabled}
-                                    aria-label={day.toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' })}
-                                    className={classes(
-                                        style.date,
-                                        day.getMonth() === date.getMonth() && style.month,
-                                        isEqual(new Date(), day) && style.today,
-                                        isEqual(date, day) && style.selected,
-                                        dayDisabled && Array.isArray(disabled) && style.unavailable
-                                    )}
-                                    onClick={() => setDate?.(day)}
-                                    onKeyDown={e => {
-                                        // control focus with keyboard
-                                        let next: number | null = null;
+                            return <div key={ci} role="gridcell">
+                                <Halo color="var(--f-clr-primary-300)" disabled={dayDisabled}>
+                                    <button
+                                        ref={el => {
+                                            dates.current[index] = el;
+                                        }}
+                                        type="button"
+                                        disabled={dayDisabled}
+                                        aria-label={day.toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' })}
+                                        className={classes(
+                                            style.date,
+                                            day.getMonth() === date.getMonth() && style.bold,
+                                            isEqual(new Date(), day) && style.today,
+                                            isEqual(date, day) && style.selected,
+                                            dayDisabled && Array.isArray(disabled) && style.unavailable
+                                        )}
+                                        onClick={() => setDate?.(day)}
+                                        onKeyDown={e => {
+                                            // control focus with keyboard
+                                            let next: number | null = null;
 
-                                        switch (e.key) {
-                                            case 'ArrowRight':
-                                                next = index + 1;
-                                                break;
-                                            case 'ArrowLeft':
-                                                next = index - 1;
-                                                break;
-                                            case 'ArrowDown':
-                                                next = index + 7;
-                                                break;
-                                            case 'ArrowUp':
-                                                next = index - 7;
-                                                break;
-                                        }
+                                            switch (e.key) {
+                                                case 'ArrowRight':
+                                                    next = index + 1;
+                                                    break;
+                                                case 'ArrowLeft':
+                                                    next = index - 1;
+                                                    break;
+                                                case 'ArrowDown':
+                                                    next = index + 7;
+                                                    break;
+                                                case 'ArrowUp':
+                                                    next = index - 7;
+                                                    break;
+                                            }
 
-                                        if (next !== null) {
-                                            if (next < 0) setDate?.(prevMonth);
-                                            if (next >= 42) setDate?.(nextMonth);
+                                            if (next !== null) {
+                                                if (next < 0) setDate?.(prevMonth);
+                                                if (next >= 42) setDate?.(nextMonth);
 
-                                            next = next % 42;
-                                            next = next < 0 ? 42 + next : next;
-                                            dates.current[next]?.focus();
+                                                next = next % 42;
+                                                next = next < 0 ? 42 + next : next;
+                                                dates.current[next]?.focus();
 
-                                            e.preventDefault();
-                                        }
-                                    }}>
+                                                e.preventDefault();
+                                            }
+                                        }}>
 
-                                    {day.getDate()}
-                                </button>
-                            </Halo>
-                        </div>;
-                    })}
-                </div>
-            ))}
-        </div>
+                                        {day.getDate()}
+                                    </button>
+                                </Halo>
+                            </div>;
+                        })}
+                    </div>
+                ))}
+            </Animatable>
+        </div>}
     </div>;
 }

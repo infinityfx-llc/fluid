@@ -18,7 +18,8 @@ const styles = createStyles('drop-zone', {
         border: 'dashed 1px var(--f-clr-fg-200)',
         borderRadius: 'var(--f-radius-med)',
         transition: 'background-color .25s, border-color .25s, color .25s',
-        userSelect: 'none'
+        userSelect: 'none',
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.zone[aria-disabled="false"]': {

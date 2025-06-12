@@ -10,6 +10,8 @@ import { Morph } from "@infinityfx/lively/layout";
 import { Animatable } from "@infinityfx/lively";
 import { useTrigger } from "@infinityfx/lively/hooks";
 
+// arrow controls
+
 const styles = createStyles('pagination', {
     '.pagination': {
         display: 'flex',
