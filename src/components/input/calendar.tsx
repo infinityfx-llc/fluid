@@ -13,7 +13,6 @@ import Toggle from "./toggle";
 import { LayoutGroup } from "@infinityfx/lively/layout";
 
 // multiple/range select
-// disable from/to certain date
 
 function isEqual(a: Date, b: Date) {
     return a.getFullYear() === b.getFullYear() &&
@@ -175,7 +174,7 @@ export type CalendarSelectors = Selectors<'calendar' | 's__xsm' | 's__sml' | 's_
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/calendar}
  */
-export default function Calendar({ cc = {}, locale, size = 'med', round, defaultValue, value, onChange, disabled = false, ...props }:
+export default function Calendar({ cc = {}, locale, size = 'med', round, defaultValue, value, onChange, disabled = false, minDate, maxDate, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: CalendarSelectors;
@@ -186,6 +185,8 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
         defaultValue?: Date;
         onChange?: (value: Date) => void;
         disabled?: boolean | Date[];
+        minDate?: Date;
+        maxDate?: Date;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>) {
     const style = combineClasses(styles, cc);
 
@@ -290,7 +291,11 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                     current = Math.round(year.getFullYear() / 3) * 3;
                                 year.setFullYear(current + i - 10);
 
-                                const label = year.toLocaleString(locale, { year: 'numeric' });
+                                const startOfYear = new Date(year.getFullYear(), 1, 1),
+                                    label = year.toLocaleString(locale, { year: 'numeric' }),
+                                    yearDisabled = disabled === true ||
+                                        (minDate ? minDate > startOfYear : false) ||
+                                        (maxDate ? maxDate < startOfYear : false);
 
                                 return <Animatable
                                     key={label}
@@ -298,21 +303,20 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                     adaptive
                                     cachable={['y']}
                                     animate={{
-                                        translate: ['0px 8px', '0px 0px'],
                                         opacity: [0, 1],
                                         duration: .25,
                                         easing: 'ease-out',
-                                        delay: .35 + Math.floor(i / 3) * .05 // fix delay
+                                        delay: .35 + Math.abs(3 - Math.floor(i / 3)) * .05
                                     }}
                                     triggers={[
                                         { on: 'mount' }
                                     ]}>
                                     <Halo
                                         color="var(--f-clr-primary-300)"
-                                        disabled={disabled === true}>
+                                        disabled={yearDisabled}>
                                         <button
                                             type="button"
-                                            disabled={disabled === true}
+                                            disabled={yearDisabled}
                                             aria-label={label}
                                             className={classes(
                                                 style.date,
@@ -369,7 +373,9 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                             {new Array(7).fill(0).map((_, ci) => {
                                 const index = ri * 7 + ci,
                                     day = offsetDate(firstMonday, index),
-                                    dayDisabled = Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled;
+                                    dayDisabled = (Array.isArray(disabled) ? disabled.some(val => isEqual(val, day)) : disabled) ||
+                                        (minDate ? minDate > day : false) ||
+                                        (maxDate ? maxDate < day : false);
 
                                 return <div key={ci} role="gridcell">
                                     <Halo color="var(--f-clr-primary-300)" disabled={dayDisabled}>
