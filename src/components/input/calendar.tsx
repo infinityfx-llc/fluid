@@ -264,9 +264,15 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
         </div>
 
         <div className={style.content}>
-            <LayoutGroup>
+            <LayoutGroup
+                transition={{
+                    duration: .35,
+                    easing: 'ease-out'
+                }}>
                 {years && <Animatable
                     id="years"
+                    passthrough
+                    traverseLayout
                     animate={{
                         opacity: [0, 1],
                         duration: .35
@@ -281,55 +287,49 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                             style.grid,
                             style.years
                         )}>
-                        <LayoutGroup
-                            transition={{
-                                duration: .35,
-                                easing: 'ease-out'
-                            }}>
-                            {new Array(21).fill(0).map((_, i) => {
-                                const year = new Date(date),
-                                    current = Math.round(year.getFullYear() / 3) * 3;
-                                year.setFullYear(current + i - 10);
+                        {new Array(21).fill(0).map((_, i) => {
+                            const year = new Date(date),
+                                current = Math.round(year.getFullYear() / 3) * 3;
+                            year.setFullYear(current + i - 10);
 
-                                const startOfYear = new Date(year.getFullYear(), 1, 1),
-                                    label = year.toLocaleString(locale, { year: 'numeric' }),
-                                    yearDisabled = disabled === true ||
-                                        (minDate ? minDate > startOfYear : false) ||
-                                        (maxDate ? maxDate < startOfYear : false);
+                            const startOfYear = new Date(year.getFullYear(), 1, 1),
+                                label = year.toLocaleString(locale, { year: 'numeric' }),
+                                yearDisabled = disabled === true ||
+                                    (minDate ? minDate > startOfYear : false) ||
+                                    (maxDate ? maxDate < startOfYear : false);
 
-                                return <Animatable
-                                    key={label}
-                                    id={label}
-                                    adaptive
-                                    cachable={['y']}
-                                    animate={{
-                                        opacity: [0, 1],
-                                        duration: .25,
-                                        easing: 'ease-out',
-                                        delay: .35 + Math.abs(3 - Math.floor(i / 3)) * .05
-                                    }}
-                                    triggers={[
-                                        { on: 'mount' }
-                                    ]}>
-                                    <Halo
-                                        color="var(--f-clr-primary-300)"
-                                        disabled={yearDisabled}>
-                                        <button
-                                            type="button"
-                                            disabled={yearDisabled}
-                                            aria-label={label}
-                                            className={classes(
-                                                style.date,
-                                                style.bold,
-                                                year.getFullYear() === date.getFullYear() && style.selected
-                                            )}
-                                            onClick={() => update(year)}>
-                                            {label}
-                                        </button>
-                                    </Halo>
-                                </Animatable>;
-                            })}
-                        </LayoutGroup>
+                            return <Animatable
+                                key={label}
+                                id={label}
+                                adaptive
+                                cachable={['y']}
+                                animate={{
+                                    opacity: [0, 1],
+                                    duration: .25,
+                                    easing: 'ease-out',
+                                    delay: .35 + Math.abs(3 - Math.floor(i / 3)) * .05
+                                }}
+                                triggers={[
+                                    { on: 'mount' }
+                                ]}>
+                                <Halo
+                                    color="var(--f-clr-primary-300)"
+                                    disabled={yearDisabled}>
+                                    <button
+                                        type="button"
+                                        disabled={yearDisabled}
+                                        aria-label={label}
+                                        className={classes(
+                                            style.date,
+                                            style.bold,
+                                            year.getFullYear() === date.getFullYear() && style.selected
+                                        )}
+                                        onClick={() => update(year)}>
+                                        {label}
+                                    </button>
+                                </Halo>
+                            </Animatable>;
+                        })}
                     </div>
                 </Animatable>}
             </LayoutGroup>
