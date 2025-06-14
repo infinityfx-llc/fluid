@@ -133,9 +133,10 @@ export default function Content({
         itemCount.current = 0;
 
         return Children.map(children, (child: any) => {
-            if (!isValidElement<any>(child) || !('value' in child.props)) return child;
+            const option = isValidElement<any>(child) && ('value' in child.props ? child : child.props.children);
+            if (!isValidElement<any>(option) || !('value' in option.props)) return child;
 
-            const value = ('value' in child.props && ('' + child.props.value).toLowerCase()) || '';
+            const value = ('' + option.props.value).toLowerCase() || '';
             if (!value.includes(query)) return null;
 
             const listIndex = itemCount.current++,
