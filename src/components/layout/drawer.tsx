@@ -78,7 +78,7 @@ export default function Drawer({ children, cc = {}, show, onClose, position = 'r
         onClose: () => void;
         position?: 'left' | 'right';
         title?: React.ReactNode;
-    } & React.HTMLAttributes<HTMLDivElement>) {
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
