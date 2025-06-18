@@ -30,6 +30,17 @@ const styles = createStyles('date-field', fluid => ({
             boxShadow: 'var(--f-shadow-med)',
             border: 'solid 1px var(--f-clr-fg-200)'
         }
+    },
+
+    [`@media(max-width: ${fluid.breakpoints.mob}px)`]: {
+        '.calendar': {
+            background: 'none !important',
+            padding: '0 !important'
+        },
+
+        '.years': {
+            background: 'var(--f-clr-bg-100) !important'
+        }
     }
 }));
 
@@ -103,7 +114,10 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
                 ]}>
 
                 <Calendar
-                    className={style.calendar}
+                    cc={{
+                        calendar: style.calendar,
+                        years: style.years
+                    }}
                     round={props.round}
                     size={props.size}
                     disabled={disabled}

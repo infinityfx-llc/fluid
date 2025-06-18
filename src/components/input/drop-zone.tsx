@@ -145,7 +145,8 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
         icon?: React.ReactNode;
         previewImages?: boolean;
         inputRef?: React.Ref<HTMLInputElement>;
-    } & Omit<React.InputHTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children'>) {
+        onChange?: React.ChangeEventHandler<HTMLInputElement>;
+    } & Omit<React.InputHTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>) {
     const style = combineClasses(styles, cc);
 
     const input = useRef<HTMLInputElement>(null);

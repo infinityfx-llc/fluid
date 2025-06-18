@@ -94,7 +94,7 @@ const styles = createStyles('color-picker', fluid => ({
         borderRadius: 'var(--f-radius-med)'
     },
 
-    '.hue__handle::after': {
+    '.wrapper .hue__handle::after': {
         boxSizing: 'border-box',
         border: 'solid 2px white',
         borderRadius: 'var(--f-radius-sml)'
