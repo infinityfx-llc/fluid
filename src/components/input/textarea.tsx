@@ -25,6 +25,8 @@ const styles = createStyles('textarea', {
     },
 
     '.textarea': {
+        display: 'flex',
+        flexDirection: 'column',
         outline: 'solid 3px transparent',
         backgroundColor: 'var(--f-clr-fg-100)',
         border: 'solid 1px var(--f-clr-fg-200)',
@@ -39,8 +41,9 @@ const styles = createStyles('textarea', {
     },
 
     '.input': {
+        flexShrink: 0,
+        flexGrow: 1,
         width: '100%',
-        minHeight: 'calc(100% - 2px)',
         resize: 'none',
         outline: 'none',
         border: 'none',
@@ -102,8 +105,9 @@ export default function Textarea({ cc = {}, size = 'med', error, resize = 'both'
         data-error={!!error}
         data-disabled={props.disabled}
         style={{
+            ...props.style,
             resize,
-            height: `${(props.rows || 2) * 2}em`
+            height: `calc(${props.rows || 2}lh + 1.2em)`
         }}>
         <textarea
             {...split}
@@ -111,9 +115,9 @@ export default function Textarea({ cc = {}, size = 'med', error, resize = 'both'
             className={style.input}
             aria-invalid={!!error}
             onChange={e => {
-                // update the row count based on the amount of newline characters
                 split.onChange?.(e);
 
+                // update the row count based on the amount of newline characters
                 setRows(e.target.value.split(/\n/g).length);
             }} />
     </Scrollarea>;

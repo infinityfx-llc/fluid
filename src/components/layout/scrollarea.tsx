@@ -177,11 +177,12 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
         const el = area.current;
         if (!el || !handle.current || !track.current) return;
 
+        track.current.style.translate = '0px 0px';
+        handle.current.style.translate = '0px 0px';
+        
         const size = horizontal ? el.offsetWidth / el.scrollWidth : el.offsetHeight / el.scrollHeight;
         handle.current.style[horizontal ? 'width' : 'height'] = size * 100 + '%';
         handle.current.style[horizontal ? 'height' : 'width'] = '';
-        track.current.style.translate = '0px 0px';
-        handle.current.style.translate = '0px 0px';
         setScrollable(size < 1); // only show the scrollbar when the content overflows the container (there is something to scroll)
 
         scroll(0);
