@@ -72,6 +72,7 @@ export default function Badge({ children, cc = {}, variant = 'default', round = 
         variant?: 'default' | 'light' | 'neutral';
         round?: boolean;
         size?: FluidSize;
+        color?: string;
         onClose?: () => void;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);

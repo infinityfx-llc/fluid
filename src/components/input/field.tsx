@@ -119,6 +119,13 @@ export type FieldProps = {
     right?: React.ReactNode;
     onEnter?: () => void;
     error?: any;
+    /**
+     * Whether the input should adhear to a specific shape.
+     * 
+     * Use a `"0"` character to match any number.
+     * 
+     * Use a `"*"` character to match any upper- or lowercase letter or number.
+     */
     shape?: string;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>;
 

@@ -132,8 +132,21 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: SliderSelectors;
+        /**
+         * The number of handles this Slider should have.
+         * 
+         * @default 1
+         */
         handles?: number;
+        /**
+         * @default false
+         */
         vertical?: boolean;
+        /**
+         * When to display a tooltip for a handle.
+         * 
+         * @default "interact"
+         */
         tooltips?: 'never' | 'interact' | 'always';
         formatTooltip?: (value: number) => string;
         label?: string;

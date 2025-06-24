@@ -149,6 +149,11 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: StepperSelectors;
+        /**
+         * What type of navigation through the steps to allow.
+         * 
+         * @default "backwards"
+         */
         navigation?: 'none' | 'forwards' | 'backwards' | 'both';
         variant?: 'default' | 'compact' | 'vertical';
         steps: {

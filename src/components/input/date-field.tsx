@@ -55,6 +55,11 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
         defaultValue?: Date;
         onChange?: (value: Date | null) => void;
         disabled?: boolean | Date[];
+        /**
+         * Whether to show a right-side 'clear' button.
+         * 
+         * @default false
+         */
         clearable?: boolean;
     } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>) {
     const style = combineClasses(styles, cc);

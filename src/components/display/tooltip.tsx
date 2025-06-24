@@ -67,7 +67,13 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
         ref?: React.Ref<HTMLDivElement>;
         cc?: TooltipSelectors;
         content?: React.ReactNode;
+        /**
+         * @default "auto"
+         */
         position?: 'auto' | 'top' | 'left' | 'bottom' | 'right';
+        /**
+         * @default "interact"
+         */
         visibility?: 'never' | 'interact' | 'always';
         delay?: number;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>) {

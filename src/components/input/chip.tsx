@@ -131,6 +131,9 @@ export default function Chip({ children, cc = {}, size = 'med', type = 'checkbox
         ref?: React.Ref<HTMLDivElement>;
         cc?: ChipSelectors;
         size?: FluidSize;
+        /**
+         * @default "checkbox"
+         */
         type?: 'checkbox' | 'radio';
         round?: boolean;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'>) {

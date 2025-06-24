@@ -127,12 +127,18 @@ export type PanelSelectors = Selectors<'panel' | 'd__horizontal' | 'd__vertical'
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/panel}
  */
-export default function Panel({ cc = {}, children, variant = 'default', direction = 'horizontal', handles, defaultSizes, ref, ...props }:
+export default function Panel({ cc = {}, children, variant = 'default', direction = 'horizontal', handles = true, defaultSizes, ref, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: PanelSelectors;
         variant?: 'default' | 'minimal';
+        /**
+         * @default "horizontal"
+         */
         direction?: 'horizontal' | 'vertical';
+        /**
+         * @default true
+         */
         handles?: boolean;
         defaultSizes?: number[];
         // steps??

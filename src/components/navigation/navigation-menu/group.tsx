@@ -74,8 +74,23 @@ export default function Group({ children, cc = {}, label, round = false, href, t
         round?: boolean;
         href?: string;
         target?: '_blank' | '_parent' | '_self' | '_top';
+        /**
+         * Whether to show a selection ring around this link.
+         * 
+         * @default false
+         */
         active?: boolean;
+        /**
+         * How to align the dropdown container with regards to the link.
+         * 
+         * @default "center"
+         */
         position?: 'start' | 'center' | 'end';
+        /**
+         * A custom component to use as a link element.
+         * 
+         * Defaults to the HTML `<a>` element.
+         */
         Link?: AnchorLike<any>;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);

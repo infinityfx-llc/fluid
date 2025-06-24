@@ -159,12 +159,26 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
         defaultPage?: number;
         page?: number;
         onChange?: (page: number) => void;
+        /**
+         * Hide numbered controls.
+         * 
+         * @default false
+         */
         compact?: boolean;
+        /**
+         * Show skip to start/end controls.
+         * 
+         * @default false
+         */
         skipable?: boolean;
+        /**
+         * @default "square"
+         */
         shape?: 'square' | 'round' | 'pill';
         size?: FluidSize;
         variant?: 'default' | 'neutral' | 'minimal';
         disabled?: boolean;
+        color?: string;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'children'>) {
     const style = combineClasses(styles, cc);
 

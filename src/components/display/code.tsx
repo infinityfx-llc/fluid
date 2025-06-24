@@ -89,7 +89,17 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
     children: string;
     ref?: React.Ref<HTMLDivElement>;
     cc?: CodeSelectors;
+    /**
+     * @default true
+     */
     lineNumbers?: boolean;
+    /**
+     * Allows for settings HTML content directly.
+     * 
+     * Should be used with **CAUTION**, since this could introduce XSS vulnerabilities.
+     * 
+     * @default false
+     */
     dangerouslyInject?: boolean;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);

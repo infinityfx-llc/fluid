@@ -9,6 +9,7 @@ import { createStyles } from "../../core/style";
 
 const styles = createStyles('segmented', {
     '.segmented': {
+        position: 'relative',
         display: 'flex'
     },
 
@@ -139,7 +140,15 @@ type SegmentedProps<T> = {
     variant?: 'default' | 'neutral' | 'minimal';
     size?: Omit<FluidSize, 'xsm'>;
     round?: boolean;
+    /**
+     * Whether all entries should be equal size, regardless of their content.
+     * 
+     * @default false
+     */
     uniform?: boolean;
+    /**
+     * @default false
+     */
     vertical?: boolean;
     options: {
         label: React.ReactNode;

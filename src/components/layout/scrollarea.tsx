@@ -97,8 +97,19 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: ScrollareaSelectors;
+        /**
+         * @default false
+         */
         horizontal?: boolean;
+        /**
+         * @default "hover"
+         */
         variant?: 'hover' | 'permanent';
+        /**
+         * For `"shift"` behavior the container wil only scroll with the mouse wheel when holding the shift key.
+         * 
+         * @default "normal"
+         */
         behavior?: 'normal' | 'shift';
         disabled?: boolean;
     } & React.HTMLAttributes<HTMLDivElement>) {

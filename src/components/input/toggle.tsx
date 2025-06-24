@@ -113,6 +113,9 @@ export type ToggleProps = {
     compact?: boolean;
     round?: boolean;
     variant?: 'default' | 'minimal' | 'neutral';
+    /**
+     * Alternate content to show when the Toggle is `checked`.
+     */
     checkedContent?: React.ReactNode;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>;
 

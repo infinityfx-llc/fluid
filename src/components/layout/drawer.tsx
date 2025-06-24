@@ -76,6 +76,9 @@ export default function Drawer({ children, cc = {}, show, onClose, position = 'r
         cc?: DrawerSelectors;
         show: boolean;
         onClose: () => void;
+        /**
+         * @default "right"
+         */
         position?: 'left' | 'right';
         title?: React.ReactNode;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>) {

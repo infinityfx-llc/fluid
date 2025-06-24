@@ -124,9 +124,22 @@ export default function Timeline({ children, cc = {}, active, direction = 'horiz
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: TimelineSelectors;
+        /**
+         * How many entries should be marked as completed.
+         */
         active: number;
         direction?: 'horizontal' | 'vertical';
+        /**
+         * Whether all entries should be equal size, regardless of their content.
+         * 
+         * @default false
+         */
         uniform?: boolean;
+        /**
+         * Show completion status in reverse order.
+         * 
+         * @default false
+         */
         reverse?: boolean;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);

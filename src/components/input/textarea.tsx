@@ -88,6 +88,9 @@ export default function Textarea({ cc = {}, size = 'med', error, resize = 'both'
         cc?: TextareaSelectors;
         size?: FluidSize;
         error?: any;
+        /**
+         * @default "both"
+         */
         resize?: 'none' | 'vertical' | 'horizontal' | 'both';
     } & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'children' | 'cols'>) {
     const style = combineClasses(styles, cc);

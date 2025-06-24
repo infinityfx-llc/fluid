@@ -111,6 +111,11 @@ type TableProps<T> = {
         [column in keyof T]?: (value: T[column]) => React.ReactNode;
     };
     rowActions?: (row: T, index: number) => React.ReactNode;
+    /**
+     * Message to display when no data is defined.
+     * 
+     * @default "Nothing to display"
+     */
     emptyMessage?: string;
 } & React.HTMLAttributes<HTMLDivElement>;
 

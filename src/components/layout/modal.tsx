@@ -87,6 +87,9 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
         show: boolean;
         onClose: () => void;
         title?: React.ReactNode;
+        /**
+         * @default "handle"
+         */
         mobileClosing?: 'button' | 'handle';
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>) {
     const style = combineClasses(styles, cc);

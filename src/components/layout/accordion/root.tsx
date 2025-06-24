@@ -55,6 +55,11 @@ export default function Root({ children, cc = {}, multiple = false, variant = 'd
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: AccordionRootSelectors;
+        /**
+         * Allow for multiple entries to open at once.
+         * 
+         * @default false
+         */
         multiple?: boolean;
         variant?: 'default' | 'isolated' | 'minimal';
     } & React.HTMLAttributes<HTMLDivElement>) {

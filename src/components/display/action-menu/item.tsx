@@ -43,6 +43,11 @@ export default function Item({ children, cc = {}, keepOpen, className, color, ..
     {
         ref?: React.Ref<HTMLButtonElement>;
         cc?: ActionMenuItemSelectors;
+        /**
+         * Keep the ActionMenu open when clicking this entry.
+         * 
+         * @default false
+         */
         keepOpen?: boolean;
     } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);

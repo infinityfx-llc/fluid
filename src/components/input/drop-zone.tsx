@@ -143,6 +143,11 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
         text?: string;
         annotation?: string;
         icon?: React.ReactNode;
+        /**
+         * Show a preview when an image file is selected.
+         * 
+         * @default false
+         */
         previewImages?: boolean;
         inputRef?: React.Ref<HTMLInputElement>;
         onChange?: React.ChangeEventHandler<HTMLInputElement>;

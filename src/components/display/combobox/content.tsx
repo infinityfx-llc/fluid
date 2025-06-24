@@ -11,7 +11,6 @@ import { createStyles } from '../../../core/style';
 import { usePopover } from '../../layout/popover/root';
 import { Icon } from '../../../core/icons';
 import { useDebounce } from '../../../hooks';
-import Option from './option';
 
 const styles = createStyles('combobox.content', {
     '.container:not(.modal)': {
@@ -88,9 +87,25 @@ export default function Content({
         cc?: ComboboxContentSelectors;
         round?: boolean;
         size?: FluidSize;
+        /**
+         * @default false
+         */
         searchable?: boolean;
+        /**
+         * The placeholder text to show inside the optional searchbar.
+         * 
+         * @default "Search.."
+         */
         placeholder?: string;
+        /**
+         * The text to show when there are no search results to show.
+         * 
+         * @default "Nothing found"
+         */
         emptyMessage?: string;
+        /**
+         * When set to a `number` greater than `0`, will enable virtual scrolling, improving performance for large numbers of entries.
+         */
         virtualItemHeight?: number;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);

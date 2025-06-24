@@ -102,6 +102,7 @@ export default function Button({ children, cc = {}, round = false, compact = fal
         compact?: boolean;
         size?: FluidSize;
         variant?: 'default' | 'neutral' | 'light' | 'minimal';
+        color?: string;
         loading?: boolean;
     } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);

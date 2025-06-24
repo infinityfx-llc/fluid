@@ -27,6 +27,11 @@ export default function Link({ children, cc = {}, Link = 'a', ...props }:
     {
         ref?: React.Ref<HTMLAnchorElement>;
         cc?: NavigationMenuLinkSelectors;
+        /**
+         * A custom component to use as a link element.
+         * 
+         * Defaults to the HTML `<a>` element.
+         */
         Link?: AnchorLike<any>;
     } & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
     const style = combineClasses(styles, cc);

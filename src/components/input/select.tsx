@@ -149,14 +149,35 @@ type SelectProps<T> = {
         key?: string;
         disabled?: boolean;
     }[];
+    /**
+     * @default false
+     */
     searchable?: boolean;
+    /**
+     * When `multiple` = `true`, indicates the maximum number of options to be selected at a time.
+     * 
+     * Defaults to **no limit**.
+     */
     limit?: number;
+    /**
+     * The text to show when there are no options to show.
+     * 
+     * @default "Nothing found"
+     */
     emptyMessage?: string;
     value?: T | null;
     defaultValue?: T;
     onChange?: (value: T) => void;
     contentSize?: FluidSize;
+    /**
+     * How to display the Select content on mobile devices.
+     * 
+     * @default "popover"
+     */
     mobileContainer?: 'popover' | 'modal';
+    /**
+     * When set to a `number` greater than `0`, will enable virtual scrolling, improving performance for large numbers of entries.
+     */
     virtualItemHeight?: number;
 } & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'onEnter' | 'left' | 'right' | 'shape'>;
 

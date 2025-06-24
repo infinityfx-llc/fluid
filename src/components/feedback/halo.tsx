@@ -65,8 +65,18 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
         ref?: React.Ref<any>;
         cc?: HaloSelectors;
         color?: string;
+        /**
+         * Show the Halo when hovering over the target.
+         * 
+         * @default true
+         */
         hover?: boolean;
         disabled?: boolean;
+        /**
+         * The target element to interact with for the Halo to show.
+         * 
+         * Defaults to the child element the Halo component is wrapped around.
+         */
         target?: React.RefObject<P | null>;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);

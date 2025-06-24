@@ -41,7 +41,15 @@ export default function Ticker({ children, cc = {}, align = 'left', selective, d
     children: number | string | (number | string)[];
     ref?: React.Ref<HTMLDivElement>;
     cc?: TickerSelectors;
+    /**
+     * @default "left"
+     */
     align?: 'left' | 'right';
+    /**
+     * Only animate characters that have changed since last render.
+     * 
+     * @default false
+     */
     selective?: boolean;
     duration?: number;
     stagger?: number;
@@ -132,7 +140,7 @@ export default function Ticker({ children, cc = {}, align = 'left', selective, d
                 const key = (align === 'right' ? state.length - 1 - i : i).toString();
 
                 return <Animatable
-                    key={key}
+                    key={key} // maybe dont use for key?
                     id={key}
                     adaptive
                     deform={false}

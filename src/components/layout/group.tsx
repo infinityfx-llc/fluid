@@ -65,7 +65,15 @@ export type GroupSelectors = Selectors<'group' | 'split' | 'd__horizontal' | 'd_
 export default function Group({ children, cc = {}, split = false, direction = 'horizontal', ...props }: {
     ref?: React.Ref<HTMLDivElement>;
     cc?: GroupSelectors;
+    /**
+     * Leave spacing between grouped elements.
+     * 
+     * @default false
+     */
     split?: boolean;
+    /**
+     * @default "horizontal"
+     */
     direction?: 'horizontal' | 'vertical';
 } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);

@@ -6,6 +6,11 @@ import { usePopover } from "./root";
 
 export type PopoverTrigger = {
     children: React.ReactElement<any>;
+    /**
+     * Only trigger when pressing down for longer than 400ms.
+     * 
+     * @default false
+     */
     longpress?: boolean;
     disabled?: boolean;
 } & Omit<React.HTMLAttributes<any>, 'children'>;

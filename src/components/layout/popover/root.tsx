@@ -33,8 +33,21 @@ export type PopoverRootReference = {
 export type PopoverRoot = {
     children: React.ReactNode;
     ref?: React.Ref<PopoverRootReference>;
+    /**
+     * @default "auto"
+     */
     position?: 'auto' | 'center';
+    /**
+     * How to display the Popover content on mobile devices.
+     * 
+     * @default "popover"
+     */
     mobileContainer?: 'popover' | 'modal';
+    /**
+     * Whether to stretch the Popover container to be at least the same size as the Popover trigger element.
+     * 
+     * @default false
+     */
     stretch?: boolean;
     onClose?: () => void;
 };

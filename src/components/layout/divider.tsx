@@ -41,8 +41,14 @@ export default function Divider({ cc = {}, vertical = false, label, labelPositio
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: DividerSelectors
+        /**
+         * @default false
+         */
         vertical?: boolean;
         label?: string;
+        /**
+         * @default "center"
+         */
         labelPosition?: 'start' | 'center' | 'end';
         size?: FluidSize | 'inherit';
     } & React.HTMLAttributes<HTMLDivElement>) {

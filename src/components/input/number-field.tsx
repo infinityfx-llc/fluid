@@ -37,7 +37,17 @@ const styles = createStyles('number-field', {
  * @see {@link https://fluid.infinityfx.dev/docs/components/number-field}
  */
 export default function NumberField({ cc = {}, precision = 3, controls = true, defaultValue, ...props }: {
+    /**
+     * Maximum number of digits to allow after the decimal.
+     * 
+     * @default 3
+     */
     precision?: number;
+    /**
+     * Show increment/decrement controls on the sides of the input field.
+     * 
+     * @default true
+     */
     controls?: boolean;
 } & Omit<FieldProps, 'type'>) {
     const style = combineClasses(styles, cc);

@@ -116,7 +116,21 @@ export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size =
         ref?: React.Ref<HTMLDivElement>;
         cc?: PincodeSelectors;
         defaultvalue?: FluidInputvalue;
+        /**
+         * An `array` of numbers indicating how many inputs to show.
+         * 
+         * A single digit represents a number of grouped inputs.
+         * 
+         * Multiple comma-seperated digits represent spaced apart inputs.
+         * 
+         * @default [1, 1, 1, 1]
+         */
         format?: number[];
+        /**
+         * Whether to hide the entered pincode input.
+         * 
+         * @default false
+         */
         masked?: boolean;
         size?: FluidSize;
         round?: boolean;
