@@ -107,6 +107,7 @@ export default function Textarea({ cc = {}, size = 'med', error, resize = 'both'
         )}
         data-error={!!error}
         data-disabled={props.disabled}
+        data-fb
         style={{
             ...props.style,
             resize,

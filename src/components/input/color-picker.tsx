@@ -136,7 +136,7 @@ type HSV = [number, number, number];
 
 type ColorPickerProps<T> = {
     ref?: React.Ref<HTMLDivElement>;
-    cc?: Selectors<'wrapper'>;
+    cc?: ColorPickerSelectors;
     format?: T;
     value?: T extends 'hex' ? string : RGB;
     defaultValue?: T extends 'hex' ? string : RGB;

@@ -32,10 +32,6 @@ const styles = createStyles('segmented', {
         fontSize: 'var(--f-font-size-sml)'
     },
 
-    '.segmented.round': {
-        borderRadius: '999px'
-    },
-
     '.segmented.uniform': {
         display: 'grid',
         gridAutoColumns: '1fr',
@@ -47,8 +43,8 @@ const styles = createStyles('segmented', {
         gridAutoFlow: 'row'
     },
 
-    '.segmented.vertical.round': {
-        borderRadius: 'calc(1.4em + 1px)'
+    '.segmented.round': {
+        borderRadius: 'calc(1.6em + 1px)'
     },
 
     '.option': {
@@ -184,7 +180,8 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
             vertical && style.vertical,
             props.className
         )}
-        data-error={!!error}>
+        data-error={!!error}
+        data-fb={variant !== 'minimal' ? 'true' : undefined}>
         {options.map(({ label, value: option, disabled = false }, i) => {
 
             return <Halo key={i} hover={false} cc={{

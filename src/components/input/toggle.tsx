@@ -33,7 +33,7 @@ const styles = createStyles('toggle', {
     },
 
     '.toggle.round': {
-        borderRadius: '999px'
+        borderRadius: 'calc(1.4em + 1px)'
     },
 
     '.s__xsm': {
@@ -151,7 +151,8 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
                 props.className
             )}
             data-checked={state}
-            data-disabled={!!props.disabled}>
+            data-disabled={!!props.disabled}
+            data-fb={variant === 'neutral' ? 'true' : undefined}>
             <input
                 {...split}
                 ref={inputRef}

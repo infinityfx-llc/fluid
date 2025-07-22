@@ -25,7 +25,7 @@ const styles = createStyles('button', {
     },
 
     '.button.round': {
-        borderRadius: '999px'
+        borderRadius: 'calc(1.4em + 1px)'
     },
 
     '.s__xsm': {
@@ -123,7 +123,8 @@ export default function Button({ children, cc = {}, round = false, compact = fal
                 '--color': color,
                 ...props.style
             } as any}
-            data-loading={loading}>
+            data-loading={loading}
+            data-fb={variant === 'neutral' ? 'true' : undefined}>
             <span className={style.content}>{children}</span>
 
             {loading && <Spinner className={style.loader} />}

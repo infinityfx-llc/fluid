@@ -73,13 +73,13 @@ const styles = createStyles('pincode', {
     },
 
     '.pincode.round .field:first-child': {
-        borderTopLeftRadius: '999px',
-        borderBottomLeftRadius: '999px'
+        borderTopLeftRadius: 'calc(1.4em + 1px)',
+        borderBottomLeftRadius: 'calc(1.4em + 1px)'
     },
 
     '.pincode.round .field:last-child': {
-        borderTopRightRadius: '999px',
-        borderBottomRightRadius: '999px'
+        borderTopRightRadius: 'calc(1.4em + 1px)',
+        borderBottomRightRadius: 'calc(1.4em + 1px)'
     },
 
     '.pincode[data-disabled="true"] .field': {
@@ -199,7 +199,8 @@ export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size =
             props.className
         )}
         data-error={!!error}
-        data-disabled={props.disabled}>
+        data-disabled={props.disabled}
+        data-fb>
 
         {format.map((count, i) => {
             const min = format.slice(0, i).reduce((len, val) => len + val, 0);

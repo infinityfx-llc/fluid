@@ -105,7 +105,7 @@ const styles = createStyles('file-field', {
     },
 
     '.field.round': {
-        borderRadius: '999px'
+        borderRadius: 'calc(1.4em + 1px)'
     },
 
     '.button': {
@@ -142,7 +142,8 @@ export default function FileField({ cc = {}, size = 'med', variant = 'default', 
             props.className
         )}
         data-error={!!error}
-        data-disabled={props.disabled}>
+        data-disabled={props.disabled}
+        data-fb={variant === 'default' ? 'true' : undefined}>
 
         <div className={style.content}>
             {icon}

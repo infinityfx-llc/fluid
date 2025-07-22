@@ -54,7 +54,7 @@ export type AnnotationSelectors = Selectors<'wrapper' | 'label' | 'error' | 's__
 export default function Annotation({ children, cc = {}, label, error, ...props }: {
     ref?: React.Ref<HTMLDivElement>;
     children: React.ReactElement<any>;
-    cc?: Selectors;
+    cc?: AnnotationSelectors;
     label?: string;
     error?: string;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
@@ -75,9 +75,10 @@ export default function Annotation({ children, cc = {}, label, error, ...props }
             {label}{required ? ' *' : ''}
         </div>}
 
-        {label ? cloneElement(children, {
-            'aria-labelledby': id
-        }) : children}
+        {cloneElement(children, {
+            'aria-labelledby': label ? id : undefined,
+            'data-fc': true
+        })}
 
         <Collapsible shown={!!error}>
             <div className={style.error}>

@@ -118,7 +118,7 @@ const styles = createStyles('select', {
     },
 
     '.field.round': {
-        borderRadius: '999px'
+        borderRadius: 'calc(1.4em + 1px)'
     },
 
     '.field .badge': {
@@ -242,7 +242,8 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                     props.className
                 )}
                 data-error={!!error}
-                data-disabled={props.disabled}>
+                data-disabled={props.disabled}
+                data-fb={variant === 'default' ? 'true' : undefined}>
                 <div className={style.content__wrapper}>
                     {icon}
 

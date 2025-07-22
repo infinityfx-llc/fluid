@@ -153,7 +153,8 @@ export default function Table<T extends { [key: string]: string | number | Date;
         role="grid"
         horizontal
         behavior="shift"
-        className={classes(style.table, props.className)}>
+        className={classes(style.table, props.className)}
+        data-fb>
         <div role="rowgroup" className={style.rows}>
             <div role="row" className={classes(style.row, style.header)} style={{ gridTemplateColumns }}>
                 {selectable && <div className={style.collapsed}>

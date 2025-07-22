@@ -23,7 +23,7 @@ export type ActionMenuMenuSelectors = Selectors<'menu'>;
 export default function Menu({ children, cc = {}, className, ...props }:
     {
         ref?: React.ForwardedRef<HTMLDivElement>;
-        cc?: Selectors;
+        cc?: ActionMenuMenuSelectors;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
