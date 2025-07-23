@@ -1,34 +1,34 @@
 'use client';
 
-import { classes, combineClasses } from "../../../src/core/utils";
+import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
-import { Animatable } from "@infinityfx/lively";
-import { useLink } from "@infinityfx/lively/hooks";
-import { useEffect } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('circular-progress', {
     '.wrapper': {
         position: 'relative',
-        width: '3.2em',
+        minWidth: 'min(100vw, 3.6em)',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
-        flexShrink: 0
+        justifyContent: 'center'
+    },
+
+    '.track, .progress': {
+        fill: 'none',
+        strokeDasharray: 1,
+        strokeWidth: 'calc(.45em * var(--scale, 1))',
+        strokeLinecap: 'round',
+        transformOrigin: 'center',
+        transition: 'background-color .3s, stroke-dashoffset .3s, rotate .3s'
     },
 
     '.track': {
-        stroke: 'var(--f-clr-fg-100)',
-        strokeWidth: '10px',
-        strokeLinecap: 'round',
-        strokeDasharray: 1
+        stroke: 'var(--f-clr-fg-100)'
     },
 
     '.progress': {
-        stroke: 'var(--color, var(--f-clr-primary-100))',
-        strokeWidth: '10px',
-        strokeLinecap: 'round',
-        transition: 'background-color .3s'
+        stroke: 'var(--color, var(--f-clr-primary-100))'
     },
 
     '.label': {
@@ -61,25 +61,39 @@ export type CircularProgressSelectors = Selectors<'wrapper' | 'track' | 'progres
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/circular-progress}
  */
-export default function CircularProgress({ children, cc = {}, size = 'med', slice = 0, value, defaultValue = 0, color, ...props }:
+export default function CircularProgress({ children, cc = {}, size = 'med', slice = 0, value = 0, color, gap = 0, fixedStrokeWidth = true, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: CircularProgressSelectors;
         size?: FluidSize;
         slice?: number;
         value?: number;
-        defaultValue?: number;
         color?: string;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue'>) {
+        gap?: number;
+        fixedStrokeWidth?: boolean;
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
+    const el = useRef<HTMLDivElement>(null);
 
-    const state = value !== undefined ? value : defaultValue;
-    const link = useLink(state * (1 - slice));
+    useLayoutEffect(() => {
+        if (!fixedStrokeWidth) return;
 
-    useEffect(() => link.set(state * (1 - slice), { duration: .3 }), [state, slice]);
+        function resize() {
+            if (!el.current) return;
+
+            const { width, fontSize } = getComputedStyle(el.current);
+            el.current.style.setProperty('--scale', (3.6 * parseFloat(fontSize)) / parseFloat(width) + '');
+        }
+
+        const observer = new ResizeObserver(resize);
+        if (el.current) observer.observe(el.current);
+
+        return () => observer.disconnect();
+    }, []);
 
     return <div
         {...props}
+        ref={combineRefs(props.ref, el)}
         aria-label={undefined}
         className={classes(
             style.wrapper,
@@ -90,12 +104,31 @@ export default function CircularProgress({ children, cc = {}, size = 'med', slic
             {children}
         </div>
 
-        <svg viewBox="0 0 100 100" role="progressbar" aria-valuenow={state * 100} aria-label={props["aria-label"]} style={{ rotate: `${90 + 180 * slice}deg`, width: '100%' }}>
-            <circle r={45} cx={50} cy={50} fill="none" className={style.track} pathLength={1} style={{ strokeDashoffset: slice }} />
+        <svg
+            overflow="visible"
+            viewBox="0 0 100 100"
+            role="progressbar"
+            aria-valuenow={value * 100}
+            aria-label={props["aria-label"]}
+            style={{
+                rotate: `${90 + 180 * slice}deg`,
+                '--color': color
+            } as any}>
+            <circle r={45} cx={50} cy={50}
+                pathLength={1}
+                className={style.track}
+                style={{
+                    strokeDashoffset: value ? Math.min(value * (1 - slice) + Math.max(slice, gap / 2) + gap / 2, 1) : slice,
+                    rotate: `${value ? Math.min(value * (1 - slice) + gap / 2, 1 - slice) * 360 : 0}deg`
+                }} />
 
-            <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: 1 - link() }}>
-                <circle r={45} cx={50} cy={50} fill="none" className={style.progress} style={{ '--color': color } as any} />
-            </Animatable>
+            <circle r={45} cx={50} cy={50}
+                pathLength={1}
+                className={style.progress}
+                style={{
+                    strokeDashoffset: value < 1 ? Math.min(1 - value * (1 - slice) + Math.max(gap / 2 - slice, 0) + gap / 2, 1) : slice,
+                    rotate: `${value < 1 ? Math.max(gap / 2 - slice, 0) * 360 : 0}deg`
+                }} />
         </svg>
     </div>;
 }

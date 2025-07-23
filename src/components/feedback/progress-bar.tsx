@@ -50,23 +50,20 @@ export type ProgressBarSelectors = Selectors<'track' | 'progress' | 's__xsm' | '
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/progress-bar}
  */
-export default function ProgressBar({ cc = {}, size = 'med', value, defaultValue = 0, color, ...props }:
+export default function ProgressBar({ cc = {}, size = 'med', value = 0, color, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: ProgressBarSelectors;
         size?: FluidSize;
         value?: number;
-        defaultValue?: number;
         color?: string;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue'>) {
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
+    const link = useLink(value);
 
-    const state = value !== undefined ? value : defaultValue;
-    const link = useLink(state);
+    useEffect(() => link.set(value, { duration: .3 }), [value]);
 
-    useEffect(() => link.set(state, { duration: .3 }), [state]);
-
-    return <div {...props} role="progressbar" aria-valuenow={state * 100} className={classes(
+    return <div {...props} role="progressbar" aria-valuenow={value * 100} className={classes(
         style.track,
         style[`s__${size}`],
         props.className
