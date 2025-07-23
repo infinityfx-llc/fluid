@@ -53,7 +53,7 @@ const styles = createStyles('color-picker', fluid => ({
         height: '1.2em',
         borderRadius: 'var(--f-radius-sml)',
         backgroundColor: 'var(--color)',
-        border: 'solid 2px white',
+        border: 'solid 1px white',
         boxShadow: 'var(--f-shadow-sml)',
         translate: '-50% -50%',
         cursor: 'pointer',
@@ -81,7 +81,7 @@ const styles = createStyles('color-picker', fluid => ({
     },
 
     '.wrapper .hue__progress': {
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent !important'
     },
 
     '.hue__track': {
@@ -96,7 +96,7 @@ const styles = createStyles('color-picker', fluid => ({
 
     '.wrapper .hue__handle::after': {
         boxSizing: 'border-box',
-        border: 'solid 2px white',
+        border: 'solid 1px white',
         borderRadius: 'var(--f-radius-sml)'
     },
 

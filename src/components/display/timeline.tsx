@@ -42,6 +42,11 @@ const styles = createStyles('timeline', {
         paddingRight: 'var(--f-spacing-xsm)'
     },
 
+    '.d__vertical.overflow .event:last-child .content': {
+        alignSelf: 'flex-start',
+        paddingTop: '6px'
+    },
+
     '.axis': {
         display: 'flex',
         gap: '3px',
@@ -87,6 +92,10 @@ const styles = createStyles('timeline', {
         flexGrow: 1
     },
 
+    '.overflow .event:last-child .segment': {
+        flexGrow: 0
+    },
+
     '.d__horizontal .segment': {
         height: '3px',
         minWidth: '3px'
@@ -113,14 +122,14 @@ const styles = createStyles('timeline', {
     }
 });
 
-export type TimelineSelectors = Selectors<'timeline' | 'uniform' | 'd__horizontal' | 'd__vertical' | 'event' | 'content' | 'axis' | 'bullet' | 'segment'>;
+export type TimelineSelectors = Selectors<'timeline' | 'uniform' | 'overflow' | 'd__horizontal' | 'd__vertical' | 'event' | 'content' | 'axis' | 'bullet' | 'segment'>;
 
 /**
  * An ordered timeline of events.
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/timeline}
  */
-export default function Timeline({ children, cc = {}, active, direction = 'horizontal', uniform, reverse, ...props }:
+export default function Timeline({ children, cc = {}, active, direction = 'horizontal', uniform, reverse, overflow = false, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: TimelineSelectors;
@@ -141,6 +150,12 @@ export default function Timeline({ children, cc = {}, active, direction = 'horiz
          * @default false
          */
         reverse?: boolean;
+        /**
+         * Lets the last event's content overflow past it's bullet point.
+         * 
+         * @default false
+         */
+        overflow?: boolean;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
     const childArray = Children.toArray(children);
@@ -150,6 +165,7 @@ export default function Timeline({ children, cc = {}, active, direction = 'horiz
             style.timeline,
             style[`d__${direction}`],
             uniform && style.uniform,
+            overflow && style.overflow,
             props.className
         )}>
 

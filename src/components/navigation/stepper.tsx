@@ -168,9 +168,11 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
     const style = combineClasses(styles, cc);
 
     const id = useId();
-    const stepsArray = variant === 'compact' ?
-        steps.slice(Math.min(completed, steps.length - 1), completed + 1) :
-        steps;
+    let stepsArray = steps
+        .map((step, i) => Object.assign({
+            label: (i + 1 + '').padStart(2, '0')
+        }, step));
+    if (variant === 'compact') stepsArray = stepsArray.slice(Math.min(completed, steps.length - 1), completed + 1);
 
     return <div
         {...props}
@@ -185,8 +187,6 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
                 navigation === 'backwards' ? i < completed :
                     navigation === 'both' ? true : false) && variant !== 'compact';
             const isCompleted = variant === 'compact' ? completed === steps.length : i < completed;
-
-            if (!label) label = (i + 1 + '').padStart(2, '0');
 
             return <div
                 key={i}
