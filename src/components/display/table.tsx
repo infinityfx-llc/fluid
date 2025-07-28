@@ -117,7 +117,7 @@ type TableProps<T> = {
      * @default "Nothing to display"
      */
     emptyMessage?: string;
-} & React.HTMLAttributes<HTMLDivElement>;
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'onSelect'>;
 
 /**
  * A table displaying data.
