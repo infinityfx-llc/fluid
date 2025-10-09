@@ -122,7 +122,7 @@ export default function Checkbox({ cc = {}, error, size = 'med', color, intermed
 
     useEffect(() => link.set(state ? 1 : 0, { duration: .25 }), [state]);
 
-    return <Halo hover={false} cc={{ halo: style.halo, ...cc }}>
+    return <Halo hover={false} cc={{ ...cc, halo: style.halo }}>
         <div {...rest}
             className={classes(
                 style.wrapper,

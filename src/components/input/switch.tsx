@@ -195,7 +195,7 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
                     { on: state, immediate: true },
                     { on: !state, reverse: true, immediate: true }
                 ]}>
-                <Halo target={inputRef} hover={false} cc={{ halo: style.halo, ...cc }}>
+                <Halo target={inputRef} hover={false} cc={{ ...cc, halo: style.halo }}>
                     <div className={style.handle__wrapper}>
                         <Animatable
                             inherit

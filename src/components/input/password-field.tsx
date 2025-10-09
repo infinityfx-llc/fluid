@@ -82,8 +82,8 @@ export default function PasswordField({ cc = {}, strengthBar = false, size = 'me
             value={value}
             onEnter={onEnter}
             cc={{
-                field: style.field,
-                ...cc
+                ...cc,
+                field: style.field
             }}
             onChange={e => {
                 setValue?.(e.target.value);

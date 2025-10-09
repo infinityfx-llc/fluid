@@ -219,9 +219,9 @@ export default function Content({
                     defaultValue={query}
                     onChange={e => search(e.target.value.toLowerCase())}
                     cc={{
+                        ...cc,
                         field: style.field,
-                        content: style.field__content,
-                        ...cc
+                        content: style.field__content
                     }} />}
 
                 <Scrollarea className={style.content} onScroll={e => updateView(e.currentTarget.scrollTop)}>

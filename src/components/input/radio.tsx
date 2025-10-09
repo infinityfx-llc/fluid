@@ -130,7 +130,7 @@ export default function Radio({ cc = {}, error, size = 'med', color, ...props }:
 
     const [split, rest] = useInputProps(props);
 
-    return <Halo hover={false} cc={{ halo: style.halo, ...cc }}>
+    return <Halo hover={false} cc={{ ...cc, halo: style.halo }}>
         <div {...rest}
             className={classes(
                 style.wrapper,

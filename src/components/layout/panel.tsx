@@ -213,8 +213,8 @@ export default function Panel({ cc = {}, children, variant = 'default', directio
                         hover={false}
                         color="var(--f-clr-primary-400)"
                         cc={{
-                            halo: style.halo,
-                            ...cc
+                            ...cc,
+                            halo: style.halo
                         }}>
                         <div
                             tabIndex={0}

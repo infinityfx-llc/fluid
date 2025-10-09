@@ -101,9 +101,9 @@ export default function NumberField({ cc = {}, precision = 3, controls = true, d
             props.onBlur?.(e);
         }}
         cc={{
+            ...cc,
             field: style.field,
-            input: style.input,
-            ...cc
+            input: style.input
         }}
         left={controls ? <Button {...buttonProps} cc={{ button: style.button__start }} aria-label={`-${step}`} onClick={() => increment(-step)}>
             <Icon type="remove" />

@@ -250,7 +250,7 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
             </div>
 
             <div className={style.column}>
-                <Swatch color={`rgb(${rgb.join(',')})`} cc={{ swatch: style.swatch, ...cc }} />
+                <Swatch color={`rgb(${rgb.join(',')})`} cc={{ ...cc, swatch: style.swatch }} />
 
                 <div className={style.fields}>
                     <Field
@@ -300,10 +300,10 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
                 update(hsvToRgb(mutableColor.current));
             }}
             cc={{
+                ...cc,
                 progress: style.hue__progress,
                 track: style.hue__track,
-                handle: style.hue__handle,
-                ...cc
+                handle: style.hue__handle
             }} />
     </div>;
 }

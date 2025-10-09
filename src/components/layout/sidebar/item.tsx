@@ -192,9 +192,9 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
 
                     {count ? <Toggle
                         cc={{
+                            ...cc,
                             toggle: style.toggle,
-                            content: style.toggle__content,
-                            ...cc
+                            content: style.toggle__content
                         }}
                         aria-label={label}
                         disabled={compact}
@@ -212,7 +212,7 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
 
         {count ? <Collapsible
             shown={open && (isMobile || !collapsed)}
-            cc={{ content: style.children, ...cc }}
+            cc={{ ...cc, content: style.children }}
             data-collapsed={collapsed}>
             {children}
         </Collapsible> : null}

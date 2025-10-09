@@ -19,7 +19,7 @@ const styles = createStyles('combobox.option', {
         alignItems: 'center',
         gap: 'var(--f-spacing-xsm)',
         lineHeight: 1.25,
-        WebkitTapHighlightColor: 'transparent',
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.option.round': {

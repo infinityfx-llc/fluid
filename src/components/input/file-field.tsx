@@ -178,8 +178,8 @@ export default function FileField({ cc = {}, size = 'med', variant = 'default', 
             size={size}
             loading={loading}
             cc={{
-                button: style.button,
-                ...cc
+                ...cc,
+                button: style.button
             }}
             onClick={() => input.current?.click()}>
             <Icon type="upload" />

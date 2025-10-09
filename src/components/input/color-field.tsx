@@ -54,7 +54,7 @@ export default function ColorField({ cc = {}, value, defaultValue, onChange, dis
             <Field {...props}
                 cc={cc}
                 inputMode="none"
-                left={<Swatch size={props.size} round={props.round} color={state} cc={{ swatch: style.swatch, ...cc }} />}
+                left={<Swatch size={props.size} round={props.round} color={state} cc={{ ...cc, swatch: style.swatch }} />}
                 role="combobox"
                 aria-haspopup="listbox"
                 type="text"

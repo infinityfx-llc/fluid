@@ -136,8 +136,8 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
                 checkedContent={<Icon type="check" />}
                 checked={copied}
                 cc={{
-                    toggle: style.toggle,
-                    ...cc
+                    ...cc,
+                    toggle: style.toggle
                 }}
                 aria-label="Copy code"
                 onClick={() => {

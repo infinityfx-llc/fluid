@@ -185,16 +185,16 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
         {options.map(({ label, value: option, disabled = false }, i) => {
 
             return <Halo key={i} hover={false} cc={{
+                ...cc,
                 container: style.container,
                 halo: style.halo,
-                ring: style.ring,
-                ...cc
+                ring: style.ring
             }}>
                 <button
                     className={style.option}
-                    type="button" 
-                    role="radio" 
-                    aria-checked={state === option} 
+                    type="button"
+                    role="radio"
+                    aria-checked={state === option}
                     disabled={disabled}
                     onClick={() => {
                         setState?.(option);
