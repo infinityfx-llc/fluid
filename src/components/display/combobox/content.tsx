@@ -184,13 +184,21 @@ export default function Content({
                 { on: 'unmount', reverse: true }
             ]}>
 
-            <div {...props} role="listbox" className={classes(
-                style.container,
-                style[`s__${size}`],
-                round && style.round,
-                isModal && style.modal,
-                props.className
-            )}
+            <div
+                {...props}
+                role="listbox"
+                className={classes(
+                    style.container,
+                    style[`s__${size}`],
+                    round && style.round,
+                    isModal && style.modal,
+                    props.className
+                )}
+                onBlur={e => {
+                    props.onBlur?.(e);
+
+                    focus.current.index = -1;
+                }}
                 onKeyDown={e => {
                     props.onKeyDown?.(e);
 

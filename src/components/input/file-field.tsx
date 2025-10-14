@@ -26,7 +26,6 @@ const styles = createStyles('file-field', {
     },
 
     '.field': {
-        backgroundColor: 'var(--f-clr-fg-100)',
         borderRadius: 'var(--f-radius-sml)',
         color: 'var(--f-clr-grey-200)',
         transition: 'background-color .2s, border-color .2s, color .2s, outline-color .2s',
@@ -38,6 +37,7 @@ const styles = createStyles('file-field', {
     },
 
     '.v__default': {
+        backgroundColor: 'var(--f-clr-fg-100)',
         border: 'solid 1px var(--f-clr-fg-200)'
     },
 
