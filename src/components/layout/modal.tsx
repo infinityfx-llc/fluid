@@ -174,7 +174,10 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
                 aria-modal
                 aria-labelledby={id}
                 onTouchStart={e => {
-                    if (mobileClosing === 'handle' && !content.current?.contains(e.target as HTMLElement)) touch.current = e.touches[0];
+                    if (mobileClosing === 'handle' &&
+                        !e.defaultPrevented &&
+                        !content.current?.scrollTop &&
+                        modalRef.current?.contains(e.target as HTMLElement)) touch.current = e.touches[0];
                 }}>
                 {isMobile && mobileClosing === 'handle' && <div className={style.handle} />}
 

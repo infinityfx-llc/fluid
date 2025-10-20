@@ -205,7 +205,11 @@ export default function Panel({ cc = {}, children, variant = 'default', directio
             return <>
                 {i !== 0 && <div
                     className={style.divider}
-                    onTouchStart={() => dragging.current = i}
+                    onTouchStart={e => {
+                        e.preventDefault();
+
+                        dragging.current = i;
+                    }}
                     onMouseDown={() => dragging.current = i}>
                     <div className={style.focus} />
 

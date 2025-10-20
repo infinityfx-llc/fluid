@@ -233,6 +233,8 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
                     pick(e.nativeEvent);
                 }}
                 onTouchStart={e => {
+                    e.preventDefault();
+                    
                     picking.current = true;
                     pick(e.nativeEvent);
                 }}

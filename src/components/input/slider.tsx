@@ -259,6 +259,8 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
                 change(e.nativeEvent);
             }}
             onTouchStart={e => {
+                e.preventDefault();
+
                 dragging.current = -1;
                 change(e.nativeEvent);
             }}>
