@@ -232,7 +232,10 @@ export default function Content({
                         content: style.field__content
                     }} />}
 
-                <Scrollarea className={style.content} onScroll={e => updateView(e.currentTarget.scrollTop)}>
+                <Scrollarea
+                    className={style.content}
+                    onScroll={e => updateView(e.currentTarget.scrollTop)}
+                    onTouchStart={e => e.stopPropagation()}>
                     <div
                         style={{
                             padding: '.25em',
