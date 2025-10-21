@@ -251,7 +251,7 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
 
         {!compact && <div className={style.buttons}>
             {getIndices().map((index, i) => {
-                const previousIndex = previous.current[i],
+                const previousIndex = previous.current[i] !== undefined ? previous.current[i] : index,
                     gridStyle = {
                         gridColumn: i + 1,
                         gridRow: 1
