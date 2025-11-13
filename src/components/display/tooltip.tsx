@@ -6,6 +6,10 @@ import { cloneElement, useState, useRef, isValidElement, useId, useEffect } from
 import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
 
+const TooltipData = {
+    count: 0
+};
+
 const styles = createStyles('tooltip', {
     '.anchor': {
         position: 'absolute',
@@ -83,20 +87,24 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
     const anchor = useRef<HTMLDivElement | null>(null);
     const tooltip = useRef<HTMLDivElement | null>(null);
     const element = useRef<HTMLElement | null>(null);
-    const timeout = useRef<any>(undefined);
-    const touchOnly = useRef(false);
+    const state = useRef({
+        visible: false,
+        touchOnly: false,
+        timeout: undefined as any,
+        maxWidth: undefined as number | undefined,
+        offset: 0
+    });
 
+    const [mounted, setMounted] = useState(false);
     const [visible, setVisible] = useState(false);
     const [computedPosition, setComputedPosition] = useState<string>(position);
-    const [maxWidth, setMaxWidth] = useState('100vw');
-    const renderedPosition = position === 'auto' ? computedPosition : position;
 
     // hide or show tooltip and update position if needed
     function toggle(value: boolean | null, delay = 0) {
-        clearTimeout(timeout.current);
+        clearTimeout(state.current.timeout);
         if (value === null) return;
 
-        if (element.current) {
+        if (element.current && tooltip.current) {
             let { left, top, right, bottom, width } = element.current.getBoundingClientRect();
             right = window.innerWidth - right;
             bottom = window.innerHeight - bottom;
@@ -110,61 +118,75 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
             }[Math.max(left, top, right, bottom)];
 
             // calculate the maximum width based on the available space and position
-            let maxWidth = left + width / 2;
-            switch (computedPosition) {
-                case 'left': maxWidth = left;
-                    break;
-                case 'right': maxWidth = right;
-                    break;
-                default: maxWidth = Math.min(window.innerWidth - maxWidth, maxWidth) * 2;
+            if (['left', 'right'].includes(computedPosition)) {
+                state.current.maxWidth = Math.max(left, right);
+                state.current.offset = 0;
+            } else {
+                const l = left + width / 2;
+                const r = window.innerWidth - l;
+
+                state.current.maxWidth = undefined;
+                state.current.offset = Math.max(tooltip.current.offsetWidth - Math.min(l, r) * 2, 0) * (l < r ? 1 : -1);
             }
 
-            setMaxWidth(`calc(${maxWidth}px - var(--f-spacing-sml) * 2)`);
             setComputedPosition(computedPosition);
         }
 
         if (!value || visibility === 'never') {
-            touchOnly.current = false;
-            return setVisible(visibility === 'always');
+            state.current.touchOnly = false;
+
+            const v = visibility === 'always';
+            if (v !== state.current.visible) setTimeout(() => TooltipData.count += v ? 1 : -1, 200);
+
+            return setVisible(state.current.visible = v);
         }
 
-        timeout.current = setTimeout(() => {
+        if (TooltipData.count) delay = 0;
+        if (!state.current.visible) TooltipData.count++;
+
+        state.current.visible = true;
+        state.current.timeout = setTimeout(() => {
             setVisible(true);
         }, delay * 1000);
     }
 
-    let frame: number;
-
-    // update tooltip position based on anchor position
-    function update() {
-        if (anchor.current && tooltip.current) {
-            const { x, y } = anchor.current.getBoundingClientRect();
-            const offset = {
-                top: '-50%, -100%',
-                left: '-100%, -50%',
-                right: '0%, -50%',
-                bottom: '-50%, 0%'
-            }[renderedPosition];
-
-            tooltip.current.style.transform = `translate(${x}px, ${y}px) translate(${offset})`;
-        }
-
-        frame = requestAnimationFrame(update);
-    }
-
     useEffect(() => {
+        if (!mounted) setMounted(true);
+
         const el = element.current,
             ctrl = new AbortController(),
             signal = ctrl.signal;
 
         if (!el) return;
 
+        let frame: any;
+
+        // update tooltip position based on anchor position
+        function update() {
+            if (anchor.current && tooltip.current) {
+                const { x, y } = anchor.current.getBoundingClientRect();
+                const offset = {
+                    top: '-50%, -100%',
+                    left: '-100%, -50%',
+                    right: '0%, -50%',
+                    bottom: '-50%, 0%'
+                }[computedPosition];
+                const style = tooltip.current.style;
+
+                style.transform = `translate(${x}px, ${y}px) translate(${offset})`;
+                style.left = `${state.current.offset}px`;
+                style.maxWidth = `${state.current.maxWidth}px`;
+            }
+
+            frame = requestAnimationFrame(update);
+        }
+
         cancelAnimationFrame(frame);
         frame = requestAnimationFrame(update); // call position update function every animation frame
 
         window.addEventListener('touchstart', (e: TouchEvent) => {
             if (e.target === el || el.contains(e.target as HTMLElement)) { // Needs more testing
-                touchOnly.current = true;
+                state.current.touchOnly = true;
                 toggle(true, delay + .05);
             } else {
                 toggle(false);
@@ -172,7 +194,7 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
         }, { signal });
 
         const show = (e: any) => {
-            if (touchOnly.current ||
+            if (state.current.touchOnly ||
                 (e instanceof FocusEvent &&
                     e.target instanceof Element &&
                     !e.target.matches(':focus-visible'))) return;
@@ -190,7 +212,7 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
             cancelAnimationFrame(frame);
             ctrl.abort();
         }
-    }, [visibility, renderedPosition, delay]);
+    }, [visibility, position, computedPosition, delay]);
 
     useEffect(() => toggle(visibility === 'always'), [visibility]);
 
@@ -204,9 +226,9 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
             ref: combineRefs(element, props.ref, children.props.ref)
         })}
 
-        {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={renderedPosition} />, element.current)}
+        {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={computedPosition} />, element.current)}
 
-        {element.current && createPortal(<div ref={tooltip} id={id} role="tooltip" className={style.tooltip} aria-hidden={!visible} style={{ maxWidth }}>
+        {mounted && createPortal(<div ref={tooltip} id={id} role="tooltip" className={style.tooltip} aria-hidden={!visible}>
             {content}
         </div>, document.getElementById('__fluid') as HTMLElement)}
     </>;
