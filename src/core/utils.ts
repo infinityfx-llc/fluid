@@ -114,6 +114,19 @@ export function filterFocusable(elements: Element[], types = true) {
         .filter(el => el !== null);
 }
 
+export function getAbsoluteZIndex(parent: HTMLElement | null) {
+    let index = 0;
+
+    while (parent) {
+        const i = parseInt(getComputedStyle(parent).zIndex);
+        if (!isNaN(i)) index = Math.max(index, i);
+
+        parent = parent.parentElement;
+    }
+
+    return index;
+}
+
 type RGB = [number, number, number];
 type HSV = [number, number, number];
 

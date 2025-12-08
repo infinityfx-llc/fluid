@@ -1,6 +1,6 @@
 'use client';
 
-import { combineClasses, combineRefs } from "../../../src/core/utils";
+import { combineClasses, combineRefs, getAbsoluteZIndex } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
 import { cloneElement, useState, useRef, isValidElement, useId, useEffect } from "react";
 import { createPortal } from "react-dom";
@@ -98,13 +98,14 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
     const [mounted, setMounted] = useState(false);
     const [visible, setVisible] = useState(false);
     const [computedPosition, setComputedPosition] = useState<string>(position);
+    const [zIndex, setZIndex] = useState(0);
 
     // hide or show tooltip and update position if needed
     function toggle(value: boolean | null, delay = 0) {
         clearTimeout(state.current.timeout);
         if (value === null) return;
 
-        if (element.current && tooltip.current) {
+        if (element.current && tooltip.current && (value || visibility === 'always')) {
             let { left, top, right, bottom, width } = element.current.getBoundingClientRect();
             right = window.innerWidth - right;
             bottom = window.innerHeight - bottom;
@@ -130,6 +131,7 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
             }
 
             setComputedPosition(computedPosition);
+            setZIndex(getAbsoluteZIndex(element.current) + 2);
         }
 
         if (!value || visibility === 'never') {
@@ -228,7 +230,7 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
 
         {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={computedPosition} />, element.current)}
 
-        {mounted && createPortal(<div ref={tooltip} id={id} role="tooltip" className={style.tooltip} aria-hidden={!visible}>
+        {mounted && createPortal(<div ref={tooltip} id={id} role="tooltip" className={style.tooltip} aria-hidden={!visible} style={{ zIndex }}>
             {content}
         </div>, document.getElementById('__fluid') as HTMLElement)}
     </>;

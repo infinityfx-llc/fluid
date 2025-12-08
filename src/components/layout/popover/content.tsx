@@ -1,6 +1,6 @@
 'use client';
 
-import { combineRefs } from '../../../../src/core/utils';
+import { combineRefs, getAbsoluteZIndex } from '../../../../src/core/utils';
 import { LayoutGroup } from '@infinityfx/lively/layout';
 import { useMemo } from 'react';
 import { createPortal } from 'react-dom';
@@ -15,15 +15,7 @@ export default function Content({ children, ref, ...props }: React.HTMLAttribute
     const zIndex = useMemo(() => {
         if (!mounted || !trigger.current) return 1;
 
-        let index = 0, parent: HTMLElement | null = trigger.current;
-        while (parent) {
-            const i = parseInt(getComputedStyle(parent).zIndex);
-            if (!isNaN(i)) index = Math.max(index, i);
-
-            parent = parent.parentElement;
-        }
-
-        return index + 2;
+        return getAbsoluteZIndex(trigger.current) + 2;
     }, [mounted]);
 
     if (!mounted) return null;
