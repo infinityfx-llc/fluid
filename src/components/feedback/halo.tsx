@@ -123,8 +123,10 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
             halo.current.style.transition = '';
 
             const max = Math.max(width, height) * 2.8;
-            const dx = ((e.clientX - x) / width - .5) * (width / max);
-            const dy = ((e.clientY - y) / height - .5) * (height / max);
+            const clamp = (val: number) => Math.min(Math.max(val, 0), 1);
+            
+            const dx = (clamp((e.clientX - x) / width) - .5) * (width / max);
+            const dy = (clamp((e.clientY - y) / height) - .5) * (height / max);
 
             translate.set(`${e.clientX ? dx * 100 : 0}% ${e.clientY ? dy * 100 : 0}%`);
         }, { signal });

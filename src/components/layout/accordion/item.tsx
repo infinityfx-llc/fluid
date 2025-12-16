@@ -18,8 +18,7 @@ const styles = createStyles('accordion.item', {
         padding: '.6em',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 'var(--f-spacing-sml)',
+        gap: 'var(--f-spacing-xsm)',
         outline: 'none',
         border: 'none',
         background: 'none',
@@ -52,7 +51,8 @@ const styles = createStyles('accordion.item', {
     '.icon': {
         height: '1em',
         overflow: 'hidden',
-        flexShrink: 0
+        flexShrink: 0,
+        marginLeft: 'auto'
     },
 
     '.arrows': {
