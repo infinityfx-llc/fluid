@@ -191,12 +191,15 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
                 key={i}
                 content={tooltip}
                 visibility={tooltip ? 'interact' : 'never'}>
-                <Halo hover={false} cc={{
-                    ...cc,
-                    container: style.container,
-                    halo: style.halo,
-                    ring: style.ring
-                }}>
+                <Halo
+                    hover={false}
+                    disabled={disabled}
+                    cc={{
+                        ...cc,
+                        container: style.container,
+                        halo: style.halo,
+                        ring: style.ring
+                    }}>
                     <button
                         className={style.option}
                         type="button"
