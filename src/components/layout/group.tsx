@@ -1,3 +1,4 @@
+import { Children, Fragment } from 'react';
 import { classes, combineClasses } from '../../../src/core/utils';
 import { Selectors } from '../../../src/types';
 import { createStyles } from '../../core/style';
@@ -11,6 +12,30 @@ const styles = createStyles('group', {
     '.split': {
         gap: 'var(--f-spacing-xxs)',
         ['--radius' as any]: 'var(--f-radius-xsm)'
+    },
+
+    '.divider': {
+        position: 'relative',
+        alignSelf: 'stretch',
+        zIndex: 2
+    },
+
+    '.divider::after': {
+        content: '""',
+        position: 'absolute',
+        backgroundColor: 'var(--f-clr-fg-200)'
+    },
+
+    '.d__horizontal > .divider::after': {
+        width: '1px',
+        right: '-.5px',
+        insetBlock: 'var(--f-spacing-xsm)'
+    },
+
+    '.d__vertical > .divider::after': {
+        height: '1px',
+        bottom: '-.5px',
+        insetInline: 'var(--f-spacing-xsm)'
     },
 
     '.d__vertical': {
@@ -50,14 +75,14 @@ const styles = createStyles('group', {
     }
 });
 
-export type GroupSelectors = Selectors<'group' | 'split' | 'd__horizontal' | 'd__vertical'>;
+export type GroupSelectors = Selectors<'group' | 'split' | 'divider' | 'd__horizontal' | 'd__vertical'>;
 
 /**
  * Merges multiple toggle, button or field inputs.
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/group}
  */
-export default function Group({ children, cc = {}, split = false, direction = 'horizontal', ...props }: {
+export default function Group({ children, cc = {}, split = false, direction = 'horizontal', dividers, ...props }: {
     ref?: React.Ref<HTMLDivElement>;
     cc?: GroupSelectors;
     /**
@@ -70,6 +95,12 @@ export default function Group({ children, cc = {}, split = false, direction = 'h
      * @default "horizontal"
      */
     direction?: 'horizontal' | 'vertical';
+    /**
+     * Show dividers between elements.
+     * 
+     * @default false
+     */
+    dividers?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
@@ -81,6 +112,9 @@ export default function Group({ children, cc = {}, split = false, direction = 'h
             style[`d__${direction}`],
             props.className
         )}>
-        {children}
+        {Children.map(children, (child, i) => <Fragment key={i}>
+            {dividers && !split && i > 0 && <div className={style.divider} />}
+            {child}
+        </Fragment>)}
     </div>;
 }

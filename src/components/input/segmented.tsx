@@ -6,6 +6,7 @@ import { Morph } from '@infinityfx/lively/layout';
 import { classes, combineClasses } from "../../../src/core/utils";
 import Halo from "../feedback/halo";
 import { createStyles } from "../../core/style";
+import Tooltip from "../display/tooltip";
 
 const styles = createStyles('segmented', {
     '.segmented': {
@@ -150,6 +151,7 @@ type SegmentedProps<T> = {
         label: React.ReactNode;
         value: FluidInputvalue;
         disabled?: boolean;
+        tooltip?: string;
     }[];
     name?: string;
     value?: T;
@@ -169,7 +171,8 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
     const [state, setState] = value !== undefined ? [value] : useState(defaultValue || options[0]?.value);
     const id = useId();
 
-    return <div {...props}
+    return <div
+        {...props}
         role="radiogroup"
         className={classes(
             style.segmented,
@@ -182,32 +185,37 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
         )}
         data-error={!!error}
         data-fb={variant !== 'minimal' ? 'true' : undefined}>
-        {options.map(({ label, value: option, disabled = false }, i) => {
+        {options.map(({ label, value: option, disabled = false, tooltip }, i) => {
 
-            return <Halo key={i} hover={false} cc={{
-                ...cc,
-                container: style.container,
-                halo: style.halo,
-                ring: style.ring
-            }}>
-                <button
-                    className={style.option}
-                    type="button"
-                    role="radio"
-                    aria-checked={state === option}
-                    disabled={disabled}
-                    onClick={() => {
-                        setState?.(option);
-                        onChange?.(option as T);
-                    }}>
-                    <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
-                    <span className={style.content}>{label}</span>
+            return <Tooltip
+                key={i}
+                content={tooltip}
+                visibility={tooltip ? 'interact' : 'never'}>
+                <Halo hover={false} cc={{
+                    ...cc,
+                    container: style.container,
+                    halo: style.halo,
+                    ring: style.ring
+                }}>
+                    <button
+                        className={style.option}
+                        type="button"
+                        role="radio"
+                        aria-checked={state === option}
+                        disabled={disabled}
+                        onClick={() => {
+                            setState?.(option);
+                            onChange?.(option as T);
+                        }}>
+                        <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
+                        <span className={style.content}>{label}</span>
 
-                    {state === option && <Morph group={`segmented-selection-${id}`} cachable={vertical ? ['y', 'sy'] : ['x', 'sx']} deform={false} transition={{ duration: .4 }}>
-                        <div className={style.selection} />
-                    </Morph>}
-                </button>
-            </Halo>;
+                        {state === option && <Morph group={`segmented-selection-${id}`} cachable={vertical ? ['y', 'sy'] : ['x', 'sx']} deform={false} transition={{ duration: .4 }}>
+                            <div className={style.selection} />
+                        </Morph>}
+                    </button>
+                </Halo>
+            </Tooltip>;
         })}
     </div>
 }

@@ -69,7 +69,8 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
 
     return <Popover.Root position="center" mobileContainer="modal">
         <Popover.Trigger disabled={disabled === true || props.readOnly}>
-            <Field {...props}
+            <Field
+                {...props}
                 cc={cc}
                 inputMode="none"
                 role="combobox"
@@ -89,7 +90,7 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
 
                     setPartial(null);
                 }}
-                right={clearable && <Button
+                right={clearable ? <Button
                     compact
                     aria-label="Clear date"
                     round={props.round}
@@ -101,7 +102,7 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
                     }}
                     onClick={() => setState?.(null)}>
                     <Icon type="close" />
-                </Button>}
+                </Button> : props.right}
             />
         </Popover.Trigger>
 

@@ -84,7 +84,8 @@ export default function NumberField({ cc = {}, precision = 3, controls = true, d
         round: props.round
     };
 
-    return <Field {...props}
+    return <Field
+        {...props}
         inputRef={combineRefs(inputRef, props.inputRef)}
         type="number"
         value={value}
@@ -107,8 +108,8 @@ export default function NumberField({ cc = {}, precision = 3, controls = true, d
         }}
         left={controls ? <Button {...buttonProps} cc={{ button: style.button__start }} aria-label={`-${step}`} onClick={() => increment(-step)}>
             <Icon type="remove" />
-        </Button> : null}
+        </Button> : props.left}
         right={controls ? <Button {...buttonProps} cc={{ button: style.button__end }} aria-label={`+${step}`} onClick={() => increment(step)}>
             <Icon type="add" />
-        </Button> : null} />;
+        </Button> : props.right} />;
 }

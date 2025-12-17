@@ -143,13 +143,13 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
             return setVisible(state.current.visible = v);
         }
 
-        if (TooltipData.count) delay = 0;
-        if (!state.current.visible) TooltipData.count++;
-
-        state.current.visible = true;
         state.current.timeout = setTimeout(() => {
             setVisible(true);
-        }, delay * 1000);
+
+            if (!state.current.visible) TooltipData.count++;
+
+            state.current.visible = true;
+        }, TooltipData.count ? 0 : delay * 1000);
     }
 
     useEffect(() => {
