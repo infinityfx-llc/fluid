@@ -117,9 +117,9 @@ export default function Textarea({ cc = {}, size = 'med', error, resize = 'both'
         data-disabled={props.disabled}
         data-fb
         style={{
-            ...props.style,
             resize,
-            height: `calc(${props.rows || 2}lh + 1.2em)`
+            minHeight: `calc(${props.rows || 2}lh + 1.2em)`,
+            ...props.style
         }}>
         <div className={style.stretch}>
             {split.value}

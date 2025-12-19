@@ -52,7 +52,8 @@ const styles = createStyles('modal', (fluid) => ({
 
     '.title': {
         flexGrow: 1,
-        color: 'var(--f-clr-heading-100)'
+        color: 'var(--f-clr-heading-100)',
+        paddingRight: 'var(--f-spacing-sml)'
     },
 
     [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {
