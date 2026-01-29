@@ -134,7 +134,7 @@ function validFileType(file: File, types: string) {
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/drop-zone}
  */
-export default function DropZone({ cc = {}, loading = false, error, text = 'Drop files or click to browse', annotation, icon, previewImages = false, previewImageUrl, inputRef, ...props }:
+export default function DropZone({ cc = {}, loading = false, error, text = 'Drop files or click to browse', annotation, icon, previewImages = false, fallbackPreviewImage, inputRef, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: DropZoneSelectors;
@@ -150,11 +150,9 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
          */
         previewImages?: boolean;
         /**
-         * Optional URL to an image to preview.
-         * 
-         * If not provided will default to the currently selected file.
+         * Optional fallback image to show as a preview when no file is selected.
          */
-        previewImageUrl?: string;
+        fallbackPreviewImage?: string;
         inputRef?: React.Ref<HTMLInputElement>;
         onChange?: React.ChangeEventHandler<HTMLInputElement>;
     } & Omit<React.InputHTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>) {
@@ -179,6 +177,7 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
 
     const preview = !!(previewImages && file && validFileType(file, 'image/*'));
     const isDisabled = props.disabled || props.readOnly || loading;
+    const hasContent = file || (previewImages && fallbackPreviewImage);
 
     return <Halo
         color="var(--f-clr-grey-300)"
@@ -193,7 +192,7 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
                 hovering && style.hovering,
                 error && style.error,
                 rejected && style.rejected,
-                file && style.filled,
+                hasContent && style.filled,
                 props.disabled && style.disabled,
                 props.className
             )}
@@ -229,15 +228,15 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
                 <Spinner />
             </div>}
 
-            {file && !loading && <>
+            {hasContent && !loading && <>
                 <div className={style.container}>
                     <div className={style.preview}>
                         <Icon type="file" />
 
-                        {preview && <img src={previewImageUrl || URL.createObjectURL(file)} className={style.image} />}
+                        {(preview || fallbackPreviewImage) && <img src={file ? URL.createObjectURL(file) : fallbackPreviewImage} className={style.image} />}
                     </div>
 
-                    <div className={style.footer}>
+                    {file && <div className={style.footer}>
                         <div>
                             <div className={style.text}>
                                 {file.name}
@@ -255,12 +254,12 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
                             onClick={() => updateFile(null)}>
                             <Icon type="close" />
                         </Button>
-                    </div>
+                    </div>}
                 </div>
             </>}
 
             {<div
-                style={!!file || loading ? {
+                style={hasContent || loading ? {
                     opacity: 0,
                     pointerEvents: 'none'
                 } : undefined}
