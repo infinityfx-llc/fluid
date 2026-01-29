@@ -109,6 +109,7 @@ export async function getContext(isDev?: boolean): Promise<typeof GLOBAL_CONTEXT
         } catch {
             console.log();
             console.log(`Your ${configFile} could not be loaded.`);
+            config = {};
         }
     }
 
