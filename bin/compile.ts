@@ -28,7 +28,12 @@ export async function compileIcons(io: IOHelper) {
     const imports = Array.from(rawConfig.matchAll(/import\s*(.+?)from\s*(?:"|')([^"']+)(?:"|')/g))
         .concat(Array.from(rawConfig.matchAll(/(?:const|let|var)\s*(.+?)\s*=\s*require\((?:'|")([^"']+)(?:"|')/g)));
 
-    contents = imports.map(([_, value, path]) => `import ${value.replace(/:/g, ' as ')} from "${path}";`).join('') + contents; // replace local paths
+    contents = imports
+        .map(([_, value, path]) => {
+            return /^(\.|\\|\/)/.test(path) ? null : `import ${value.replace(/:/g, ' as ')} from "${path}";`;
+        })
+        .filter(val => val !== null)
+        .join('') + contents; // replace local paths
 
     io.output('./core/icons.js', contents);
 }

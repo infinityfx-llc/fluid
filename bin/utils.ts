@@ -106,7 +106,10 @@ export async function getContext(isDev?: boolean): Promise<typeof GLOBAL_CONTEXT
             GLOBAL_CONTEXT.name = name;
             GLOBAL_CONTEXT.version = version;
             GLOBAL_CONTEXT.isInternal = files.length < 2;
-        } catch { }
+        } catch {
+            console.log();
+            console.log(`Your ${configFile} could not be loaded.`);
+        }
     }
 
     if (isDev !== undefined) GLOBAL_CONTEXT.isDev = isDev;

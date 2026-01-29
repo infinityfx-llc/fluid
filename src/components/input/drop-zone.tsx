@@ -134,7 +134,7 @@ function validFileType(file: File, types: string) {
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/drop-zone}
  */
-export default function DropZone({ cc = {}, loading = false, error, text = 'Drop files or click to browse', annotation, icon, previewImages = false, inputRef, ...props }:
+export default function DropZone({ cc = {}, loading = false, error, text = 'Drop files or click to browse', annotation, icon, previewImages = false, previewImageUrl, inputRef, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: DropZoneSelectors;
@@ -149,6 +149,12 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
          * @default false
          */
         previewImages?: boolean;
+        /**
+         * Optional URL to an image to preview.
+         * 
+         * If not provided will default to the currently selected file.
+         */
+        previewImageUrl?: string;
         inputRef?: React.Ref<HTMLInputElement>;
         onChange?: React.ChangeEventHandler<HTMLInputElement>;
     } & Omit<React.InputHTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>) {
@@ -228,7 +234,7 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
                     <div className={style.preview}>
                         <Icon type="file" />
 
-                        {preview && <img src={URL.createObjectURL(file)} className={style.image} />}
+                        {preview && <img src={previewImageUrl || URL.createObjectURL(file)} className={style.image} />}
                     </div>
 
                     <div className={style.footer}>
