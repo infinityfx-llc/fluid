@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef } from "react";
 import Halo from "../../feedback/halo";
 import Collapsible from "../collapsible";
-import { Animatable } from "@infinityfx/lively";
+import { Animate } from "@infinityfx/lively";
 import { Selectors } from "../../../../src/types";
 import { useAccordion } from "./root";
 import { classes } from "../../../../src/utils";
@@ -98,12 +98,16 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
                 {label}
 
                 <div className={style.icon}>
-                    <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} triggers={[{ on: isOpen }, { on: !isOpen, reverse: true }]}>
+                    <Animate
+                        animate={{
+                            translate: isOpen ? '0% -50%' : '0% 0%',
+                            duration: .35
+                        }}>
                         <div className={style.arrows}>
                             <Icon type="expandDown" />
                             <Icon type="collapseUp" />
                         </div>
-                    </Animatable>
+                    </Animate>
                 </div>
             </button>
         </Halo>

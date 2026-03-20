@@ -2,7 +2,7 @@
 
 import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
-import { Animatable } from "@infinityfx/lively";
+import { Animate } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { useState, useEffect } from "react";
 import Halo from "../feedback/halo";
@@ -139,12 +139,12 @@ export default function Checkbox({ cc = {}, error, size = 'med', color, intermed
             <div className={style.checkbox} style={{ '--color': color } as any}>
                 <svg viewBox="0 0 18 18" className={style.checkmark}>
                     {intermediate ?
-                        <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: state ? 0 : 1 }}>
+                        <Animate animate={{ strokeLength: link }}>
                             <path d="M 3 9 L 15 9" fill="none" />
-                        </Animatable> :
-                        <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: state ? 0 : 1 }}>
+                        </Animate> :
+                        <Animate animate={{ strokeLength: link }}>
                             <path d="M 3 9 L 8 13 L 15 5" fill="none" />
-                        </Animatable>
+                        </Animate>
                     }
                 </svg>
             </div>

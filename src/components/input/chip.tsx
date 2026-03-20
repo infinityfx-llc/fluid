@@ -5,7 +5,7 @@ import useInputProps from '../../../src/hooks/use-input-props';
 import { FluidSize, Selectors } from '../../../src/types';
 import { useEffect, useState } from 'react';
 import { createStyles } from '../../core/style';
-import { Animatable } from '@infinityfx/lively';
+import { Animate } from '@infinityfx/lively';
 import { useLink } from '@infinityfx/lively/hooks';
 
 const styles = createStyles('chip', {
@@ -159,9 +159,9 @@ export default function Chip({ children, cc = {}, size = 'med', type = 'checkbox
 
         <div className={style.chip}>
             <svg viewBox="0 0 18 18" className={style.checkmark}>
-                <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: state ? 0 : 1 }}>
+                <Animate animate={{ strokeLength: link }}>
                     <path d="M 3 9 L 8 13 L 15 5" fill="none" />
-                </Animatable>
+                </Animate>
             </svg>
 
             {children}

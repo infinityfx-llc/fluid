@@ -1,8 +1,7 @@
 'use client';
 
 import { Selectors } from "../../../src/types";
-import { Animatable } from "@infinityfx/lively";
-import { LayoutGroup } from "@infinityfx/lively/layout";
+import { Animate, LayoutGroup } from "@infinityfx/lively";
 import { useEffect, useState, useRef } from 'react';
 import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
@@ -112,19 +111,19 @@ export default function Overlay({ children, cc = {}, show, onClose }: {
                 style={{
                     pointerEvents: opened ? undefined : 'none'
                 }}>
-                <Animatable
-                    id="overlay"
-                    animations={{
+                <Animate
+                    key="overlay"
+                    clips={{
                         mount: { opacity: [0, 1], duration: .25 },
                         unmount: { opacity: [0, 1], duration: .25 }
                     }}
-                    triggers={[
-                        { on: 'mount', name: 'mount' },
-                        { on: 'unmount', name: 'unmount', reverse: true }
-                    ]}
+                    triggers={{
+                        mount: ['mount'],
+                        unmount: [{ on: 'unmount', reverse: true }]
+                    }}
                     onAnimationEnd={name => name === 'mount' && setOpened(true)}>
                     <div className={style.tint} onClick={onClose} />
-                </Animatable>
+                </Animate>
 
                 {children}
             </div>}

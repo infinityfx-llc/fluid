@@ -4,7 +4,7 @@ import { Children, cloneElement, isValidElement, useLayoutEffect, useMemo, useRe
 import Popover from '../../layout/popover';
 import Scrollarea from '../../layout/scrollarea';
 import Field from '../../input/field';
-import { Animatable } from '@infinityfx/lively';
+import { Animate } from '@infinityfx/lively';
 import { classes, combineClasses, combineRefs, getFocusable } from '../../../../src/core/utils';
 import { FluidSize, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
@@ -173,16 +173,16 @@ export default function Content({
     }, [children, view, query]);
 
     return <Popover.Content>
-        <Animatable id="combobox-options-outer"
+        <Animate
+            key="combobox-options-outer"
             animate={{
                 opacity: [0, .2, 1],
                 scale: [0.9, 1],
                 duration: .2
             }}
-            triggers={[
-                { on: 'mount' },
-                { on: 'unmount', reverse: true }
-            ]}>
+            triggers={{
+                animate: ['mount', { on: 'unmount', reverse: true }]
+            }}>
 
             <div
                 {...props}
@@ -242,9 +242,8 @@ export default function Content({
                             minHeight: virtualItemHeight ? virtualItemHeight * itemCount.current : undefined
                         }}>
                         <div style={{ height: virtualItemHeight * view.start }} />
-                        <Animatable id="combobox-options-inner"
+                        <Animate
                             inherit
-                            cachable={[]}
                             animate={{
                                 opacity: [0, 1],
                                 scale: [.95, 1],
@@ -253,7 +252,7 @@ export default function Content({
                             staggerLimit={4}
                             stagger={.05}>
                             {(!virtualItemHeight || view.end !== Infinity) && filteredChildren}
-                        </Animatable>
+                        </Animate>
 
                         {!itemCount.current && <div className={style.message}>
                             {emptyMessage}
@@ -261,7 +260,7 @@ export default function Content({
                     </div>
                 </Scrollarea>
             </div>
-        </Animatable>
+        </Animate>
     </Popover.Content>;
 }
 

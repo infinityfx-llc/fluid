@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Field, { FieldProps } from './field';
-import { Animatable } from '@infinityfx/lively';
+import { Animate } from '@infinityfx/lively';
 import Calendar from './calendar';
 import Popover from '../layout/popover';
 import { createStyles } from '../../core/style';
@@ -107,17 +107,16 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
         </Popover.Trigger>
 
         <Popover.Content role="listbox">
-            <Animatable
-                id="date-field-calendar"
+            <Animate
+                key="date-field-calendar"
                 animate={{
                     opacity: [0, .2, 1],
                     scale: [.9, 1],
                     duration: .2
                 }}
-                triggers={[
-                    { on: 'mount' },
-                    { on: 'unmount', reverse: true }
-                ]}>
+                triggers={{
+                    animate: ['mount', { on: 'unmount', reverse: true }]
+                }}>
 
                 <Calendar
                     cc={{
@@ -129,7 +128,7 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
                     disabled={disabled}
                     value={state}
                     onChange={date => setState?.(date)} />
-            </Animatable>
+            </Animate>
         </Popover.Content>
     </Popover.Root>
 }

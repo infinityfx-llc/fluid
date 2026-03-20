@@ -7,10 +7,8 @@ import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
 import Halo from "../feedback/halo";
-import { Animatable } from "@infinityfx/lively";
-import { useTrigger } from "@infinityfx/lively/hooks";
+import { Animate, LayoutGroup } from "@infinityfx/lively";
 import Toggle from "./toggle";
-import { LayoutGroup } from "@infinityfx/lively/layout";
 
 // multiple/range select
 
@@ -190,8 +188,8 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>) {
     const style = combineClasses(styles, cc);
 
-    const left = useTrigger();
-    const right = useTrigger();
+    const [leftCount, left] = useState(0);
+    const [rightCount, right] = useState(0);
     const dates = useRef<(HTMLButtonElement | null)[]>([]);
     const [years, setYears] = useState(false);
 
@@ -209,8 +207,8 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
         setDate?.(newDate);
 
         const dt = date.getMonth() - newDate.getMonth();
-        if (dt > 0) left();
-        if (dt < 0) right();
+        if (dt > 0) left(leftCount + 1);
+        if (dt < 0) right(rightCount + 1);
     }
 
     try {
@@ -264,23 +262,16 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
         </div>
 
         <div className={style.content}>
-            <LayoutGroup
-                transition={{
-                    duration: .35,
-                    easing: 'ease-out'
-                }}>
-                {years && <Animatable
-                    id="years"
-                    passthrough
-                    traverseLayout
+            <LayoutGroup>
+                {years && <Animate
+                    key="years"
                     animate={{
                         opacity: [0, 1],
                         duration: .35
                     }}
-                    triggers={[
-                        { on: 'mount' },
-                        { on: 'unmount', reverse: true }
-                    ]}>
+                    triggers={{
+                        animate: ['mount', { on: 'unmount', reverse: true }]
+                    }}>
                     <div
                         role="grid"
                         className={classes(
@@ -298,20 +289,19 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                     (minDate ? minDate > startOfYear : false) ||
                                     (maxDate ? maxDate < startOfYear : false);
 
-                            return <Animatable
+                            return <Animate
                                 key={label}
-                                id={label}
-                                adaptive
-                                cachable={['y']}
+                                transition={{
+                                    cache: ['y'],
+                                    duration: .35,
+                                    easing: 'ease-out'
+                                }}
                                 animate={{
                                     opacity: [0, 1],
                                     duration: .25,
                                     easing: 'ease-out',
                                     delay: .35 + Math.abs(3 - Math.floor(i / 3)) * .05
-                                }}
-                                triggers={[
-                                    { on: 'mount' }
-                                ]}>
+                                }}>
                                 <Halo
                                     color="var(--f-clr-primary-300)"
                                     disabled={yearDisabled}>
@@ -328,10 +318,10 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                         {label}
                                     </button>
                                 </Halo>
-                            </Animatable>;
+                            </Animate>;
                         })}
                     </div>
-                </Animatable>}
+                </Animate>}
             </LayoutGroup>
 
             <div
@@ -348,8 +338,8 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                     ))}
                 </div>
 
-                <Animatable
-                    animations={{
+                <Animate
+                    clips={{
                         left: {
                             translate: ['-8px 0px', '0px 0px'],
                             opacity: [0, 1],
@@ -364,10 +354,10 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                         }
                     }}
                     stagger={.05}
-                    triggers={[
-                        { name: 'left', on: left, immediate: true },
-                        { name: 'right', on: right, immediate: true }
-                    ]}>
+                    triggers={{
+                        left: [{ on: leftCount, override: true }],
+                        right: [{ on: rightCount, override: true }]
+                    }}>
                     {new Array(6).fill(0).map((_, ri) => (
                         <div key={ri} className={style.row} role="row">
                             {new Array(7).fill(0).map((_, ci) => {
@@ -432,7 +422,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                             })}
                         </div>
                     ))}
-                </Animatable>
+                </Animate>
             </div>
         </div>
     </div>;

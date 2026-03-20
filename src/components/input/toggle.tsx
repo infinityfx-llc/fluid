@@ -4,7 +4,7 @@ import { FluidSize, Selectors } from "../../../src/types";
 import { useRef, useState } from "react";
 import Halo from "../feedback/halo";
 import useInputProps from "../../../src/hooks/use-input-props";
-import { Animatable } from "@infinityfx/lively";
+import { Animate } from "@infinityfx/lively";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 
@@ -131,11 +131,6 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
     const [state, setState] = props.checked !== undefined ? [props.checked] : useState(!!props.defaultChecked);
     const [split, rest] = useInputProps(props);
 
-    const triggers = [
-        { on: state, immediate: true },
-        { on: !state, reverse: true, immediate: true }
-    ];
-
     return <Halo
         disabled={props.disabled}
         color={variant === 'minimal' && !state ? 'var(--f-clr-primary-400)' : undefined}
@@ -164,19 +159,21 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
                 }} />
 
             <div className={style.container}>
-                {checkedContent ? <Animatable
-                    animate={{ translate: ['0 0', '0 -100%'], duration: .4 }}
-                    initial={{ translate: state ? '0 -100%' : '0 0' }}
-                    triggers={triggers}>
+                {checkedContent ? <Animate
+                    animate={{
+                        translate: state ? '0 -100%' : '0 0',
+                        duration: .4
+                    }}>
                     <div className={style.content}>{children}</div>
-                </Animatable> : <div className={style.content}>{children}</div>}
+                </Animate> : <div className={style.content}>{children}</div>}
 
-                {checkedContent ? <Animatable
-                    animate={{ translate: ['0 100%', '0 0'], duration: .4 }}
-                    initial={{ translate: state ? '0 0' : '0 100%' }}
-                    triggers={triggers}>
+                {checkedContent ? <Animate
+                    animate={{
+                        translate: state ? '0 0' : '0 100%',
+                        duration: .4
+                    }}>
                     <div className={style.content}>{checkedContent}</div>
-                </Animatable> : null}
+                </Animate> : null}
             </div>
         </div>
     </Halo>;

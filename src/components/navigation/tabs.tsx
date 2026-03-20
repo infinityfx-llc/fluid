@@ -3,7 +3,7 @@
 import { FluidInputvalue, Selectors } from "../../../src/types";
 import { useId, useRef, useState } from "react";
 import Halo from "../feedback/halo";
-import { Morph } from "@infinityfx/lively/layout";
+import { Animate } from "@infinityfx/lively";
 import { classes, combineClasses } from "../../../src/core/utils";
 import Scrollarea from "../layout/scrollarea";
 import { createStyles } from "../../core/style";
@@ -157,9 +157,13 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
                             </button>
                         </Halo>
 
-                        {state === value && <Morph group={`tabs-selection-${id}`} deform={false} cachable={['x', 'sx']}>
+                        {state === value && <Animate
+                            morph={`tabs-selection-${id}`}
+                            transition={{
+                                cache: ['x', 'sx']
+                            }}>
                             <div className={style.selection} />
-                        </Morph>}
+                        </Animate>}
                     </div>;
                 })}
             </div>

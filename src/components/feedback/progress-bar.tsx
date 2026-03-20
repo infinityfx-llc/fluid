@@ -2,7 +2,7 @@
 
 import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
-import { Animatable } from "@infinityfx/lively";
+import { Animate } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { useEffect } from "react";
 import { createStyles } from "../../core/style";
@@ -59,17 +59,20 @@ export default function ProgressBar({ cc = {}, size = 'med', value = 0, color, .
         color?: string;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
-    const link = useLink(value);
+    const scale = useLink(`${value} 1`);
 
-    useEffect(() => link.set(value, { duration: .3 }), [value]);
+    useEffect(() => scale.set(`${value} 1`, { duration: .3 }), [value]);
 
     return <div {...props} role="progressbar" aria-valuenow={value * 100} className={classes(
         style.track,
         style[`s__${size}`],
         props.className
     )}>
-        <Animatable animate={{ scale: link(val => `${val} 1`) }} initial={{ scale: `${link()} 1` }} deform={false}>
+        <Animate
+            animate={{
+                scale
+            }}>
             <div className={style.progress} style={{ '--color': color } as any} />
-        </Animatable>
+        </Animate>
     </div>;
 }

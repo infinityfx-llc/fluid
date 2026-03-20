@@ -5,7 +5,7 @@ import Overlay from './overlay';
 import { Selectors } from '../../../src/types';
 import Button from '../input/button';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
-import { Animatable } from '@infinityfx/lively';
+import { Animate } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
 import { createStyles } from '../../core/style';
 import useFluid from '../../hooks/use-fluid';
@@ -99,6 +99,7 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
     const modalRef = useRef<HTMLDivElement>(null);
     const touch = useRef<{ clientY: number; }>(null);
     const offset = useLink(0);
+    const translate = useLink(offset, val => `0px ${val}px`);
 
     const id = useId();
     const fluid = useFluid();
@@ -110,7 +111,7 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
             if (!touch.current || !modalRef.current) return;
 
             if (!e.touches.length) {
-                const py = offset() / modalRef.current.clientHeight;
+                const py = offset.get() / modalRef.current.clientHeight;
 
                 if (py > 0.35) { // close the modal when dragged below 35% the size of the modal
                     onClose();
@@ -137,18 +138,13 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
     }, []);
 
     return <Overlay show={show} onClose={onClose}>
-        <Animatable id="modal"
+        <Animate
+            key="modal"
             onAnimationEnd={() => offset.set(0)}
-            initial={isMobile ? {
-                translate: '0% 100%'
-            } : {
-                translate: '0px 20px',
-                opacity: 0
-            }}
             animate={{
-                translate: offset(val => `0px ${val}px`)
+                translate
             }}
-            animations={{
+            clips={{
                 mob: {
                     translate: ['0% 100%', '0% 0%'],
                     duration: .25,
@@ -159,14 +155,12 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
                     scale: [0.9, 1],
                     duration: .25
                 }
-            }} triggers={[{
-                on: 'mount',
-                name: isMobile ? 'mob' : 'dsk'
-            }, {
-                on: 'unmount',
-                reverse: true,
-                name: isMobile ? 'mob' : 'dsk'
-            }]}>
+            }}
+            triggers={isMobile ? {
+                mob: ['mount', { on: 'unmount', reverse: true }]
+            } : {
+                dsk: ['mount', { on: 'unmount', reverse: true }]
+            }}>
             <div
                 {...props}
                 ref={combineRefs(ref, modalRef)}
@@ -194,6 +188,6 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
                     {children}
                 </Scrollarea>
             </div>
-        </Animatable>
+        </Animate>
     </Overlay>;
 }

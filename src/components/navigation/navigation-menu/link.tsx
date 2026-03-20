@@ -42,7 +42,7 @@ export default function Link({ children, cc = {}, Link = 'a', ...props }:
         <Link {...props}
             role="menuitem"
             className={classes(style.link, props.className)}
-            onBlur={e => {
+            onBlur={(e: React.FocusEvent<any>) => {
                 props.onBlur?.(e);
                 if (!root.current?.contains(e.relatedTarget)) select(undefined);
             }}>

@@ -28,26 +28,28 @@ export default function Menu({ children, cc = {}, className, ...props }:
     const style = combineClasses(styles, cc);
 
     return <Popover.Content role="menu">
-        <Animate // look into replacing this with seperate animatable to fix Table cascade animation
-            id="action-menu"
-            animations={[
-                {
-                    opacity: [0, .2, 1],
-                    scale: [0.9, 1],
-                    duration: .2
-                },
-                {
-                    opacity: [0, 1],
-                    scale: [0.95, 1],
-                    duration: .2
-                }
-            ]}
-            triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}
-            levels={2}
+        <Animate
+            key="action-menu"
+            animate={{
+                opacity: [0, .2, 1],
+                scale: [0.9, 1],
+                duration: .2
+            }}
+            triggers={{
+                animate: ['mount', { on: 'unmount', reverse: true }]
+            }}
             stagger={.05}>
 
             <div {...props} className={classes(style.menu, className)} role="group">
-                {children}
+                <Animate
+                    inherit
+                    animate={{
+                        opacity: [0, 1],
+                        scale: [0.95, 1],
+                        duration: .2
+                    }}>
+                    {children}
+                </Animate>
             </div>
         </Animate>
     </Popover.Content>;

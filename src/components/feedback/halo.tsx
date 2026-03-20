@@ -2,9 +2,9 @@
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { Animatable } from "@infinityfx/lively";
-import { useLink, useTrigger } from "@infinityfx/lively/hooks";
-import { Children, cloneElement, isValidElement, useRef, useEffect } from "react";
+import { Animate } from "@infinityfx/lively";
+import { useLink } from "@infinityfx/lively/hooks";
+import { Children, cloneElement, isValidElement, useRef, useEffect, useState } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('halo', {
@@ -86,7 +86,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
     const container = useRef<HTMLElement>(null);
     const halo = useRef<HTMLDivElement>(null);
 
-    const ripple = useTrigger();
+    const [rippleCount, ripple] = useState(0);
     const opacity = useLink(1);
     const translate = useLink('0% 0%');
 
@@ -112,7 +112,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
         // trigger ripple animation at mouse position on click
         focusEl.addEventListener('click', e => {
             opacity.set(1);
-            ripple();
+            ripple(rippleCount + 1);
 
             if (!halo.current) return;
             const { x, y, width, height } = halo.current.getBoundingClientRect();
@@ -124,7 +124,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
 
             const max = Math.max(width, height) * 2.8;
             const clamp = (val: number) => Math.min(Math.max(val, 0), 1);
-            
+
             const dx = (clamp((e.clientX - x) / width) - .5) * (width / max);
             const dy = (clamp((e.clientY - y) / height) - .5) * (height / max);
 
@@ -153,7 +153,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
         focus(':focus');
 
         return () => ctrl.abort();
-    }, []);
+    }, [rippleCount]); // BREAKS: rippleCount
 
     children = Array.isArray(children) ? children[0] : children;
     if (!isValidElement(children)) return children;
@@ -161,12 +161,12 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
     const childrenArray = Children.toArray(children.props.children);
 
     childrenArray.unshift(<div ref={halo} key="halo" className={style.halo} data-hover={hover} data-disabled={disabled}>
-        <Animatable
+        <Animate
             animate={{
                 translate,
                 opacity
             }}
-            animations={{
+            clips={{
                 ripple: {
                     opacity: [0, 1],
                     scale: [0, 1],
@@ -174,12 +174,12 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
                     easing: 'ease-in'
                 }
             }}
-            triggers={[
-                { on: ripple, name: 'ripple', immediate: true }
-            ]}>
+            triggers={{
+                ripple: [{ on: rippleCount, override: true }]
+            }}>
 
             <div className={style.ripple} style={{ backgroundColor: color }} />
-        </Animatable>
+        </Animate>
     </div>);
 
     return cloneElement(children, {

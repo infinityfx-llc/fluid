@@ -4,9 +4,7 @@ import { classes, combineClasses } from '../../../src/core/utils';
 import { Selectors } from '../../../src/types';
 import { useState, useRef, useEffect } from 'react';
 import { createStyles } from '../../core/style';
-import { useTrigger } from '@infinityfx/lively/hooks';
-import { Animatable } from '@infinityfx/lively';
-import { LayoutGroup } from '@infinityfx/lively/layout';
+import { Animate, LayoutGroup } from '@infinityfx/lively';
 
 const styles = createStyles('ticker', {
     '.ticker': {
@@ -56,7 +54,7 @@ export default function Ticker({ children, cc = {}, align = 'left', selective, d
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
 
-    const trigger = useTrigger();
+    const [triggerCount, trigger] = useState(0);
     const prev = useRef(children.toString());
     const mutable = useRef<{
         char: string | null;
@@ -129,22 +127,21 @@ export default function Ticker({ children, cc = {}, align = 'left', selective, d
 
         // after animation ends remove previous characters that are out of view
         setTimeout(trim, (duration + (updated.length - 1) * stagger) * 1000);
-        trigger();
-    }, [children]);
+
+        trigger(triggerCount + 1);
+    }, [children, triggerCount]); // BREAKS: triggerCount
 
     return <div {...props} className={classes(style.ticker, props.className)}>
-        <LayoutGroup
-            initialMount={false}
-            transition={{ duration }}>
+        <LayoutGroup skipInitialMount>
             {state.map((column, i) => {
                 const key = (align === 'right' ? state.length - 1 - i : i).toString();
 
-                return <Animatable
-                    key={key} // maybe dont use for key?
-                    id={key}
-                    adaptive
-                    deform={false}
-                    cachable={['x', 'sx']}
+                return <Animate
+                    key={key}
+                    transition={{
+                        cache: ['x', 'sx'],
+                        duration
+                    }}
                     initial={{ translate: '0em 0em' }}
                     animate={{
                         translate: ['0em 1.2em', '0em 0em'],
@@ -152,17 +149,12 @@ export default function Ticker({ children, cc = {}, align = 'left', selective, d
                         duration,
                         delay: i * stagger
                     }}
-                    triggers={[
-                        {
-                            on: trigger,
-                            name: !selective || prevLastRow.current[i] !== column[column.length - 1].char ? 'animate' : '_',
-                            commit: false
-                        },
-                        {
-                            on: 'mount',
-                            commit: false
-                        }
-                    ]}>
+                    triggers={{
+                        animate: [
+                            { on: 'mount', commit: false },
+                            { on: !selective || prevLastRow.current[i] !== column[column.length - 1].char ? triggerCount : false, commit: false }
+                        ]
+                    }}>
 
                     <div className={style.column}>
                         {column.map(({ char, active }, j) => <div key={j}>
@@ -173,7 +165,7 @@ export default function Ticker({ children, cc = {}, align = 'left', selective, d
                             </div>
                         </div>)}
                     </div>
-                </Animatable>
+                </Animate>
             })}
         </LayoutGroup>
     </div>;

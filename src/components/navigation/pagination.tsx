@@ -6,9 +6,7 @@ import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
 import Halo from "../feedback/halo";
-import { Morph } from "@infinityfx/lively/layout";
-import { Animatable } from "@infinityfx/lively";
-import { useTrigger } from "@infinityfx/lively/hooks";
+import { Animate } from "@infinityfx/lively";
 
 // arrow controls
 
@@ -144,7 +142,7 @@ const styles = createStyles('pagination', {
     }
 });
 
-export type PaginationSelectors = Selectors<'pagination' | 'pill' | 'square' | 'round' | 's__xsm'  | 's__sml' | 's__med' | 's__lrg' | 'v__default' | 'v__neutral' | 'v__minimal' | 'buttons' | 'layer' | 'button' | 'selection' | 'indices'>;
+export type PaginationSelectors = Selectors<'pagination' | 'pill' | 'square' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'v__default' | 'v__neutral' | 'v__minimal' | 'buttons' | 'layer' | 'button' | 'selection' | 'indices'>;
 
 /**
  * A set of inputs used for navigation between pages.
@@ -183,7 +181,6 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
     const style = combineClasses(styles, cc);
 
     const id = useId();
-    const trigger = useTrigger();
     const [state, setState] = page !== undefined ? [page, onChange] : useState(defaultPage);
 
     function getIndices() {
@@ -208,7 +205,6 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
 
         setState?.(page);
         onChange?.(page);
-        trigger();
     }
 
     const backDisabled = state < 1 || disabled;
@@ -260,14 +256,14 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
                 return <Fragment key={i}>
                     <div className={style.layer} style={gridStyle} />
 
-                    {index === state && <Morph
-                        group={`${id}-pagination-selection`}
-                        cachable={['x']}
+                    {index === state && <Animate
+                        morph={`${id}-pagination-selection`}
                         transition={{
+                            cache: ['x'],
                             duration: .35
                         }}>
                         <div className={classes(style.layer, style.selection)} style={gridStyle} />
-                    </Morph>}
+                    </Animate>}
 
                     <Halo disabled={disabled}>
                         <button
@@ -280,8 +276,8 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
                             style={gridStyle}
                             aria-current={index === state ? 'page' : undefined}
                             onClick={() => update(index)}>
-                            <Animatable
-                                animations={{
+                            <Animate
+                                clips={{
                                     forward: {
                                         translate: ['33.3% 0%', '0% 0%'],
                                         duration: .35
@@ -291,10 +287,10 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
                                         duration: .35
                                     }
                                 }}
-                                triggers={[
-                                    { name: 'forward', on: previousIndex - index < 0 ? trigger : false, immediate: true },
-                                    { name: 'back', on: previousIndex - index > 0 ? trigger : false, immediate: true }
-                                ]}>
+                                triggers={{
+                                    forward: [{ on: previousIndex - index < 0 ? state : false, override: true }],
+                                    back: [{ on: previousIndex - index > 0 ? state : false, override: true }]
+                                }}>
                                 <div className={style.indices}>
                                     <span>
                                         {previousIndex + 1}
@@ -306,7 +302,7 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
                                         {previousIndex + 1}
                                     </span>
                                 </div>
-                            </Animatable>
+                            </Animate>
                         </button>
                     </Halo>
                 </Fragment>;

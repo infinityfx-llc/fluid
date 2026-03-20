@@ -100,24 +100,15 @@ export default function Group({ children, cc = {}, label, className, ...props }:
         </Item>
 
         <Animate
-            animations={[
-                {
-                    visibility: ['hidden', 'visible'],
-                    opacity: [0, .2, 1],
-                    scale: [0.9, 1],
-                    duration: .2
-                },
-                {
-                    opacity: [0, 1],
-                    scale: [0.95, 1],
-                    duration: .2
-                }
-            ]}
-            triggers={[
-                { on: state.open, immediate: true },
-                { on: !state.open, reverse: true, immediate: true }
-            ]}
-            levels={2}
+            animate={{
+                visibility: ['hidden', 'visible'],
+                opacity: [0, .2, 1],
+                scale: [0.9, 1],
+                duration: .2
+            }}
+            triggers={{
+                animate: [{ on: state.open, override: true }, { on: !state.open, reverse: true, override: true }]
+            }}
             stagger={.05}>
             <div
                 ref={content}
@@ -125,7 +116,15 @@ export default function Group({ children, cc = {}, label, className, ...props }:
                 role="menu"
                 className={style.menu}
                 style={{ [state.side]: '100%' }}>
-                {children}
+                <Animate
+                    inherit
+                    animate={{
+                        opacity: [0, 1],
+                        scale: [0.95, 1],
+                        duration: .2
+                    }}>
+                    {children}
+                </Animate>
             </div>
         </Animate>
     </div>;

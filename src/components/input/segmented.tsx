@@ -2,7 +2,7 @@
 
 import { FluidInputvalue, FluidSize, Selectors } from "../../../src/types";
 import { useId, useState } from "react";
-import { Morph } from '@infinityfx/lively/layout';
+import { Animate } from '@infinityfx/lively';
 import { classes, combineClasses } from "../../../src/core/utils";
 import Halo from "../feedback/halo";
 import { createStyles } from "../../core/style";
@@ -213,9 +213,14 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
                         <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
                         <span className={style.content}>{label}</span>
 
-                        {state === option && <Morph group={`segmented-selection-${id}`} cachable={vertical ? ['y', 'sy'] : ['x', 'sx']} deform={false} transition={{ duration: .4 }}>
+                        {state === option && <Animate
+                            morph={`segmented-selection-${id}`}
+                            transition={{
+                                cache: vertical ? ['y', 'sy'] : ['x', 'sx'],
+                                duration: .4
+                            }}>
                             <div className={style.selection} />
-                        </Morph>}
+                        </Animate>}
                     </button>
                 </Halo>
             </Tooltip>;

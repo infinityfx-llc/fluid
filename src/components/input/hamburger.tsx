@@ -3,7 +3,7 @@
 import { Selectors } from "../../../src/types";
 import { useState } from "react";
 import Halo from "../feedback/halo";
-import { Animatable } from "@infinityfx/lively";
+import { Animate } from "@infinityfx/lively";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 
@@ -72,6 +72,9 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
     const style = combineClasses(styles, cc);
 
     const [state, setState] = open !== undefined ? [open] : useState(false);
+    const triggers = {
+        animate: [{ on: state, override: true }, { on: !state, reverse: true, immediate: true }]
+    };
 
     return <Halo disabled={props.disabled}>
         <button {...props}
@@ -87,28 +90,35 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
                 setState?.(!state);
                 props.onClick?.(e);
             }}>
-            <Animatable animate={{ scale: ['1 1', '0 1', '0 1'], duration: .6 }} deform={false} triggers={[
-                { on: state, immediate: true },
-                { on: !state, reverse: true, immediate: true }
-            ]}>
+            <Animate
+                animate={{
+                    scale: ['1 1', '0 1', '0 1'],
+                    duration: .6
+                }}
+                triggers={triggers}>
                 {new Array(3).fill(0).map((_, i) => {
                     return <div key={i} className={style.line} />
                 })}
-            </Animatable>
+            </Animate>
 
             <div className={style.cross}>
-                <Animatable animate={{ scale: ['0 1', '0 1', '1 1'], duration: .6 }} deform={false} triggers={[
-                    { on: state, immediate: true },
-                    { on: !state, reverse: true, immediate: true }
-                ]}>
+                <Animate
+                    animate={{
+                        scale: ['0 1', '0 1', '1 1'],
+                        duration: .6
+                    }}
+                    triggers={triggers}>
                     <div className={style.line} />
-                </Animatable>
-                <Animatable animate={{ scale: ['1 0', '1 0', '1 1'], duration: .6, delay: .2 }} deform={false} triggers={[
-                    { on: state, immediate: true },
-                    { on: !state, reverse: true, immediate: true }
-                ]}>
+                </Animate>
+                <Animate
+                    animate={{
+                        scale: ['1 0', '1 0', '1 1'],
+                        duration: .6,
+                        delay: .2
+                    }}
+                    triggers={triggers}>
                     <div className={style.line} />
-                </Animatable>
+                </Animate>
             </div>
         </button>
     </Halo>;

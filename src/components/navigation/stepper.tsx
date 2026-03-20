@@ -2,7 +2,7 @@
 
 import { classes, combineClasses } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { Animatable } from "@infinityfx/lively";
+import { Animate } from "@infinityfx/lively";
 import { useId } from "react";
 import Halo from "../feedback/halo";
 import ProgressBar from "../feedback/progress-bar";
@@ -204,18 +204,11 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
                             onClick={() => setCompleted?.(i)}
                             aria-labelledby={`${id}-${i}`}>
                             <div className={style.icon}>
-                                <Animatable
-                                    initial={{
-                                        translate: isCompleted ? '0% -25%' : '0% 25%'
-                                    }}
+                                <Animate
                                     animate={{
-                                        translate: ['0% 25%', '0% -25%'],
+                                        translate: isCompleted ? '0% -25%' : '0% 25%',
                                         duration: .35
-                                    }}
-                                    triggers={[
-                                        { on: isCompleted },
-                                        { on: !isCompleted, reverse: true }
-                                    ]}>
+                                    }}>
                                     <div className={style.icons}>
                                         <div className={style.icon}>
                                             {icon}
@@ -224,7 +217,7 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
                                             <Icon type="check" />
                                         </div>
                                     </div>
-                                </Animatable>
+                                </Animate>
                             </div>
                         </button>
                     </Halo>

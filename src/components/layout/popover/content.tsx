@@ -1,7 +1,7 @@
 'use client';
 
 import { combineRefs, getAbsoluteZIndex } from '../../../../src/core/utils';
-import { LayoutGroup } from '@infinityfx/lively/layout';
+import { LayoutGroup } from '@infinityfx/lively';
 import { useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopover } from './root';

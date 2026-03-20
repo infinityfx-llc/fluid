@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 import Halo from '../feedback/halo';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { createStyles } from '../../core/style';
-import { Animatable } from '@infinityfx/lively';
+import { Animate } from '@infinityfx/lively';
 
 const styles = createStyles('switch', {
     '.wrapper': {
@@ -182,35 +182,26 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
                 </div>
             </div>
 
-            <Animatable
-                order={-1}
-                initial={{
-                    translate: state ? '100% 0%' : '0% 0%'
-                }}
+            <Animate
                 animate={{
-                    translate: ['0% 0%', '100% 0%'],
+                    translate: state ? '100% 0%' : '0% 0%',
                     duration: .35
-                }}
-                triggers={[
-                    { on: state, immediate: true },
-                    { on: !state, reverse: true, immediate: true }
-                ]}>
+                }}>
                 <Halo target={inputRef} hover={false} cc={{ ...cc, halo: style.halo }}>
                     <div className={style.handle__wrapper}>
-                        <Animatable
-                            inherit
-                            order={-1}
-                            deform={false}
-                            initial={{}}
+                        <Animate
                             animate={{
                                 scale: [1, '1.6 1', 1],
                                 duration: .35
+                            }}
+                            triggers={{
+                                animate: [{ on: state, override: true }, { on: !state, reverse: true, override: true }]
                             }}>
                             <div className={style.handle} />
-                        </Animatable>
+                        </Animate>
                     </div>
                 </Halo>
-            </Animatable>
+            </Animate>
         </div>
     </div>;
 }
