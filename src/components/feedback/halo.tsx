@@ -86,6 +86,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
     const container = useRef<HTMLElement>(null);
     const halo = useRef<HTMLDivElement>(null);
 
+    const rippleRef = useRef(0);
     const [rippleCount, ripple] = useState(0);
     const opacity = useLink(1);
     const translate = useLink('0% 0%');
@@ -112,7 +113,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
         // trigger ripple animation at mouse position on click
         focusEl.addEventListener('click', e => {
             opacity.set(1);
-            ripple(rippleCount + 1);
+            ripple(++rippleRef.current);
 
             if (!halo.current) return;
             const { x, y, width, height } = halo.current.getBoundingClientRect();
@@ -153,7 +154,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
         focus(':focus');
 
         return () => ctrl.abort();
-    }, [rippleCount]); // BREAKS: rippleCount
+    }, []);
 
     children = Array.isArray(children) ? children[0] : children;
     if (!isValidElement(children)) return children;

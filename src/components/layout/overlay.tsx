@@ -112,7 +112,6 @@ export default function Overlay({ children, cc = {}, show, onClose }: {
                     pointerEvents: opened ? undefined : 'none'
                 }}>
                 <Animate
-                    key="overlay"
                     clips={{
                         mount: { opacity: [0, 1], duration: .25 },
                         unmount: { opacity: [0, 1], duration: .25 }

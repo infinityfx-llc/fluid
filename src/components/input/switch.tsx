@@ -191,11 +191,12 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
                     <div className={style.handle__wrapper}>
                         <Animate
                             animate={{
-                                scale: [1, '1.6 1', 1],
-                                duration: .35
+                                scale: [1, '1.6 1', 1], // reverse causes weird behavior?
+                                duration: .35,
+                                composite: 'override'
                             }}
                             triggers={{
-                                animate: [{ on: state, override: true }, { on: !state, reverse: true, override: true }]
+                                animate: [state, !state]
                             }}>
                             <div className={style.handle} />
                         </Animate>

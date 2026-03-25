@@ -6,6 +6,8 @@ import { useState, useRef, useEffect } from 'react';
 import { createStyles } from '../../core/style';
 import { Animate, LayoutGroup } from '@infinityfx/lively';
 
+// TODO: take into account: default adapative, ignoreDeform
+
 const styles = createStyles('ticker', {
     '.ticker': {
         display: 'flex',

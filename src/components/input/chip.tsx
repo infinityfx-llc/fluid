@@ -3,10 +3,9 @@
 import { classes, combineClasses } from '../../../src/core/utils';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { FluidSize, Selectors } from '../../../src/types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { createStyles } from '../../core/style';
 import { Animate } from '@infinityfx/lively';
-import { useLink } from '@infinityfx/lively/hooks';
 
 const styles = createStyles('chip', {
     '.wrapper': {
@@ -140,10 +139,7 @@ export default function Chip({ children, cc = {}, size = 'med', type = 'checkbox
     const style = combineClasses(styles, cc);
 
     const [split, rest] = useInputProps(props);
-    const link = useLink(defaultChecked ? 1 : 0);
-    const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
-
-    useEffect(() => link.set(state ? 1 : 0, { duration: .15 }), [state]);
+    const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false); // TODO: might be able to get rid of state
 
     return <div {...rest}
         className={classes(
@@ -159,7 +155,9 @@ export default function Chip({ children, cc = {}, size = 'med', type = 'checkbox
 
         <div className={style.chip}>
             <svg viewBox="0 0 18 18" className={style.checkmark}>
-                <Animate animate={{ strokeLength: link }}>
+                <Animate animate={{
+                    strokeLength: state ? 1 : 0
+                }}>
                     <path d="M 3 9 L 8 13 L 15 5" fill="none" />
                 </Animate>
             </svg>

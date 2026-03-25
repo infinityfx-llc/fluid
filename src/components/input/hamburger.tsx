@@ -73,7 +73,7 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
 
     const [state, setState] = open !== undefined ? [open] : useState(false);
     const triggers = {
-        animate: [{ on: state, override: true }, { on: !state, reverse: true, immediate: true }]
+        animate: [{ on: state, composite: 'override' as const }, { on: !state, reverse: true, composite: 'override' as const }]
     };
 
     return <Halo disabled={props.disabled}>
@@ -103,6 +103,9 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
 
             <div className={style.cross}>
                 <Animate
+                    initial={{
+                        scale: '0 1'
+                    }}
                     animate={{
                         scale: ['0 1', '0 1', '1 1'],
                         duration: .6
@@ -111,6 +114,9 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
                     <div className={style.line} />
                 </Animate>
                 <Animate
+                    initial={{
+                        scale: '1 0'
+                    }}
                     animate={{
                         scale: ['1 0', '1 0', '1 1'],
                         duration: .6,

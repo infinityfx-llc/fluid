@@ -127,15 +127,17 @@ export default function Group({ children, cc = {}, label, round = false, href, t
 
             <LayoutGroup>
                 {(selection ? linkId === selection : active) && <Animate
-                    key="fluid-navigation-menu-selection"
                     morph={`fluid-navigation-menu-selection-${id}`}
                     transition={{
-                        cache: ['x', 'sx', 'borderRadius'],
+                        cache: ['x', 'sx'],
                         duration: .35
                     }}
-                    animate={{ opacity: [1, 0], duration: .25 }}
+                    animate={{
+                        opacity: [1, 0],
+                        duration: .25
+                    }}
                     triggers={{
-                        animate: ['mount', { on: 'unmount', reverse: true }]
+                        animate: ['unmount', { on: 'mount', reverse: true }]
                     }}>
                     <div className={style.selection} />
                 </Animate>}
@@ -144,7 +146,6 @@ export default function Group({ children, cc = {}, label, round = false, href, t
 
         <LayoutGroup>
             {hasLinks && linkId === selection && <Animate
-                key="fluid-navigation-menu-group"
                 morph={`fluid-navigation-menu-group-${id}`}
                 transition={{
                     cache: ['x', 'y', 'sx', 'sy'],
@@ -156,7 +157,7 @@ export default function Group({ children, cc = {}, label, round = false, href, t
                     duration: .25
                 }}
                 triggers={{
-                    animate: ['mount', { on: 'unmount', reverse: true }]
+                    animate: ['unmount', { on: 'mount', reverse: true }]
                 }}>
 
                 <div {...props}

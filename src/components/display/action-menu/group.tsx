@@ -100,6 +100,9 @@ export default function Group({ children, cc = {}, label, className, ...props }:
         </Item>
 
         <Animate
+            initial={{
+                opacity: 0
+            }}
             animate={{
                 visibility: ['hidden', 'visible'],
                 opacity: [0, .2, 1],
@@ -107,7 +110,7 @@ export default function Group({ children, cc = {}, label, className, ...props }:
                 duration: .2
             }}
             triggers={{
-                animate: [{ on: state.open, override: true }, { on: !state.open, reverse: true, override: true }]
+                animate: [{ on: state.open, override: true }, { on: !state.open, cascade: 'reverse', reverse: true, override: true }]
             }}
             stagger={.05}>
             <div

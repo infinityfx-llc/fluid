@@ -3,8 +3,7 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
 import { Animate } from "@infinityfx/lively";
-import { useLink } from "@infinityfx/lively/hooks";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Halo from "../feedback/halo";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { createStyles } from "../../core/style";
@@ -115,12 +114,8 @@ export default function Checkbox({ cc = {}, error, size = 'med', color, intermed
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>) {
     const style = combineClasses(styles, cc);
 
-    const link = useLink(defaultChecked ? 1 : 0);
-
     const [split, rest] = useInputProps(props);
-    const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
-
-    useEffect(() => link.set(state ? 1 : 0, { duration: .25 }), [state]);
+    const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false); // TODO: might be able to get rid of state
 
     return <Halo hover={false} cc={{ ...cc, halo: style.halo }}>
         <div {...rest}
@@ -139,10 +134,16 @@ export default function Checkbox({ cc = {}, error, size = 'med', color, intermed
             <div className={style.checkbox} style={{ '--color': color } as any}>
                 <svg viewBox="0 0 18 18" className={style.checkmark}>
                     {intermediate ?
-                        <Animate animate={{ strokeLength: link }}>
+                        <Animate animate={{
+                            strokeLength: state ? 1 : 0,
+                            duration: .25
+                        }}>
                             <path d="M 3 9 L 15 9" fill="none" />
                         </Animate> :
-                        <Animate animate={{ strokeLength: link }}>
+                        <Animate animate={{
+                            strokeLength: state ? 1 : 0,
+                            duration: .25
+                        }}>
                             <path d="M 3 9 L 8 13 L 15 5" fill="none" />
                         </Animate>
                     }
