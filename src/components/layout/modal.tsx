@@ -140,6 +140,7 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
     return <Overlay show={show} onClose={onClose}>
         <Animate
             key="modal"
+            deformCorrection={false}
             onAnimationEnd={() => offset.set(0)}
             animate={{
                 translate

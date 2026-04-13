@@ -74,6 +74,7 @@ export default function ColorField({ cc = {}, value, defaultValue, onChange, dis
         <Popover.Content role="listbox" aria-multiselectable={false}>
             <Animate
                 key="date-field-calendar"
+                deformCorrection={false}
                 animate={{
                     opacity: [0, .2, 1],
                     scale: [.9, 1],

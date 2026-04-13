@@ -133,20 +133,12 @@ export default function Checkbox({ cc = {}, error, size = 'med', color, intermed
 
             <div className={style.checkbox} style={{ '--color': color } as any}>
                 <svg viewBox="0 0 18 18" className={style.checkmark}>
-                    {intermediate ?
-                        <Animate animate={{
-                            strokeLength: state ? 1 : 0,
-                            duration: .25
-                        }}>
-                            <path d="M 3 9 L 15 9" fill="none" />
-                        </Animate> :
-                        <Animate animate={{
-                            strokeLength: state ? 1 : 0,
-                            duration: .25
-                        }}>
-                            <path d="M 3 9 L 8 13 L 15 5" fill="none" />
-                        </Animate>
-                    }
+                    <Animate deformCorrection={false} animate={{
+                        strokeLength: state ? 1 : 0,
+                        duration: .25
+                    }}>
+                        {intermediate ? <path d="M 3 9 L 15 9" fill="none" /> : <path d="M 3 9 L 8 13 L 15 5" fill="none" />}
+                    </Animate>
                 </svg>
             </div>
         </div>

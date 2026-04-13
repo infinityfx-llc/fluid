@@ -191,7 +191,7 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
                     <div className={style.handle__wrapper}>
                         <Animate
                             animate={{
-                                scale: [1, '1.6 1', 1], // reverse causes weird behavior?
+                                scale: [1, '1.6 1', 1],
                                 duration: .35,
                                 composite: 'override'
                             }}

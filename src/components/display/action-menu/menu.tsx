@@ -30,6 +30,7 @@ export default function Menu({ children, cc = {}, className, ...props }:
     return <Popover.Content role="menu">
         <Animate
             key="action-menu"
+            deformCorrection={false}
             animate={{
                 opacity: [0, .2, 1],
                 scale: [0.9, 1],

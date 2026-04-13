@@ -175,6 +175,7 @@ export default function Content({
     return <Popover.Content>
         <Animate
             key="combobox-options-outer"
+            deformCorrection={false}
             animate={{
                 opacity: [0, .2, 1],
                 scale: [0.9, 1],

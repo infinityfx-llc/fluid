@@ -99,6 +99,7 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
 
                 <div className={style.icon}>
                     <Animate
+                        deformCorrection={false}
                         animate={{
                             translate: isOpen ? '0% -50%' : '0% 0%',
                             duration: .35

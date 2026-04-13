@@ -263,7 +263,8 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
 
         <div className={style.content}>
             <LayoutGroup>
-                {years && <Animate // layout transition animation very bad performance
+                {years && <Animate
+                    deformCorrection={false}
                     animate={{
                         opacity: [0, 1],
                         duration: .35
@@ -290,6 +291,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
 
                             return <Animate
                                 key={label}
+                                deformCorrection={false}
                                 transition={{
                                     cache: ['y'],
                                     duration: .35,
@@ -338,6 +340,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                 </div>
 
                 <Animate
+                    deformCorrection={false}
                     clips={{
                         left: {
                             translate: ['-8px 0px', '0px 0px'],

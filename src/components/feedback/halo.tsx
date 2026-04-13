@@ -163,6 +163,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
 
     childrenArray.unshift(<div ref={halo} key="halo" className={style.halo} data-hover={hover} data-disabled={disabled}>
         <Animate
+            deformCorrection={false}
             animate={{
                 translate,
                 opacity

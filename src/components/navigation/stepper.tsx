@@ -205,6 +205,7 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
                             aria-labelledby={`${id}-${i}`}>
                             <div className={style.icon}>
                                 <Animate
+                                    deformCorrection={false}
                                     animate={{
                                         translate: isCompleted ? '0% -25%' : '0% 25%',
                                         duration: .35
