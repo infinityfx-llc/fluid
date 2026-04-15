@@ -160,7 +160,7 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
 
             <div className={style.container}>
                 {checkedContent ? <Animate
-                    deformCorrection={false}
+                    lite
                     animate={{
                         translate: state ? '0 -100%' : '0 0',
                         duration: .4
@@ -169,7 +169,7 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
                 </Animate> : <div className={style.content}>{children}</div>}
 
                 {checkedContent ? <Animate
-                    deformCorrection={false}
+                    lite
                     animate={{
                         translate: state ? '0 0' : '0 100%',
                         duration: .4

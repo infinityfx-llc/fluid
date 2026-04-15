@@ -277,7 +277,7 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
                             aria-current={index === state ? 'page' : undefined}
                             onClick={() => update(index)}>
                             <Animate
-                                deformCorrection={false}
+                                lite
                                 clips={{
                                     forward: {
                                         translate: ['33.3% 0%', '0% 0%'],

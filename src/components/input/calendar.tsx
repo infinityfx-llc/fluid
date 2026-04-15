@@ -340,7 +340,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                 </div>
 
                 <Animate
-                    deformCorrection={false}
+                    lite
                     clips={{
                         left: {
                             translate: ['-8px 0px', '0px 0px'],

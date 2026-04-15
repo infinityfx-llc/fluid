@@ -183,6 +183,7 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
             </div>
 
             <Animate
+                lite
                 animate={{
                     translate: state ? '100% 0%' : '0% 0%',
                     duration: .35
@@ -190,6 +191,7 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
                 <Halo target={inputRef} hover={false} cc={{ ...cc, halo: style.halo }}>
                     <div className={style.handle__wrapper}>
                         <Animate
+                            transition={{ cache: [] }}
                             animate={{
                                 scale: [1, '1.6 1', 1],
                                 duration: .35,

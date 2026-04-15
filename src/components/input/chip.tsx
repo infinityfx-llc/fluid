@@ -155,7 +155,7 @@ export default function Chip({ children, cc = {}, size = 'med', type = 'checkbox
 
         <div className={style.chip}>
             <svg viewBox="0 0 18 18" className={style.checkmark}>
-                <Animate deformCorrection={false} animate={{
+                <Animate lite animate={{
                     strokeLength: state ? 1 : 0
                 }}>
                     <path d="M 3 9 L 8 13 L 15 5" fill="none" />

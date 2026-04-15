@@ -99,8 +99,8 @@ export default function Drawer({ children, cc = {}, show, onClose, position = 'r
 
     return <Overlay show={show} onClose={onClose}>
         <Animate
+            lite
             key="drawer"
-            deformCorrection={false}
             animate={{
                 translate: [`${position === 'right' ? 100 : -100}% 0%`, '0% 0%'],
                 duration: .25

@@ -11,7 +11,7 @@ export default function Spinner({ color, ...props }: Omit<React.HTMLAttributes<S
 
     return <svg {...props} style={{ stroke: color || 'currentcolor', ...props.style }} viewBox="0 0 100 100" width="1em" height="1em">
         <Animate
-            deformCorrection={false}
+            lite
             animate={{
                 rotate: ['0deg', '720deg'],
                 strokeLength: [0.75, 0.25, 0.75],

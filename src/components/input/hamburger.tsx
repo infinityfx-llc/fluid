@@ -91,6 +91,7 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
                 props.onClick?.(e);
             }}>
             <Animate
+                transition={{ cache: [] }}
                 animate={{
                     scale: ['1 1', '0 1', '0 1'],
                     duration: .6
@@ -103,6 +104,7 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
 
             <div className={style.cross}>
                 <Animate
+                    transition={{ cache: [] }}
                     initial={{
                         scale: '0 1'
                     }}
@@ -114,6 +116,7 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
                     <div className={style.line} />
                 </Animate>
                 <Animate
+                    transition={{ cache: [] }}
                     initial={{
                         scale: '1 0'
                     }}

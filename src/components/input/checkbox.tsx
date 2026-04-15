@@ -133,7 +133,7 @@ export default function Checkbox({ cc = {}, error, size = 'med', color, intermed
 
             <div className={style.checkbox} style={{ '--color': color } as any}>
                 <svg viewBox="0 0 18 18" className={style.checkmark}>
-                    <Animate deformCorrection={false} animate={{
+                    <Animate lite animate={{
                         strokeLength: state ? 1 : 0,
                         duration: .25
                     }}>

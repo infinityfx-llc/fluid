@@ -108,8 +108,8 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
 
         <Popover.Content role="listbox">
             <Animate
+                lite
                 key="date-field-calendar"
-                deformCorrection={false}
                 animate={{
                     opacity: [0, .2, 1],
                     scale: [.9, 1],

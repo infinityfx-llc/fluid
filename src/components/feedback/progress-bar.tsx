@@ -64,6 +64,9 @@ export default function ProgressBar({ cc = {}, size = 'med', value = 0, color, .
         props.className
     )}>
         <Animate
+            transition={{
+                cache: []
+            }}
             animate={{
                 scale: `${value} 1`,
                 duration: .3
