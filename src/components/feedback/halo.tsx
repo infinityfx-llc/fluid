@@ -124,7 +124,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
 
             const max = Math.max(width, height) * 2.8;
             const clamp = (val: number) => Math.min(Math.max(val, 0), 1);
-            
+
             const dx = (clamp((e.clientX - x) / width) - .5) * (width / max);
             const dy = (clamp((e.clientY - y) / height) - .5) * (height / max);
 
@@ -155,7 +155,8 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
         return () => ctrl.abort();
     }, []);
 
-    const childrenArray = Children.toArray(children.props.children);
+    const childProps = typeof children === 'object' && 'props' in children ? children.props : {};
+    const childrenArray = Children.toArray(childProps.children);
 
     childrenArray.unshift(<div ref={halo} key="halo" className={style.halo} data-hover={hover} data-disabled={disabled}>
         <Animatable
@@ -181,7 +182,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
 
     return cloneElement(children, {
         ...props,
-        ref: combineRefs(container, ref, children.props.ref),
-        className: classes(children.props.className, style.container)
+        ref: combineRefs(container, ref, childProps.ref),
+        className: classes(childProps.className, style.container)
     }, childrenArray);
 }
