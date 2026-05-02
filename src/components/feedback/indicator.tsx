@@ -2,7 +2,7 @@
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { cloneElement, isValidElement, useEffect, useRef, useState } from "react";
+import { cloneElement, useEffect, useRef, useState } from "react";
 import { createStyles } from "../../core/style";
 import { createPortal } from "react-dom";
 
@@ -58,9 +58,6 @@ export default function Indicator<T extends React.ReactElement<any>>({ children,
             setRadius(Math.min(radius, max));
         }
     }, []);
-
-    children = Array.isArray(children) ? children[0] : children;
-    if (!isValidElement(children)) return children;
 
     // calculate where to display indicator based on target element corner radius
     const offset = Math.max(Math.SQRT2 * radius - radius - 1, 0);

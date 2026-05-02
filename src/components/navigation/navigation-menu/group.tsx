@@ -112,7 +112,7 @@ export default function Group({ children, cc = {}, label, round = false, href, t
             aria-controls={hasLinks ? id + linkId : undefined}
             onMouseEnter={() => select(linkId)}
             onFocus={() => select(linkId)}
-            onBlur={e => {
+            onBlur={(e: React.FocusEvent<any>) => {
                 if (!root.current?.contains(e.relatedTarget)) select(undefined);
             }}>
 

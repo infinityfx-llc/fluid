@@ -2,7 +2,7 @@
 
 import { combineClasses, combineRefs, getAbsoluteZIndex } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { cloneElement, useState, useRef, isValidElement, useId, useEffect } from "react";
+import { cloneElement, useState, useRef, useId, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
 
@@ -65,9 +65,9 @@ export type TooltipSelectors = Selectors<'tooltip'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/tooltip}
  */
-export default function Tooltip({ children, cc = {}, content, position = 'auto', visibility = 'interact', delay = .3, ...props }:
+export default function Tooltip<T extends React.ReactElement<any>>({ children, cc = {}, content, position = 'auto', visibility = 'interact', delay = .3, ...props }:
     {
-        children: React.ReactElement<any>;
+        children: T;
         ref?: React.Ref<HTMLDivElement>;
         cc?: TooltipSelectors;
         content?: React.ReactNode;
@@ -217,9 +217,6 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
     }, [visibility, position, computedPosition, delay]);
 
     useEffect(() => toggle(visibility === 'always'), [visibility]);
-
-    children = Array.isArray(children) ? children[0] : children;
-    if (!isValidElement(children)) return children;
 
     return <>
         {cloneElement(children, {

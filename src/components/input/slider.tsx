@@ -39,7 +39,8 @@ const styles = createStyles('slider', {
         width: 'calc(100% - 1.1em)',
         height: '1.1em',
         userSelect: 'none',
-        flexGrow: 1
+        flexGrow: 1,
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.wrapper.vertical .slider': {
