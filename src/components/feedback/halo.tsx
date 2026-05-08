@@ -4,7 +4,7 @@ import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink, useTrigger } from "@infinityfx/lively/hooks";
-import { Children, cloneElement, useRef, useEffect } from "react";
+import { Children, cloneElement, useRef, useEffect, isValidElement } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('halo', {
@@ -154,6 +154,8 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
 
         return () => ctrl.abort();
     }, []);
+
+    if (!isValidElement(children)) return null;
 
     const childProps = typeof children === 'object' && 'props' in children ? children.props : {};
     const childrenArray = Children.toArray(childProps.children);

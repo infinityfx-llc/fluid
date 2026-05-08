@@ -2,9 +2,8 @@
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { cloneElement, useEffect, useRef, useState } from "react";
+import { Children, cloneElement, isValidElement, useEffect, useRef, useState } from "react";
 import { createStyles } from "../../core/style";
-import { createPortal } from "react-dom";
 
 const styles = createStyles('indicator', {
     '.indicator': {
@@ -62,25 +61,28 @@ export default function Indicator<T extends React.ReactElement<any>>({ children,
     // calculate where to display indicator based on target element corner radius
     const offset = Math.max(Math.SQRT2 * radius - radius - 1, 0);
 
-    return <>
-        {cloneElement(children, {
-            ref: combineRefs(ref, children.props.ref, container)
-        })}
+    if (!isValidElement(children)) return null;
 
-        {radius >= 0 && content !== false && createPortal(<div {...props}
-            key="indicator"
-            className={classes(
-                style.indicator,
-                props.className
-            )}
-            style={{
-                ...props.style,
-                backgroundColor: color,
-                borderColor: outline,
-                top: offset,
-                right: offset
-            }}>
-            {typeof content !== 'boolean' ? content : null}
-        </div>, container.current)}
-    </>;
+    const childProps = typeof children === 'object' && 'props' in children ? children.props : {};
+    const childrenArray = Children.toArray(childProps.children);
+
+    if (radius >= 0 && content !== false) childrenArray.push(<div {...props}
+        key="indicator"
+        className={classes(
+            style.indicator,
+            props.className
+        )}
+        style={{
+            ...props.style,
+            backgroundColor: color,
+            borderColor: outline,
+            top: offset,
+            right: offset
+        }}>
+        {typeof content !== 'boolean' ? content : null}
+    </div>);
+
+    return cloneElement(children, {
+        ref: combineRefs(ref, childProps.ref, container)
+    }, childrenArray);
 }

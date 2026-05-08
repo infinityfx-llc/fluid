@@ -2,7 +2,7 @@
 
 import { combineClasses, combineRefs, getAbsoluteZIndex } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { cloneElement, useState, useRef, useId, useEffect, Children } from "react";
+import { cloneElement, useState, useRef, useId, useEffect, Children, isValidElement } from "react";
 import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
 
@@ -218,16 +218,19 @@ export default function Tooltip<T extends React.ReactElement<any>>({ children, c
 
     useEffect(() => toggle(visibility === 'always'), [visibility]);
 
+    if (!isValidElement(children)) return null;
+
     const childProps = typeof children === 'object' && 'props' in children ? children.props : {};
+    const childrenArray = Children.toArray(childProps.children);
+
+    childrenArray.unshift(<div ref={anchor} className={style.anchor} data-position={computedPosition} />);
 
     return <>
         {cloneElement(children, {
             ...props,
             'aria-describedby': id,
             ref: combineRefs(element, props.ref, childProps.ref)
-        })}
-
-        {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={computedPosition} />, element.current)}
+        }, childrenArray)}
 
         {mounted && createPortal(<div ref={tooltip} id={id} role="tooltip" className={style.tooltip} aria-hidden={!visible} style={{ zIndex }}>
             {content}
