@@ -180,114 +180,112 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
     const hasContent = file || (previewImages && fallbackPreviewImage);
 
     return <Halo
+        {...rest}
         color="var(--f-clr-grey-300)"
-        disabled={!!file || isDisabled}>
-        <div
-            {...rest}
-            tabIndex={0}
-            role="button"
-            aria-disabled={!!file || isDisabled}
-            className={classes(
-                style.zone,
-                hovering && style.hovering,
-                error && style.error,
-                rejected && style.rejected,
-                hasContent && style.filled,
-                props.disabled && style.disabled,
-                props.className
-            )}
-            onClick={e => {
-                props.onClick?.(e);
-                if (!file && !isDisabled && input.current) input.current.click();
-            }}
-            onDragOver={e => {
-                props.onDragOver?.(e);
-                e.preventDefault();
+        disabled={!!file || isDisabled}
+        tabIndex={0}
+        role="button"
+        aria-disabled={!!file || isDisabled}
+        className={classes(
+            style.zone,
+            hovering && style.hovering,
+            error && style.error,
+            rejected && style.rejected,
+            hasContent && style.filled,
+            props.disabled && style.disabled,
+            props.className
+        )}
+        onClick={e => {
+            props.onClick?.(e);
+            if (!file && !isDisabled && input.current) input.current.click();
+        }}
+        onDragOver={e => {
+            props.onDragOver?.(e);
+            e.preventDefault();
 
-                if (!isDisabled) setHovering(true);
-            }}
-            onDragLeave={e => {
-                props.onDragLeave?.(e);
-                setHovering(false);
-            }}
-            onDrop={e => {
-                props.onDrop?.(e);
-                if (isDisabled) return;
+            if (!isDisabled) setHovering(true);
+        }}
+        onDragLeave={e => {
+            props.onDragLeave?.(e);
+            setHovering(false);
+        }}
+        onDrop={e => {
+            props.onDrop?.(e);
+            if (isDisabled) return;
 
-                e.preventDefault();
-                setHovering(false);
+            e.preventDefault();
+            setHovering(false);
 
-                const file = e.dataTransfer.files[0];
-                if (file && !validFileType(file, props.accept || '')) {
-                    setRejected(true);
-                    setTimeout(() => setRejected(false), 250);
-                } else
-                    if (file) updateFile(file);
-            }}>
-            {loading && <div className={classes(style.container, style.centered)}>
-                <Spinner />
-            </div>}
+            const file = e.dataTransfer.files[0];
+            if (file && !validFileType(file, props.accept || '')) {
+                setRejected(true);
+                setTimeout(() => setRejected(false), 250);
+            } else
+                if (file) updateFile(file);
+        }}>
+        {loading && <div className={classes(style.container, style.centered)}>
+            <Spinner />
+        </div>}
 
-            {hasContent && !loading && <>
-                <div className={style.container}>
-                    <div className={style.preview}>
-                        <Icon type="file" />
+        {hasContent && !loading && <>
+            <div className={style.container}>
+                <div className={style.preview}>
+                    <Icon type="file" />
 
-                        {(preview || fallbackPreviewImage) && <img src={file ? URL.createObjectURL(file) : fallbackPreviewImage} className={style.image} />}
-                    </div>
+                    {(preview || fallbackPreviewImage) && <img src={file ? URL.createObjectURL(file) : fallbackPreviewImage} className={style.image} />}
+                </div>
 
-                    {file && <div className={style.footer}>
-                        <div>
-                            <div className={style.text}>
-                                {file.name}
-                            </div>
-
-                            <div className={style.annotation}>
-                                {formatFileSize(file.size)}
-                            </div>
+                {file && <div className={style.footer}>
+                    <div>
+                        <div className={style.text}>
+                            {file.name}
                         </div>
 
-                        <Button
-                            compact
-                            variant="minimal"
-                            disabled={isDisabled}
-                            onClick={() => updateFile(null)}>
-                            <Icon type="close" />
-                        </Button>
-                    </div>}
-                </div>
-            </>}
+                        <div className={style.annotation}>
+                            {formatFileSize(file.size)}
+                        </div>
+                    </div>
 
-            {<div
-                style={hasContent || loading ? {
-                    opacity: 0,
-                    pointerEvents: 'none'
-                } : undefined}
-                className={classes(style.container, style.centered)}>
-                <div className={style.icon}>
-                    {icon || <Icon type="upload" />}
-                </div>
-
-                <div className={style.text}>
-                    {text}
-                </div>
-
-                {annotation && <div className={style.annotation}>
-                    {annotation}
+                    <Button
+                        compact
+                        variant="minimal"
+                        disabled={isDisabled}
+                        onClick={() => updateFile(null)}>
+                        <Icon type="close" />
+                    </Button>
                 </div>}
-            </div>}
+            </div>
+        </>}
 
-            <input
-                {...split}
-                ref={combineRefs(input, inputRef)}
-                type="file"
-                disabled={props.disabled || loading}
-                aria-invalid={!!error}
-                className={style.input}
-                onChange={e => {
-                    props.onChange?.(e);
-                    setFile(e.target.files?.[0] || null);
-                }} />
-        </div>
+        {<div
+            style={hasContent || loading ? {
+                opacity: 0,
+                pointerEvents: 'none'
+            } : undefined}
+            className={classes(style.container, style.centered)}>
+            <div className={style.icon}>
+                {icon || <Icon type="upload" />}
+            </div>
+
+            <div className={style.text}>
+                {text}
+            </div>
+
+            {annotation && <div className={style.annotation}>
+                {annotation}
+            </div>}
+        </div>}
+
+        <input
+            {...split}
+            ref={combineRefs(input, inputRef)}
+            type="file"
+            disabled={props.disabled || loading}
+            aria-invalid={!!error}
+            className={style.input}
+            onChange={e => {
+                props.onChange?.(e);
+                setFile(e.target.files?.[0] || null);
+            }} />
     </Halo>;
 }

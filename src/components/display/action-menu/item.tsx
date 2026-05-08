@@ -39,6 +39,8 @@ export type ActionMenuItemSelectors = Selectors<'item'>;
 
 // todo: home/end/escape keys
 
+// TODO: disabled not working? (has to do with new Halo as system)
+
 export default function Item({ children, cc = {}, keepOpen, className, color, ...props }:
     {
         ref?: React.Ref<HTMLButtonElement>;
@@ -55,52 +57,52 @@ export default function Item({ children, cc = {}, keepOpen, className, color, ..
     const ref = useRef<HTMLButtonElement>(null);
     const popover = usePopover();
 
-    return <Halo disabled={props.disabled} color="var(--halo-color)">
-        <button
-            {...props}
-            ref={combineRefs(props.ref, ref)}
-            type="button"
-            role="menuitem"
-            style={{
-                ...props.style,
-                '--color': color
-            } as any}
-            className={classes(style.item, className)}
-            onClick={e => {
-                props.onClick?.(e);
+    return <Halo
+        {...props}
+        as="button"
+        ref={combineRefs(props.ref, ref)}
+        color="var(--halo-color)"
+        type="button"
+        role="menuitem"
+        style={{
+            ...props.style,
+            '--color': color
+        } as any}
+        className={classes(style.item, className)}
+        onClick={e => {
+            props.onClick?.(e);
 
-                if (!keepOpen) popover.toggle(false);
-            }}
-            onKeyDown={e => {
-                props.onKeyDown?.(e);
-                
-                let parent = ref.current?.parentElement;
-                while (parent && !parent.matches('[role="menu"], [role="group"]')) parent = parent.parentElement;
+            if (!keepOpen) popover.toggle(false);
+        }}
+        onKeyDown={e => {
+            props.onKeyDown?.(e);
 
-                if (parent?.matches('[role="menu"]') && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
-                    const el = parent.parentElement?.querySelector('[aria-haspopup="menu"]') as HTMLElement;
+            let parent = ref.current?.parentElement;
+            while (parent && !parent.matches('[role="menu"], [role="group"]')) parent = parent.parentElement;
 
-                    if (el) {
-                        e.preventDefault();
-                        el.focus();
-                    }
+            if (parent?.matches('[role="menu"]') && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+                const el = parent.parentElement?.querySelector('[aria-haspopup="menu"]') as HTMLElement;
+
+                if (el) {
+                    e.preventDefault();
+                    el.focus();
                 }
+            }
 
-                const offset = e.key === 'ArrowDown' ? 1 :
-                    e.key === 'ArrowUp' ? -1 :
-                        0;
+            const offset = e.key === 'ArrowDown' ? 1 :
+                e.key === 'ArrowUp' ? -1 :
+                    0;
 
-                if (parent && offset !== 0) {
-                    const focusable = filterFocusable(Array.from(parent.children));
-                    const i = focusable.findIndex(el => el === ref.current);
+            if (parent && offset !== 0) {
+                const focusable = filterFocusable(Array.from(parent.children));
+                const i = focusable.findIndex(el => el === ref.current);
 
-                    const el = focusable[i + offset] as HTMLElement | undefined;
-                    if (el) el.focus();
-                    if (i >= 0) e.preventDefault();
-                }
-            }}>
-            {children}
-        </button>
+                const el = focusable[i + offset] as HTMLElement | undefined;
+                if (el) el.focus();
+                if (i >= 0) e.preventDefault();
+            }
+        }}>
+        {children}
     </Halo>;
 }
 

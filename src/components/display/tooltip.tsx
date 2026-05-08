@@ -2,7 +2,7 @@
 
 import { combineClasses, combineRefs, getAbsoluteZIndex } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { cloneElement, useState, useRef, useId, useEffect, Children, isValidElement } from "react";
+import { cloneElement, useState, useRef, useId, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
 
@@ -11,31 +11,6 @@ const TooltipData = {
 };
 
 const styles = createStyles('tooltip', {
-    '.anchor': {
-        position: 'absolute',
-        pointerEvents: 'none'
-    },
-
-    '.anchor[data-position="top"]': {
-        bottom: 'calc(100% + var(--f-spacing-sml))',
-        left: '50%'
-    },
-
-    '.anchor[data-position="left"]': {
-        right: 'calc(100% + var(--f-spacing-sml))',
-        top: '50%'
-    },
-
-    '.anchor[data-position="right"]': {
-        left: 'calc(100% + var(--f-spacing-sml))',
-        top: '50%'
-    },
-
-    '.anchor[data-position="bottom"]': {
-        top: 'calc(100% + var(--f-spacing-sml))',
-        left: '50%'
-    },
-
     '.tooltip': {
         position: 'fixed',
         left: 0,
@@ -84,7 +59,6 @@ export default function Tooltip<T extends React.ReactElement<any>>({ children, c
     const style = combineClasses(styles, cc);
 
     const id = useId();
-    const anchor = useRef<HTMLDivElement | null>(null);
     const tooltip = useRef<HTMLDivElement | null>(null);
     const element = useRef<HTMLElement | null>(null);
     const state = useRef({
@@ -165,8 +139,12 @@ export default function Tooltip<T extends React.ReactElement<any>>({ children, c
 
         // update tooltip position based on anchor position
         function update() {
-            if (anchor.current && tooltip.current) {
-                const { x, y } = anchor.current.getBoundingClientRect();
+            if (element.current && tooltip.current) {
+                const { x, y, width, height } = element.current.getBoundingClientRect();
+
+                // TODO:
+                // updated position calc and DO NOT forget var(--f-spacing-sml)
+
                 const offset = {
                     top: '-50%, -100%',
                     left: '-100%, -50%',
@@ -218,22 +196,15 @@ export default function Tooltip<T extends React.ReactElement<any>>({ children, c
 
     useEffect(() => toggle(visibility === 'always'), [visibility]);
 
-    if (!isValidElement(children)) return null;
-
-    const childProps = typeof children === 'object' && 'props' in children ? children.props : {};
-    const childrenArray = Children.toArray(childProps.children);
-
-    childrenArray.unshift(<div ref={anchor} className={style.anchor} data-position={computedPosition} />);
-
     return <>
         {cloneElement(children, {
             ...props,
             'aria-describedby': id,
-            ref: combineRefs(element, props.ref, childProps.ref)
-        }, childrenArray)}
+            ref: combineRefs(element, props.ref, children?.props?.ref)
+        })}
 
         {mounted && createPortal(<div ref={tooltip} id={id} role="tooltip" className={style.tooltip} aria-hidden={!visible} style={{ zIndex }}>
             {content}
         </div>, document.getElementById('__fluid') as HTMLElement)}
-    </>;
+    </>
 }

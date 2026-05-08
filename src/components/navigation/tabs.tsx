@@ -114,47 +114,47 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
                 {options.map(({ label, value, disabled, panelId }, i) => {
 
                     return <div key={i} className={style.option}>
-                        <Halo disabled={disabled} color={variant === 'default' ? 'var(--f-clr-primary-300)' : 'var(--f-clr-primary-400)'}>
-                            <button
-                                ref={el => {
-                                    tabs.current[i] = disabled ? null : el;
-                                }}
-                                type="button"
-                                role="tab"
-                                className={style.button}
-                                aria-selected={state === value}
-                                aria-controls={panelId}
-                                disabled={disabled}
-                                onClick={() => {
-                                    setState?.(value);
-                                    onChange?.(value as T);
-                                }}
-                                onKeyDown={e => {
-                                    let matched = true;
+                        <Halo
+                            as="button"
+                            disabled={disabled}
+                            color={variant === 'default' ? 'var(--f-clr-primary-300)' : 'var(--f-clr-primary-400)'}
+                            ref={el => {
+                                tabs.current[i] = disabled ? null : el;
+                            }}
+                            type="button"
+                            role="tab"
+                            className={style.button}
+                            aria-selected={state === value}
+                            aria-controls={panelId}
+                            onClick={() => {
+                                setState?.(value);
+                                onChange?.(value as T);
+                            }}
+                            onKeyDown={e => {
+                                let matched = true;
 
-                                    switch (e.key) {
-                                        case 'ArrowRight':
-                                        case 'ArrowDown':
-                                            focus(i + 1);
-                                            break;
-                                        case 'ArrowLeft':
-                                        case 'ArrowUp':
-                                            focus(i - 1);
-                                            break;
-                                        case 'Home':
-                                            focus(0);
-                                            break;
-                                        case 'End':
-                                            focus(-1);
-                                            break;
-                                        default:
-                                            matched = false;
-                                    }
+                                switch (e.key) {
+                                    case 'ArrowRight':
+                                    case 'ArrowDown':
+                                        focus(i + 1);
+                                        break;
+                                    case 'ArrowLeft':
+                                    case 'ArrowUp':
+                                        focus(i - 1);
+                                        break;
+                                    case 'Home':
+                                        focus(0);
+                                        break;
+                                    case 'End':
+                                        focus(-1);
+                                        break;
+                                    default:
+                                        matched = false;
+                                }
 
-                                    if (matched) e.preventDefault();
-                                }}>
-                                {label}
-                            </button>
+                                if (matched) e.preventDefault();
+                            }}>
+                            {label}
                         </Halo>
 
                         {state === value && <Morph group={`tabs-selection-${id}`} deform={false} cachable={['x', 'sx']}>

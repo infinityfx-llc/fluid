@@ -1,10 +1,10 @@
 'use client';
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
-import { Selectors } from "../../../src/types";
+import { PolymorphComponentProps, Selectors } from "../../../src/types";
 import { Animatable } from "@infinityfx/lively";
 import { useLink, useTrigger } from "@infinityfx/lively/hooks";
-import { Children, cloneElement, useRef, useEffect, isValidElement } from "react";
+import { useRef, useEffect } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('halo', {
@@ -59,9 +59,8 @@ export type HaloSelectors = Selectors<'halo' | 'ripple'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/halo}
  */
-export default function Halo<T extends React.ReactElement<any>, P extends HTMLElement>({ children, cc = {}, color, hover = true, disabled = false, target, ref, ...props }:
+export default function Halo<P extends HTMLElement, E extends React.ElementType = 'div'>({ children, cc = {}, as, color, hover = true, disabled = false, target, ref, ...props }:
     {
-        children: T;
         ref?: React.Ref<any>;
         cc?: HaloSelectors;
         color?: string;
@@ -78,7 +77,7 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
          * Defaults to the child element the Halo component is wrapped around.
          */
         target?: React.RefObject<P | null>;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
+    } & PolymorphComponentProps<E>) {
     const style = combineClasses(styles, cc);
 
     const touch = useRef(0);
@@ -155,36 +154,34 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
         return () => ctrl.abort();
     }, []);
 
-    if (!isValidElement(children)) return null;
+    const Wrapper = as || 'div';
 
-    const childProps = typeof children === 'object' && 'props' in children ? children.props : {};
-    const childrenArray = Children.toArray(childProps.children);
+    return <Wrapper
+        {...props}
+        ref={combineRefs(container, ref)}
+        className={classes(props.className, style.container)}>
+        <div ref={halo} className={style.halo} data-hover={hover} data-disabled={disabled}>
+            <Animatable
+                animate={{
+                    translate,
+                    opacity
+                }}
+                animations={{
+                    ripple: {
+                        opacity: [0, 1],
+                        scale: [0, 1],
+                        duration: .5,
+                        easing: 'ease-in'
+                    }
+                }}
+                triggers={[
+                    { on: ripple, name: 'ripple', immediate: true }
+                ]}>
 
-    childrenArray.unshift(<div ref={halo} key="halo" className={style.halo} data-hover={hover} data-disabled={disabled}>
-        <Animatable
-            animate={{
-                translate,
-                opacity
-            }}
-            animations={{
-                ripple: {
-                    opacity: [0, 1],
-                    scale: [0, 1],
-                    duration: .5,
-                    easing: 'ease-in'
-                }
-            }}
-            triggers={[
-                { on: ripple, name: 'ripple', immediate: true }
-            ]}>
+                <div className={style.ripple} style={{ backgroundColor: color }} />
+            </Animatable>
+        </div>
 
-            <div className={style.ripple} style={{ backgroundColor: color }} />
-        </Animatable>
-    </div>);
-
-    return cloneElement(children, {
-        ...props,
-        ref: combineRefs(container, ref, childProps.ref),
-        className: classes(childProps.className, style.container)
-    }, childrenArray);
+        {children}
+    </Wrapper>;
 }

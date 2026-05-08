@@ -84,28 +84,28 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
     }, []);
 
     return <>
-        <Halo disabled={disabled} color="var(--f-clr-primary-400)">
-            <button
-                type="button"
-                disabled={disabled}
-                aria-expanded={isOpen}
-                aria-controls={id}
-                className={classes(
-                    style.button,
-                    style[`v__${variant}`]
-                )}
-                onClick={() => toggle(id, !isOpen)}>
-                {label}
+        <Halo
+            as="button"
+            disabled={disabled}
+            color="var(--f-clr-primary-400)"
+            type="button"
+            aria-expanded={isOpen}
+            aria-controls={id}
+            className={classes(
+                style.button,
+                style[`v__${variant}`]
+            )}
+            onClick={() => toggle(id, !isOpen)}>
+            {label}
 
-                <div className={style.icon}>
-                    <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} triggers={[{ on: isOpen }, { on: !isOpen, reverse: true }]}>
-                        <div className={style.arrows}>
-                            <Icon type="expandDown" />
-                            <Icon type="collapseUp" />
-                        </div>
-                    </Animatable>
-                </div>
-            </button>
+            <div className={style.icon}>
+                <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} triggers={[{ on: isOpen }, { on: !isOpen, reverse: true }]}>
+                    <div className={style.arrows}>
+                        <Icon type="expandDown" />
+                        <Icon type="collapseUp" />
+                    </div>
+                </Animatable>
+            </div>
         </Halo>
 
         <Collapsible shown={isOpen} id={id}>

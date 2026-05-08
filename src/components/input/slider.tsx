@@ -276,31 +276,35 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
                 const val = values[i];
 
                 return <Tooltip key={i} delay={0} content={formatTooltip ? formatTooltip(round(val, 2)) : round(val, 2)} visibility={tooltips} position={vertical ? 'right' : 'bottom'}>
-                    <Halo disabled={props.disabled} cc={{ halo: style.halo }}>
-                        <div className={style.handle} role="slider" tabIndex={props.disabled ? -1 : 0} aria-disabled={!!props.disabled}
-                            onMouseDown={() => dragging.current = i}
-                            onTouchStart={() => dragging.current = i}
-                            onTouchEnd={() => dragging.current = null}
-                            onKeyDown={e => {
-                                switch (e.key) {
-                                    case 'ArrowUp':
-                                    case 'ArrowRight': return update(i, val + step);
-                                    case 'ArrowDown':
-                                    case 'ArrowLeft': return update(i, val - step);
-                                    case 'Home': return update(i, min);
-                                    case 'End': return update(i, max);
-                                }
-                            }}
-                            aria-valuenow={val}
-                            aria-valuemin={values[i - 1] || 0}
-                            aria-valuemax={values[i + 1] || 1}
-                            aria-orientation={vertical ? 'vertical' : 'horizontal'}
-                            aria-label={split["aria-label"]}
-                            aria-labelledby={label ? id : undefined}
-                            style={{
-                                [vertical ? 'bottom' : 'left']: `${toOffset(val) * 100}%`
-                            }} />
-                    </Halo>
+                    <Halo
+                        className={style.handle}
+                        role="slider"
+                        tabIndex={props.disabled ? -1 : 0}
+                        aria-disabled={!!props.disabled}
+                        disabled={props.disabled}
+                        cc={{ halo: style.halo }}
+                        onMouseDown={() => dragging.current = i}
+                        onTouchStart={() => dragging.current = i}
+                        onTouchEnd={() => dragging.current = null}
+                        onKeyDown={e => {
+                            switch (e.key) {
+                                case 'ArrowUp':
+                                case 'ArrowRight': return update(i, val + step);
+                                case 'ArrowDown':
+                                case 'ArrowLeft': return update(i, val - step);
+                                case 'Home': return update(i, min);
+                                case 'End': return update(i, max);
+                            }
+                        }}
+                        aria-valuenow={val}
+                        aria-valuemin={values[i - 1] || 0}
+                        aria-valuemax={values[i + 1] || 1}
+                        aria-orientation={vertical ? 'vertical' : 'horizontal'}
+                        aria-label={split["aria-label"]}
+                        aria-labelledby={label ? id : undefined}
+                        style={{
+                            [vertical ? 'bottom' : 'left']: `${toOffset(val) * 100}%`
+                        }} />
                 </Tooltip>;
             })}
         </div>

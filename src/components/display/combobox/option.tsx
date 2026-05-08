@@ -47,22 +47,22 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
     } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onSelect'>) {
     const style = combineClasses(styles, cc);
 
-    return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
-        <button
-            {...props}
-            type="button"
-            role="option"
-            className={classes(
-                style.option,
-                round && style.round,
-                props.className
-            )}
-            onClick={e => {
-                props.onClick?.(e);
-                onSelect?.(value);
-            }}>
-            {children}
-        </button>
+    return <Halo
+        {...props}
+        as="button"
+        color="var(--f-clr-primary-400)"
+        type="button"
+        role="option"
+        className={classes(
+            style.option,
+            round && style.round,
+            props.className
+        )}
+        onClick={e => {
+            props.onClick?.(e);
+            onSelect?.(value);
+        }}>
+        {children}
     </Halo>;
 }
 

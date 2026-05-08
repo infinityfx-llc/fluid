@@ -166,48 +166,48 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
     const isMobile = useMediaQuery(`(max-width: ${fluid.breakpoints.mob}px)`);
 
     return <>
-        <Halo color={active ? undefined : 'var(--f-clr-primary-300)'} disabled={disabled}>
-            <div {...props}
-                tabIndex={0}
-                role="button"
-                className={classes(
-                    style.item,
-                    style[`s__${size}`],
-                    style[`v__${variant}`],
-                    round && style.round,
-                    compact && style.compact,
-                    collapsed && style.collapsed,
-                    props.className
-                )}
-                data-disabled={disabled}
-                data-active={active}
-                onClick={() => setOpen(!open)}>
+        <Halo
+            {...props}
+            color={active ? undefined : 'var(--f-clr-primary-300)'}
+            disabled={disabled}
+            tabIndex={0}
+            role="button"
+            className={classes(
+                style.item,
+                style[`s__${size}`],
+                style[`v__${variant}`],
+                round && style.round,
+                compact && style.compact,
+                collapsed && style.collapsed,
+                props.className
+            )}
+            data-disabled={disabled}
+            data-active={active}
+            onClick={() => setOpen(!open)}>
+            {icon !== undefined && <div className={style.icon}>
+                {icon}
+            </div>}
 
-                {icon !== undefined && <div className={style.icon}>
-                    {icon}
-                </div>}
+            <span className={style.content} data-hasicon={icon !== undefined}>
+                {label}
 
-                <span className={style.content} data-hasicon={icon !== undefined}>
-                    {label}
-
-                    {count ? <Toggle
-                        cc={{
-                            ...cc,
-                            toggle: style.toggle,
-                            content: style.toggle__content
-                        }}
-                        aria-label={label}
-                        disabled={compact}
-                        compact
-                        variant="minimal"
-                        size={size === 'med' ? 'sml' : 'xsm'}
-                        round={round}
-                        checked={open}
-                        checkedContent={<Icon type="collapseUp" />}>
-                        <Icon type="expandDown" />
-                    </Toggle> : right}
-                </span>
-            </div>
+                {count ? <Toggle
+                    cc={{
+                        ...cc,
+                        toggle: style.toggle,
+                        content: style.toggle__content
+                    }}
+                    aria-label={label}
+                    disabled={compact}
+                    compact
+                    variant="minimal"
+                    size={size === 'med' ? 'sml' : 'xsm'}
+                    round={round}
+                    checked={open}
+                    checkedContent={<Icon type="collapseUp" />}>
+                    <Icon type="expandDown" />
+                </Toggle> : right}
+            </span>
         </Halo>
 
         {count ? <Collapsible

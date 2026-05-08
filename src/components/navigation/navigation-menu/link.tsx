@@ -23,7 +23,7 @@ export type NavigationMenuLinkSelectors = Selectors<'link'>;
 
 type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a';
 
-export default function Link({ children, cc = {}, Link = 'a', ...props }:
+export default function Link({ children, cc = {}, as, ...props }:
     {
         ref?: React.Ref<HTMLAnchorElement>;
         cc?: NavigationMenuLinkSelectors;
@@ -32,14 +32,16 @@ export default function Link({ children, cc = {}, Link = 'a', ...props }:
          * 
          * Defaults to the HTML `<a>` element.
          */
-        Link?: AnchorLike<any>;
+        as?: AnchorLike<any>;
     } & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
     const style = combineClasses(styles, cc);
 
     const { root, select } = useNavigationMenu();
+    const Wrapper = as || 'a';
 
     return <Halo color="var(--f-clr-primary-400)">
-        <Link {...props}
+        <Wrapper
+            {...props}
             role="menuitem"
             className={classes(style.link, props.className)}
             onBlur={(e: React.FocusEvent<any>) => {
@@ -47,7 +49,7 @@ export default function Link({ children, cc = {}, Link = 'a', ...props }:
                 if (!root.current?.contains(e.relatedTarget)) select(undefined);
             }}>
             {children}
-        </Link>
+        </Wrapper>
     </Halo>;
 }
 

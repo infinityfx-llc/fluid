@@ -192,31 +192,29 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
                 content={tooltip}
                 visibility={tooltip ? 'interact' : 'never'}>
                 <Halo
+                    as="button"
                     hover={false}
                     disabled={disabled}
+                    className={style.option}
+                    type="button"
+                    role="radio"
+                    aria-checked={state === option}
+                    onClick={() => {
+                        setState?.(option);
+                        onChange?.(option as T);
+                    }}
                     cc={{
                         ...cc,
                         container: style.container,
                         halo: style.halo,
                         ring: style.ring
                     }}>
-                    <button
-                        className={style.option}
-                        type="button"
-                        role="radio"
-                        aria-checked={state === option}
-                        disabled={disabled}
-                        onClick={() => {
-                            setState?.(option);
-                            onChange?.(option as T);
-                        }}>
-                        <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
-                        <span className={style.content}>{label}</span>
+                    <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
+                    <span className={style.content}>{label}</span>
 
-                        {state === option && <Morph group={`segmented-selection-${id}`} cachable={vertical ? ['y', 'sy'] : ['x', 'sx']} deform={false} transition={{ duration: .4 }}>
-                            <div className={style.selection} />
-                        </Morph>}
-                    </button>
+                    {state === option && <Morph group={`segmented-selection-${id}`} cachable={vertical ? ['y', 'sy'] : ['x', 'sx']} deform={false} transition={{ duration: .4 }}>
+                        <div className={style.selection} />
+                    </Morph>}
                 </Halo>
             </Tooltip>;
         })}

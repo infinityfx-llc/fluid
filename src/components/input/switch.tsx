@@ -195,20 +195,18 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
                     { on: state, immediate: true },
                     { on: !state, reverse: true, immediate: true }
                 ]}>
-                <Halo target={inputRef} hover={false} cc={{ ...cc, halo: style.halo }}>
-                    <div className={style.handle__wrapper}>
-                        <Animatable
-                            inherit
-                            order={-1}
-                            deform={false}
-                            initial={{}}
-                            animate={{
-                                scale: [1, '1.6 1', 1],
-                                duration: .35
-                            }}>
-                            <div className={style.handle} />
-                        </Animatable>
-                    </div>
+                <Halo target={inputRef} hover={false} cc={{ ...cc, halo: style.halo }} className={style.handle__wrapper}>
+                    <Animatable
+                        inherit
+                        order={-1}
+                        deform={false}
+                        initial={{}}
+                        animate={{
+                            scale: [1, '1.6 1', 1],
+                            duration: .35
+                        }}>
+                        <div className={style.handle} />
+                    </Animatable>
                 </Halo>
             </Animatable>
         </div>

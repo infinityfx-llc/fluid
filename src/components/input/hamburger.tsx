@@ -73,43 +73,43 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
 
     const [state, setState] = open !== undefined ? [open] : useState(false);
 
-    return <Halo disabled={props.disabled}>
-        <button {...props}
-            style={{
-                ...props.style,
-                '--color': color
-            } as any}
-            className={classes(
-                style.hamburger,
-                props.className
-            )}
-            onClick={e => {
-                setState?.(!state);
-                props.onClick?.(e);
-            }}>
-            <Animatable animate={{ scale: ['1 1', '0 1', '0 1'], duration: .6 }} deform={false} triggers={[
+    return <Halo
+        {...props}
+        as="button"
+        style={{
+            ...props.style,
+            '--color': color
+        } as any}
+        className={classes(
+            style.hamburger,
+            props.className
+        )}
+        onClick={e => {
+            setState?.(!state);
+            props.onClick?.(e);
+        }}>
+        <Animatable animate={{ scale: ['1 1', '0 1', '0 1'], duration: .6 }} deform={false} triggers={[
+            { on: state, immediate: true },
+            { on: !state, reverse: true, immediate: true }
+        ]}>
+            {new Array(3).fill(0).map((_, i) => {
+                return <div key={i} className={style.line} />
+            })}
+        </Animatable>
+
+        <div className={style.cross}>
+            <Animatable animate={{ scale: ['0 1', '0 1', '1 1'], duration: .6 }} deform={false} triggers={[
                 { on: state, immediate: true },
                 { on: !state, reverse: true, immediate: true }
             ]}>
-                {new Array(3).fill(0).map((_, i) => {
-                    return <div key={i} className={style.line} />
-                })}
+                <div className={style.line} />
             </Animatable>
-
-            <div className={style.cross}>
-                <Animatable animate={{ scale: ['0 1', '0 1', '1 1'], duration: .6 }} deform={false} triggers={[
-                    { on: state, immediate: true },
-                    { on: !state, reverse: true, immediate: true }
-                ]}>
-                    <div className={style.line} />
-                </Animatable>
-                <Animatable animate={{ scale: ['1 0', '1 0', '1 1'], duration: .6, delay: .2 }} deform={false} triggers={[
-                    { on: state, immediate: true },
-                    { on: !state, reverse: true, immediate: true }
-                ]}>
-                    <div className={style.line} />
-                </Animatable>
-            </div>
-        </button>
+            <Animatable animate={{ scale: ['1 0', '1 0', '1 1'], duration: .6, delay: .2 }} deform={false} triggers={[
+                { on: state, immediate: true },
+                { on: !state, reverse: true, immediate: true }
+            ]}>
+                <div className={style.line} />
+            </Animatable>
+        </div>
     </Halo>;
 }

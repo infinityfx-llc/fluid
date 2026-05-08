@@ -137,47 +137,45 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
     ];
 
     return <Halo
+        {...rest}
         disabled={props.disabled}
         color={variant === 'minimal' && !state ? 'var(--f-clr-primary-400)' : undefined}
-        target={inputRef}>
-        <div
-            {...rest}
-            className={classes(
-                style.toggle,
-                round && style.round,
-                compact && style.compact,
-                style[`s__${size}`],
-                style[`v__${variant}`],
-                props.className
-            )}
-            data-checked={state}
-            data-disabled={!!props.disabled}
-            data-fb={variant === 'neutral' ? 'true' : undefined}>
-            <input
-                {...split}
-                ref={inputRef}
-                type="checkbox"
-                className={style.input}
-                onChange={e => {
-                    setState?.(e.target.checked);
-                    split.onChange?.(e);
-                }} />
+        target={inputRef}
+        className={classes(
+            style.toggle,
+            round && style.round,
+            compact && style.compact,
+            style[`s__${size}`],
+            style[`v__${variant}`],
+            props.className
+        )}
+        data-checked={state}
+        data-disabled={!!props.disabled}
+        data-fb={variant === 'neutral' ? 'true' : undefined}>
+        <input
+            {...split}
+            ref={inputRef}
+            type="checkbox"
+            className={style.input}
+            onChange={e => {
+                setState?.(e.target.checked);
+                split.onChange?.(e);
+            }} />
 
-            <div className={style.container}>
-                {checkedContent ? <Animatable
-                    animate={{ translate: ['0 0', '0 -100%'], duration: .4 }}
-                    initial={{ translate: state ? '0 -100%' : '0 0' }}
-                    triggers={triggers}>
-                    <div className={style.content}>{children}</div>
-                </Animatable> : <div className={style.content}>{children}</div>}
+        <div className={style.container}>
+            {checkedContent ? <Animatable
+                animate={{ translate: ['0 0', '0 -100%'], duration: .4 }}
+                initial={{ translate: state ? '0 -100%' : '0 0' }}
+                triggers={triggers}>
+                <div className={style.content}>{children}</div>
+            </Animatable> : <div className={style.content}>{children}</div>}
 
-                {checkedContent ? <Animatable
-                    animate={{ translate: ['0 100%', '0 0'], duration: .4 }}
-                    initial={{ translate: state ? '0 0' : '0 100%' }}
-                    triggers={triggers}>
-                    <div className={style.content}>{checkedContent}</div>
-                </Animatable> : null}
-            </div>
+            {checkedContent ? <Animatable
+                animate={{ translate: ['0 100%', '0 0'], duration: .4 }}
+                initial={{ translate: state ? '0 0' : '0 100%' }}
+                triggers={triggers}>
+                <div className={style.content}>{checkedContent}</div>
+            </Animatable> : null}
         </div>
     </Halo>;
 }

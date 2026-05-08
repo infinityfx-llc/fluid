@@ -313,20 +313,18 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                     { on: 'mount' }
                                 ]}>
                                 <Halo
+                                    as="button"
                                     color="var(--f-clr-primary-300)"
-                                    disabled={yearDisabled}>
-                                    <button
-                                        type="button"
-                                        disabled={yearDisabled}
-                                        aria-label={label}
-                                        className={classes(
-                                            style.date,
-                                            style.bold,
-                                            year.getFullYear() === date.getFullYear() && style.selected
-                                        )}
-                                        onClick={() => update(year)}>
-                                        {label}
-                                    </button>
+                                    disabled={yearDisabled}
+                                    type="button"
+                                    aria-label={label}
+                                    className={classes(
+                                        style.date,
+                                        style.bold,
+                                        year.getFullYear() === date.getFullYear() && style.selected
+                                    )}
+                                    onClick={() => update(year)}>
+                                    {label}
                                 </Halo>
                             </Animatable>;
                         })}
@@ -378,55 +376,54 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                         (maxDate ? maxDate < day : false);
 
                                 return <div key={ci} role="gridcell">
-                                    <Halo color="var(--f-clr-primary-300)" disabled={dayDisabled}>
-                                        <button
-                                            ref={el => {
-                                                dates.current[index] = el;
-                                            }}
-                                            type="button"
-                                            disabled={dayDisabled}
-                                            aria-label={day.toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' })}
-                                            className={classes(
-                                                style.date,
-                                                day.getMonth() === date.getMonth() && style.bold,
-                                                isEqual(new Date(), day) && style.today,
-                                                isEqual(date, day) && style.selected,
-                                                dayDisabled && Array.isArray(disabled) && style.unavailable
-                                            )}
-                                            onClick={() => update(day)}
-                                            onKeyDown={e => {
-                                                // control focus with keyboard
-                                                let next: number | null = null;
+                                    <Halo
+                                        as="button"
+                                        color="var(--f-clr-primary-300)"
+                                        disabled={dayDisabled}
+                                        ref={el => {
+                                            dates.current[index] = el;
+                                        }}
+                                        type="button"
+                                        aria-label={day.toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' })}
+                                        className={classes(
+                                            style.date,
+                                            day.getMonth() === date.getMonth() && style.bold,
+                                            isEqual(new Date(), day) && style.today,
+                                            isEqual(date, day) && style.selected,
+                                            dayDisabled && Array.isArray(disabled) && style.unavailable
+                                        )}
+                                        onClick={() => update(day)}
+                                        onKeyDown={e => {
+                                            // control focus with keyboard
+                                            let next: number | null = null;
 
-                                                switch (e.key) {
-                                                    case 'ArrowRight':
-                                                        next = index + 1;
-                                                        break;
-                                                    case 'ArrowLeft':
-                                                        next = index - 1;
-                                                        break;
-                                                    case 'ArrowDown':
-                                                        next = index + 7;
-                                                        break;
-                                                    case 'ArrowUp':
-                                                        next = index - 7;
-                                                        break;
-                                                }
+                                            switch (e.key) {
+                                                case 'ArrowRight':
+                                                    next = index + 1;
+                                                    break;
+                                                case 'ArrowLeft':
+                                                    next = index - 1;
+                                                    break;
+                                                case 'ArrowDown':
+                                                    next = index + 7;
+                                                    break;
+                                                case 'ArrowUp':
+                                                    next = index - 7;
+                                                    break;
+                                            }
 
-                                                if (next !== null) {
-                                                    if (next < 0) update(prevMonth);
-                                                    if (next >= 42) update(nextMonth);
+                                            if (next !== null) {
+                                                if (next < 0) update(prevMonth);
+                                                if (next >= 42) update(nextMonth);
 
-                                                    next = next % 42;
-                                                    next = next < 0 ? 42 + next : next;
-                                                    dates.current[next]?.focus();
+                                                next = next % 42;
+                                                next = next < 0 ? 42 + next : next;
+                                                dates.current[next]?.focus();
 
-                                                    e.preventDefault();
-                                                }
-                                            }}>
-
-                                            {day.getDate()}
-                                        </button>
+                                                e.preventDefault();
+                                            }
+                                        }}>
+                                        {day.getDate()}
                                     </Halo>
                                 </div>;
                             })}

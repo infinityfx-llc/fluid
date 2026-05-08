@@ -196,37 +196,37 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
                 data-error={error}>
 
                 <div className={style.header}>
-                    <Halo disabled={!navigatable} cc={{ halo: style.halo }}>
-                        <button
-                            type="button"
-                            className={style.bullet}
-                            disabled={!navigatable}
-                            onClick={() => setCompleted?.(i)}
-                            aria-labelledby={`${id}-${i}`}>
-                            <div className={style.icon}>
-                                <Animatable
-                                    initial={{
-                                        translate: isCompleted ? '0% -25%' : '0% 25%'
-                                    }}
-                                    animate={{
-                                        translate: ['0% 25%', '0% -25%'],
-                                        duration: .35
-                                    }}
-                                    triggers={[
-                                        { on: isCompleted },
-                                        { on: !isCompleted, reverse: true }
-                                    ]}>
-                                    <div className={style.icons}>
-                                        <div className={style.icon}>
-                                            {icon}
-                                        </div>
-                                        <div className={style.icon}>
-                                            <Icon type="check" />
-                                        </div>
+                    <Halo
+                        as="button"
+                        disabled={!navigatable}
+                        cc={{ halo: style.halo }}
+                        type="button"
+                        className={style.bullet}
+                        onClick={() => setCompleted?.(i)}
+                        aria-labelledby={`${id}-${i}`}>
+                        <div className={style.icon}>
+                            <Animatable
+                                initial={{
+                                    translate: isCompleted ? '0% -25%' : '0% 25%'
+                                }}
+                                animate={{
+                                    translate: ['0% 25%', '0% -25%'],
+                                    duration: .35
+                                }}
+                                triggers={[
+                                    { on: isCompleted },
+                                    { on: !isCompleted, reverse: true }
+                                ]}>
+                                <div className={style.icons}>
+                                    <div className={style.icon}>
+                                        {icon}
                                     </div>
-                                </Animatable>
-                            </div>
-                        </button>
+                                    <div className={style.icon}>
+                                        <Icon type="check" />
+                                    </div>
+                                </div>
+                            </Animatable>
+                        </div>
                     </Halo>
 
                     {i < steps.length - 1 && variant !== 'compact' && <div className={style.progress} />}
