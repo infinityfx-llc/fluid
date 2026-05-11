@@ -1,6 +1,6 @@
 'use client';
 
-import { Selectors } from '../../../../src/types';
+import { PolymorphComponentProps, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses } from '../../../core/utils';
 import Halo from '../../feedback/halo';
@@ -21,35 +21,38 @@ const styles = createStyles('navigation-menu.link', {
 
 export type NavigationMenuLinkSelectors = Selectors<'link'>;
 
-type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a';
+type AnchorLike = React.ComponentType<{
+    href: string;
+    className?: string;
+    onBlur?: (e: React.FocusEvent<any>) => void;
+}> | 'a';
 
-export default function Link({ children, cc = {}, as, ...props }:
+export default function Link<A extends AnchorLike>({ children, cc = {}, as, ...props }:
     {
         ref?: React.Ref<HTMLAnchorElement>;
         cc?: NavigationMenuLinkSelectors;
         /**
-         * A custom component to use as a link element.
+         * What type of component or element to render this component as.
          * 
-         * Defaults to the HTML `<a>` element.
+         * @default HTMLAnchorElement
          */
-        as?: AnchorLike<any>;
-    } & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+        as?: A;
+    } & Omit<PolymorphComponentProps<A>, 'as'>) {
     const style = combineClasses(styles, cc);
 
     const { root, select } = useNavigationMenu();
-    const Wrapper = as || 'a';
 
-    return <Halo color="var(--f-clr-primary-400)">
-        <Wrapper
-            {...props}
-            role="menuitem"
-            className={classes(style.link, props.className)}
-            onBlur={(e: React.FocusEvent<any>) => {
-                props.onBlur?.(e);
-                if (!root.current?.contains(e.relatedTarget)) select(undefined);
-            }}>
-            {children}
-        </Wrapper>
+    return <Halo
+        {...props}
+        as={as || 'a'}
+        color="var(--f-clr-primary-400)"
+        role="menuitem"
+        className={classes(style.link, props.className)}
+        onBlur={(e: React.FocusEvent<any>) => {
+            props.onBlur?.(e);
+            if (!root.current?.contains(e.relatedTarget)) select(undefined);
+        }}>
+        {children}
     </Halo>;
 }
 

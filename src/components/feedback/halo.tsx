@@ -59,18 +59,18 @@ export type HaloSelectors = Selectors<'halo' | 'ripple'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/halo}
  */
-export default function Halo<P extends HTMLElement, E extends React.ElementType = 'div'>({ children, cc = {}, as, color, hover = true, disabled = false, target, ref, ...props }:
+export default function Halo<P extends HTMLElement, E extends React.ElementType = 'div'>({ children, cc = {}, as, color, hover = true, target, ref, ...props }:
     {
         ref?: React.Ref<any>;
-        cc?: HaloSelectors;
-        color?: string;
+        cc?: HaloSelectors; // TODO: fix overlapping prop
+        color?: string; // TODO: fix overlapping prop
         /**
          * Show the Halo when hovering over the target.
          * 
          * @default true
          */
         hover?: boolean;
-        disabled?: boolean;
+        disabled?: boolean; // TODO: fix overlapping prop
         /**
          * The target element to interact with for the Halo to show.
          * 
@@ -160,7 +160,7 @@ export default function Halo<P extends HTMLElement, E extends React.ElementType 
         {...props}
         ref={combineRefs(container, ref)}
         className={classes(props.className, style.container)}>
-        <div ref={halo} className={style.halo} data-hover={hover} data-disabled={disabled}>
+        <div ref={halo} className={style.halo} data-hover={hover} data-disabled={props.disabled}>
             <Animatable
                 animate={{
                     translate,

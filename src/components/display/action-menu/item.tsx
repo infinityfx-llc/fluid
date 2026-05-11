@@ -39,8 +39,6 @@ export type ActionMenuItemSelectors = Selectors<'item'>;
 
 // todo: home/end/escape keys
 
-// TODO: disabled not working? (has to do with new Halo as system)
-
 export default function Item({ children, cc = {}, keepOpen, className, color, ...props }:
     {
         ref?: React.Ref<HTMLButtonElement>;

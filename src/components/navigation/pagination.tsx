@@ -144,7 +144,7 @@ const styles = createStyles('pagination', {
     }
 });
 
-export type PaginationSelectors = Selectors<'pagination' | 'pill' | 'square' | 'round' | 's__xsm'  | 's__sml' | 's__med' | 's__lrg' | 'v__default' | 'v__neutral' | 'v__minimal' | 'buttons' | 'layer' | 'button' | 'selection' | 'indices'>;
+export type PaginationSelectors = Selectors<'pagination' | 'pill' | 'square' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'v__default' | 'v__neutral' | 'v__minimal' | 'buttons' | 'layer' | 'button' | 'selection' | 'indices'>;
 
 /**
  * A set of inputs used for navigation between pages.
@@ -229,24 +229,24 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
             style[shape],
             props.className
         )}>
-        {skipable && <Halo disabled={backDisabled}>
-            <button
-                disabled={backDisabled}
-                aria-label="1"
-                className={style.button}
-                onClick={() => update(0)}>
-                <Icon type="first" />
-            </button>
+        {skipable && <Halo
+            as="button"
+            type="button"
+            disabled={backDisabled}
+            aria-label="1"
+            className={style.button}
+            onClick={() => update(0)}>
+            <Icon type="first" />
         </Halo>}
 
-        <Halo disabled={backDisabled}>
-            <button
-                disabled={backDisabled}
-                aria-label={state + ''}
-                className={style.button}
-                onClick={() => update(state - 1)}>
-                <Icon type="left" />
-            </button>
+        <Halo
+            as="button"
+            type="button"
+            disabled={backDisabled}
+            aria-label={state + ''}
+            className={style.button}
+            onClick={() => update(state - 1)}>
+            <Icon type="left" />
         </Halo>
 
         {!compact && <div className={style.buttons}>
@@ -269,68 +269,67 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
                         <div className={classes(style.layer, style.selection)} style={gridStyle} />
                     </Morph>}
 
-                    <Halo disabled={disabled}>
-                        <button
-                            type="button"
-                            disabled={disabled}
-                            className={classes(
-                                style.button,
-                                style.index
-                            )}
-                            style={gridStyle}
-                            aria-current={index === state ? 'page' : undefined}
-                            onClick={() => update(index)}>
-                            <Animatable
-                                animations={{
-                                    forward: {
-                                        translate: ['33.3% 0%', '0% 0%'],
-                                        duration: .35
-                                    },
-                                    back: {
-                                        translate: ['-33.3% 0%', '0% 0%'],
-                                        duration: .35
-                                    }
-                                }}
-                                triggers={[
-                                    { name: 'forward', on: previousIndex - index < 0 ? trigger : false, immediate: true },
-                                    { name: 'back', on: previousIndex - index > 0 ? trigger : false, immediate: true }
-                                ]}>
-                                <div className={style.indices}>
-                                    <span>
-                                        {previousIndex + 1}
-                                    </span>
-                                    <span>
-                                        {index + 1}
-                                    </span>
-                                    <span>
-                                        {previousIndex + 1}
-                                    </span>
-                                </div>
-                            </Animatable>
-                        </button>
+                    <Halo
+                        as="button"
+                        disabled={disabled}
+                        type="button"
+                        className={classes(
+                            style.button,
+                            style.index
+                        )}
+                        style={gridStyle}
+                        aria-current={index === state ? 'page' : undefined}
+                        onClick={() => update(index)}>
+                        <Animatable
+                            animations={{
+                                forward: {
+                                    translate: ['33.3% 0%', '0% 0%'],
+                                    duration: .35
+                                },
+                                back: {
+                                    translate: ['-33.3% 0%', '0% 0%'],
+                                    duration: .35
+                                }
+                            }}
+                            triggers={[
+                                { name: 'forward', on: previousIndex - index < 0 ? trigger : false, immediate: true },
+                                { name: 'back', on: previousIndex - index > 0 ? trigger : false, immediate: true }
+                            ]}>
+                            <div className={style.indices}>
+                                <span>
+                                    {previousIndex + 1}
+                                </span>
+                                <span>
+                                    {index + 1}
+                                </span>
+                                <span>
+                                    {previousIndex + 1}
+                                </span>
+                            </div>
+                        </Animatable>
                     </Halo>
                 </Fragment>;
             })}
         </div>}
 
-        <Halo disabled={forwardDisabled}>
-            <button
-                disabled={forwardDisabled}
-                aria-label={state + 2 + ''}
-                className={style.button}
-                onClick={() => update(state + 1)}>
-                <Icon type="right" />
-            </button>
+        <Halo
+            as="button"
+            type="button"
+            disabled={forwardDisabled}
+            aria-label={state + 2 + ''}
+            className={style.button}
+            onClick={() => update(state + 1)}>
+            <Icon type="right" />
         </Halo>
 
-        {skipable && <Halo disabled={forwardDisabled}>
-            <button
-                disabled={forwardDisabled}
-                aria-label={pages + ''}
-                className={style.button}
-                onClick={() => update(pages - 1)}>
-                <Icon type="last" />
-            </button>
+        {skipable && <Halo
+            as="button"
+            type="button"
+            disabled={forwardDisabled}
+            aria-label={pages + ''}
+            className={style.button}
+            onClick={() => update(pages - 1)}>
+            <Icon type="last" />
         </Halo>}
     </div>;
 }
