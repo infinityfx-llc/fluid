@@ -17,14 +17,17 @@ const styles = createStyles('modal', (fluid) => ({
     '.modal': {
         background: 'var(--f-clr-bg-100)',
         borderRadius: 'var(--f-radius-med)',
-        display: 'flex',
-        flexDirection: 'column',
-        paddingBlock: 'var(--f-spacing-med)',
         minWidth: 'min(100vw, 16em)',
         border: 'solid 1px var(--f-clr-fg-200)',
         margin: 'var(--f-spacing-lrg)',
         maxHeight: 'calc(100% - var(--f-spacing-lrg) * 2)',
         touchAction: 'none'
+    },
+
+    '.content': {
+        display: 'flex',
+        flexDirection: 'column',
+        paddingBlock: 'var(--f-spacing-med)'
     },
 
     '.scrollarea': {
@@ -38,6 +41,26 @@ const styles = createStyles('modal', (fluid) => ({
         paddingInline: 'var(--f-spacing-med)',
         paddingBottom: 'var(--f-spacing-med)',
         color: 'var(--f-clr-text-100)'
+    },
+
+    '.footer': {
+        overflow: 'hidden',
+        position: 'relative',
+        borderTop: 'solid 1px var(--f-clr-fg-200)',
+        padding: 'var(--f-spacing-med)',
+        borderBottomLeftRadius: 'calc(var(--f-radius-med) - 1px)',
+        borderBottomRightRadius: 'calc(var(--f-radius-med) - 1px)',
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: 'var(--f-spacing-sml)'
+    },
+
+    '.footer::before': {
+        content: '""',
+        position: 'absolute',
+        background: 'var(--f-clr-fg-100)',
+        inset: 0,
+        bottom: '-32px'
     },
 
     '.handle': {
@@ -64,8 +87,12 @@ const styles = createStyles('modal', (fluid) => ({
             borderRadius: 'var(--f-radius-lrg)',
             borderBottomRightRadius: 0,
             borderBottomLeftRadius: 0,
-            paddingBottom: 'calc(var(--f-spacing-med) + 32px)',
+            paddingBottom: '32px',
             marginBottom: '-32px'
+        },
+
+        '.footer': {
+            overflow: 'visible'
         },
 
         '.handle': {
@@ -81,13 +108,14 @@ export type ModalSelectors = Selectors<'modal' | 'header' | 'handle' | 'title'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/modal}
  */
-export default function Modal({ children, cc = {}, show, onClose, title, mobileClosing = 'handle', ref, ...props }:
+export default function Modal({ children, cc = {}, show, onClose, title, footer, mobileClosing = 'handle', ref, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: ModalSelectors;
         show: boolean;
         onClose: () => void;
         title?: React.ReactNode;
+        footer?: React.ReactNode;
         /**
          * @default "handle"
          */
@@ -137,6 +165,8 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
         }
     }, []);
 
+    // TODO: when switching between mobile and desktop causes react render error (possibly to with lively?)
+
     return <Overlay show={show} onClose={onClose}>
         <Animate
             correction="none"
@@ -175,19 +205,25 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
                         !content.current?.scrollTop &&
                         modalRef.current?.contains(e.target as HTMLElement)) touch.current = e.touches[0];
                 }}>
-                {isMobile && mobileClosing === 'handle' && <div className={style.handle} />}
+                <div className={style.content}>
+                    {isMobile && mobileClosing === 'handle' && <div className={style.handle} />}
 
-                <div className={style.header}>
-                    <span id={id} className={style.title}>{title}</span>
+                    <div className={style.header}>
+                        <span id={id} className={style.title}>{title}</span>
 
-                    {(mobileClosing === 'button' || !isMobile) && <Button compact variant="minimal" onClick={onClose}>
-                        <Icon type="close" />
-                    </Button>}
+                        {(mobileClosing === 'button' || !isMobile) && <Button compact variant="minimal" onClick={onClose}>
+                            <Icon type="close" />
+                        </Button>}
+                    </div>
+
+                    <Scrollarea className={style.scrollarea} ref={content}>
+                        {children}
+                    </Scrollarea>
                 </div>
 
-                <Scrollarea className={style.scrollarea} ref={content}>
-                    {children}
-                </Scrollarea>
+                {footer ? <div className={style.footer}>
+                    {footer}
+                </div> : null}
             </div>
         </Animate>
     </Overlay>;

@@ -115,7 +115,7 @@ export default function Checkbox({ cc = {}, error, size = 'med', color, intermed
     const style = combineClasses(styles, cc);
 
     const [split, rest] = useInputProps(props);
-    const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false); // TODO: might be able to get rid of state
+    const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
 
     return <Halo
         {...rest}
