@@ -2,7 +2,7 @@
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('indicator', {
@@ -35,7 +35,7 @@ export type IndicatorSelectors = Selectors<'indicator'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/halo}
  */
-export default function Indicator({ cc = {}, content, color, outline, ref, ...props }: // just insert as child?
+export default function Indicator({ cc = {}, content, color, outline, ref, ...props }:
     {
         ref?: React.Ref<any>;
         cc?: IndicatorSelectors;
@@ -45,9 +45,9 @@ export default function Indicator({ cc = {}, content, color, outline, ref, ...pr
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'>) {
     const style = combineClasses(styles, cc);
     const indicator = useRef<HTMLDivElement>(null);
-    const [radius, setRadius] = useState(-1);
+    const [radius, setRadius] = useState(0);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (indicator.current) {
             const parent = indicator.current.offsetParent;
             if (!(parent instanceof HTMLElement)) return;
@@ -58,12 +58,12 @@ export default function Indicator({ cc = {}, content, color, outline, ref, ...pr
 
             setRadius(Math.min(radius, max));
         }
-    }, []);
+    }, [content]);
 
     // calculate where to display indicator based on target element corner radius
     const offset = Math.max(Math.SQRT2 * radius - radius - 1, 0);
 
-    if (radius < 0 || content === false) return null;
+    if (content === false) return null;
 
     return <div
         {...props}

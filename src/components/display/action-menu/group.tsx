@@ -100,7 +100,7 @@ export default function Group({ children, cc = {}, label, className, ...props }:
         </Item>
 
         <Animate
-            lite
+            correction="none"
             initial={{
                 opacity: 0
             }}

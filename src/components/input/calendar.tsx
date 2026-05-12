@@ -264,7 +264,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
         <div className={style.content}>
             <LayoutGroup>
                 {years && <Animate
-                    deformCorrection={false}
+                    correction="none"
                     animate={{
                         opacity: [0, 1],
                         duration: .35
@@ -291,7 +291,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
 
                             return <Animate
                                 key={label}
-                                deformCorrection={false}
+                                correction="none"
                                 transition={{
                                     cache: ['y'],
                                     duration: .35,
@@ -338,7 +338,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                 </div>
 
                 <Animate
-                    lite
+                    correction="none"
                     clips={{
                         left: {
                             translate: ['-8px 0px', '0px 0px'],

@@ -63,9 +63,9 @@ const styles = createStyles('navigation-menu.group', {
 
 export type NavigationMenuGroupSelectors = Selectors<'group' | 'link' | 'arrow' | 'selection' | 'menu'>;
 
-type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a';
+type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a'; // TODO: check if type is correct
 
-export default function Group({ children, cc = {}, label, round = false, href, target, active = false, position = 'center', Link = 'a', ...props }:
+export default function Group<A extends AnchorLike<any>>({ children, cc = {}, label, round = false, href, target, active = false, position = 'center', Link = 'a', ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: NavigationMenuGroupSelectors;
@@ -86,9 +86,9 @@ export default function Group({ children, cc = {}, label, round = false, href, t
          */
         position?: 'start' | 'center' | 'end';
         /**
-         * A custom component to use as a link element.
+         * What type of component or element to render as a link element.
          * 
-         * Defaults to the HTML `<a>` element.
+         * @default HTMLAnchorElement
          */
         Link?: AnchorLike<any>;
     } & React.HTMLAttributes<HTMLDivElement>) {

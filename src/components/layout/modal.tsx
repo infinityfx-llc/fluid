@@ -139,7 +139,7 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
 
     return <Overlay show={show} onClose={onClose}>
         <Animate
-            lite
+            correction="none"
             key="modal"
             onAnimationEnd={() => offset.set(0)}
             animate={{

@@ -25,7 +25,7 @@ export default function Collapsible({ children, cc = {}, shown, ...props }: {
 
     return <LayoutGroup>
         <Animate
-            deformCorrection={false}
+            correction="none"
             transition={{
                 cache: ['height', 'opacity', 'visibility']
             }}>
