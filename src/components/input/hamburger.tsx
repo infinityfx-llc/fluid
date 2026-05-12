@@ -76,9 +76,8 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
         animate: [{ on: state, composite: 'override' as const }, { on: !state, reverse: true, composite: 'override' as const }]
     };
 
-    return <Halo
+    return <button
         {...props}
-        as="button"
         style={{
             ...props.style,
             '--color': color
@@ -91,6 +90,8 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
             setState?.(!state);
             props.onClick?.(e);
         }}>
+        <Halo disabled={props.disabled} />
+
         <Animate
             transition={{ cache: [] }}
             animate={{
@@ -130,5 +131,5 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
                 <div className={style.line} />
             </Animate>
         </div>
-    </Halo>;
+    </button>;
 }

@@ -21,13 +21,9 @@ const styles = createStyles('navigation-menu.link', {
 
 export type NavigationMenuLinkSelectors = Selectors<'link'>;
 
-type AnchorLike = React.ComponentType<{
-    href: string;
-    className?: string;
-    onBlur?: (e: React.FocusEvent<any>) => void;
-}> | 'a';
+type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a';
 
-export default function Link<A extends AnchorLike>({ children, cc = {}, as, ...props }:
+export default function Link<A extends AnchorLike<any>>({ children, cc = {}, as, ...props }:
     {
         ref?: React.Ref<HTMLAnchorElement>;
         cc?: NavigationMenuLinkSelectors;
@@ -42,18 +38,20 @@ export default function Link<A extends AnchorLike>({ children, cc = {}, as, ...p
 
     const { root, select } = useNavigationMenu();
 
-    return <Halo
+    const Wrapper = as || 'a';
+
+    return <Wrapper
         {...props}
-        as={as || 'a'}
-        color="var(--f-clr-primary-400)"
         role="menuitem"
         className={classes(style.link, props.className)}
         onBlur={(e: React.FocusEvent<any>) => {
             props.onBlur?.(e);
             if (!root.current?.contains(e.relatedTarget)) select(undefined);
         }}>
+        <Halo color="var(--f-clr-primary-400)" />
+
         {children}
-    </Halo>;
+    </Wrapper>;
 }
 
 Link.displayName = 'NavigationMenu.Link';

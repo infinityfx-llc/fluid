@@ -303,9 +303,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                     easing: 'ease-out',
                                     delay: .35 + Math.abs(3 - Math.floor(i / 3)) * .05
                                 }}>
-                                <Halo
-                                    as="button"
-                                    color="var(--f-clr-primary-300)"
+                                <button
                                     disabled={yearDisabled}
                                     type="button"
                                     aria-label={label}
@@ -315,8 +313,10 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                         year.getFullYear() === date.getFullYear() && style.selected
                                     )}
                                     onClick={() => update(year)}>
+                                    <Halo disabled={yearDisabled} color="var(--f-clr-primary-300)" />
+
                                     {label}
-                                </Halo>
+                                </button>
                             </Animate>;
                         })}
                     </div>
@@ -368,9 +368,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                         (maxDate ? maxDate < day : false);
 
                                 return <div key={ci} role="gridcell">
-                                    <Halo
-                                        as="button"
-                                        color="var(--f-clr-primary-300)"
+                                    <button
                                         disabled={dayDisabled}
                                         ref={el => {
                                             dates.current[index] = el;
@@ -415,8 +413,10 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                                 e.preventDefault();
                                             }
                                         }}>
+                                        <Halo disabled={dayDisabled} color="var(--f-clr-primary-300)" />
+
                                         {day.getDate()}
-                                    </Halo>
+                                    </button>
                                 </div>;
                             })}
                         </div>

@@ -130,20 +130,20 @@ export default function Radio({ cc = {}, error, size = 'med', color, ...props }:
 
     const [split, rest] = useInputProps(props);
 
-    return <Halo
+    return <div
         {...rest}
-        hover={false}
-        cc={{ ...cc, halo: style.halo }}
         className={classes(
             style.wrapper,
             style[`s__${size}`],
             rest.className
         )}
         data-error={!!error}>
+        <Halo hover={false} cc={{ halo: style.halo }} />
+
         <input {...split} type="radio" className={style.input} aria-invalid={!!error} />
 
         <div className={style.radio} style={{ '--color': color } as any}>
             <div className={style.selection} />
         </div>
-    </Halo>;
+    </div>;
 }

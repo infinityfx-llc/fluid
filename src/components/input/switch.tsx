@@ -119,7 +119,7 @@ const styles = createStyles('switch', {
     },
 
     '.wrapper .halo': {
-        borderRadius: 'var(--f-radius-sml)',
+        borderRadius: 'var(--f-radius-med)',
         inset: '-.5em'
     },
 
@@ -160,7 +160,8 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
             rest.className
         )}
         data-error={!!error}>
-        <input {...split}
+        <input
+            {...split}
             ref={inputRef}
             type="checkbox"
             className={style.input}
@@ -188,7 +189,9 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
                     translate: state ? '100% 0%' : '0% 0%',
                     duration: .35
                 }}>
-                <Halo target={inputRef} hover={false} cc={{ ...cc, halo: style.halo }} className={style.handle__wrapper}>
+                <div className={style.handle__wrapper}>
+                    <Halo target={inputRef} hover={false} cc={{ halo: style.halo }} />
+
                     <Animate
                         transition={{ cache: [] }}
                         animate={{
@@ -201,7 +204,7 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
                         }}>
                         <div className={style.handle} />
                     </Animate>
-                </Halo>
+                </div>
             </Animate>
         </div>
     </div>;

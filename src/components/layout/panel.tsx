@@ -213,13 +213,7 @@ export default function Panel({ cc = {}, children, variant = 'default', directio
                     onMouseDown={() => dragging.current = i}>
                     <div className={style.focus} />
 
-                    {handles && <Halo
-                        hover={false}
-                        color="var(--f-clr-primary-400)"
-                        cc={{
-                            ...cc,
-                            halo: style.halo
-                        }}
+                    {handles && <div
                         tabIndex={0}
                         className={style.handle}
                         onKeyDown={e => {
@@ -230,8 +224,10 @@ export default function Panel({ cc = {}, children, variant = 'default', directio
                                 e.preventDefault();
                             }
                         }}>
+                        <Halo hover={false} color="var(--f-clr-primary-400)" cc={{ halo: style.halo }} />
+
                         {variant === 'default' && [0, 1, 2, 3, 4, 5].map(i => <div key={i} className={style.dot} />)}
-                    </Halo>}
+                    </div>}
                 </div>}
 
                 {cloneElement(child as React.ReactElement<any>, {

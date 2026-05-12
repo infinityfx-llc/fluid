@@ -107,9 +107,8 @@ export default function Button({ children, cc = {}, round = false, compact = fal
     } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);
 
-    return <Halo
+    return <button
         {...props}
-        as="button"
         type={props.type || 'button'}
         disabled={props.disabled || loading}
         className={classes(
@@ -126,8 +125,10 @@ export default function Button({ children, cc = {}, round = false, compact = fal
         } as any}
         data-loading={loading}
         data-fb={variant === 'neutral' ? 'true' : undefined}>
+        <Halo disabled={props.disabled || loading} />
+
         <span className={style.content}>{children}</span>
 
         {loading && <Spinner className={style.loader} />}
-    </Halo>;
+    </button>;
 }

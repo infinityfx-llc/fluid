@@ -77,13 +77,13 @@ export default function Toggle({ children, cc = {}, toggle = 'square', ...props 
     const { collapsed, setCollapsed } = useSidebar();
 
     return <div {...props} className={classes(style.wrapper, props.className)}>
-        <Halo
-            as="button"
-            disabled={!collapsed}
-            color="var(--f-clr-primary-300)"
+        <button
             type="button"
+            disabled={!collapsed}
             className={style.toggle}
             onClick={() => setCollapsed(false)}>
+            <Halo disabled={!collapsed} color="var(--f-clr-primary-300)" />
+
             <div className={style.logo}>
                 {children}
             </div>
@@ -91,7 +91,7 @@ export default function Toggle({ children, cc = {}, toggle = 'square', ...props 
             <div className={style.icon}>
                 <Icon type="expandSidebar" />
             </div>
-        </Halo>
+        </button>
 
         <Button size="sml" compact variant="light" onClick={() => setCollapsed(true)} className={style.button} tabIndex={collapsed ? -1 : 0} data-collapsed={collapsed}>
             <Icon type="collapseSidebar" />

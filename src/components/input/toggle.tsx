@@ -131,11 +131,8 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
     const [state, setState] = props.checked !== undefined ? [props.checked] : useState(!!props.defaultChecked);
     const [split, rest] = useInputProps(props);
 
-    return <Halo
+    return <div
         {...rest}
-        disabled={props.disabled}
-        color={variant === 'minimal' && !state ? 'var(--f-clr-primary-400)' : undefined}
-        target={inputRef}
         className={classes(
             style.toggle,
             round && style.round,
@@ -147,6 +144,8 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
         data-checked={state}
         data-disabled={!!props.disabled}
         data-fb={variant === 'neutral' ? 'true' : undefined}>
+        <Halo target={inputRef} disabled={split.disabled} color={variant === 'minimal' && !state ? 'var(--f-clr-primary-400)' : undefined} />
+
         <input
             {...split}
             ref={inputRef}
@@ -176,5 +175,5 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
                 <div className={style.content}>{checkedContent}</div>
             </Animate> : null}
         </div>
-    </Halo>;
+    </div>;
 }

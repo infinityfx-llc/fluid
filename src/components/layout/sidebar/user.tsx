@@ -108,17 +108,18 @@ export default function User({ children, cc = {}, name, status, indicator = fals
     const style = combineClasses(styles, cc);
     const { collapsed } = useSidebar();
 
-    return <Halo
+    return <button
         {...props}
-        as="button"
+        type="button"
         disabled={props.disabled}
-        color="var(--f-clr-primary-400)"
-        type="button" className={classes(
+        className={classes(
             style.user,
             round && style.round,
             collapsed && style.collapsed,
             props.className
         )}>
+        <Halo disabled={props.disabled} color="var(--f-clr-primary-400)" />
+
         <div className={style.avatar}>
             <Indicator outline="var(--f-clr-bg-100)" content={indicator} />
             <div className={style.frame}>
@@ -134,7 +135,7 @@ export default function User({ children, cc = {}, name, status, indicator = fals
         {icon && <div className={style.icon}>
             {icon}
         </div>}
-    </Halo>;
+    </button>;
 }
 
 User.displayName = 'Sidebar.User';

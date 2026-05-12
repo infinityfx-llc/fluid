@@ -276,13 +276,11 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
                 const val = values[i];
 
                 return <Tooltip key={i} delay={0} content={formatTooltip ? formatTooltip(round(val, 2)) : round(val, 2)} visibility={tooltips} position={vertical ? 'right' : 'bottom'}>
-                    <Halo
+                    <div
                         className={style.handle}
                         role="slider"
                         tabIndex={props.disabled ? -1 : 0}
                         aria-disabled={!!props.disabled}
-                        disabled={props.disabled}
-                        cc={{ halo: style.halo }}
                         onMouseDown={() => dragging.current = i}
                         onTouchStart={() => dragging.current = i}
                         onTouchEnd={() => dragging.current = null}
@@ -304,7 +302,9 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
                         aria-labelledby={label ? id : undefined}
                         style={{
                             [vertical ? 'bottom' : 'left']: `${toOffset(val) * 100}%`
-                        }} />
+                        }}>
+                        <Halo disabled={props.disabled} cc={{ halo: style.halo }} />
+                    </div>
                 </Tooltip>;
             })}
         </div>

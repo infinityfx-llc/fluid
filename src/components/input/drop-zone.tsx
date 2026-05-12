@@ -179,10 +179,8 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
     const isDisabled = props.disabled || props.readOnly || loading;
     const hasContent = file || (previewImages && fallbackPreviewImage);
 
-    return <Halo
+    return <div
         {...rest}
-        color="var(--f-clr-grey-300)"
-        disabled={!!file || isDisabled}
         tabIndex={0}
         role="button"
         aria-disabled={!!file || isDisabled}
@@ -223,6 +221,8 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
             } else
                 if (file) updateFile(file);
         }}>
+        <Halo disabled={!!file || isDisabled} color="var(--f-clr-grey-300)" />
+
         {loading && <div className={classes(style.container, style.centered)}>
             <Spinner />
         </div>}
@@ -287,5 +287,5 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
                 props.onChange?.(e);
                 setFile(e.target.files?.[0] || null);
             }} />
-    </Halo>;
+    </div>;
 }

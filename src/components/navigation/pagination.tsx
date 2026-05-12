@@ -225,25 +225,27 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
             style[shape],
             props.className
         )}>
-        {skipable && <Halo
-            as="button"
+        {skipable && <button
             type="button"
             disabled={backDisabled}
             aria-label="1"
             className={style.button}
             onClick={() => update(0)}>
-            <Icon type="first" />
-        </Halo>}
+            <Halo disabled={backDisabled} />
 
-        <Halo
-            as="button"
+            <Icon type="first" />
+        </button>}
+
+        <button
             type="button"
             disabled={backDisabled}
             aria-label={state + ''}
             className={style.button}
             onClick={() => update(state - 1)}>
+            <Halo disabled={backDisabled} />
+
             <Icon type="left" />
-        </Halo>
+        </button>
 
         {!compact && <div className={style.buttons}>
             {getIndices().map((index, i) => {
@@ -265,10 +267,9 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
                         <div className={classes(style.layer, style.selection)} style={gridStyle} />
                     </Animate>}
 
-                    <Halo
-                        as="button"
-                        disabled={disabled}
+                    <button
                         type="button"
+                        disabled={disabled}
                         className={classes(
                             style.button,
                             style.index
@@ -276,6 +277,8 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
                         style={gridStyle}
                         aria-current={index === state ? 'page' : undefined}
                         onClick={() => update(index)}>
+                        <Halo disabled={disabled} />
+
                         <Animate
                             correction="none"
                             clips={{
@@ -304,29 +307,31 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
                                 </span>
                             </div>
                         </Animate>
-                    </Halo>
+                    </button>
                 </Fragment>;
             })}
         </div>}
 
-        <Halo
-            as="button"
+        <button
             type="button"
             disabled={forwardDisabled}
             aria-label={state + 2 + ''}
             className={style.button}
             onClick={() => update(state + 1)}>
-            <Icon type="right" />
-        </Halo>
+            <Halo disabled={forwardDisabled} />
 
-        {skipable && <Halo
-            as="button"
+            <Icon type="right" />
+        </button>
+
+        {skipable && <button
             type="button"
             disabled={forwardDisabled}
             aria-label={pages + ''}
             className={style.button}
             onClick={() => update(pages - 1)}>
+            <Halo disabled={forwardDisabled} />
+
             <Icon type="last" />
-        </Halo>}
+        </button>}
     </div>;
 }

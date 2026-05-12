@@ -59,7 +59,8 @@ const styles = createStyles('segmented', {
         borderRadius: 'var(--f-radius-sml)',
         flexGrow: 1,
         transition: 'color .4s',
-        WebkitTapHighlightColor: 'transparent'
+        WebkitTapHighlightColor: 'transparent',
+        isolation: 'unset !important' as any
     },
 
     '.segmented.round .option': {
@@ -122,10 +123,6 @@ const styles = createStyles('segmented', {
 
     '.segmented[data-error="true"] .ripple': {
         backgroundColor: 'var(--f-clr-error-300)'
-    },
-
-    '.segmented .container': {
-        isolation: 'unset'
     }
 });
 
@@ -191,9 +188,7 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
                 key={i}
                 content={tooltip}
                 visibility={tooltip ? 'interact' : 'never'}>
-                <Halo
-                    as="button"
-                    hover={false}
+                <button
                     disabled={disabled}
                     className={style.option}
                     type="button"
@@ -202,13 +197,12 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
                     onClick={() => {
                         setState?.(option);
                         onChange?.(option as T);
-                    }}
-                    cc={{
-                        ...cc,
-                        container: style.container,
+                    }}>
+                    <Halo disabled={disabled} hover={false} cc={{
                         halo: style.halo,
                         ring: style.ring
-                    }}>
+                    }} />
+
                     <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
                     <span className={style.content}>{label}</span>
 
@@ -220,7 +214,7 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
                         }}>
                         <div className={style.selection} />
                     </Animate>}
-                </Halo>
+                </button>
             </Tooltip>;
         })}
     </div>

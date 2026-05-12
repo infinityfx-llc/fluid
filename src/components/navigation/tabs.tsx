@@ -114,15 +114,13 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
                 {options.map(({ label, value, disabled, panelId }, i) => {
 
                     return <div key={i} className={style.option}>
-                        <Halo
-                            as="button"
+                        <button
+                            type="button"
+                            role="tab"
                             disabled={disabled}
-                            color={variant === 'default' ? 'var(--f-clr-primary-300)' : 'var(--f-clr-primary-400)'}
                             ref={el => {
                                 tabs.current[i] = disabled ? null : el;
                             }}
-                            type="button"
-                            role="tab"
                             className={style.button}
                             aria-selected={state === value}
                             aria-controls={panelId}
@@ -154,8 +152,12 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
 
                                 if (matched) e.preventDefault();
                             }}>
+                            <Halo
+                                disabled={disabled}
+                                color={variant === 'default' ? 'var(--f-clr-primary-300)' : 'var(--f-clr-primary-400)'} />
+
                             {label}
-                        </Halo>
+                        </button>
 
                         {state === value && <Animate
                             morph={`tabs-selection-${id}`}

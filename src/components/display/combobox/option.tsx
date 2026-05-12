@@ -54,10 +54,8 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
 
     const { variant } = usePopover();
 
-    return <Halo
+    return <button
         {...props}
-        as="button"
-        color="var(--f-clr-primary-400)"
         type="button"
         role="option"
         className={classes(
@@ -70,8 +68,10 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
             props.onClick?.(e);
             onSelect?.(value);
         }}>
+        <Halo disabled={props.disabled} color="var(--f-clr-primary-400)" />
+
         {children}
-    </Halo>;
+    </button>;
 }
 
 Option.displayName = 'Combobox.Option';

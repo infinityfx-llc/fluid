@@ -196,14 +196,14 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
                 data-error={error}>
 
                 <div className={style.header}>
-                    <Halo
-                        as="button"
-                        disabled={!navigatable}
-                        cc={{ halo: style.halo }}
+                    <button
                         type="button"
+                        disabled={!navigatable}
                         className={style.bullet}
                         onClick={() => setCompleted?.(i)}
                         aria-labelledby={`${id}-${i}`}>
+                        <Halo disabled={!navigatable} cc={{ halo: style.halo }} />
+
                         <div className={style.icon}>
                             <Animate
                                 correction="none"
@@ -221,7 +221,7 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
                                 </div>
                             </Animate>
                         </div>
-                    </Halo>
+                    </button>
 
                     {i < steps.length - 1 && variant !== 'compact' && <div className={style.progress} />}
                 </div>

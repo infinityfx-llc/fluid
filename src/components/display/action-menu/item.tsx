@@ -59,11 +59,9 @@ export default function Item({ children, cc = {}, keepOpen, className, color, ..
     const ref = useRef<HTMLButtonElement>(null);
     const { variant, toggle } = usePopover();
 
-    return <Halo
+    return <button
         {...props}
-        as="button"
         ref={combineRefs(props.ref, ref)}
-        color="var(--halo-color)"
         type="button"
         role="menuitem"
         style={{
@@ -108,8 +106,10 @@ export default function Item({ children, cc = {}, keepOpen, className, color, ..
                 if (i >= 0) e.preventDefault();
             }
         }}>
+        <Halo disabled={props.disabled} color="var(--halo-color)" />
+
         {children}
-    </Halo>;
+    </button>;
 }
 
 Item.displayName = 'ActionMenu.Item';

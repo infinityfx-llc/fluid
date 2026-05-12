@@ -84,11 +84,9 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
     }, []);
 
     return <>
-        <Halo
-            as="button"
-            disabled={disabled}
-            color="var(--f-clr-primary-400)"
+        <button
             type="button"
+            disabled={disabled}
             aria-expanded={isOpen}
             aria-controls={id}
             className={classes(
@@ -96,6 +94,8 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
                 style[`v__${variant}`]
             )}
             onClick={() => toggle(id, !isOpen)}>
+            <Halo disabled={disabled} color="var(--f-clr-primary-400)" />
+
             {label}
 
             <div className={style.icon}>
@@ -111,7 +111,7 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
                     </div>
                 </Animate>
             </div>
-        </Halo>
+        </button>
 
         <Collapsible shown={isOpen} id={id}>
             <div {...props} className={classes(style.content, props.className)}>

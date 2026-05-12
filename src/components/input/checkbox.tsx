@@ -91,7 +91,7 @@ const styles = createStyles('checkbox', {
     },
 
     '.wrapper .halo': {
-        borderRadius: 'var(--f-radius-sml)',
+        borderRadius: 'var(--f-radius-med)',
         inset: '-.5em'
     }
 });
@@ -117,16 +117,16 @@ export default function Checkbox({ cc = {}, error, size = 'med', color, intermed
     const [split, rest] = useInputProps(props);
     const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
 
-    return <Halo
+    return <div
         {...rest}
-        hover={false}
-        cc={{ ...cc, halo: style.halo }}
         className={classes(
             style.wrapper,
             style[`s__${size}`],
             rest.className
         )}
         data-error={!!error}>
+        <Halo hover={false} cc={{ halo: style.halo }} />
+
         <input {...split} checked={state} type="checkbox" className={style.input} aria-invalid={!!error} onChange={e => {
             setState?.(e.target.checked);
             props.onChange?.(e);
@@ -144,5 +144,5 @@ export default function Checkbox({ cc = {}, error, size = 'med', color, intermed
                 </Animate>
             </svg>
         </div>
-    </Halo>;
+    </div>;
 }

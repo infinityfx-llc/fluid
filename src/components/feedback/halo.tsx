@@ -1,14 +1,14 @@
 'use client';
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
-import { PolymorphComponentProps, Selectors } from "../../../src/types";
+import { Selectors } from "../../../src/types";
 import { Animate } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
 import { useRef, useEffect, useState } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('halo', {
-    '.container': {
+    '.target': {
         isolation: 'isolate'
     },
 
@@ -19,27 +19,11 @@ const styles = createStyles('halo', {
         inset: 0,
         minWidth: '100%',
         minHeight: '100%',
-        transition: 'opacity .25s',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         pointerEvents: 'none',
-        opacity: 0,
         zIndex: -1
-    },
-
-    '.halo[data-disabled="true"]': {
-        display: 'none'
-    },
-
-    '.halo[data-focused="true"]': {
-        opacity: .25
-    },
-
-    '@media (pointer: fine)': {
-        '.container:hover > .halo[data-hover="true"]': {
-            opacity: .25
-        }
     },
 
     '.ripple': {
@@ -59,68 +43,59 @@ export type HaloSelectors = Selectors<'halo' | 'ripple'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/halo}
  */
-export default function Halo<P extends HTMLElement, E extends React.ElementType = 'div'>({ children, cc = {}, as, color, hover = true, target, ref, ...props }:
+export default function Halo<P extends HTMLElement>({ children, cc = {}, color, hover = true, disabled = false, target, ref, ...props }:
     {
         ref?: React.Ref<any>;
-        cc?: HaloSelectors; // TODO: fix overlapping prop
-        color?: string; // TODO: fix overlapping prop
+        cc?: HaloSelectors;
+        color?: string;
         /**
          * Show the Halo when hovering over the target.
          * 
          * @default true
          */
         hover?: boolean;
-        disabled?: boolean; // TODO: fix overlapping prop
+        disabled?: boolean;
         /**
          * The target element to interact with for the Halo to show.
          * 
          * Defaults to the child element the Halo component is wrapped around.
          */
         target?: React.RefObject<P | null>;
-    } & PolymorphComponentProps<E>) {
+    } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
     const touch = useRef(0);
     const endTouch = useRef<any>(undefined);
-    const container = useRef<HTMLElement>(null);
     const halo = useRef<HTMLDivElement>(null);
 
-    const rippleRef = useRef(0);
+    const mutableRippleCount = useRef(0);
     const [rippleCount, ripple] = useState(0);
     const opacity = useLink(1);
     const translate = useLink('0% 0%');
+    const focused = useLink(0);
 
     useEffect(() => {
-        const focusEl = target?.current || container.current,
+        const parent = halo.current?.parentElement;
+        const focusEl = target?.current || parent,
             ctrl = new AbortController(),
             signal = ctrl.signal;
 
-        if (!focusEl) return;
+        if (!focusEl || !parent) return;
 
-        function focus(selector = ':focus-visible') {
-            if (!halo.current || !focusEl) return;
+        if (parent && style.target) parent.classList.add(style.target); // breaks on parent re-render.. (isolation: isolate)
 
-            halo.current.dataset.focused = '' + focusEl.matches(selector);
-        }
-
-        focusEl.addEventListener('mousedown', () => {
-            opacity.set(.5, {
-                duration: .1
-            });
-        }, { signal });
+        focusEl.addEventListener('mousedown', () => opacity.set(.5, { duration: .1 }), { signal });
 
         // trigger ripple animation at mouse position on click
         focusEl.addEventListener('click', e => {
             opacity.set(1);
-            ripple(++rippleRef.current);
+            ripple(++mutableRippleCount.current);
 
             if (!halo.current) return;
             const { x, y, width, height } = halo.current.getBoundingClientRect();
 
             // skip opacity animation for touch based devices
-            halo.current.style.transition = 'none';
-            halo.current.offsetHeight;
-            halo.current.style.transition = '';
+            if (focused.value) focused.set(.25);
 
             const max = Math.max(width, height) * 2.8;
             const clamp = (val: number) => Math.min(Math.max(val, 0), 1);
@@ -131,38 +106,47 @@ export default function Halo<P extends HTMLElement, E extends React.ElementType 
             translate.set(`${e.clientX ? dx * 100 : 0}% ${e.clientY ? dy * 100 : 0}%`);
         }, { signal });
 
+        function focus(selector = ':focus-visible') {
+            if (focusEl) focused.set(focusEl.matches(selector) ? .25 : 0, { duration: .25 });
+        }
+
         // show halo on touch devices
         focusEl.addEventListener('touchstart', () => {
             clearTimeout(endTouch.current);
-            touch.current = Date.now();
 
-            if (halo.current) halo.current.style.opacity = '0.25';
+            touch.current = Date.now();
+            focused.set(.25, { duration: .25 });
         }, { signal });
 
         // hide halo on touch devices
         window.addEventListener('touchend', () => {
             const delay = Math.max(450 - Date.now() + touch.current, 0);
 
-            endTouch.current = setTimeout(() => {
-                if (halo.current) halo.current.style.opacity = '';
-            }, delay);
+            endTouch.current = setTimeout(() => focus(), delay);
         }, { signal });
 
         focusEl.addEventListener('focusin', () => focus(), { signal });
         focusEl.addEventListener('focusout', () => focus(), { signal });
         focus(':focus');
 
+        if (hover) {
+            parent.addEventListener('mouseenter', () => focused.set(.25, { duration: .25 }), { signal });
+            parent.addEventListener('mouseleave', () => focused.set(0, { duration: .25 }), { signal });
+        }
+
         return () => ctrl.abort();
-    }, []);
+    }, [hover]);
 
-    const Wrapper = as || 'div';
-
-    return <Wrapper
-        {...props}
-        ref={combineRefs(container, ref)}
-        className={classes(props.className, style.container)}>
-        <div ref={halo} className={style.halo} data-hover={hover} data-disabled={props.disabled}>
-            <Animate
+    return <Animate
+        correction="none"
+        animate={{
+            opacity: focused
+        }}>
+        <div
+            {...props}
+            ref={combineRefs(halo, ref)}
+            className={classes(style.halo, props.className)}>
+            {!disabled && <Animate
                 correction="none"
                 animate={{
                     translate,
@@ -179,11 +163,8 @@ export default function Halo<P extends HTMLElement, E extends React.ElementType 
                 triggers={{
                     ripple: [{ on: rippleCount, override: true }]
                 }}>
-
                 <div className={style.ripple} style={{ backgroundColor: color }} />
-            </Animate>
+            </Animate>}
         </div>
-
-        {children}
-    </Wrapper>;
+    </Animate>;
 }

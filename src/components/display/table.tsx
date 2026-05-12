@@ -180,8 +180,7 @@ export default function Table<T extends { [key: string]: string | number | Date;
 
                     // returns a column header button
                     return <div key={i} role="columnheader">
-                        <Halo
-                            as="button"
+                        <button
                             disabled={!sort}
                             className={style.label}
                             type="button"
@@ -198,12 +197,13 @@ export default function Table<T extends { [key: string]: string | number | Date;
                                         setSorting('nil');
                                     }
                             }}>
+                            <Halo disabled={!sort} />
                             {col as string}
 
                             {(column !== col || sorting === 'nil') && sort && <Icon type="sort" />}
                             {column === col && sorting === 'asc' && <Icon type="sortAscend" />}
                             {column === col && sorting === 'dsc' && <Icon type="sortDescend" />}
-                        </Halo>
+                        </button>
                     </div>;
                 })}
 
@@ -212,7 +212,9 @@ export default function Table<T extends { [key: string]: string | number | Date;
 
             {rows.map((row, i) => {
 
-                return <Halo key={i} disabled={!selectable} role="row" className={style.row} style={{ gridTemplateColumns }}>
+                return <div key={i} role="row" className={style.row} style={{ gridTemplateColumns }}>
+                    <Halo disabled={!selectable} />
+
                     {selectable && <div className={style.collapsed}>
                         <Checkbox
                             size="xsm"
@@ -250,7 +252,7 @@ export default function Table<T extends { [key: string]: string | number | Date;
                             </ActionMenu.Menu>
                         </ActionMenu.Root>
                     </div> : null}
-                </Halo>;
+                </div>;
             })}
 
             {!rows.length && <div className={style.empty}>{emptyMessage}</div>}

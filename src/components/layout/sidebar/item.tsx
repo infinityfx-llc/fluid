@@ -166,10 +166,8 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
     const isMobile = useMediaQuery(`(max-width: ${fluid.breakpoints.mob}px)`);
 
     return <>
-        <Halo
+        <div
             {...props}
-            color={active ? undefined : 'var(--f-clr-primary-300)'}
-            disabled={disabled}
             tabIndex={0}
             role="button"
             className={classes(
@@ -184,6 +182,8 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
             data-disabled={disabled}
             data-active={active}
             onClick={() => setOpen(!open)}>
+            <Halo disabled={disabled} color={active ? undefined : 'var(--f-clr-primary-300)'} />
+
             {icon !== undefined && <div className={style.icon}>
                 {icon}
             </div>}
@@ -208,7 +208,7 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
                     <Icon type="expandDown" />
                 </Toggle> : right}
             </span>
-        </Halo>
+        </div>
 
         {count ? <Collapsible
             shown={open && (isMobile || !collapsed)}
