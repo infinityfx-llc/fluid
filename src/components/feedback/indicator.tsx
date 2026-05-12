@@ -2,9 +2,8 @@
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { cloneElement, isValidElement, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createStyles } from "../../core/style";
-import { createPortal } from "react-dom";
 
 const styles = createStyles('indicator', {
     '.indicator': {
@@ -36,9 +35,8 @@ export type IndicatorSelectors = Selectors<'indicator'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/halo}
  */
-export default function Indicator<T extends React.ReactElement<any>>({ children, cc = {}, content, color, outline, ref, ...props }:
+export default function Indicator({ cc = {}, content, color, outline, ref, ...props }: // just insert as child?
     {
-        children: T;
         ref?: React.Ref<any>;
         cc?: IndicatorSelectors;
         content?: number | string | boolean;
@@ -46,44 +44,42 @@ export default function Indicator<T extends React.ReactElement<any>>({ children,
         outline?: string;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'>) {
     const style = combineClasses(styles, cc);
-    const container = useRef<any>(undefined);
+    const indicator = useRef<HTMLDivElement>(null);
     const [radius, setRadius] = useState(-1);
 
     useEffect(() => {
-        if (container.current instanceof HTMLElement) {
+        if (indicator.current) {
+            const parent = indicator.current.offsetParent;
+            if (!(parent instanceof HTMLElement)) return;
+
             // get corner radius from target element
-            const radius = parseFloat(getComputedStyle(container.current).borderTopRightRadius) || 0;
-            const max = Math.min(container.current.offsetWidth, container.current.offsetHeight) / 2;
+            const radius = parseFloat(getComputedStyle(parent).borderTopRightRadius) || 0;
+            const max = Math.min(parent.offsetWidth, parent.offsetHeight) / 2;
 
             setRadius(Math.min(radius, max));
         }
     }, []);
 
-    children = Array.isArray(children) ? children[0] : children;
-    if (!isValidElement(children)) return children;
-
     // calculate where to display indicator based on target element corner radius
     const offset = Math.max(Math.SQRT2 * radius - radius - 1, 0);
 
-    return <>
-        {cloneElement(children, {
-            ref: combineRefs(ref, children.props.ref, container)
-        })}
+    if (radius < 0 || content === false) return null;
 
-        {radius >= 0 && content !== false && createPortal(<div {...props}
-            key="indicator"
-            className={classes(
-                style.indicator,
-                props.className
-            )}
-            style={{
-                ...props.style,
-                backgroundColor: color,
-                borderColor: outline,
-                top: offset,
-                right: offset
-            }}>
-            {typeof content !== 'boolean' ? content : null}
-        </div>, container.current)}
-    </>;
+    return <div
+        {...props}
+        ref={combineRefs(ref, indicator)}
+        key="indicator"
+        className={classes(
+            style.indicator,
+            props.className
+        )}
+        style={{
+            ...props.style,
+            backgroundColor: color,
+            borderColor: outline,
+            top: offset,
+            right: offset
+        }}>
+        {typeof content !== 'boolean' ? content : null}
+    </div>;
 }

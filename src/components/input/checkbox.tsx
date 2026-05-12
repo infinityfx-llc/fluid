@@ -117,30 +117,32 @@ export default function Checkbox({ cc = {}, error, size = 'med', color, intermed
     const [split, rest] = useInputProps(props);
     const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false); // TODO: might be able to get rid of state
 
-    return <Halo hover={false} cc={{ ...cc, halo: style.halo }}>
-        <div {...rest}
-            className={classes(
-                style.wrapper,
-                style[`s__${size}`],
-                rest.className
-            )}
-            data-error={!!error}>
+    return <Halo
+        {...rest}
+        hover={false}
+        cc={{ ...cc, halo: style.halo }}
+        className={classes(
+            style.wrapper,
+            style[`s__${size}`],
+            rest.className
+        )}
+        data-error={!!error}>
+        <input {...split} checked={state} type="checkbox" className={style.input} aria-invalid={!!error} onChange={e => {
+            setState?.(e.target.checked);
+            props.onChange?.(e);
+        }} />
 
-            <input {...split} checked={state} type="checkbox" className={style.input} aria-invalid={!!error} onChange={e => {
-                setState?.(e.target.checked);
-                props.onChange?.(e);
-            }} />
-
-            <div className={style.checkbox} style={{ '--color': color } as any}>
-                <svg viewBox="0 0 18 18" className={style.checkmark}>
-                    <Animate lite animate={{
+        <div className={style.checkbox} style={{ '--color': color } as any}>
+            <svg viewBox="0 0 18 18" className={style.checkmark}>
+                <Animate
+                    correction="none"
+                    animate={{
                         strokeLength: state ? 1 : 0,
                         duration: .25
                     }}>
-                        {intermediate ? <path d="M 3 9 L 15 9" fill="none" /> : <path d="M 3 9 L 8 13 L 15 5" fill="none" />}
-                    </Animate>
-                </svg>
-            </div>
+                    {intermediate ? <path d="M 3 9 L 15 9" fill="none" /> : <path d="M 3 9 L 8 13 L 15 5" fill="none" />}
+                </Animate>
+            </svg>
         </div>
     </Halo>;
 }

@@ -132,51 +132,49 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
     const [split, rest] = useInputProps(props);
 
     return <Halo
+        {...rest}
         disabled={props.disabled}
         color={variant === 'minimal' && !state ? 'var(--f-clr-primary-400)' : undefined}
-        target={inputRef}>
-        <div
-            {...rest}
-            className={classes(
-                style.toggle,
-                round && style.round,
-                compact && style.compact,
-                style[`s__${size}`],
-                style[`v__${variant}`],
-                props.className
-            )}
-            data-checked={state}
-            data-disabled={!!props.disabled}
-            data-fb={variant === 'neutral' ? 'true' : undefined}>
-            <input
-                {...split}
-                ref={inputRef}
-                type="checkbox"
-                className={style.input}
-                onChange={e => {
-                    setState?.(e.target.checked);
-                    split.onChange?.(e);
-                }} />
+        target={inputRef}
+        className={classes(
+            style.toggle,
+            round && style.round,
+            compact && style.compact,
+            style[`s__${size}`],
+            style[`v__${variant}`],
+            props.className
+        )}
+        data-checked={state}
+        data-disabled={!!props.disabled}
+        data-fb={variant === 'neutral' ? 'true' : undefined}>
+        <input
+            {...split}
+            ref={inputRef}
+            type="checkbox"
+            className={style.input}
+            onChange={e => {
+                setState?.(e.target.checked);
+                split.onChange?.(e);
+            }} />
 
-            <div className={style.container}>
-                {checkedContent ? <Animate
-                    lite
-                    animate={{
-                        translate: state ? '0 -100%' : '0 0',
-                        duration: .4
-                    }}>
-                    <div className={style.content}>{children}</div>
-                </Animate> : <div className={style.content}>{children}</div>}
+        <div className={style.container}>
+            {checkedContent ? <Animate
+                correction="none"
+                animate={{
+                    translate: state ? '0 -100%' : '0 0',
+                    duration: .4
+                }}>
+                <div className={style.content}>{children}</div>
+            </Animate> : <div className={style.content}>{children}</div>}
 
-                {checkedContent ? <Animate
-                    lite
-                    animate={{
-                        translate: state ? '0 0' : '0 100%',
-                        duration: .4
-                    }}>
-                    <div className={style.content}>{checkedContent}</div>
-                </Animate> : null}
-            </div>
+            {checkedContent ? <Animate
+                correction="none"
+                animate={{
+                    translate: state ? '0 0' : '0 100%',
+                    duration: .4
+                }}>
+                <div className={style.content}>{checkedContent}</div>
+            </Animate> : null}
         </div>
     </Halo>;
 }

@@ -107,27 +107,27 @@ export default function Button({ children, cc = {}, round = false, compact = fal
     } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);
 
-    return <Halo disabled={props.disabled || loading}>
-        <button {...props}
-            type={props.type || 'button'}
-            disabled={props.disabled || loading}
-            className={classes(
-                style.button,
-                round && style.round,
-                compact && style.compact,
-                style[`s__${size}`],
-                style[`v__${variant}`],
-                props.className
-            )}
-            style={{
-                '--color': color,
-                ...props.style
-            } as any}
-            data-loading={loading}
-            data-fb={variant === 'neutral' ? 'true' : undefined}>
-            <span className={style.content}>{children}</span>
+    return <Halo
+        {...props}
+        as="button"
+        type={props.type || 'button'}
+        disabled={props.disabled || loading}
+        className={classes(
+            style.button,
+            round && style.round,
+            compact && style.compact,
+            style[`s__${size}`],
+            style[`v__${variant}`],
+            props.className
+        )}
+        style={{
+            '--color': color,
+            ...props.style
+        } as any}
+        data-loading={loading}
+        data-fb={variant === 'neutral' ? 'true' : undefined}>
+        <span className={style.content}>{children}</span>
 
-            {loading && <Spinner className={style.loader} />}
-        </button>
+        {loading && <Spinner className={style.loader} />}
     </Halo>;
 }

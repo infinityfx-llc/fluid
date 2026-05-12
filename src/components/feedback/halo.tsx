@@ -1,10 +1,10 @@
 'use client';
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
-import { Selectors } from "../../../src/types";
+import { PolymorphComponentProps, Selectors } from "../../../src/types";
 import { Animate } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
-import { Children, cloneElement, isValidElement, useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('halo', {
@@ -59,26 +59,25 @@ export type HaloSelectors = Selectors<'halo' | 'ripple'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/halo}
  */
-export default function Halo<T extends React.ReactElement<any>, P extends HTMLElement>({ children, cc = {}, color, hover = true, disabled = false, target, ref, ...props }:
+export default function Halo<P extends HTMLElement, E extends React.ElementType = 'div'>({ children, cc = {}, as, color, hover = true, target, ref, ...props }:
     {
-        children: T;
         ref?: React.Ref<any>;
-        cc?: HaloSelectors;
-        color?: string;
+        cc?: HaloSelectors; // TODO: fix overlapping prop
+        color?: string; // TODO: fix overlapping prop
         /**
          * Show the Halo when hovering over the target.
          * 
          * @default true
          */
         hover?: boolean;
-        disabled?: boolean;
+        disabled?: boolean; // TODO: fix overlapping prop
         /**
          * The target element to interact with for the Halo to show.
          * 
          * Defaults to the child element the Halo component is wrapped around.
          */
         target?: React.RefObject<P | null>;
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
+    } & PolymorphComponentProps<E>) {
     const style = combineClasses(styles, cc);
 
     const touch = useRef(0);
@@ -156,37 +155,35 @@ export default function Halo<T extends React.ReactElement<any>, P extends HTMLEl
         return () => ctrl.abort();
     }, []);
 
-    children = Array.isArray(children) ? children[0] : children;
-    if (!isValidElement(children)) return children;
+    const Wrapper = as || 'div';
 
-    const childrenArray = Children.toArray(children.props.children);
+    return <Wrapper
+        {...props}
+        ref={combineRefs(container, ref)}
+        className={classes(props.className, style.container)}>
+        <div ref={halo} className={style.halo} data-hover={hover} data-disabled={props.disabled}>
+            <Animate
+                correction="none"
+                animate={{
+                    translate,
+                    opacity
+                }}
+                clips={{
+                    ripple: {
+                        opacity: [0, 1],
+                        scale: [0, 1],
+                        duration: .5,
+                        easing: 'ease-in'
+                    }
+                }}
+                triggers={{
+                    ripple: [{ on: rippleCount, override: true }]
+                }}>
 
-    childrenArray.unshift(<div ref={halo} key="halo" className={style.halo} data-hover={hover} data-disabled={disabled}>
-        <Animate
-            lite
-            animate={{
-                translate,
-                opacity
-            }}
-            clips={{
-                ripple: {
-                    opacity: [0, 1],
-                    scale: [0, 1],
-                    duration: .5,
-                    easing: 'ease-in'
-                }
-            }}
-            triggers={{
-                ripple: [{ on: rippleCount, override: true }]
-            }}>
+                <div className={style.ripple} style={{ backgroundColor: color }} />
+            </Animate>
+        </div>
 
-            <div className={style.ripple} style={{ backgroundColor: color }} />
-        </Animate>
-    </div>);
-
-    return cloneElement(children, {
-        ...props,
-        ref: combineRefs(container, ref, children.props.ref),
-        className: classes(children.props.className, style.container)
-    }, childrenArray);
+        {children}
+    </Wrapper>;
 }

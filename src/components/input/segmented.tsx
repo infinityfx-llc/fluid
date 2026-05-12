@@ -192,36 +192,34 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
                 content={tooltip}
                 visibility={tooltip ? 'interact' : 'never'}>
                 <Halo
+                    as="button"
                     hover={false}
                     disabled={disabled}
+                    className={style.option}
+                    type="button"
+                    role="radio"
+                    aria-checked={state === option}
+                    onClick={() => {
+                        setState?.(option);
+                        onChange?.(option as T);
+                    }}
                     cc={{
                         ...cc,
                         container: style.container,
                         halo: style.halo,
                         ring: style.ring
                     }}>
-                    <button
-                        className={style.option}
-                        type="button"
-                        role="radio"
-                        aria-checked={state === option}
-                        disabled={disabled}
-                        onClick={() => {
-                            setState?.(option);
-                            onChange?.(option as T);
-                        }}>
-                        <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
-                        <span className={style.content}>{label}</span>
+                    <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
+                    <span className={style.content}>{label}</span>
 
-                        {state === option && <Animate
-                            morph={`segmented-selection-${id}`}
-                            transition={{
-                                cache: vertical ? ['y', 'sy'] : ['x', 'sx'],
-                                duration: .4
-                            }}>
-                            <div className={style.selection} />
-                        </Animate>}
-                    </button>
+                    {state === option && <Animate
+                        morph={`segmented-selection-${id}`}
+                        transition={{
+                            cache: vertical ? ['y', 'sy'] : ['x', 'sx'],
+                            duration: .4
+                        }}>
+                        <div className={style.selection} />
+                    </Animate>}
                 </Halo>
             </Tooltip>;
         })}

@@ -76,59 +76,59 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
         animate: [{ on: state, composite: 'override' as const }, { on: !state, reverse: true, composite: 'override' as const }]
     };
 
-    return <Halo disabled={props.disabled}>
-        <button {...props}
-            style={{
-                ...props.style,
-                '--color': color
-            } as any}
-            className={classes(
-                style.hamburger,
-                props.className
-            )}
-            onClick={e => {
-                setState?.(!state);
-                props.onClick?.(e);
-            }}>
+    return <Halo
+        {...props}
+        as="button"
+        style={{
+            ...props.style,
+            '--color': color
+        } as any}
+        className={classes(
+            style.hamburger,
+            props.className
+        )}
+        onClick={e => {
+            setState?.(!state);
+            props.onClick?.(e);
+        }}>
+        <Animate
+            transition={{ cache: [] }}
+            animate={{
+                scale: ['1 1', '0 1', '0 1'],
+                duration: .6
+            }}
+            triggers={triggers}>
+            {new Array(3).fill(0).map((_, i) => {
+                return <div key={i} className={style.line} />
+            })}
+        </Animate>
+
+        <div className={style.cross}>
             <Animate
                 transition={{ cache: [] }}
+                initial={{
+                    scale: '0 1'
+                }}
                 animate={{
-                    scale: ['1 1', '0 1', '0 1'],
+                    scale: ['0 1', '0 1', '1 1'],
                     duration: .6
                 }}
                 triggers={triggers}>
-                {new Array(3).fill(0).map((_, i) => {
-                    return <div key={i} className={style.line} />
-                })}
+                <div className={style.line} />
             </Animate>
-
-            <div className={style.cross}>
-                <Animate
-                    transition={{ cache: [] }}
-                    initial={{
-                        scale: '0 1'
-                    }}
-                    animate={{
-                        scale: ['0 1', '0 1', '1 1'],
-                        duration: .6
-                    }}
-                    triggers={triggers}>
-                    <div className={style.line} />
-                </Animate>
-                <Animate
-                    transition={{ cache: [] }}
-                    initial={{
-                        scale: '1 0'
-                    }}
-                    animate={{
-                        scale: ['1 0', '1 0', '1 1'],
-                        duration: .6,
-                        delay: .2
-                    }}
-                    triggers={triggers}>
-                    <div className={style.line} />
-                </Animate>
-            </div>
-        </button>
+            <Animate
+                transition={{ cache: [] }}
+                initial={{
+                    scale: '1 0'
+                }}
+                animate={{
+                    scale: ['1 0', '1 0', '1 1'],
+                    duration: .6,
+                    delay: .2
+                }}
+                triggers={triggers}>
+                <div className={style.line} />
+            </Animate>
+        </div>
     </Halo>;
 }

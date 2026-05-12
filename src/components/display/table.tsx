@@ -180,30 +180,29 @@ export default function Table<T extends { [key: string]: string | number | Date;
 
                     // returns a column header button
                     return <div key={i} role="columnheader">
-                        <Halo disabled={!sort}>
-                            <button
-                                className={style.label}
-                                type="button"
-                                disabled={!sort}
-                                onClick={() => {
-                                    // if sorting is enabled for this column, toggles between ascending, descending and no sorting
-                                    setColumn(col as string);
+                        <Halo
+                            as="button"
+                            disabled={!sort}
+                            className={style.label}
+                            type="button"
+                            onClick={() => {
+                                // if sorting is enabled for this column, toggles between ascending, descending and no sorting
+                                setColumn(col as string);
 
-                                    if (column !== col || sorting === 'nil') {
-                                        setSorting('asc');
-                                    } else
-                                        if (sorting === 'asc') {
-                                            setSorting('dsc');
-                                        } else {
-                                            setSorting('nil');
-                                        }
-                                }}>
-                                {col as string}
+                                if (column !== col || sorting === 'nil') {
+                                    setSorting('asc');
+                                } else
+                                    if (sorting === 'asc') {
+                                        setSorting('dsc');
+                                    } else {
+                                        setSorting('nil');
+                                    }
+                            }}>
+                            {col as string}
 
-                                {(column !== col || sorting === 'nil') && sort && <Icon type="sort" />}
-                                {column === col && sorting === 'asc' && <Icon type="sortAscend" />}
-                                {column === col && sorting === 'dsc' && <Icon type="sortDescend" />}
-                            </button>
+                            {(column !== col || sorting === 'nil') && sort && <Icon type="sort" />}
+                            {column === col && sorting === 'asc' && <Icon type="sortAscend" />}
+                            {column === col && sorting === 'dsc' && <Icon type="sortDescend" />}
                         </Halo>
                     </div>;
                 })}
@@ -213,46 +212,44 @@ export default function Table<T extends { [key: string]: string | number | Date;
 
             {rows.map((row, i) => {
 
-                return <Halo key={i} disabled={!selectable}>
-                    <div role="row" className={style.row} style={{ gridTemplateColumns }}>
-                        {selectable && <div className={style.collapsed}>
-                            <Checkbox
-                                size="xsm"
-                                color="var(--f-clr-text-100)"
-                                cc={{ checkbox: style.checkbox, checkmark: style.checkmark }}
-                                checked={selectedIndices.includes(i)}
-                                onChange={e => {
-                                    // select or deselect the i'th row
-                                    const updated = selectedIndices.slice();
-                                    e.target.checked ? updated.push(i) : updated.splice(updated.indexOf(i), 1);
+                return <Halo key={i} disabled={!selectable} role="row" className={style.row} style={{ gridTemplateColumns }}>
+                    {selectable && <div className={style.collapsed}>
+                        <Checkbox
+                            size="xsm"
+                            color="var(--f-clr-text-100)"
+                            cc={{ checkbox: style.checkbox, checkmark: style.checkmark }}
+                            checked={selectedIndices.includes(i)}
+                            onChange={e => {
+                                // select or deselect the i'th row
+                                const updated = selectedIndices.slice();
+                                e.target.checked ? updated.push(i) : updated.splice(updated.indexOf(i), 1);
 
-                                    updateSelected(updated);
-                                }} />
-                        </div>}
+                                updateSelected(updated);
+                            }} />
+                    </div>}
 
-                        {columns.map((col, i) => {
-                            // format row data into string values
-                            const formatter = columnFormatters[col] || (val => val.toString());
+                    {columns.map((col, i) => {
+                        // format row data into string values
+                        const formatter = columnFormatters[col] || (val => val.toString());
 
-                            return <div key={i} role="gridcell">
-                                {formatter(row[col])}
-                            </div>;
-                        })}
+                        return <div key={i} role="gridcell">
+                            {formatter(row[col])}
+                        </div>;
+                    })}
 
-                        {rowActions?.length ? <div className={style.collapsed}>
-                            <ActionMenu.Root>
-                                <ActionMenu.Trigger>
-                                    <Button compact variant="minimal" size="sml" style={{ marginLeft: 'auto' }}>
-                                        <Icon type="more" />
-                                    </Button>
-                                </ActionMenu.Trigger>
+                    {rowActions?.length ? <div className={style.collapsed}>
+                        <ActionMenu.Root>
+                            <ActionMenu.Trigger>
+                                <Button compact variant="minimal" size="sml" style={{ marginLeft: 'auto' }}>
+                                    <Icon type="more" />
+                                </Button>
+                            </ActionMenu.Trigger>
 
-                                <ActionMenu.Menu>
-                                    {rowActions(rows[i], i)}
-                                </ActionMenu.Menu>
-                            </ActionMenu.Root>
-                        </div> : null}
-                    </div>
+                            <ActionMenu.Menu>
+                                {rowActions(rows[i], i)}
+                            </ActionMenu.Menu>
+                        </ActionMenu.Root>
+                    </div> : null}
                 </Halo>;
             })}
 

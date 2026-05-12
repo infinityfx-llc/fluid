@@ -84,33 +84,33 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
     }, []);
 
     return <>
-        <Halo disabled={disabled} color="var(--f-clr-primary-400)">
-            <button
-                type="button"
-                disabled={disabled}
-                aria-expanded={isOpen}
-                aria-controls={id}
-                className={classes(
-                    style.button,
-                    style[`v__${variant}`]
-                )}
-                onClick={() => toggle(id, !isOpen)}>
-                {label}
+        <Halo
+            as="button"
+            disabled={disabled}
+            color="var(--f-clr-primary-400)"
+            type="button"
+            aria-expanded={isOpen}
+            aria-controls={id}
+            className={classes(
+                style.button,
+                style[`v__${variant}`]
+            )}
+            onClick={() => toggle(id, !isOpen)}>
+            {label}
 
-                <div className={style.icon}>
-                    <Animate
-                        lite
-                        animate={{
-                            translate: isOpen ? '0% -50%' : '0% 0%',
-                            duration: .35
-                        }}>
-                        <div className={style.arrows}>
-                            <Icon type="expandDown" />
-                            <Icon type="collapseUp" />
-                        </div>
-                    </Animate>
-                </div>
-            </button>
+            <div className={style.icon}>
+                <Animate
+                    correction="none"
+                    animate={{
+                        translate: isOpen ? '0% -50%' : '0% 0%',
+                        duration: .35
+                    }}>
+                    <div className={style.arrows}>
+                        <Icon type="expandDown" />
+                        <Icon type="collapseUp" />
+                    </div>
+                </Animate>
+            </div>
         </Halo>
 
         <Collapsible shown={isOpen} id={id}>

@@ -219,20 +219,18 @@ export default function Panel({ cc = {}, children, variant = 'default', directio
                         cc={{
                             ...cc,
                             halo: style.halo
-                        }}>
-                        <div
-                            tabIndex={0}
-                            className={style.handle}
-                            onKeyDown={e => {
-                                const pos = e.key === 'ArrowRight' || e.key === 'ArrowDown';
+                        }}
+                        tabIndex={0}
+                        className={style.handle}
+                        onKeyDown={e => {
+                            const pos = e.key === 'ArrowRight' || e.key === 'ArrowDown';
 
-                                if (pos || e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-                                    update(i - 1, dividers[i - 1] + (pos ? 0.05 : -0.05));
-                                    e.preventDefault();
-                                }
-                            }}>
-                            {variant === 'default' && [0, 1, 2, 3, 4, 5].map(i => <div key={i} className={style.dot} />)}
-                        </div>
+                            if (pos || e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                                update(i - 1, dividers[i - 1] + (pos ? 0.05 : -0.05));
+                                e.preventDefault();
+                            }
+                        }}>
+                        {variant === 'default' && [0, 1, 2, 3, 4, 5].map(i => <div key={i} className={style.dot} />)}
                     </Halo>}
                 </div>}
 

@@ -2,7 +2,7 @@
 
 import { classes, combineRefs } from '../../../src/core/utils';
 import { FluidBreakpoint } from '../../../src/types';
-import { cloneElement } from 'react';
+import { cloneElement, isValidElement } from 'react';
 import { createStyles } from '../../core/style';
 
 const style = createStyles('cull', fluid => ({
@@ -33,17 +33,19 @@ const style = createStyles('cull', fluid => ({
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/cull}
  */
-export default function Cull({ children, include, ref, ...props }: {
-    children: React.ReactElement<any>;
+export default function Cull<T extends React.ReactElement<any>>({ children, include, ref, ...props }: {
+    children: T;
     include: FluidBreakpoint[];
     ref?: React.Ref<any>;
 } & Omit<React.HTMLAttributes<any>, 'children'>) {
 
-    children = Array.isArray(children) ? children[0] : children;
+    if (!isValidElement(children)) return null;
+
+    const childProps = typeof children === 'object' && 'props' in children ? children.props : {};
 
     return cloneElement(children, {
         ...props,
-        ref: combineRefs(ref, children.props.ref),
-        className: classes(...include.map(breakpoint => style[`cull__${breakpoint}`]), children.props.className)
+        ref: combineRefs(ref, childProps.ref),
+        className: classes(...include.map(breakpoint => style[`cull__${breakpoint}`]), childProps.className)
     });
 }

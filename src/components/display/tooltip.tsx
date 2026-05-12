@@ -2,7 +2,7 @@
 
 import { combineClasses, combineRefs, getAbsoluteZIndex } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { cloneElement, useState, useRef, isValidElement, useId, useEffect } from "react";
+import { cloneElement, useState, useRef, useId, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
 
@@ -11,31 +11,6 @@ const TooltipData = {
 };
 
 const styles = createStyles('tooltip', {
-    '.anchor': {
-        position: 'absolute',
-        pointerEvents: 'none'
-    },
-
-    '.anchor[data-position="top"]': {
-        bottom: 'calc(100% + var(--f-spacing-sml))',
-        left: '50%'
-    },
-
-    '.anchor[data-position="left"]': {
-        right: 'calc(100% + var(--f-spacing-sml))',
-        top: '50%'
-    },
-
-    '.anchor[data-position="right"]': {
-        left: 'calc(100% + var(--f-spacing-sml))',
-        top: '50%'
-    },
-
-    '.anchor[data-position="bottom"]': {
-        top: 'calc(100% + var(--f-spacing-sml))',
-        left: '50%'
-    },
-
     '.tooltip': {
         position: 'fixed',
         left: 0,
@@ -65,9 +40,9 @@ export type TooltipSelectors = Selectors<'tooltip'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/tooltip}
  */
-export default function Tooltip({ children, cc = {}, content, position = 'auto', visibility = 'interact', delay = .3, ...props }:
+export default function Tooltip<T extends React.ReactElement<any>>({ children, cc = {}, content, position = 'auto', visibility = 'interact', delay = .3, ...props }:
     {
-        children: React.ReactElement<any>;
+        children: T;
         ref?: React.Ref<HTMLDivElement>;
         cc?: TooltipSelectors;
         content?: React.ReactNode;
@@ -84,20 +59,17 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
     const style = combineClasses(styles, cc);
 
     const id = useId();
-    const anchor = useRef<HTMLDivElement | null>(null);
     const tooltip = useRef<HTMLDivElement | null>(null);
     const element = useRef<HTMLElement | null>(null);
     const state = useRef({
         visible: false,
         touchOnly: false,
         timeout: undefined as any,
-        maxWidth: undefined as number | undefined,
-        offset: 0
+        lastComputedPosition: undefined as 'top' | 'left' | 'bottom' | 'right' | undefined
     });
 
     const [mounted, setMounted] = useState(false);
     const [visible, setVisible] = useState(false);
-    const [computedPosition, setComputedPosition] = useState<string>(position);
     const [zIndex, setZIndex] = useState(0);
 
     // hide or show tooltip and update position if needed
@@ -105,34 +77,7 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
         clearTimeout(state.current.timeout);
         if (value === null) return;
 
-        if (element.current && tooltip.current && (value || visibility === 'always')) {
-            let { left, top, right, bottom, width } = element.current.getBoundingClientRect();
-            right = window.innerWidth - right;
-            bottom = window.innerHeight - bottom;
-
-            // if position == 'auto' calculate best position based on the available space
-            const computedPosition = position !== 'auto' ? position : {
-                [left]: 'left',
-                [top]: 'top',
-                [right]: 'right',
-                [bottom]: 'bottom'
-            }[Math.max(left, top, right, bottom)];
-
-            // calculate the maximum width based on the available space and position
-            if (['left', 'right'].includes(computedPosition)) {
-                state.current.maxWidth = Math.max(left, right);
-                state.current.offset = 0;
-            } else {
-                const l = left + width / 2;
-                const r = window.innerWidth - l;
-
-                state.current.maxWidth = undefined;
-                state.current.offset = Math.max(tooltip.current.offsetWidth - Math.min(l, r) * 2, 0) * (l < r ? 1 : -1);
-            }
-
-            setComputedPosition(computedPosition);
-            setZIndex(getAbsoluteZIndex(element.current) + 2);
-        }
+        if (element.current && (value || visibility === 'always')) setZIndex(getAbsoluteZIndex(element.current) + 2);
 
         if (!value || visibility === 'never') {
             state.current.touchOnly = false;
@@ -165,19 +110,47 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
 
         // update tooltip position based on anchor position
         function update() {
-            if (anchor.current && tooltip.current) {
-                const { x, y } = anchor.current.getBoundingClientRect();
-                const offset = {
-                    top: '-50%, -100%',
-                    left: '-100%, -50%',
-                    right: '0%, -50%',
-                    bottom: '-50%, 0%'
-                }[computedPosition];
-                const style = tooltip.current.style;
+            // dont update if not visible?
 
-                style.transform = `translate(${x}px, ${y}px) translate(${offset})`;
-                style.left = `${state.current.offset}px`;
-                style.maxWidth = `${state.current.maxWidth}px`;
+            if (element.current && tooltip.current) {
+                const { x, y, right, bottom, width, height } = element.current.getBoundingClientRect();
+                const xhat = window.innerWidth - right;
+                const yhat = window.innerHeight - bottom;
+
+                // if position == 'auto' calculate best position based on the available space
+                const computed = position !== 'auto' ? position : ({
+                    [x]: 'left',
+                    [y]: 'top',
+                    [xhat]: 'right',
+                    [yhat]: 'bottom'
+                } as const)[Math.max(x, y, xhat, yhat)];
+
+                // get translation offset based on computed position
+                const [tx, ty, offset] = ({
+                    top: [x + width / 2, y, '-50%, calc(-100% - var(--f-spacing-sml))'],
+                    left: [x, y + height / 2, 'calc(-100% - var(--f-spacing-sml)), -50%'],
+                    right: [x + width, y + height / 2, 'var(--f-spacing-sml), -50%'],
+                    bottom: [x + width / 2, y + height, '-50%, var(--f-spacing-sml)']
+                } as const)[computed];
+
+                const style = tooltip.current.style;
+                style.transform = `translate(${tx}px, ${ty}px) translate(${offset})`;
+
+                if (state.current.lastComputedPosition !== computed) {
+                    // calculate the maximum width based on the available space and position
+                    if (['left', 'right'].includes(computed)) {
+                        style.maxWidth = `${Math.max(x, xhat)}px`;
+                        style.left = '0px';
+                    } else {
+                        const l = x + width / 2;
+                        const r = window.innerWidth - l;
+
+                        style.maxWidth = '';
+                        style.left = `${Math.max(tooltip.current.offsetWidth - Math.min(l, r) * 2, 0) * (l < r ? 1 : -1)}px`;
+                    }
+
+                    state.current.lastComputedPosition = computed;
+                }
             }
 
             frame = requestAnimationFrame(update);
@@ -214,24 +187,19 @@ export default function Tooltip({ children, cc = {}, content, position = 'auto',
             cancelAnimationFrame(frame);
             ctrl.abort();
         }
-    }, [visibility, position, computedPosition, delay]);
+    }, [visibility, position, delay]);
 
     useEffect(() => toggle(visibility === 'always'), [visibility]);
-
-    children = Array.isArray(children) ? children[0] : children;
-    if (!isValidElement(children)) return children;
 
     return <>
         {cloneElement(children, {
             ...props,
             'aria-describedby': id,
-            ref: combineRefs(element, props.ref, children.props.ref)
+            ref: combineRefs(element, props.ref, children?.props?.ref)
         })}
-
-        {element.current && createPortal(<div ref={anchor} className={style.anchor} data-position={computedPosition} />, element.current)}
 
         {mounted && createPortal(<div ref={tooltip} id={id} role="tooltip" className={style.tooltip} aria-hidden={!visible} style={{ zIndex }}>
             {content}
         </div>, document.getElementById('__fluid') as HTMLElement)}
-    </>;
+    </>
 }

@@ -196,31 +196,31 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
                 data-error={error}>
 
                 <div className={style.header}>
-                    <Halo disabled={!navigatable} cc={{ halo: style.halo }}>
-                        <button
-                            type="button"
-                            className={style.bullet}
-                            disabled={!navigatable}
-                            onClick={() => setCompleted?.(i)}
-                            aria-labelledby={`${id}-${i}`}>
-                            <div className={style.icon}>
-                                <Animate
-                                    lite
-                                    animate={{
-                                        translate: isCompleted ? '0% -25%' : '0% 25%',
-                                        duration: .35
-                                    }}>
-                                    <div className={style.icons}>
-                                        <div className={style.icon}>
-                                            {icon}
-                                        </div>
-                                        <div className={style.icon}>
-                                            <Icon type="check" />
-                                        </div>
+                    <Halo
+                        as="button"
+                        disabled={!navigatable}
+                        cc={{ halo: style.halo }}
+                        type="button"
+                        className={style.bullet}
+                        onClick={() => setCompleted?.(i)}
+                        aria-labelledby={`${id}-${i}`}>
+                        <div className={style.icon}>
+                            <Animate
+                                correction="none"
+                                animate={{
+                                    translate: isCompleted ? '0% -25%' : '0% 25%',
+                                    duration: .35
+                                }}>
+                                <div className={style.icons}>
+                                    <div className={style.icon}>
+                                        {icon}
                                     </div>
-                                </Animate>
-                            </div>
-                        </button>
+                                    <div className={style.icon}>
+                                        <Icon type="check" />
+                                    </div>
+                                </div>
+                            </Animate>
+                        </div>
                     </Halo>
 
                     {i < steps.length - 1 && variant !== 'compact' && <div className={style.progress} />}
