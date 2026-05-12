@@ -4,6 +4,7 @@ import Halo from '../../feedback/halo';
 import { FluidInputvalue, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses } from '../../../core/utils';
+import { usePopover } from '../../layout/popover/root';
 
 const styles = createStyles('combobox.option', {
     '.option': {
@@ -20,6 +21,10 @@ const styles = createStyles('combobox.option', {
         gap: 'var(--f-spacing-xsm)',
         lineHeight: 1.25,
         WebkitTapHighlightColor: 'transparent'
+    },
+
+    '.v__inverted': {
+        color: 'var(--f-clr-text-200)'
     },
 
     '.option.round': {
@@ -47,6 +52,8 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
     } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onSelect'>) {
     const style = combineClasses(styles, cc);
 
+    const { variant } = usePopover();
+
     return <Halo
         {...props}
         as="button"
@@ -55,6 +62,7 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
         role="option"
         className={classes(
             style.option,
+            style[`v__${variant}`],
             round && style.round,
             props.className
         )}

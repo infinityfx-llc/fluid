@@ -143,6 +143,7 @@ export type SelectSelectors = Selectors<'field' | 'content' | 'placeholder' | 's
 
 type SelectProps<T> = {
     cc?: SelectSelectors;
+    variant?: 'default' | 'inverted' | 'minimal';
     options: {
         label: React.ReactNode;
         value: FluidInputvalue;
@@ -179,7 +180,7 @@ type SelectProps<T> = {
      * When set to a `number` greater than `0`, will enable virtual scrolling, improving performance for large numbers of entries.
      */
     virtualItemHeight?: number;
-} & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'onEnter' | 'left' | 'right' | 'shape'>;
+} & Omit<FieldProps, 'variant' | 'value' | 'defaultValue' | 'onChange' | 'onEnter' | 'left' | 'right' | 'shape'>;
 
 /**
  * Displays a list of selectable options.
@@ -229,6 +230,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
     return <Combobox.Root
         ref={popover}
         stretch
+        variant={variant === 'minimal' ? 'default' : variant}
         mobileContainer={mobileContainer}>
         <Combobox.Trigger disabled={props.disabled || readOnly}>
             <div
@@ -237,7 +239,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                 className={classes(
                     style.field,
                     style[`s__${size}`],
-                    style[`v__${variant}`],
+                    style[`v__${variant === 'inverted' ? 'default' : variant}`],
                     round && style.round,
                     props.className
                 )}

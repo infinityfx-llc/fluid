@@ -2,11 +2,12 @@
 
 import { Animate } from '@infinityfx/lively';
 import { useState, useRef, useId } from 'react';
-import { combineClasses, getFocusable } from '../../../../src/core/utils';
+import { classes, combineClasses, getFocusable } from '../../../../src/core/utils';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import Item from './item';
 import { Icon } from '../../../core/icons';
+import { usePopover } from '../../layout/popover/root';
 
 const styles = createStyles('action-menu.group', {
     '.wrapper': {
@@ -23,6 +24,11 @@ const styles = createStyles('action-menu.group', {
         fontSize: 'var(--f-font-size-sml)',
         minWidth: 'min(100vw, 10em)',
         top: 'calc(-1px - .25em)'
+    },
+
+    '.v__inverted': {
+        background: 'var(--f-clr-grey-900)',
+        borderColor: 'var(--f-clr-grey-800)'
     },
 
     '.icon': {
@@ -42,6 +48,7 @@ export default function Group({ children, cc = {}, label, className, ...props }:
     const style = combineClasses(styles, cc);
 
     const id = useId();
+    const { variant } = usePopover();
     const element = useRef<HTMLDivElement>(null);
     const content = useRef<HTMLDivElement>(null);
     const [state, setState] = useState({ open: false, side: 'left' });
@@ -118,7 +125,10 @@ export default function Group({ children, cc = {}, label, className, ...props }:
                 ref={content}
                 id={id}
                 role="menu"
-                className={style.menu}
+                className={classes(
+                    style.menu,
+                    style[`v__${variant}`]
+                )}
                 style={{ [state.side]: '100%' }}>
                 <Animate
                     inherit

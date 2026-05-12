@@ -27,6 +27,14 @@ const styles = createStyles('divider', {
 
     '.divider[aria-orientation="vertical"] .line': {
         width: '1px'
+    },
+
+    ':global([data-popover="inverted"]) .divider': {
+        color: 'var(--f-clr-grey-700)'
+    },
+
+    ':global([data-popover="inverted"]) .line': {
+        backgroundColor: 'var(--f-clr-grey-700)'
     }
 });
 

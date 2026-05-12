@@ -1,6 +1,6 @@
 'use client';
 
-import { combineClasses, combineRefs, getAbsoluteZIndex } from "../../../src/core/utils";
+import { classes, combineClasses, combineRefs, getAbsoluteZIndex } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
 import { cloneElement, useState, useRef, useId, useEffect } from "react";
 import { createPortal } from "react-dom";
@@ -27,6 +27,11 @@ const styles = createStyles('tooltip', {
         transition: 'opacity .2s, translate .2s'
     },
 
+    '.v__inverted': {
+        backgroundColor: 'var(--f-clr-grey-900)',
+        color: 'var(--f-clr-text-200)'
+    },
+
     '.tooltip[aria-hidden="true"]': {
         opacity: 0,
         translate: '0px 4px'
@@ -40,7 +45,7 @@ export type TooltipSelectors = Selectors<'tooltip'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/tooltip}
  */
-export default function Tooltip<T extends React.ReactElement<any>>({ children, cc = {}, content, position = 'auto', visibility = 'interact', delay = .3, ...props }:
+export default function Tooltip<T extends React.ReactElement<any>>({ children, cc = {}, content, position = 'auto', visibility = 'interact', variant = 'default', delay = .3, ...props }:
     {
         children: T;
         ref?: React.Ref<HTMLDivElement>;
@@ -54,6 +59,7 @@ export default function Tooltip<T extends React.ReactElement<any>>({ children, c
          * @default "interact"
          */
         visibility?: 'never' | 'interact' | 'always';
+        variant?: 'default' | 'inverted';
         delay?: number;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>) {
     const style = combineClasses(styles, cc);
@@ -198,7 +204,16 @@ export default function Tooltip<T extends React.ReactElement<any>>({ children, c
             ref: combineRefs(element, props.ref, children?.props?.ref)
         })}
 
-        {mounted && createPortal(<div ref={tooltip} id={id} role="tooltip" className={style.tooltip} aria-hidden={!visible} style={{ zIndex }}>
+        {mounted && createPortal(<div
+            ref={tooltip}
+            id={id}
+            role="tooltip"
+            className={classes(
+                style.tooltip,
+                style[`v__${variant}`]
+            )}
+            aria-hidden={!visible}
+            style={{ zIndex }}>
             {content}
         </div>, document.getElementById('__fluid') as HTMLElement)}
     </>

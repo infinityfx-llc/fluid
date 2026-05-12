@@ -26,6 +26,10 @@ const styles = createStyles('action-menu.item', {
         ['--halo-color' as any]: 'color-mix(in srgb, var(--color, var(--f-clr-primary-100)) 50%, var(--f-clr-text-200))'
     },
 
+    '.v__inverted': {
+        color: 'var(--color, var(--f-clr-text-200))'
+    },
+
     '.item:enabled': {
         cursor: 'pointer'
     },
@@ -53,7 +57,7 @@ export default function Item({ children, cc = {}, keepOpen, className, color, ..
     const style = combineClasses(styles, cc);
 
     const ref = useRef<HTMLButtonElement>(null);
-    const popover = usePopover();
+    const { variant, toggle } = usePopover();
 
     return <Halo
         {...props}
@@ -66,11 +70,15 @@ export default function Item({ children, cc = {}, keepOpen, className, color, ..
             ...props.style,
             '--color': color
         } as any}
-        className={classes(style.item, className)}
+        className={classes(
+            style.item,
+            style[`v__${variant}`],
+            className
+        )}
         onClick={e => {
             props.onClick?.(e);
 
-            if (!keepOpen) popover.toggle(false);
+            if (!keepOpen) toggle(false);
         }}
         onKeyDown={e => {
             props.onKeyDown?.(e);

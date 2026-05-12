@@ -5,6 +5,7 @@ import { Animate } from '@infinityfx/lively';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
+import { usePopover } from '../../layout/popover/root';
 
 const styles = createStyles('action-menu.menu', {
     '.menu': {
@@ -15,6 +16,11 @@ const styles = createStyles('action-menu.menu', {
         boxShadow: 'var(--f-shadow-med)',
         fontSize: 'var(--f-font-size-sml)',
         minWidth: 'min(100vw, 10em)'
+    },
+
+    '.v__inverted': {
+        background: 'var(--f-clr-grey-900)',
+        borderColor: 'var(--f-clr-grey-800)'
     }
 });
 
@@ -26,6 +32,8 @@ export default function Menu({ children, cc = {}, className, ...props }:
         cc?: ActionMenuMenuSelectors;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
+
+    const { variant } = usePopover();
 
     return <Popover.Content role="menu">
         <Animate
@@ -41,7 +49,14 @@ export default function Menu({ children, cc = {}, className, ...props }:
             }}
             stagger={.05}>
 
-            <div {...props} className={classes(style.menu, className)} role="group">
+            <div
+                {...props}
+                role="group"
+                className={classes(
+                    style.menu,
+                    style[`v__${variant}`],
+                    className
+                )} >
                 <Animate
                     inherit
                     animate={{

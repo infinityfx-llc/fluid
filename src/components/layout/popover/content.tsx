@@ -10,7 +10,7 @@ import Modal from '../modal';
 export default function Content({ children, ref, ...props }: React.HTMLAttributes<HTMLDivElement> & {
     ref?: React.Ref<HTMLDivElement>;
 }) {
-    const { id, mounted, isModal, trigger, content, opened, toggle } = usePopover();
+    const { id, variant, mounted, isModal, trigger, content, opened, toggle } = usePopover();
 
     const zIndex = useMemo(() => {
         if (!mounted || !trigger.current) return 1;
@@ -25,7 +25,12 @@ export default function Content({ children, ref, ...props }: React.HTMLAttribute
     </Modal>;
 
     return createPortal(<LayoutGroup>
-        <div ref={combineRefs(content, ref)} {...props} id={id} style={{ ...props.style, position: 'fixed', zIndex }}>
+        <div
+            {...props}
+            ref={combineRefs(content, ref)}
+            id={id}
+            data-popover={variant}
+            style={{ ...props.style, position: 'fixed', zIndex }}>
             {opened && children}
         </div>
     </LayoutGroup>, document.getElementById('__fluid') as HTMLElement);

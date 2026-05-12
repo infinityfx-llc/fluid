@@ -14,7 +14,7 @@ import { useDebounce } from '../../../hooks';
 
 const styles = createStyles('combobox.content', {
     '.container:not(.modal)': {
-        background: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-fg-100)',
         border: 'solid 1px var(--f-clr-fg-200)',
         borderRadius: 'calc(.25em + var(--f-radius-sml))',
         boxShadow: 'var(--f-shadow-med)',
@@ -24,6 +24,10 @@ const styles = createStyles('combobox.content', {
 
     '.container.round': {
         borderRadius: '1.4em'
+    },
+
+    '.v__inverted:not(.modal)': {
+        backgroundColor: 'var(--f-clr-grey-900)'
     },
 
     '.s__xsm': {
@@ -66,6 +70,19 @@ const styles = createStyles('combobox.content', {
 
     '.container .field__content': {
         paddingBlock: '.5em'
+    },
+
+    '.v__inverted:not(.modal) .field': {
+        background: 'var(--f-clr-grey-900)',
+        color: 'var(--f-clr-grey-700)'
+    },
+
+    '.v__inverted:not(.modal) .field:focus-within': {
+        background: 'var(--f-clr-grey-800)'
+    },
+
+    '.v__inverted:not(.modal) .input': {
+        color: 'var(--f-clr-text-200)'
     }
 });
 
@@ -110,7 +127,7 @@ export default function Content({
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    const { opened, trigger, content, isModal } = usePopover();
+    const { variant, opened, trigger, content, isModal } = usePopover();
 
     const itemCount = useRef(0);
     const focus = useRef({
@@ -148,8 +165,8 @@ export default function Content({
         itemCount.current = 0;
 
         return Children.map(children, (child: any) => {
-            const option = isValidElement<any>(child) && ('value' in child.props ? child : child.props.children);
-            if (!isValidElement<any>(option) || !('value' in option.props)) return child;
+            const option = isValidElement<any>(child) && ('value' in child.props ? child : child.props.children); // bad way of doing this (needed for tooltips..)
+            if (!isValidElement<any>(option) || !('value' in option.props)) return child; // TODO: refactor
 
             const value = ('' + option.props.value).toLowerCase() || '';
             if (!value.includes(query)) return null;
@@ -161,7 +178,7 @@ export default function Content({
             return cloneElement(child, {
                 round,
                 ref: combineRefs(el => {
-                    focus.current.list[focusIndex] = el;
+                    if (!child.props.disabled) focus.current.list[focusIndex] = el;
                 }, child.props.ref),
                 onFocus: (e: React.FocusEvent<any>) => {
                     focus.current.index = focusIndex;
@@ -191,6 +208,7 @@ export default function Content({
                 className={classes(
                     style.container,
                     style[`s__${size}`],
+                    style[`v__${variant}`],
                     round && style.round,
                     isModal && style.modal,
                     props.className
@@ -230,7 +248,8 @@ export default function Content({
                     cc={{
                         ...cc,
                         field: style.field,
-                        content: style.field__content
+                        content: style.field__content,
+                        input: style.input
                     }} />}
 
                 <Scrollarea
