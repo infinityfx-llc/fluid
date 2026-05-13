@@ -165,8 +165,6 @@ export default function Modal({ children, cc = {}, show, onClose, title, footer,
         }
     }, []);
 
-    // TODO: when switching between mobile and desktop causes react render error (possibly to with lively?)
-
     return <Overlay show={show} onClose={onClose}>
         <Animate
             correction="none"
@@ -187,10 +185,9 @@ export default function Modal({ children, cc = {}, show, onClose, title, footer,
                     duration: .25
                 }
             }}
-            triggers={isMobile ? {
-                mob: ['mount', { on: 'unmount', reverse: true }]
-            } : {
-                dsk: ['mount', { on: 'unmount', reverse: true }]
+            triggers={{
+                mob: isMobile ? ['mount', { on: 'unmount', reverse: true }] : [],
+                dsk: isMobile ? [] : ['mount', { on: 'unmount', reverse: true }]
             }}>
             <div
                 {...props}

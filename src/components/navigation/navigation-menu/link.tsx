@@ -3,7 +3,7 @@
 import { PolymorphComponentProps, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses } from '../../../core/utils';
-import Halo from '../../feedback/halo';
+import Interactable from '../../feedback/interactable';
 import { useNavigationMenu } from './root';
 
 const styles = createStyles('navigation-menu.link', {
@@ -13,9 +13,7 @@ const styles = createStyles('navigation-menu.link', {
         padding: '.4em',
         borderRadius: 'var(--f-radius-sml)',
         fontWeight: 600,
-        color: 'var(--f-clr-text-100)',
-        outline: 'none',
-        WebkitTapHighlightColor: 'transparent'
+        color: 'var(--f-clr-text-100)'
     }
 });
 
@@ -42,18 +40,18 @@ export default function Link<A extends AnchorLike>({ children, cc = {}, as, ...p
 
     const { root, select } = useNavigationMenu();
 
-    return <Halo
+    return <Interactable
         {...props}
         as={as || 'a'}
-        color="var(--f-clr-primary-400)"
         role="menuitem"
+        highlightColor="var(--f-clr-primary-400)"
         className={classes(style.link, props.className)}
         onBlur={(e: React.FocusEvent<any>) => {
             props.onBlur?.(e);
             if (!root.current?.contains(e.relatedTarget)) select(undefined);
         }}>
         {children}
-    </Halo>;
+    </Interactable>;
 }
 
 Link.displayName = 'NavigationMenu.Link';

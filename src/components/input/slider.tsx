@@ -2,11 +2,11 @@
 
 import { Selectors } from "../../../src/types";
 import { useId, useRef, useState, useEffect } from "react";
-import Halo from "../feedback/halo";
 import { classes, combineClasses, round, toNumber } from "../../../src/core/utils";
 import Tooltip from "../display/tooltip";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { createStyles } from "../../core/style";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('slider', {
     '.wrapper': {
@@ -77,7 +77,6 @@ const styles = createStyles('slider', {
         translate: '-50% 0%',
         width: '1.1em',
         height: '1.1em',
-        outline: 'none',
         borderRadius: '99px',
         touchAction: 'none'
     },
@@ -117,7 +116,7 @@ const styles = createStyles('slider', {
         backgroundColor: 'var(--f-clr-grey-300)'
     },
 
-    '.handle .halo': {
+    '.handle .highlight': {
         inset: '-.5em'
     }
 });
@@ -276,13 +275,14 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
                 const val = values[i];
 
                 return <Tooltip key={i} delay={0} content={formatTooltip ? formatTooltip(round(val, 2)) : round(val, 2)} visibility={tooltips} position={vertical ? 'right' : 'bottom'}>
-                    <Halo
-                        className={style.handle}
+                    <Interactable
+                        as="div"
                         role="slider"
+                        className={style.handle}
                         tabIndex={props.disabled ? -1 : 0}
                         aria-disabled={!!props.disabled}
                         disabled={props.disabled}
-                        cc={{ halo: style.halo }}
+                        cc={{ highlight: style.highlight }}
                         onMouseDown={() => dragging.current = i}
                         onTouchStart={() => dragging.current = i}
                         onTouchEnd={() => dragging.current = null}

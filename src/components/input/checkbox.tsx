@@ -4,9 +4,9 @@ import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
 import { Animate } from "@infinityfx/lively";
 import { useState } from "react";
-import Halo from "../feedback/halo";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { createStyles } from "../../core/style";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('checkbox', {
     '.wrapper': {
@@ -90,8 +90,8 @@ const styles = createStyles('checkbox', {
         backgroundColor: 'var(--f-clr-error-200)'
     },
 
-    '.wrapper .halo': {
-        borderRadius: 'var(--f-radius-sml)',
+    '.wrapper .highlight': {
+        borderRadius: 'var(--f-radius-med)',
         inset: '-.5em'
     }
 });
@@ -117,10 +117,11 @@ export default function Checkbox({ cc = {}, error, size = 'med', color, intermed
     const [split, rest] = useInputProps(props);
     const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
 
-    return <Halo
+    return <Interactable
         {...rest}
-        hover={false}
-        cc={{ ...cc, halo: style.halo }}
+        as="div"
+        noHover
+        cc={{ ...cc, highlight: style.highlight }}
         className={classes(
             style.wrapper,
             style[`s__${size}`],
@@ -144,5 +145,5 @@ export default function Checkbox({ cc = {}, error, size = 'med', color, intermed
                 </Animate>
             </svg>
         </div>
-    </Halo>;
+    </Interactable>;
 }

@@ -3,13 +3,13 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
 import { useState } from "react";
-import Halo from "../feedback/halo";
 import Scrollarea from "../layout/scrollarea";
 import Button from "../input/button";
 import Checkbox from "../input/checkbox";
 import ActionMenu from "./action-menu/index";
 import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
+import Interactable from "../feedback/interactable";
 
 // variants: default | minimal/light mabye?
 
@@ -69,10 +69,7 @@ const styles = createStyles('table', {
         alignItems: 'center',
         gap: 'var(--f-spacing-xxs)',
         width: 'max-content',
-        padding: '.2rem .4rem',
-        border: 'none',
-        background: 'none',
-        outline: 'none'
+        padding: '.2rem .4rem'
     },
 
     '.label:enabled': {
@@ -180,11 +177,9 @@ export default function Table<T extends { [key: string]: string | number | Date;
 
                     // returns a column header button
                     return <div key={i} role="columnheader">
-                        <Halo
-                            as="button"
+                        <Interactable
                             disabled={!sort}
                             className={style.label}
-                            type="button"
                             onClick={() => {
                                 // if sorting is enabled for this column, toggles between ascending, descending and no sorting
                                 setColumn(col as string);
@@ -203,7 +198,7 @@ export default function Table<T extends { [key: string]: string | number | Date;
                             {(column !== col || sorting === 'nil') && sort && <Icon type="sort" />}
                             {column === col && sorting === 'asc' && <Icon type="sortAscend" />}
                             {column === col && sorting === 'dsc' && <Icon type="sortDescend" />}
-                        </Halo>
+                        </Interactable>
                     </div>;
                 })}
 
@@ -212,7 +207,13 @@ export default function Table<T extends { [key: string]: string | number | Date;
 
             {rows.map((row, i) => {
 
-                return <Halo key={i} disabled={!selectable} role="row" className={style.row} style={{ gridTemplateColumns }}>
+                return <Interactable
+                    key={i}
+                    as="div"
+                    role="row"
+                    disabled={!selectable}
+                    className={style.row}
+                    style={{ gridTemplateColumns }}>
                     {selectable && <div className={style.collapsed}>
                         <Checkbox
                             size="xsm"
@@ -250,7 +251,7 @@ export default function Table<T extends { [key: string]: string | number | Date;
                             </ActionMenu.Menu>
                         </ActionMenu.Root>
                     </div> : null}
-                </Halo>;
+                </Interactable>;
             })}
 
             {!rows.length && <div className={style.empty}>{emptyMessage}</div>}

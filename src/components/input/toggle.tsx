@@ -2,11 +2,11 @@
 
 import { FluidSize, Selectors } from "../../../src/types";
 import { useRef, useState } from "react";
-import Halo from "../feedback/halo";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { Animate } from "@infinityfx/lively";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('toggle', {
     '.input': {
@@ -131,11 +131,12 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
     const [state, setState] = props.checked !== undefined ? [props.checked] : useState(!!props.defaultChecked);
     const [split, rest] = useInputProps(props);
 
-    return <Halo
+    return <Interactable
         {...rest}
+        as="div"
+        interactTarget={inputRef}
         disabled={props.disabled}
-        color={variant === 'minimal' && !state ? 'var(--f-clr-primary-400)' : undefined}
-        target={inputRef}
+        highlightColor={variant === 'minimal' && !state ? 'var(--f-clr-primary-400)' : (variant === 'neutral' ? 'var(--f-clr-grey-300)' : undefined)}
         className={classes(
             style.toggle,
             round && style.round,
@@ -176,5 +177,5 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
                 <div className={style.content}>{checkedContent}</div>
             </Animate> : null}
         </div>
-    </Halo>;
+    </Interactable>;
 }

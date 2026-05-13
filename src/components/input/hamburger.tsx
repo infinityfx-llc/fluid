@@ -2,16 +2,14 @@
 
 import { Selectors } from "../../../src/types";
 import { useState } from "react";
-import Halo from "../feedback/halo";
 import { Animate } from "@infinityfx/lively";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('hamburger', {
     '.hamburger': {
         position: 'relative',
-        border: 'none',
-        background: 'none',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-around',
@@ -19,9 +17,7 @@ const styles = createStyles('hamburger', {
         height: '2.5em',
         width: '2.5em',
         padding: '.5em',
-        borderRadius: 'var(--f-radius-sml)',
-        outline: 'none',
-        WebkitTapHighlightColor: 'transparent'
+        borderRadius: 'var(--f-radius-sml)'
     },
 
     '.line': {
@@ -76,9 +72,8 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
         animate: [{ on: state, composite: 'override' as const }, { on: !state, reverse: true, composite: 'override' as const }]
     };
 
-    return <Halo
+    return <Interactable
         {...props}
-        as="button"
         style={{
             ...props.style,
             '--color': color
@@ -130,5 +125,5 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
                 <div className={style.line} />
             </Animate>
         </div>
-    </Halo>;
+    </Interactable>;
 }

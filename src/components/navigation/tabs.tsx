@@ -2,11 +2,11 @@
 
 import { FluidInputvalue, Selectors } from "../../../src/types";
 import { useId, useRef, useState } from "react";
-import Halo from "../feedback/halo";
 import { Animate } from "@infinityfx/lively";
 import { classes, combineClasses } from "../../../src/core/utils";
 import Scrollarea from "../layout/scrollarea";
 import { createStyles } from "../../core/style";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('tabs', {
     '.v__default': {
@@ -44,15 +44,11 @@ const styles = createStyles('tabs', {
 
     '.button': {
         position: 'relative',
-        outline: 'none',
-        border: 'none',
-        background: 'none',
         padding: '.4em .6em',
         borderRadius: 'var(--f-radius-sml)',
         color: 'var(--f-clr-text-100)',
         fontSize: 'var(--f-font-size-sml)',
-        fontWeight: 600,
-        WebkitTapHighlightColor: 'transparent'
+        fontWeight: 600
     },
 
     '.v__minimal .button': {
@@ -114,15 +110,13 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
                 {options.map(({ label, value, disabled, panelId }, i) => {
 
                     return <div key={i} className={style.option}>
-                        <Halo
-                            as="button"
+                        <Interactable
+                            role="tab"
                             disabled={disabled}
-                            color={variant === 'default' ? 'var(--f-clr-primary-300)' : 'var(--f-clr-primary-400)'}
+                            highlightColor={variant === 'default' ? 'var(--f-clr-primary-300)' : 'var(--f-clr-primary-400)'}
                             ref={el => {
                                 tabs.current[i] = disabled ? null : el;
                             }}
-                            type="button"
-                            role="tab"
                             className={style.button}
                             aria-selected={state === value}
                             aria-controls={panelId}
@@ -155,7 +149,7 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
                                 if (matched) e.preventDefault();
                             }}>
                             {label}
-                        </Halo>
+                        </Interactable>
 
                         {state === value && <Animate
                             morph={`tabs-selection-${id}`}

@@ -3,10 +3,10 @@
 import { classes, combineClasses } from '../../../src/core/utils';
 import { FluidSize, Selectors } from '../../../src/types';
 import { useRef, useState } from 'react';
-import Halo from '../feedback/halo';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { createStyles } from '../../core/style';
 import { Animate } from '@infinityfx/lively';
+import Interactable from '../feedback/interactable';
 
 const styles = createStyles('switch', {
     '.wrapper': {
@@ -118,12 +118,12 @@ const styles = createStyles('switch', {
         backgroundColor: 'var(--f-clr-grey-200)'
     },
 
-    '.wrapper .halo': {
-        borderRadius: 'var(--f-radius-sml)',
+    '.wrapper .highlight': {
+        borderRadius: 'var(--f-radius-med)',
         inset: '-.5em'
     },
 
-    '.wrapper.round .halo': {
+    '.wrapper.round .highlight': {
         borderRadius: '999px'
     }
 });
@@ -160,7 +160,8 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
             rest.className
         )}
         data-error={!!error}>
-        <input {...split}
+        <input
+            {...split}
             ref={inputRef}
             type="checkbox"
             className={style.input}
@@ -188,7 +189,12 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
                     translate: state ? '100% 0%' : '0% 0%',
                     duration: .35
                 }}>
-                <Halo target={inputRef} hover={false} cc={{ ...cc, halo: style.halo }} className={style.handle__wrapper}>
+                <Interactable
+                    as="div"
+                    noHover
+                    interactTarget={inputRef}
+                    cc={{ ...cc, highlight: style.highlight }}
+                    className={style.handle__wrapper}>
                     <Animate
                         transition={{ cache: [] }}
                         animate={{
@@ -201,7 +207,7 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
                         }}>
                         <div className={style.handle} />
                     </Animate>
-                </Halo>
+                </Interactable>
             </Animate>
         </div>
     </div>;

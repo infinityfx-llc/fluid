@@ -6,7 +6,7 @@ import { createStyles } from '../../../core/style';
 import { Icon } from '../../../core/icons';
 import { useSidebar } from './root';
 import Button from '../../input/button';
-import Halo from '../../feedback/halo';
+import Interactable from '../../feedback/interactable';
 
 const styles = createStyles('sidebar.toggle', {
     '.wrapper': {
@@ -20,13 +20,9 @@ const styles = createStyles('sidebar.toggle', {
     '.toggle': {
         position: 'relative',
         overflow: 'hidden',
-        background: 'none',
-        outline: 'none',
-        border: 'none',
         color: 'var(--f-clr-text-100)',
         borderRadius: 'var(--f-radius-sml)',
-        flexShrink: 0,
-        WebkitTapHighlightColor: 'transparent'
+        flexShrink: 0
     },
 
     '.toggle:enabled': {
@@ -77,11 +73,9 @@ export default function Toggle({ children, cc = {}, toggle = 'square', ...props 
     const { collapsed, setCollapsed } = useSidebar();
 
     return <div {...props} className={classes(style.wrapper, props.className)}>
-        <Halo
-            as="button"
+        <Interactable
             disabled={!collapsed}
-            color="var(--f-clr-primary-300)"
-            type="button"
+            highlightColor="var(--f-clr-primary-300)"
             className={style.toggle}
             onClick={() => setCollapsed(false)}>
             <div className={style.logo}>
@@ -91,9 +85,9 @@ export default function Toggle({ children, cc = {}, toggle = 'square', ...props 
             <div className={style.icon}>
                 <Icon type="expandSidebar" />
             </div>
-        </Halo>
+        </Interactable>
 
-        <Button size="sml" compact variant="light" onClick={() => setCollapsed(true)} className={style.button} tabIndex={collapsed ? -1 : 0} data-collapsed={collapsed}>
+        <Button size="sml" compact variant="minimal" onClick={() => setCollapsed(true)} className={style.button} tabIndex={collapsed ? -1 : 0} data-collapsed={collapsed}>
             <Icon type="collapseSidebar" />
         </Button>
     </div>;

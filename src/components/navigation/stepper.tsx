@@ -4,10 +4,10 @@ import { classes, combineClasses } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
 import { Animate } from "@infinityfx/lively";
 import { useId } from "react";
-import Halo from "../feedback/halo";
 import ProgressBar from "../feedback/progress-bar";
 import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('stepper', {
     '.stepper': {
@@ -129,8 +129,8 @@ const styles = createStyles('stepper', {
         color: 'var(--f-clr-grey-600)'
     },
 
-    '.halo': {
-        inset: '-.5em !important'
+    '.step .highlight': {
+        inset: '-.5em'
     },
 
     '.track': {
@@ -196,11 +196,9 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
                 data-error={error}>
 
                 <div className={style.header}>
-                    <Halo
-                        as="button"
+                    <Interactable
                         disabled={!navigatable}
-                        cc={{ halo: style.halo }}
-                        type="button"
+                        cc={{ highlight: style.highlight }}
                         className={style.bullet}
                         onClick={() => setCompleted?.(i)}
                         aria-labelledby={`${id}-${i}`}>
@@ -221,7 +219,7 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
                                 </div>
                             </Animate>
                         </div>
-                    </Halo>
+                    </Interactable>
 
                     {i < steps.length - 1 && variant !== 'compact' && <div className={style.progress} />}
                 </div>

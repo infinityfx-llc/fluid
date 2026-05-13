@@ -1,7 +1,6 @@
 'use client';
 
 import { Children, useState } from 'react';
-import Halo from '../../feedback/halo';
 import { Selectors } from '../../../../src/types';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import Toggle from '../../input/toggle';
@@ -11,6 +10,7 @@ import { useSidebar } from './root';
 import useFluid from '../../../hooks/use-fluid';
 import useMediaQuery from '../../../hooks/use-media-query';
 import { Icon } from '../../../core/icons';
+import Interactable from '../../feedback/interactable';
 
 const styles = createStyles('sidebar.item', {
     '.item': {
@@ -20,9 +20,7 @@ const styles = createStyles('sidebar.item', {
         color: 'var(--f-clr-text-100)',
         display: 'flex',
         transition: 'background-color .25s, color .25s',
-        outline: 'none',
-        overflow: 'hidden',
-        WebkitTapHighlightColor: 'transparent'
+        overflow: 'hidden'
     },
 
     '.item:not(.compact)': {
@@ -166,12 +164,13 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
     const isMobile = useMediaQuery(`(max-width: ${fluid.breakpoints.mob}px)`);
 
     return <>
-        <Halo
+        <Interactable
             {...props}
-            color={active ? undefined : 'var(--f-clr-primary-300)'}
-            disabled={disabled}
-            tabIndex={0}
+            as="div"
             role="button"
+            tabIndex={0}
+            highlightColor={active ? undefined : 'var(--f-clr-primary-300)'}
+            disabled={disabled}
             className={classes(
                 style.item,
                 style[`s__${size}`],
@@ -208,7 +207,7 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
                     <Icon type="expandDown" />
                 </Toggle> : right}
             </span>
-        </Halo>
+        </Interactable>
 
         {count ? <Collapsible
             shown={open && (isMobile || !collapsed)}

@@ -1,14 +1,12 @@
-import Halo from "../feedback/halo";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
 import Spinner from "../feedback/spinner";
 import { createStyles } from "../../core/style";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('button', {
     '.button': {
         position: 'relative',
-        border: 'none',
-        outline: 'none',
         borderRadius: 'var(--f-radius-sml)',
         padding: '.8em',
         backgroundColor: 'var(--color, var(--f-clr-primary-100))',
@@ -16,8 +14,7 @@ const styles = createStyles('button', {
         fontWeight: 600,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
-        WebkitTapHighlightColor: 'transparent'
+        justifyContent: 'center'
     },
 
     '.button.compact': {
@@ -49,12 +46,17 @@ const styles = createStyles('button', {
     },
 
     '.v__light': {
-        backgroundColor: 'var(--color, var(--f-clr-primary-500))'
+        backgroundColor: 'var(--f-clr-fg-100)',
+        color: 'var(--color, var(--f-clr-primary-100))'
     },
 
     '.v__neutral': {
         backgroundColor: 'var(--f-clr-fg-100)',
         border: 'solid 1px var(--f-clr-fg-200)'
+    },
+
+    '.v__neutral .highlight': {
+        borderRadius: 'calc(var(--f-radius-sml) - 1px)'
     },
 
     '.button[data-loading="false"]:disabled': {
@@ -107,11 +109,14 @@ export default function Button({ children, cc = {}, round = false, compact = fal
     } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);
 
-    return <Halo
+    return <Interactable
         {...props}
-        as="button"
-        type={props.type || 'button'}
+        highlightColor={['light', 'neutral'].includes(variant) ? 'var(--f-clr-grey-300)' : undefined}
         disabled={props.disabled || loading}
+        cc={{
+            ...cc,
+            highlight: style.highlight
+        }}
         className={classes(
             style.button,
             round && style.round,
@@ -129,5 +134,5 @@ export default function Button({ children, cc = {}, round = false, compact = fal
         <span className={style.content}>{children}</span>
 
         {loading && <Spinner className={style.loader} />}
-    </Halo>;
+    </Interactable>;
 }

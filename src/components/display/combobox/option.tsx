@@ -1,10 +1,10 @@
 'use client';
 
-import Halo from '../../feedback/halo';
 import { FluidInputvalue, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses } from '../../../core/utils';
 import { usePopover } from '../../layout/popover/root';
+import Interactable from '../../feedback/interactable';
 
 const styles = createStyles('combobox.option', {
     '.option': {
@@ -54,12 +54,10 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
 
     const { variant } = usePopover();
 
-    return <Halo
+    return <Interactable
         {...props}
-        as="button"
-        color="var(--f-clr-primary-400)"
-        type="button"
         role="option"
+        highlightColor="var(--f-clr-primary-400)"
         className={classes(
             style.option,
             style[`v__${variant}`],
@@ -71,7 +69,7 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
             onSelect?.(value);
         }}>
         {children}
-    </Halo>;
+    </Interactable>;
 }
 
 Option.displayName = 'Combobox.Option';

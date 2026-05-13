@@ -5,8 +5,8 @@ import { Fragment, useId, useRef, useState } from "react";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
-import Halo from "../feedback/halo";
 import { Animate } from "@infinityfx/lively";
+import Interactable from "../feedback/interactable";
 
 // arrow controls
 
@@ -60,9 +60,6 @@ const styles = createStyles('pagination', {
     '.button': {
         overflow: 'hidden',
         position: 'relative',
-        border: 'none',
-        outline: 'none',
-        background: 'none',
         color: 'var(--f-clr-text-100)',
         width: '2.6em',
         height: '2.6em',
@@ -71,8 +68,7 @@ const styles = createStyles('pagination', {
         justifyContent: 'center',
         borderRadius: 'var(--f-radius-sml)',
         fontWeight: 500,
-        transition: 'background-color .35s, color .35s',
-        WebkitTapHighlightColor: 'transparent'
+        transition: 'background-color .35s, color .35s'
     },
 
     '.buttons .button': {
@@ -225,25 +221,21 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
             style[shape],
             props.className
         )}>
-        {skipable && <Halo
-            as="button"
-            type="button"
+        {skipable && <Interactable
             disabled={backDisabled}
             aria-label="1"
             className={style.button}
             onClick={() => update(0)}>
             <Icon type="first" />
-        </Halo>}
+        </Interactable>}
 
-        <Halo
-            as="button"
-            type="button"
+        <Interactable
             disabled={backDisabled}
             aria-label={state + ''}
             className={style.button}
             onClick={() => update(state - 1)}>
             <Icon type="left" />
-        </Halo>
+        </Interactable>
 
         {!compact && <div className={style.buttons}>
             {getIndices().map((index, i) => {
@@ -265,10 +257,8 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
                         <div className={classes(style.layer, style.selection)} style={gridStyle} />
                     </Animate>}
 
-                    <Halo
-                        as="button"
+                    <Interactable
                         disabled={disabled}
-                        type="button"
                         className={classes(
                             style.button,
                             style.index
@@ -304,29 +294,25 @@ export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onCh
                                 </span>
                             </div>
                         </Animate>
-                    </Halo>
+                    </Interactable>
                 </Fragment>;
             })}
         </div>}
 
-        <Halo
-            as="button"
-            type="button"
+        <Interactable
             disabled={forwardDisabled}
             aria-label={state + 2 + ''}
             className={style.button}
             onClick={() => update(state + 1)}>
             <Icon type="right" />
-        </Halo>
+        </Interactable>
 
-        {skipable && <Halo
-            as="button"
-            type="button"
+        {skipable && <Interactable
             disabled={forwardDisabled}
             aria-label={pages + ''}
             className={style.button}
             onClick={() => update(pages - 1)}>
             <Icon type="last" />
-        </Halo>}
+        </Interactable>}
     </div>;
 }

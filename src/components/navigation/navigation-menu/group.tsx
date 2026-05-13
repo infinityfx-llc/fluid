@@ -63,7 +63,7 @@ const styles = createStyles('navigation-menu.group', {
 
 export type NavigationMenuGroupSelectors = Selectors<'group' | 'link' | 'arrow' | 'selection' | 'menu'>;
 
-type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a'; // TODO: check if type is correct
+type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a';
 
 export default function Group<A extends AnchorLike<any>>({ children, cc = {}, label, round = false, href, target, active = false, position = 'center', Link = 'a', ...props }:
     {

@@ -33,7 +33,7 @@ export type IndicatorSelectors = Selectors<'indicator'>;
 /**
  * Displays an activity indicator at the corner of an element.
  * 
- * @see {@link https://fluid.infinityfx.dev/docs/components/halo}
+ * @see {@link https://fluid.infinityfx.dev/docs/components/indicator}
  */
 export default function Indicator({ cc = {}, content, color, outline, ref, ...props }:
     {

@@ -7,7 +7,8 @@ import { Selectors } from '../../../src/types';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
 import { Icon } from '../../core/icons';
-import { Halo, Spinner } from '../feedback';
+import Spinner from '../feedback/spinner';
+import Interactable from '../feedback/interactable';
 
 const styles = createStyles('drop-zone', {
     '.zone': {
@@ -18,8 +19,7 @@ const styles = createStyles('drop-zone', {
         border: 'dashed 1px var(--f-clr-fg-200)',
         borderRadius: 'var(--f-radius-med)',
         transition: 'background-color .25s, border-color .25s, color .25s',
-        userSelect: 'none',
-        WebkitTapHighlightColor: 'transparent'
+        userSelect: 'none'
     },
 
     '.zone[aria-disabled="false"]': {
@@ -179,12 +179,13 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
     const isDisabled = props.disabled || props.readOnly || loading;
     const hasContent = file || (previewImages && fallbackPreviewImage);
 
-    return <Halo
+    return <Interactable
         {...rest}
-        color="var(--f-clr-grey-300)"
-        disabled={!!file || isDisabled}
-        tabIndex={0}
+        as="div"
         role="button"
+        tabIndex={0}
+        highlightColor="var(--f-clr-grey-300)"
+        disabled={!!file || isDisabled}
         aria-disabled={!!file || isDisabled}
         className={classes(
             style.zone,
@@ -287,5 +288,5 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
                 props.onChange?.(e);
                 setFile(e.target.files?.[0] || null);
             }} />
-    </Halo>;
+    </Interactable>;
 }

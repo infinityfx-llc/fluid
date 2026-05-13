@@ -6,9 +6,9 @@ import Button from "./button";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
-import Halo from "../feedback/halo";
 import { Animate, LayoutGroup } from "@infinityfx/lively";
 import Toggle from "./toggle";
+import Interactable from "../feedback/interactable";
 
 // multiple/range select
 
@@ -104,14 +104,11 @@ const styles = createStyles('calendar', {
 
     '.date': {
         position: 'relative',
-        border: 'none',
-        outline: 'none',
         background: 'transparent',
         fontSize: '1em',
         borderRadius: 'var(--f-radius-sml)',
         color: 'var(--f-clr-grey-300)',
-        transition: 'background-color .25s, color .25s',
-        WebkitTapHighlightColor: 'transparent'
+        transition: 'background-color .25s, color .25s'
     },
 
     '.years.grid': {
@@ -303,11 +300,9 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                     easing: 'ease-out',
                                     delay: .35 + Math.abs(3 - Math.floor(i / 3)) * .05
                                 }}>
-                                <Halo
-                                    as="button"
-                                    color="var(--f-clr-primary-300)"
+                                <Interactable
+                                    highlightColor="var(--f-clr-primary-300)"
                                     disabled={yearDisabled}
-                                    type="button"
                                     aria-label={label}
                                     className={classes(
                                         style.date,
@@ -316,7 +311,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                     )}
                                     onClick={() => update(year)}>
                                     {label}
-                                </Halo>
+                                </Interactable>
                             </Animate>;
                         })}
                     </div>
@@ -368,14 +363,12 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                         (maxDate ? maxDate < day : false);
 
                                 return <div key={ci} role="gridcell">
-                                    <Halo
-                                        as="button"
-                                        color="var(--f-clr-primary-300)"
+                                    <Interactable
+                                        highlightColor="var(--f-clr-primary-300)"
                                         disabled={dayDisabled}
                                         ref={el => {
                                             dates.current[index] = el;
                                         }}
-                                        type="button"
                                         aria-label={day.toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' })}
                                         className={classes(
                                             style.date,
@@ -416,7 +409,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                             }
                                         }}>
                                         {day.getDate()}
-                                    </Halo>
+                                    </Interactable>
                                 </div>;
                             })}
                         </div>

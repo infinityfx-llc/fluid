@@ -1,8 +1,8 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
-import Halo from "../feedback/halo";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { createStyles } from "../../core/style";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('radio', {
     '.wrapper': {
@@ -105,7 +105,7 @@ const styles = createStyles('radio', {
         backgroundColor: 'var(--f-clr-error-200)'
     },
 
-    '.wrapper .halo': {
+    '.wrapper .highlight': {
         borderRadius: '999px',
         inset: '-.5em'
     }
@@ -130,10 +130,11 @@ export default function Radio({ cc = {}, error, size = 'med', color, ...props }:
 
     const [split, rest] = useInputProps(props);
 
-    return <Halo
+    return <Interactable
         {...rest}
-        hover={false}
-        cc={{ ...cc, halo: style.halo }}
+        as="div"
+        noHover
+        cc={{ ...cc, highlight: style.highlight }}
         className={classes(
             style.wrapper,
             style[`s__${size}`],
@@ -145,5 +146,5 @@ export default function Radio({ cc = {}, error, size = 'med', color, ...props }:
         <div className={style.radio} style={{ '--color': color } as any}>
             <div className={style.selection} />
         </div>
-    </Halo>;
+    </Interactable>;
 }

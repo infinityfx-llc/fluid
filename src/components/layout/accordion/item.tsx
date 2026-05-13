@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useId, useRef } from "react";
-import Halo from "../../feedback/halo";
 import Collapsible from "../collapsible";
 import { Animate } from "@infinityfx/lively";
 import { Selectors } from "../../../../src/types";
@@ -10,6 +9,7 @@ import { classes } from "../../../../src/utils";
 import { createStyles } from "../../../core/style";
 import { combineClasses } from "../../../core/utils";
 import { Icon } from "../../../core/icons";
+import Interactable from "../../feedback/interactable";
 
 const styles = createStyles('accordion.item', {
     '.button': {
@@ -19,12 +19,8 @@ const styles = createStyles('accordion.item', {
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--f-spacing-xsm)',
-        outline: 'none',
-        border: 'none',
-        background: 'none',
         color: 'var(--f-clr-text-100)',
-        transition: 'background-color .5s',
-        WebkitTapHighlightColor: 'transparent'
+        transition: 'background-color .5s'
     },
 
     '.v__minimal[aria-expanded="true"]': {
@@ -84,11 +80,9 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
     }, []);
 
     return <>
-        <Halo
-            as="button"
+        <Interactable
             disabled={disabled}
-            color="var(--f-clr-primary-400)"
-            type="button"
+            highlightColor="var(--f-clr-primary-400)"
             aria-expanded={isOpen}
             aria-controls={id}
             className={classes(
@@ -111,7 +105,7 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
                     </div>
                 </Animate>
             </div>
-        </Halo>
+        </Interactable>
 
         <Collapsible shown={isOpen} id={id}>
             <div {...props} className={classes(style.content, props.className)}>

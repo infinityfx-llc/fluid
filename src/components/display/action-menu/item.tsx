@@ -1,19 +1,16 @@
 'use client';
 
-import Halo from '../../feedback/halo';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses, combineRefs, filterFocusable } from '../../../core/utils';
 import { usePopover } from '../../layout/popover/root';
 import { useRef } from 'react';
+import Interactable from '../../feedback/interactable';
 
 const styles = createStyles('action-menu.item', {
     '.item': {
         position: 'relative',
         padding: '.5rem .8rem',
-        border: 'none',
-        background: 'none',
-        outline: 'none',
         width: '100%',
         borderRadius: 'var(--f-radius-sml)',
         userSelect: 'none',
@@ -22,8 +19,7 @@ const styles = createStyles('action-menu.item', {
         gap: 'var(--f-spacing-xsm)',
         color: 'var(--color, var(--f-clr-text-100))',
         lineHeight: 1.25,
-        WebkitTapHighlightColor: 'transparent',
-        ['--halo-color' as any]: 'color-mix(in srgb, var(--color, var(--f-clr-primary-100)) 50%, var(--f-clr-text-200))'
+        ['--highlight-color' as any]: 'color-mix(in srgb, var(--color, var(--f-clr-primary-100)) 50%, var(--f-clr-text-200))'
     },
 
     '.v__inverted': {
@@ -59,13 +55,11 @@ export default function Item({ children, cc = {}, keepOpen, className, color, ..
     const ref = useRef<HTMLButtonElement>(null);
     const { variant, toggle } = usePopover();
 
-    return <Halo
+    return <Interactable
         {...props}
-        as="button"
         ref={combineRefs(props.ref, ref)}
-        color="var(--halo-color)"
-        type="button"
         role="menuitem"
+        highlightColor="var(--highlight-color)"
         style={{
             ...props.style,
             '--color': color
@@ -109,7 +103,7 @@ export default function Item({ children, cc = {}, keepOpen, className, color, ..
             }
         }}>
         {children}
-    </Halo>;
+    </Interactable>;
 }
 
 Item.displayName = 'ActionMenu.Item';

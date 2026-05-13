@@ -4,9 +4,9 @@ import { FluidInputvalue, FluidSize, Selectors } from "../../../src/types";
 import { useId, useState } from "react";
 import { Animate } from '@infinityfx/lively';
 import { classes, combineClasses } from "../../../src/core/utils";
-import Halo from "../feedback/halo";
 import { createStyles } from "../../core/style";
 import Tooltip from "../display/tooltip";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('segmented', {
     '.segmented': {
@@ -50,8 +50,6 @@ const styles = createStyles('segmented', {
 
     '.option': {
         position: 'relative',
-        border: 'none',
-        outline: 'none',
         backgroundColor: 'transparent',
         padding: '.675em .8em',
         fontWeight: 700,
@@ -59,7 +57,7 @@ const styles = createStyles('segmented', {
         borderRadius: 'var(--f-radius-sml)',
         flexGrow: 1,
         transition: 'color .4s',
-        WebkitTapHighlightColor: 'transparent'
+        isolation: 'unset !important' as any
     },
 
     '.segmented.round .option': {
@@ -111,21 +109,17 @@ const styles = createStyles('segmented', {
         border: 'solid 1px var(--f-clr-error-100)'
     },
 
-    '.segmented .halo': {
+    '.segmented .highlight': {
         zIndex: '0'
     },
 
-    '.option[aria-checked="true"] .halo': {
+    '.option[aria-checked="true"] .highlight': {
         inset: '-.3em',
         borderRadius: 'calc(var(--f-radius-sml) + .3em)'
     },
 
     '.segmented[data-error="true"] .ripple': {
-        backgroundColor: 'var(--f-clr-error-300)'
-    },
-
-    '.segmented .container': {
-        isolation: 'unset'
+        backgroundColor: 'var(--f-clr-error-200)'
     }
 });
 
@@ -191,13 +185,11 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
                 key={i}
                 content={tooltip}
                 visibility={tooltip ? 'interact' : 'never'}>
-                <Halo
-                    as="button"
-                    hover={false}
+                <Interactable
+                    noHover
+                    role="radio"
                     disabled={disabled}
                     className={style.option}
-                    type="button"
-                    role="radio"
                     aria-checked={state === option}
                     onClick={() => {
                         setState?.(option);
@@ -205,9 +197,8 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
                     }}
                     cc={{
                         ...cc,
-                        container: style.container,
-                        halo: style.halo,
-                        ring: style.ring
+                        highlight: style.highlight,
+                        ripple: style.ripple
                     }}>
                     <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
                     <span className={style.content}>{label}</span>
@@ -220,7 +211,7 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
                         }}>
                         <div className={style.selection} />
                     </Animate>}
-                </Halo>
+                </Interactable>
             </Tooltip>;
         })}
     </div>

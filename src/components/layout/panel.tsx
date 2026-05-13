@@ -4,7 +4,7 @@ import { Selectors } from '../../../src/types';
 import { useState, useRef, Children, isValidElement, useEffect, cloneElement } from 'react';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
-import { Halo } from '../feedback';
+import Interactable from '../feedback/interactable';
 
 const styles = createStyles('panel', {
     '.panel': {
@@ -80,8 +80,7 @@ const styles = createStyles('panel', {
         backgroundColor: 'var(--f-clr-fg-200)',
         display: 'grid',
         gap: '1px',
-        zIndex: 1,
-        outline: 'none'
+        zIndex: 1
     },
 
     '.d__horizontal.v__minimal > .divider .handle': {
@@ -112,10 +111,11 @@ const styles = createStyles('panel', {
         width: '2px',
         height: '2px'
     },
-    '.divider .halo': {
-        inset: '-.5em'
+    '.divider .highlight': {
+        inset: '-.5em',
+        borderRadius: 'var(--f-radius-sml)'
     },
-    '.v__minimal .divider .halo': {
+    '.v__minimal .divider .highlight': {
         borderRadius: '99px'
     }
 });
@@ -213,12 +213,13 @@ export default function Panel({ cc = {}, children, variant = 'default', directio
                     onMouseDown={() => dragging.current = i}>
                     <div className={style.focus} />
 
-                    {handles && <Halo
-                        hover={false}
-                        color="var(--f-clr-primary-400)"
+                    {handles && <Interactable
+                        as="div"
+                        noHover
+                        highlightColor="var(--f-clr-primary-400)"
                         cc={{
                             ...cc,
-                            halo: style.halo
+                            highlight: style.highlight
                         }}
                         tabIndex={0}
                         className={style.handle}
@@ -231,7 +232,7 @@ export default function Panel({ cc = {}, children, variant = 'default', directio
                             }
                         }}>
                         {variant === 'default' && [0, 1, 2, 3, 4, 5].map(i => <div key={i} className={style.dot} />)}
-                    </Halo>}
+                    </Interactable>}
                 </div>}
 
                 {cloneElement(child as React.ReactElement<any>, {

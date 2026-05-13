@@ -2,19 +2,16 @@
 
 import { Selectors } from '../../../../src/types';
 import { classes, combineClasses } from '../../../../src/core/utils';
-import Halo from '../../feedback/halo';
 import Indicator from '../../feedback/indicator';
 import { createStyles } from '../../../core/style';
 import { useSidebar } from './root';
 import { Icon } from '../../../core/icons';
+import Interactable from '../../feedback/interactable';
 
 const styles = createStyles('sidebar.user', {
     '.user': {
         position: 'relative',
-        outline: 'none',
-        border: 'none',
         borderRadius: 'var(--f-radius-sml)',
-        background: 'none',
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--f-spacing-sml)',
@@ -108,12 +105,11 @@ export default function User({ children, cc = {}, name, status, indicator = fals
     const style = combineClasses(styles, cc);
     const { collapsed } = useSidebar();
 
-    return <Halo
+    return <Interactable
         {...props}
-        as="button"
         disabled={props.disabled}
-        color="var(--f-clr-primary-400)"
-        type="button" className={classes(
+        highlightColor="var(--f-clr-primary-400)"
+        className={classes(
             style.user,
             round && style.round,
             collapsed && style.collapsed,
@@ -134,7 +130,7 @@ export default function User({ children, cc = {}, name, status, indicator = fals
         {icon && <div className={style.icon}>
             {icon}
         </div>}
-    </Halo>;
+    </Interactable>;
 }
 
 User.displayName = 'Sidebar.User';
