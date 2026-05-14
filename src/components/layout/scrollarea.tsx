@@ -10,7 +10,38 @@ const speed = 100;
 const styles = createStyles('scrollarea', {
     '.area': {
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        ['--overlay-rotation' as any]: '90deg'
+    },
+
+    '.area[data-horizontal="false"]': {
+        ['--overlay-rotation' as any]: '0deg'
+    },
+
+    '.start, .end': {
+        position: 'absolute',
+        inset: 0,
+        transition: 'opacity .3s'
+    },
+
+    '.area[data-scrollable="false"] > .start, .area[data-scrollable="false"] > .end': {
+        opacity: 0
+    },
+
+    '.start': {
+        background: 'linear-gradient(var(--overlay-rotation), transparent calc(100% - var(--f-spacing-med)), black)'
+    },
+
+    '.end': {
+        background: 'linear-gradient(var(--overlay-rotation), black, transparent var(--f-spacing-med))'
+    },
+
+    '.area[data-value="0"] > .start': {
+        opacity: 0
+    },
+
+    '.area[data-value="100"] > .end': {
+        opacity: 0
     },
 
     '.track': {
@@ -86,14 +117,14 @@ const styles = createStyles('scrollarea', {
     }
 });
 
-export type ScrollareaSelectors = Selectors<'track' | 'v__hover' | 'v__permanent' | 'handle'>;
+export type ScrollareaSelectors = Selectors<'track' | 'start' | 'end' | 'v__hover' | 'v__permanent' | 'handle'>;
 
 /**
  * A scrollable container.
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/scrollarea}
  */
-export default function Scrollarea({ children, cc = {}, horizontal = false, variant = 'hover', behavior = 'normal', disabled = false, ref, ...props }:
+export default function Scrollarea({ children, cc = {}, horizontal = false, variant = 'hover', behavior = 'normal', fadeEdges = true, disabled = false, ref, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: ScrollareaSelectors;
@@ -111,6 +142,7 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
          * @default "normal"
          */
         behavior?: 'normal' | 'shift';
+        fadeEdges?: boolean;
         disabled?: boolean;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
@@ -180,6 +212,7 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
         const offset = updated / max * (el[wKey] - handle.current[wKey]);
         handle.current.style.translate = horizontal ? `${offset}px 0px` : `0px ${offset}px`;
         handle.current.setAttribute('aria-valuenow', (updated / max * 100).toString());
+        el.setAttribute('data-value', (updated / max * 100).toString());
         track.current.style.translate = `${horizontal ? updated : el.scrollLeft}px ${horizontal ? el.scrollTop : updated}px`;
     }
 
@@ -190,9 +223,9 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
 
         track.current.style.translate = '0px 0px';
         handle.current.style.translate = '0px 0px';
-        
+
         const size = horizontal ? el.offsetWidth / el.scrollWidth : el.offsetHeight / el.scrollHeight;
-        handle.current.style[horizontal ? 'width' : 'height'] = size * 100 + '%';
+        handle.current.style[horizontal ? 'width' : 'height'] = `min(max(20px, ${size * 100}%), 100%)`;
         handle.current.style[horizontal ? 'height' : 'width'] = '';
         setScrollable(size < 1); // only show the scrollbar when the content overflows the container (there is something to scroll)
 
@@ -240,6 +273,9 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
         data-horizontal={horizontal}
         data-scrollable={scrollable}
         data-disabled={disabled}>
+        {fadeEdges && <div className={style.start} />}
+        {fadeEdges && <div className={style.end} />}
+
         {children}
 
         <div ref={track} className={style.track}>
