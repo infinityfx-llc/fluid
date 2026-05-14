@@ -25,15 +25,15 @@ const styles = createStyles('drawer', {
     },
 
     '.drawer[data-position="right"]': {
-        borderTopLeftRadius: 'var(--f-radius-med)',
-        borderBottomLeftRadius: 'var(--f-radius-med)',
+        borderTopLeftRadius: 'var(--f-radius-lrg)',
+        borderBottomLeftRadius: 'var(--f-radius-lrg)',
         borderRight: 'none',
         right: 0
     },
 
     '.drawer[data-position="left"]': {
-        borderTopRightRadius: 'var(--f-radius-med)',
-        borderBottomRightRadius: 'var(--f-radius-med)',
+        borderTopRightRadius: 'var(--f-radius-lrg)',
+        borderBottomRightRadius: 'var(--f-radius-lrg)',
         borderLeft: 'none',
         left: 0
     },

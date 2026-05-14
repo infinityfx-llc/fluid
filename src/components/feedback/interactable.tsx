@@ -137,9 +137,9 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
             if (!highlight.current) return;
 
             setActive();
-            opacity.set(1);
+            opacity.set(1, { duration: 0 });
             ripple(++mutableRippleCount.current);
-            
+
             const { x, y, width, height } = highlight.current.getBoundingClientRect();
 
             // skip highlight fade-in animation for touch based devices
@@ -153,7 +153,7 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
             const dx = (clamp((e.clientX - x) / width) - .5) * (width / max);
             const dy = (clamp((e.clientY - y) / height) - .5) * (height / max);
 
-            translate.set(`${e.clientX ? dx * 100 : 0}% ${e.clientY ? dy * 100 : 0}%`);
+            translate.set(`${e.clientX ? dx * 100 : 0}% ${e.clientY ? dy * 100 : 0}%`, { duration: 0 });
 
             removeActive();
         }, { signal });

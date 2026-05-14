@@ -16,7 +16,7 @@ import { Icon } from '../../core/icons';
 const styles = createStyles('modal', (fluid) => ({
     '.modal': {
         background: 'var(--f-clr-bg-100)',
-        borderRadius: 'var(--f-radius-med)',
+        borderRadius: 'var(--f-radius-lrg)',
         minWidth: 'min(100vw, 16em)',
         border: 'solid 1px var(--f-clr-fg-200)',
         margin: 'var(--f-spacing-lrg)',
@@ -84,7 +84,6 @@ const styles = createStyles('modal', (fluid) => ({
             width: '100vw',
             alignSelf: 'flex-end',
             margin: 0,
-            borderRadius: 'var(--f-radius-lrg)',
             borderBottomRightRadius: 0,
             borderBottomLeftRadius: 0,
             paddingBottom: '32px',
@@ -153,7 +152,7 @@ export default function Modal({ children, cc = {}, show, onClose, title, footer,
             const { clientY } = e.touches[0];
             const dy = Math.max(clientY - touch.current.clientY, -32);
 
-            offset.set(dy);
+            offset.set(dy, { duration: 0 });
         }
 
         window.addEventListener('touchmove', update);
@@ -169,7 +168,7 @@ export default function Modal({ children, cc = {}, show, onClose, title, footer,
         <Animate
             correction="none"
             key="modal"
-            onAnimationEnd={() => offset.set(0)}
+            onAnimationEnd={() => offset.set(0, { duration: 0 })}
             animate={{
                 translate
             }}
