@@ -1,47 +1,57 @@
 'use client';
 
-import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
+import { classes, combineClasses } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
 import { useRef, useState, useId, useLayoutEffect } from "react";
 import { createStyles } from "../../core/style";
 
 const speed = 100;
 
+// TODO: keyboard controls
+
 const styles = createStyles('scrollarea', {
+    '@property --start-color': {
+        syntax: "'<color>'",
+        inherits: false,
+        initialValue: 'transparent'
+    } as any,
+
+    '@property --end-color': {
+        syntax: "'<color>'",
+        inherits: false,
+        initialValue: 'transparent'
+    } as any,
+
     '.area': {
         position: 'relative',
+        ['--rotation' as any]: '0deg',
+        ['--start-color' as any]: 'transparent',
+        ['--end-color' as any]: 'transparent'
+    },
+
+    '.d__horizontal': {
+        ['--rotation' as any]: '90deg'
+    },
+
+    '.content': {
+        position: 'relative',
         overflow: 'hidden',
-        ['--overlay-rotation' as any]: '90deg'
+        width: 'inherit',
+        height: 'inherit',
+        maskImage: 'linear-gradient(var(--rotation), var(--end-color), black var(--f-spacing-med), black calc(100% - var(--f-spacing-med)), var(--start-color))',
+        transition: '--start-color .35s, --end-color .35s'
     },
 
-    '.area[data-horizontal="false"]': {
-        ['--overlay-rotation' as any]: '0deg'
+    '.area[data-scrollable="false"] .content, .area[data-fade-edges="false"] .content': {
+        maskImage: 'none'
     },
 
-    '.start, .end': {
-        position: 'absolute',
-        inset: 0,
-        transition: 'opacity .3s'
+    '.content[data-value="0"]': {
+        ['--start-color' as any]: 'black'
     },
 
-    '.area[data-scrollable="false"] > .start, .area[data-scrollable="false"] > .end': {
-        opacity: 0
-    },
-
-    '.start': {
-        background: 'linear-gradient(var(--overlay-rotation), transparent calc(100% - var(--f-spacing-med)), black)'
-    },
-
-    '.end': {
-        background: 'linear-gradient(var(--overlay-rotation), black, transparent var(--f-spacing-med))'
-    },
-
-    '.area[data-value="0"] > .start': {
-        opacity: 0
-    },
-
-    '.area[data-value="100"] > .end': {
-        opacity: 0
+    '.content[data-value="100"]': {
+        ['--end-color' as any]: 'black'
     },
 
     '.track': {
@@ -72,33 +82,33 @@ const styles = createStyles('scrollarea', {
         opacity: .8
     },
 
-    '.area[data-horizontal="false"] > .track': {
+    '.d__vertical > .track': {
         top: 0,
         right: 0,
         height: '100%'
     },
 
-    '.area[data-horizontal="true"] > .track': {
+    '.d__horizontal > .track': {
         bottom: 0,
         left: 0,
         width: '100%'
     },
 
-    '.v__permanent[data-horizontal="false"] > .track': {
+    '.v__permanent.d__vertical > .track': {
         backgroundColor: 'var(--f-clr-fg-100)',
         paddingInline: '2px'
     },
 
-    '.v__permanent[data-horizontal="true"] > .track': {
+    '.v__permanent.d__horizontal > .track': {
         backgroundColor: 'var(--f-clr-fg-100)',
         paddingBlock: '2px'
     },
 
-    '.v__permanent[data-horizontal="false"]': {
+    '.v__permanent.d__vertical': {
         paddingRight: 'calc(.5rem + 4px)'
     },
 
-    '.v__permanent[data-horizontal="true"]': {
+    '.v__permanent.d__horizontal': {
         paddingBottom: 'calc(.5rem + 4px)'
     },
 
@@ -111,27 +121,27 @@ const styles = createStyles('scrollarea', {
             display: 'none'
         },
 
-        '.area': {
+        '.content': {
             overflow: 'auto'
         }
     }
 });
 
-export type ScrollareaSelectors = Selectors<'track' | 'start' | 'end' | 'v__hover' | 'v__permanent' | 'handle'>;
+export type ScrollareaSelectors = Selectors<'d__vertical' | 'd__horizontal' | 'v__hover' | 'v__permanent' | 'track' | 'content' | 'handle'>;
 
 /**
  * A scrollable container.
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/scrollarea}
  */
-export default function Scrollarea({ children, cc = {}, horizontal = false, variant = 'hover', behavior = 'normal', fadeEdges = true, disabled = false, ref, ...props }:
+export default function Scrollarea({ children, cc = {}, direction = 'vertical', variant = 'hover', behavior = 'normal', fadeEdges = false, disabled = false, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: ScrollareaSelectors;
         /**
          * @default false
          */
-        horizontal?: boolean;
+        direction?: 'vertical' | 'horizontal';
         /**
          * @default "hover"
          */
@@ -142,16 +152,19 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
          * @default "normal"
          */
         behavior?: 'normal' | 'shift';
-        fadeEdges?: boolean;
+        /**
+         * @default false
+         */
+        fadeEdges?: boolean; // TODO: paramterize width
         disabled?: boolean;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
+    const horizontal = direction === 'horizontal';
     const scrolled = useRef(false);
     const lastWheel = useRef(0);
 
     const area = useRef<HTMLDivElement>(null);
-    const track = useRef<HTMLDivElement>(null);
     const handle = useRef<HTMLDivElement>(null);
     const dragging = useRef<{ x: number; y: number; }>(null);
     const [scrollable, setScrollable] = useState(false);
@@ -197,7 +210,7 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
     // update the scroll position and scrollbar handle position
     function scroll(value: number) {
         const el = area.current;
-        if (!el || !handle.current || !track.current || matchMedia('(pointer: coarse)').matches || disabled) return; // use default behaviour for touch based devices.
+        if (!el || !handle.current || matchMedia('(pointer: coarse)').matches || disabled) return; // use default behaviour for touch based devices.
 
         const wKey = horizontal ? 'offsetWidth' : 'offsetHeight';
         const sKey = horizontal ? 'scrollLeft' : 'scrollTop';
@@ -213,26 +226,24 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
         handle.current.style.translate = horizontal ? `${offset}px 0px` : `0px ${offset}px`;
         handle.current.setAttribute('aria-valuenow', (updated / max * 100).toString());
         el.setAttribute('data-value', (updated / max * 100).toString());
-        track.current.style.translate = `${horizontal ? updated : el.scrollLeft}px ${horizontal ? el.scrollTop : updated}px`;
-    }
-
-    // update the scrollbar size based on how much the container can be scrolled
-    function resize() {
-        const el = area.current;
-        if (!el || !handle.current || !track.current) return;
-
-        track.current.style.translate = '0px 0px';
-        handle.current.style.translate = '0px 0px';
-
-        const size = horizontal ? el.offsetWidth / el.scrollWidth : el.offsetHeight / el.scrollHeight;
-        handle.current.style[horizontal ? 'width' : 'height'] = `min(max(20px, ${size * 100}%), 100%)`;
-        handle.current.style[horizontal ? 'height' : 'width'] = '';
-        setScrollable(size < 1); // only show the scrollbar when the content overflows the container (there is something to scroll)
-
-        scroll(0);
     }
 
     useLayoutEffect(() => {
+        // update the scrollbar size based on how much the container can be scrolled
+        function resize() {
+            const el = area.current;
+            if (!el || !handle.current) return;
+
+            handle.current.style.translate = '0px 0px';
+
+            const size = horizontal ? el.offsetWidth / el.scrollWidth : el.offsetHeight / el.scrollHeight;
+            handle.current.style[horizontal ? 'width' : 'height'] = `min(max(20px, ${size * 100}%), 100%)`;
+            handle.current.style[horizontal ? 'height' : 'width'] = '';
+            setScrollable(size < 1); // only show the scrollbar when the content overflows the container (there is something to scroll)
+
+            scroll(0);
+        }
+
         resize();
 
         const observer = new ResizeObserver(resize), areaRef = area.current;
@@ -257,29 +268,36 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
 
     return <div
         {...props}
-        ref={combineRefs(ref, area)}
         id={id}
         className={classes(
             style.area,
             style[`v__${variant}`],
+            style[`d__${direction}`],
             props.className
         )}
-        onScroll={e => {
-            props.onScroll?.(e);
-            if (scrolled.current) return scrolled.current = false;
-
-            scroll(0);
-        }}
-        data-horizontal={horizontal}
         data-scrollable={scrollable}
+        data-fade-edges={fadeEdges}
         data-disabled={disabled}>
-        {fadeEdges && <div className={style.start} />}
-        {fadeEdges && <div className={style.end} />}
+        <div
+            ref={area}
+            className={style.content}
+            onScroll={e => {
+                props.onScroll?.(e);
+                if (scrolled.current) return scrolled.current = false;
 
-        {children}
+                scroll(0);
+            }}>
+            {children}
+        </div>
 
-        <div ref={track} className={style.track}>
-            <div ref={handle} className={style.handle} onMouseDown={e => drag(e.nativeEvent)} role="scrollbar" aria-controls={id} />
+        <div className={style.track}>
+            <div
+                ref={handle}
+                role="scrollbar"
+                className={style.handle}
+                onMouseDown={e => drag(e.nativeEvent)}
+                aria-orientation={direction}
+                aria-controls={id} />
         </div>
     </div>;
 }
