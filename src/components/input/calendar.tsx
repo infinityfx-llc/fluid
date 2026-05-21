@@ -298,7 +298,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                     opacity: [0, 1],
                                     duration: .25,
                                     easing: 'ease-out',
-                                    delay: .35 + Math.abs(3 - Math.floor(i / 3)) * .05
+                                    delay: .25 + Math.abs(3 - Math.floor(i / 3)) * .05
                                 }}>
                                 <Interactable
                                     highlightColor="var(--f-clr-primary-300)"

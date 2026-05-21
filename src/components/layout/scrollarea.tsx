@@ -2,12 +2,33 @@
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { useRef, useState, useId, useLayoutEffect } from "react";
+import { useRef, useState, useId, useLayoutEffect, useCallback } from "react";
 import { createStyles } from "../../core/style";
 
 const speed = 100;
 
 // TODO: keyboard controls
+
+function getSizeWithoutPadding(element: HTMLElement) {
+    const { padding } = getComputedStyle(element);
+    const values = padding.split(' ').map(parseFloat);
+
+    switch (values.length) {
+        case 1:
+            values.push(...new Array(3).fill(values[0]));
+            break;
+        case 2:
+            values.push(...values);
+            break;
+        case 3:
+            values.push(0);
+    }
+
+    return {
+        width: element.offsetWidth - values[1] - values[3],
+        height: element.offsetHeight - values[0] - values[2]
+    };
+}
 
 const styles = createStyles('scrollarea', {
     '.area': {
@@ -23,9 +44,8 @@ const styles = createStyles('scrollarea', {
     },
 
     '.v__permanent > .track': {
-        boxSizing: 'content-box',
         backgroundColor: 'var(--f-clr-fg-100)',
-        padding: '2px' // todo overflows
+        padding: '2px'
     },
 
     '.v__hover > .track': {
@@ -163,7 +183,7 @@ export default function Scrollarea({ children, cc = {}, direction = 'vertical', 
     }
 
     // update the scroll position and scrollbar handle position
-    function scroll(value: number) {
+    const scroll = useCallback((value: number) => {
         const el = area.current;
         if (!el || !handle.current || !track.current || matchMedia('(pointer: coarse)').matches || disabled) return; // use default behaviour for touch based devices.
 
@@ -177,11 +197,13 @@ export default function Scrollarea({ children, cc = {}, direction = 'vertical', 
             scrolled.current = true;
         }
 
-        const offset = updated / max * (el[wKey] - handle.current[wKey]);
+        const size = getSizeWithoutPadding(track.current)[horizontal ? 'width' : 'height']; // TODO: compute only after resize
+        const offset = updated / max * (size - handle.current[wKey]);
+
         handle.current.style.translate = horizontal ? `${offset}px 0px` : `0px ${offset}px`;
         handle.current.setAttribute('aria-valuenow', (updated / max * 100).toString());
         track.current.style.translate = `${horizontal ? updated : el.scrollLeft}px ${horizontal ? el.scrollTop : updated}px`;
-    }
+    }, [disabled, horizontal]);
 
     useLayoutEffect(() => {
         // update the scrollbar size based on how much the container can be scrolled
@@ -218,7 +240,7 @@ export default function Scrollarea({ children, cc = {}, direction = 'vertical', 
             window.removeEventListener('mouseup', drag);
             areaRef.removeEventListener('wheel', wheel);
         }
-    }, [disabled, horizontal, behavior]);
+    }, [scroll, horizontal, behavior]);
 
     return <div
         {...props}
