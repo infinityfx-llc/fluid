@@ -105,7 +105,7 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
         style[`v__${variant}`],
         props.className
     )}>
-        <Scrollarea horizontal>
+        <Scrollarea direction="horizontal">
             <div className={style.tabs} role="tablist">
                 {options.map(({ label, value, disabled, panelId }, i) => {
 

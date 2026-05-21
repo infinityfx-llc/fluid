@@ -118,7 +118,7 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
                         {i + 1} <br />
                     </Fragment>)}
                 </div>}
-                <Scrollarea horizontal behavior="shift">
+                <Scrollarea direction="horizontal" behavior="shift">
                     <pre
                         id={id}
                         className={style.content}

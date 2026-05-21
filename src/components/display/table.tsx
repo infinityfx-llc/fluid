@@ -148,7 +148,7 @@ export default function Table<T extends { [key: string]: string | number | Date;
     return <Scrollarea
         {...props}
         role="grid"
-        horizontal
+        direction="horizontal"
         behavior="shift"
         className={classes(style.table, props.className)}
         data-fb>
