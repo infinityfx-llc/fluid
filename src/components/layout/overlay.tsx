@@ -12,12 +12,7 @@ const OverlayData = {
     count: 0
 };
 
-const toggleScroll = (value: boolean) => {
-    const isScrollable = document.documentElement.scrollHeight > document.documentElement.clientHeight; // also do for hor scrolling?
-
-    document.documentElement.style.overflowY = value ? '' : 'hidden';
-    document.body.style.overflowY = value || !isScrollable ? '' : 'scroll';
-}
+const toggleScroll = (value: boolean) => document.documentElement.style.overflowY = value ? '' : 'hidden';
 
 const styles = createStyles('overlay', {
     '.wrapper': {

@@ -180,7 +180,7 @@ export default function Content({
                 ref: combineRefs(el => {
                     if (!child.props.disabled) focus.current.list[focusIndex] = el;
                 }, child.props.ref),
-                onFocus: (e: React.FocusEvent<any>) => {
+                onFocus: (e: React.FocusEvent<any>) => {  // manage focus control in deticated focus context wrapper component? (re-use for others)
                     focus.current.index = focusIndex;
                     props.onFocus?.(e);
                 },

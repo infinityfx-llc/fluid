@@ -6,7 +6,7 @@ import useMediaQuery from "../../../hooks/use-media-query";
 
 type PopoverContext = {
     id: string;
-    variant: 'default' | 'inverted';
+    variant: 'default' | 'inverted'; // also store round prop and merge into "props" object entry
     mounted: boolean;
     isModal: boolean;
     trigger: React.RefObject<HTMLElement | null>;
