@@ -261,6 +261,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
         <div className={style.content}>
             <LayoutGroup>
                 {years && <Animate
+                    key="years"
                     correction="none"
                     animate={{
                         opacity: [0, 1],

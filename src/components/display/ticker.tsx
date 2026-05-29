@@ -6,8 +6,6 @@ import { useState, useRef, useEffect } from 'react';
 import { createStyles } from '../../core/style';
 import { Animate, LayoutGroup } from '@infinityfx/lively';
 
-// TODO: take into account: default adapative, ignoreDeform
-
 const styles = createStyles('ticker', {
     '.ticker': {
         display: 'flex',
@@ -56,6 +54,7 @@ export default function Ticker({ children, cc = {}, align = 'left', selective, d
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
 
+    const mutableTriggerCount = useRef(0);
     const [triggerCount, trigger] = useState(0);
     const prev = useRef(children.toString());
     const mutable = useRef<{
@@ -130,11 +129,11 @@ export default function Ticker({ children, cc = {}, align = 'left', selective, d
         // after animation ends remove previous characters that are out of view
         setTimeout(trim, (duration + (updated.length - 1) * stagger) * 1000);
 
-        trigger(triggerCount + 1);
-    }, [children, triggerCount]); // BREAKS: triggerCount
+        trigger(++mutableTriggerCount.current);
+    }, [children]);
 
     return <div {...props} className={classes(style.ticker, props.className)}>
-        <LayoutGroup skipInitialMount>
+        <LayoutGroup skipInitialMount ignoreWarnings>
             {state.map((column, i) => {
                 const key = (align === 'right' ? state.length - 1 - i : i).toString();
 

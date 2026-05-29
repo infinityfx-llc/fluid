@@ -127,6 +127,7 @@ export default function Group<A extends AnchorLike<any>>({ children, cc = {}, la
 
             <LayoutGroup>
                 {(selection ? linkId === selection : active) && <Animate
+                    key="selection"
                     morph={`fluid-navigation-menu-selection-${id}`}
                     transition={{
                         cache: ['x', 'sx'],
@@ -146,6 +147,7 @@ export default function Group<A extends AnchorLike<any>>({ children, cc = {}, la
 
         <LayoutGroup>
             {hasLinks && linkId === selection && <Animate
+                key="menu"
                 morph={`fluid-navigation-menu-group-${id}`}
                 transition={{
                     cache: ['x', 'y', 'sx', 'sy'],

@@ -24,7 +24,7 @@ export default function Content({ children, ref, ...props }: React.HTMLAttribute
         {children}
     </Modal>;
 
-    return createPortal(<LayoutGroup>
+    return createPortal(<LayoutGroup ignoreWarnings>
         <div
             {...props}
             ref={combineRefs(content, ref)}

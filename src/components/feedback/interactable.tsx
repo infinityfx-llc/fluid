@@ -167,6 +167,7 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
         focus(':focus');
 
         return () => {
+            if (highlight.current) highlight.current.classList.remove(style.active as any);
             clearTimeout(timeout.current);
             ctrl.abort();
         }
