@@ -10,10 +10,13 @@ import { createStyles } from "../../core/style";
 const styles = createStyles('interactable', {
     '.interactable': {
         isolation: 'isolate',
+        WebkitTapHighlightColor: 'transparent'
+    },
+
+    ':where(.interactable)': {
         border: 'none',
         outline: 'none',
-        background: 'none',
-        WebkitTapHighlightColor: 'transparent'
+        background: 'none'
     },
 
     '.highlight': {
