@@ -4,7 +4,7 @@ import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import { PolymorphComponentProps, Selectors } from "../../../src/types";
 import { Animate } from "@infinityfx/lively";
 import { useLink } from "@infinityfx/lively/hooks";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useState, useLayoutEffect } from "react";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('interactable', {
@@ -100,25 +100,26 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
     const opacity = useLink(1);
     const translate = useLink('0% 0%');
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const focusEl = interactTarget?.current || container.current,
+            highlightEl = highlight.current,
             ctrl = new AbortController(),
             signal = ctrl.signal;
 
-        if (!focusEl || !container.current) return;
+        if (!focusEl || !highlightEl || !container.current) return;
 
         // show highlight when target has focus
         function focus(selector = ':focus-visible') {
-            if (!focusEl || !highlight.current) return;
+            if (!focusEl || !highlightEl) return;
 
-            highlight.current.classList[focusEl.matches(selector) ? 'add' : 'remove'](style.focused as any);
+            highlightEl.classList[focusEl.matches(selector) ? 'add' : 'remove'](style.focused as any);
         }
 
         function setActive() {
             clearTimeout(timeout.current);
             start.current = Date.now();
 
-            if (highlight.current) highlight.current.classList.add(style.active as any);
+            if (highlightEl) highlightEl.classList.add(style.active as any);
         }
 
         // hide highlight, but wait for ripple animation to finish
@@ -129,7 +130,7 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
             focus();
 
             timeout.current = setTimeout(() => {
-                if (highlight.current) highlight.current.classList.remove(style.active as any);
+                if (highlightEl) highlightEl.classList.remove(style.active as any);
             }, delay);
         }
 
@@ -137,18 +138,18 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
 
         // trigger ripple animation at mouse position on click
         focusEl.addEventListener('click', e => {
-            if (!highlight.current) return;
+            if (!highlightEl) return;
 
             setActive();
             opacity.set(1, { duration: 0 });
             ripple(++mutableRippleCount.current);
 
-            const { x, y, width, height } = highlight.current.getBoundingClientRect();
+            const { x, y, width, height } = highlightEl.getBoundingClientRect();
 
             // skip highlight fade-in animation for touch based devices
-            highlight.current.style.transition = 'none';
-            highlight.current.offsetHeight;
-            highlight.current.style.transition = '';
+            highlightEl.style.transition = 'none';
+            highlightEl.offsetHeight;
+            highlightEl.style.transition = '';
 
             const max = Math.max(width, height) * 2.8;
             const clamp = (val: number) => Math.min(Math.max(val, 0), 1);
@@ -170,10 +171,10 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
         focus(':focus');
 
         return () => {
-            if (highlight.current) highlight.current.classList.remove(style.active as any);
+            highlightEl.classList.remove(style.active as any);
             clearTimeout(timeout.current);
             ctrl.abort();
-        }
+        };
     }, [props.disabled]);
 
     const Wrapper = as || 'button';
