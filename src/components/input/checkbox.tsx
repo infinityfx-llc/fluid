@@ -2,12 +2,11 @@
 
 import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
-import { Animatable } from "@infinityfx/lively";
-import { useLink } from "@infinityfx/lively/hooks";
-import { useState, useEffect } from "react";
-import Halo from "../feedback/halo";
+import { Animate } from "@infinityfx/lively";
+import { useState } from "react";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { createStyles } from "../../core/style";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('checkbox', {
     '.wrapper': {
@@ -83,16 +82,16 @@ const styles = createStyles('checkbox', {
     },
 
     '.input:checked:enabled + .checkbox': {
-        backgroundColor: 'var(--color)',
-        borderColor: 'var(--color)'
+        backgroundColor: 'var(--color, var(--f-clr-primary-300))',
+        borderColor: 'var(--color, var(--f-clr-primary-300))'
     },
 
     '.wrapper[data-error="true"] .input:checked:enabled + .checkbox': {
         backgroundColor: 'var(--f-clr-error-200)'
     },
 
-    '.wrapper .halo': {
-        borderRadius: 'var(--f-radius-sml)',
+    '.wrapper .highlight': {
+        borderRadius: 'var(--f-radius-med)',
         inset: '-.5em'
     }
 });
@@ -104,7 +103,7 @@ export type CheckboxSelectors = Selectors<'wrapper' | 'checkbox' | 'checkmark' |
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/checkbox}
  */
-export default function Checkbox({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', intermediate, checked, defaultChecked, ...props }:
+export default function Checkbox({ cc = {}, error, size = 'med', color, intermediate, checked, defaultChecked, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: CheckboxSelectors;
@@ -115,39 +114,36 @@ export default function Checkbox({ cc = {}, error, size = 'med', color = 'var(--
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>) {
     const style = combineClasses(styles, cc);
 
-    const link = useLink(defaultChecked ? 1 : 0);
-
     const [split, rest] = useInputProps(props);
     const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
 
-    useEffect(() => link.set(state ? 1 : 0, { duration: .25 }), [state]);
+    return <Interactable
+        {...rest}
+        as="div"
+        noHover
+        cc={{ ...cc, highlight: style.highlight }}
+        className={classes(
+            style.wrapper,
+            style[`s__${size}`],
+            rest.className
+        )}
+        data-error={!!error}>
+        <input {...split} checked={state} type="checkbox" className={style.input} aria-invalid={!!error} onChange={e => {
+            setState?.(e.target.checked);
+            props.onChange?.(e);
+        }} />
 
-    return <Halo hover={false} cc={{ halo: style.halo, ...cc }}>
-        <div {...rest}
-            className={classes(
-                style.wrapper,
-                style[`s__${size}`],
-                rest.className
-            )}
-            data-error={!!error}>
-
-            <input {...split} checked={state} type="checkbox" className={style.input} aria-invalid={!!error} onChange={e => {
-                setState?.(e.target.checked);
-                props.onChange?.(e);
-            }} />
-
-            <div className={style.checkbox} style={{ '--color': color } as any}>
-                <svg viewBox="0 0 18 18" className={style.checkmark}>
-                    {intermediate ?
-                        <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: state ? 0 : 1 }}>
-                            <path d="M 3 9 L 15 9" fill="none" />
-                        </Animatable> :
-                        <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: state ? 0 : 1 }}>
-                            <path d="M 3 9 L 8 13 L 15 5" fill="none" />
-                        </Animatable>
-                    }
-                </svg>
-            </div>
+        <div className={style.checkbox} style={{ '--color': color } as any}>
+            <svg viewBox="0 0 18 18" className={style.checkmark}>
+                <Animate
+                    correction="none"
+                    animate={{
+                        strokeLength: state ? 1 : 0,
+                        duration: .25
+                    }}>
+                    {intermediate ? <path d="M 3 9 L 15 9" fill="none" /> : <path d="M 3 9 L 8 13 L 15 5" fill="none" />}
+                </Animate>
+            </svg>
         </div>
-    </Halo>;
+    </Interactable>;
 }

@@ -8,7 +8,7 @@ import { createStyles } from "../../core/style";
 import Slider from "./slider";
 import Field from "./field";
 import NumberField from "./number-field";
-import Combine from "../layout/combine";
+import Group from "../layout/group";
 
 // maybe sizes?
 
@@ -53,7 +53,7 @@ const styles = createStyles('color-picker', fluid => ({
         height: '1.2em',
         borderRadius: 'var(--f-radius-sml)',
         backgroundColor: 'var(--color)',
-        border: 'solid 2px white',
+        border: 'solid 1px white',
         boxShadow: 'var(--f-shadow-sml)',
         translate: '-50% -50%',
         cursor: 'pointer',
@@ -81,7 +81,7 @@ const styles = createStyles('color-picker', fluid => ({
     },
 
     '.wrapper .hue__progress': {
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent !important'
     },
 
     '.hue__track': {
@@ -94,9 +94,9 @@ const styles = createStyles('color-picker', fluid => ({
         borderRadius: 'var(--f-radius-med)'
     },
 
-    '.hue__handle::after': {
+    '.wrapper .hue__handle::after': {
         boxSizing: 'border-box',
-        border: 'solid 2px white',
+        border: 'solid 1px white',
         borderRadius: 'var(--f-radius-sml)'
     },
 
@@ -136,7 +136,7 @@ type HSV = [number, number, number];
 
 type ColorPickerProps<T> = {
     ref?: React.Ref<HTMLDivElement>;
-    cc?: Selectors<'wrapper'>;
+    cc?: ColorPickerSelectors;
     format?: T;
     value?: T extends 'hex' ? string : RGB;
     defaultValue?: T extends 'hex' ? string : RGB;
@@ -233,6 +233,8 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
                     pick(e.nativeEvent);
                 }}
                 onTouchStart={e => {
+                    e.preventDefault();
+                    
                     picking.current = true;
                     pick(e.nativeEvent);
                 }}
@@ -250,7 +252,7 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
             </div>
 
             <div className={style.column}>
-                <Swatch color={`rgb(${rgb.join(',')})`} cc={{ swatch: style.swatch, ...cc }} />
+                <Swatch color={`rgb(${rgb.join(',')})`} cc={{ ...cc, swatch: style.swatch }} />
 
                 <div className={style.fields}>
                     <Field
@@ -267,7 +269,7 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
                         }}
                         onBlur={() => setPartialHex(null)} />
 
-                    <Combine className={style.rgb}>
+                    <Group className={style.rgb}>
                         {rgb.map((val, i) => <NumberField
                             key={i}
                             cc={cc}
@@ -284,7 +286,7 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
 
                                 update(updated, true);
                             }} />)}
-                    </Combine>
+                    </Group>
                 </div>
             </div>
         </div>
@@ -300,10 +302,10 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
                 update(hsvToRgb(mutableColor.current));
             }}
             cc={{
+                ...cc,
                 progress: style.hue__progress,
                 track: style.hue__track,
-                handle: style.hue__handle,
-                ...cc
+                handle: style.hue__handle
             }} />
     </div>;
 }

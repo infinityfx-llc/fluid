@@ -5,7 +5,7 @@ import Overlay from './overlay';
 import { Selectors } from '../../../src/types';
 import Button from '../input/button';
 import { classes, combineClasses } from '../../../src/core/utils';
-import { Animatable } from '@infinityfx/lively';
+import { Animate } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
 import { createStyles } from '../../core/style';
 import { Icon } from '../../core/icons';
@@ -25,15 +25,15 @@ const styles = createStyles('drawer', {
     },
 
     '.drawer[data-position="right"]': {
-        borderTopLeftRadius: 'var(--f-radius-med)',
-        borderBottomLeftRadius: 'var(--f-radius-med)',
+        borderTopLeftRadius: 'var(--f-radius-lrg)',
+        borderBottomLeftRadius: 'var(--f-radius-lrg)',
         borderRight: 'none',
         right: 0
     },
 
     '.drawer[data-position="left"]': {
-        borderTopRightRadius: 'var(--f-radius-med)',
-        borderBottomRightRadius: 'var(--f-radius-med)',
+        borderTopRightRadius: 'var(--f-radius-lrg)',
+        borderBottomRightRadius: 'var(--f-radius-lrg)',
         borderLeft: 'none',
         left: 0
     },
@@ -76,9 +76,12 @@ export default function Drawer({ children, cc = {}, show, onClose, position = 'r
         cc?: DrawerSelectors;
         show: boolean;
         onClose: () => void;
+        /**
+         * @default "right"
+         */
         position?: 'left' | 'right';
         title?: React.ReactNode;
-    } & React.HTMLAttributes<HTMLDivElement>) {
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
@@ -95,7 +98,16 @@ export default function Drawer({ children, cc = {}, show, onClose, position = 'r
     }
 
     return <Overlay show={show} onClose={onClose}>
-        <Animatable id="drawer" animate={{ translate: [`${position === 'right' ? 100 : -100}% 0%`, '0% 0%'], duration: .25 }} triggers={[{ on: 'mount' }, { on: 'unmount', reverse: true }]}>
+        <Animate
+            correction="none"
+            key="drawer"
+            animate={{
+                translate: [`${position === 'right' ? 100 : -100}% 0%`, '0% 0%'],
+                duration: .25
+            }}
+            triggers={{
+                animate: ['mount', { on: 'unmount', reverse: true }]
+            }}>
             <div {...props}
                 role="dialog"
                 aria-modal
@@ -119,6 +131,6 @@ export default function Drawer({ children, cc = {}, show, onClose, position = 'r
                     {children}
                 </Scrollarea>
             </div>
-        </Animatable>
+        </Animate>
     </Overlay>;
 }

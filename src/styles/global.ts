@@ -7,6 +7,10 @@ export default {
         margin: 0
     },
 
+    'html': {
+        scrollbarGutter: 'stable'
+    },
+
     'html, body': {
         width: '100%',
         minHeight: '100dvh',
@@ -17,8 +21,7 @@ export default {
 
     body: {
         backgroundColor: 'var(--f-clr-bg-100)',
-        color: 'var(--f-clr-text-100)',
-        overflowY: 'auto'
+        color: 'var(--f-clr-text-100)'
     },
 
     a: {

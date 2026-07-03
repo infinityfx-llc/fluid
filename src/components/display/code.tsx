@@ -1,7 +1,7 @@
 'use client';
 
 import { Selectors } from "../../../src/types";
-import { Fragment, useId, useState } from "react";
+import { Fragment, useId, useRef, useState } from "react";
 import Scrollarea from "../layout/scrollarea";
 import Toggle from "../input/toggle";
 import { createStyles } from "../../core/style";
@@ -26,7 +26,7 @@ const styles = createStyles('code', {
     },
 
     '.body': {
-        backgroundColor: 'var(--f-clr-bg-200)',
+        backgroundColor: 'var(--f-clr-fg-100)',
         flexGrow: 1
     },
 
@@ -89,12 +89,23 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
     children: string;
     ref?: React.Ref<HTMLDivElement>;
     cc?: CodeSelectors;
+    /**
+     * @default true
+     */
     lineNumbers?: boolean;
+    /**
+     * Allows for settings HTML content directly.
+     * 
+     * Should be used with **CAUTION**, since this could introduce XSS vulnerabilities.
+     * 
+     * @default false
+     */
     dangerouslyInject?: boolean;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
 
     const id = useId();
+    const timeout = useRef<any>(undefined);
     const [copied, setCopied] = useState(false);
 
     return <div {...props} className={classes(style.wrapper, props.className)}>
@@ -108,7 +119,7 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
                         {i + 1} <br />
                     </Fragment>)}
                 </div>}
-                <Scrollarea horizontal behavior="shift">
+                <Scrollarea direction="horizontal" behavior="shift">
                     <pre
                         id={id}
                         className={style.content}
@@ -123,16 +134,17 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
         <div className={style.button__align}>
             <Toggle
                 compact
-                checkedContent={<Icon type="check" />}
+                readOnly
                 checked={copied}
                 cc={{
-                    toggle: style.toggle,
-                    ...cc
+                    ...cc,
+                    toggle: style.toggle
                 }}
                 aria-label="Copy code"
                 onClick={() => {
-                    // copy code content to clipboard
+                    clearTimeout(timeout.current);
 
+                    // copy code content to clipboard
                     const range = document.createRange(),
                         el = document.getElementById(id) as HTMLDivElement;
                     range.selectNodeContents(el);
@@ -146,9 +158,10 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
 
                     // toggle copy button visual state
                     setCopied(true);
-                    setTimeout(() => setCopied(false), 2000);
+                    timeout.current = setTimeout(() => setCopied(false), 2000);
                 }}>
                 <Icon type="copy" />
+                <Icon type="check" />
             </Toggle>
         </div>
     </div>;

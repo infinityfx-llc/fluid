@@ -2,16 +2,16 @@
 
 import { FluidInputvalue, Selectors } from "../../../src/types";
 import { useId, useRef, useState } from "react";
-import Halo from "../feedback/halo";
-import { Morph } from "@infinityfx/lively/layout";
+import { Animate } from "@infinityfx/lively";
 import { classes, combineClasses } from "../../../src/core/utils";
 import Scrollarea from "../layout/scrollarea";
 import { createStyles } from "../../core/style";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('tabs', {
     '.v__default': {
-        backgroundColor: 'var(--f-clr-bg-200)',
-        borderRadius: 'var(--f-radius-sml)'
+        backgroundColor: 'var(--f-clr-fg-100)',
+        borderRadius: 'var(--f-radius-med)'
     },
 
     '.tabs': {
@@ -44,9 +44,6 @@ const styles = createStyles('tabs', {
 
     '.button': {
         position: 'relative',
-        outline: 'none',
-        border: 'none',
-        background: 'none',
         padding: '.4em .6em',
         borderRadius: 'var(--f-radius-sml)',
         color: 'var(--f-clr-text-100)',
@@ -108,57 +105,59 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
         style[`v__${variant}`],
         props.className
     )}>
-        <Scrollarea horizontal>
+        <Scrollarea direction="horizontal">
             <div className={style.tabs} role="tablist">
                 {options.map(({ label, value, disabled, panelId }, i) => {
 
                     return <div key={i} className={style.option}>
-                        <Halo disabled={disabled} color={variant === 'default' ? 'var(--f-clr-primary-300)' : 'var(--f-clr-primary-400)'}>
-                            <button
-                                ref={el => {
-                                    tabs.current[i] = disabled ? null : el;
-                                }}
-                                type="button"
-                                role="tab"
-                                className={style.button}
-                                aria-selected={state === value}
-                                aria-controls={panelId}
-                                disabled={disabled}
-                                onClick={() => {
-                                    setState?.(value);
-                                    onChange?.(value as T);
-                                }}
-                                onKeyDown={e => {
-                                    let matched = true;
+                        <Interactable
+                            role="tab"
+                            disabled={disabled}
+                            highlightColor={variant === 'default' ? 'var(--f-clr-primary-300)' : 'var(--f-clr-primary-400)'}
+                            ref={el => {
+                                tabs.current[i] = disabled ? null : el;
+                            }}
+                            className={style.button}
+                            aria-selected={state === value}
+                            aria-controls={panelId}
+                            onClick={() => {
+                                setState?.(value);
+                                onChange?.(value as T);
+                            }}
+                            onKeyDown={e => {
+                                let matched = true;
 
-                                    switch (e.key) {
-                                        case 'ArrowRight':
-                                        case 'ArrowDown':
-                                            focus(i + 1);
-                                            break;
-                                        case 'ArrowLeft':
-                                        case 'ArrowUp':
-                                            focus(i - 1);
-                                            break;
-                                        case 'Home':
-                                            focus(0);
-                                            break;
-                                        case 'End':
-                                            focus(-1);
-                                            break;
-                                        default:
-                                            matched = false;
-                                    }
+                                switch (e.key) {
+                                    case 'ArrowRight':
+                                    case 'ArrowDown':
+                                        focus(i + 1);
+                                        break;
+                                    case 'ArrowLeft':
+                                    case 'ArrowUp':
+                                        focus(i - 1);
+                                        break;
+                                    case 'Home':
+                                        focus(0);
+                                        break;
+                                    case 'End':
+                                        focus(-1);
+                                        break;
+                                    default:
+                                        matched = false;
+                                }
 
-                                    if (matched) e.preventDefault();
-                                }}>
-                                {label}
-                            </button>
-                        </Halo>
+                                if (matched) e.preventDefault();
+                            }}>
+                            {label}
+                        </Interactable>
 
-                        {state === value && <Morph group={`tabs-selection-${id}`} deform={false} cachable={['x', 'sx']}>
+                        {state === value && <Animate
+                            morph={`tabs-selection-${id}`}
+                            transition={{
+                                cache: ['x', 'sx']
+                            }}>
                             <div className={style.selection} />
-                        </Morph>}
+                        </Animate>}
                     </div>;
                 })}
             </div>

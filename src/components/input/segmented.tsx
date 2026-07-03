@@ -2,13 +2,15 @@
 
 import { FluidInputvalue, FluidSize, Selectors } from "../../../src/types";
 import { useId, useState } from "react";
-import { Morph } from '@infinityfx/lively/layout';
+import { Animate } from '@infinityfx/lively';
 import { classes, combineClasses } from "../../../src/core/utils";
-import Halo from "../feedback/halo";
 import { createStyles } from "../../core/style";
+import Tooltip from "../display/tooltip";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('segmented', {
     '.segmented': {
+        position: 'relative',
         display: 'flex'
     },
 
@@ -31,10 +33,6 @@ const styles = createStyles('segmented', {
         fontSize: 'var(--f-font-size-sml)'
     },
 
-    '.segmented.round': {
-        borderRadius: '999px'
-    },
-
     '.segmented.uniform': {
         display: 'grid',
         gridAutoColumns: '1fr',
@@ -46,20 +44,20 @@ const styles = createStyles('segmented', {
         gridAutoFlow: 'row'
     },
 
-    '.segmented.vertical.round': {
-        borderRadius: 'calc(1.4em + 1px)'
+    '.segmented.round': {
+        borderRadius: 'calc(1.6em + 1px)'
     },
 
     '.option': {
         position: 'relative',
-        border: 'none',
-        outline: 'none',
         backgroundColor: 'transparent',
         padding: '.675em .8em',
         fontWeight: 700,
         color: 'var(--f-clr-text-100)',
         borderRadius: 'var(--f-radius-sml)',
-        flexGrow: 1
+        flexGrow: 1,
+        transition: 'color .4s',
+        isolation: 'unset !important' as any
     },
 
     '.segmented.round .option': {
@@ -92,7 +90,11 @@ const styles = createStyles('segmented', {
     },
 
     '.v__neutral .selection': {
-        backgroundColor: 'var(--f-clr-fg-100)'
+        backgroundColor: 'var(--f-clr-text-100)'
+    },
+
+    '.v__neutral .option[aria-checked="true"]:enabled': {
+        color: 'var(--f-clr-text-200)'
     },
 
     '.v__minimal .selection': {
@@ -107,21 +109,17 @@ const styles = createStyles('segmented', {
         border: 'solid 1px var(--f-clr-error-100)'
     },
 
-    '.segmented .halo': {
+    '.segmented .highlight': {
         zIndex: '0'
     },
 
-    '.option[aria-checked="true"] .halo': {
+    '.option[aria-checked="true"] .highlight': {
         inset: '-.3em',
         borderRadius: 'calc(var(--f-radius-sml) + .3em)'
     },
 
     '.segmented[data-error="true"] .ripple': {
-        backgroundColor: 'var(--f-clr-error-300)'
-    },
-
-    '.segmented .container': {
-        isolation: 'unset'
+        backgroundColor: 'var(--f-clr-error-200)'
     }
 });
 
@@ -133,12 +131,21 @@ type SegmentedProps<T> = {
     variant?: 'default' | 'neutral' | 'minimal';
     size?: Omit<FluidSize, 'xsm'>;
     round?: boolean;
+    /**
+     * Whether all entries should be equal size, regardless of their content.
+     * 
+     * @default false
+     */
     uniform?: boolean;
+    /**
+     * @default false
+     */
     vertical?: boolean;
     options: {
         label: React.ReactNode;
         value: FluidInputvalue;
         disabled?: boolean;
+        tooltip?: string;
     }[];
     name?: string;
     value?: T;
@@ -158,7 +165,8 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
     const [state, setState] = value !== undefined ? [value] : useState(defaultValue || options[0]?.value);
     const id = useId();
 
-    return <div {...props}
+    return <div
+        {...props}
         role="radiogroup"
         className={classes(
             style.segmented,
@@ -169,33 +177,42 @@ export default function Segmented<T extends FluidInputvalue>({ cc = {}, variant 
             vertical && style.vertical,
             props.className
         )}
-        data-error={!!error}>
-        {options.map(({ label, value: option, disabled = false }, i) => {
+        data-error={!!error}
+        data-fb={variant !== 'minimal' ? 'true' : undefined}>
+        {options.map(({ label, value: option, disabled = false, tooltip }, i) => {
 
-            return <Halo key={i} hover={false} cc={{
-                container: style.container,
-                halo: style.halo,
-                ring: style.ring,
-                ...cc
-            }}>
-                <button
-                    className={style.option}
-                    type="button" 
-                    role="radio" 
-                    aria-checked={state === option} 
+            return <Tooltip
+                key={i}
+                content={tooltip}
+                visibility={tooltip ? 'interact' : 'never'}>
+                <Interactable
+                    noHover
+                    role="radio"
                     disabled={disabled}
+                    className={style.option}
+                    aria-checked={state === option}
                     onClick={() => {
                         setState?.(option);
                         onChange?.(option as T);
+                    }}
+                    cc={{
+                        ...cc,
+                        highlight: style.highlight,
+                        ripple: style.ripple
                     }}>
                     <input type="radio" value={option} checked={state === option} hidden readOnly name={name} />
                     <span className={style.content}>{label}</span>
 
-                    {state === option && <Morph group={`segmented-selection-${id}`} cachable={vertical ? ['y', 'sy'] : ['x', 'sx']} deform={false} transition={{ duration: .4 }}>
+                    {state === option && <Animate
+                        morph={`segmented-selection-${id}`}
+                        transition={{
+                            cache: vertical ? ['y', 'sy'] : ['x', 'sx'],
+                            duration: .4
+                        }}>
                         <div className={style.selection} />
-                    </Morph>}
-                </button>
-            </Halo>;
+                    </Animate>}
+                </Interactable>
+            </Tooltip>;
         })}
     </div>
 }

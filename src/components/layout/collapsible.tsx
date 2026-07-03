@@ -1,7 +1,6 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { Animatable } from "@infinityfx/lively";
-import { LayoutGroup } from "@infinityfx/lively/layout";
+import { Animate, LayoutGroup } from "@infinityfx/lively";
 import { createStyles } from "../../core/style";
 
 const styles = createStyles('collapsible', {
@@ -25,7 +24,12 @@ export default function Collapsible({ children, cc = {}, shown, ...props }: {
     const style = combineClasses(styles, cc);
 
     return <LayoutGroup>
-        <Animatable id="collapsible" cachable={['height', 'opacity', 'visibility']} adaptive>
+        <Animate
+            key="collapsible"
+            correction="none"
+            transition={{
+                cache: ['height', 'opacity', 'visibility']
+            }}>
             <div {...props}
                 aria-hidden={!shown}
                 className={classes(style.content, props.className)}
@@ -37,6 +41,6 @@ export default function Collapsible({ children, cc = {}, shown, ...props }: {
                 }}>
                 {children}
             </div>
-        </Animatable>
+        </Animate>
     </LayoutGroup>;
 }

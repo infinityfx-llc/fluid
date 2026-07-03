@@ -6,6 +6,7 @@ import useMediaQuery from "../../../hooks/use-media-query";
 
 type PopoverContext = {
     id: string;
+    variant: 'default' | 'inverted'; // also store round prop and merge into "props" object entry
     mounted: boolean;
     isModal: boolean;
     trigger: React.RefObject<HTMLElement | null>;
@@ -33,9 +34,23 @@ export type PopoverRootReference = {
 export type PopoverRoot = {
     children: React.ReactNode;
     ref?: React.Ref<PopoverRootReference>;
+    /**
+     * @default "auto"
+     */
     position?: 'auto' | 'center';
+    /**
+     * How to display the Popover content on mobile devices.
+     * 
+     * @default "popover"
+     */
     mobileContainer?: 'popover' | 'modal';
+    /**
+     * Whether to stretch the Popover container to be at least the same size as the Popover trigger element.
+     * 
+     * @default false
+     */
     stretch?: boolean;
+    variant?: 'default' | 'inverted';
     onClose?: () => void;
 };
 
@@ -63,7 +78,7 @@ function getPosition(anchor: Element, element: Element, margin = '0px') {
     };
 }
 
-export default function Root({ children, ref, position = 'auto', mobileContainer = 'popover', stretch, onClose }: PopoverRoot) {
+export default function Root({ children, ref, position = 'auto', mobileContainer = 'popover', stretch, variant = 'default', onClose }: PopoverRoot) {
     const id = useId();
     const fluid = useFluid();
     const childrenRef = useRef<React.RefObject<HTMLElement>[]>([]);
@@ -121,7 +136,7 @@ export default function Root({ children, ref, position = 'auto', mobileContainer
         return () => window.removeEventListener('click', click);
     }, [isModal]);
 
-    return <PopoverContext value={{ id, mounted, isModal, trigger, content, opened, toggle, children: childrenRef }}>
+    return <PopoverContext value={{ id, variant: isModal ? 'default' : variant, mounted, isModal, trigger, content, opened, toggle, children: childrenRef }}>
         {children}
     </PopoverContext>;
 }

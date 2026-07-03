@@ -71,7 +71,8 @@ export default function Frame({ children, cc = {}, radius = 'sml', shadow, borde
             style[`bg__${background}`],
             style[`r__${radius}`],
             props.className
-        )}>
+        )}
+        data-fb={border ? 'true' : undefined}>
         {children}
     </div>;
 }

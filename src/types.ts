@@ -16,6 +16,15 @@ type MergeObjects<T, P> = T & P & { [K in SharedKeys<T, P>]: Merged<T[K], P[K]> 
 
 export type Merged<T, P> = [T, P] extends [{ [key: string]: unknown }, { [key: string]: unknown }] ? MergeObjects<T, P> : T & P;
 
+export type PolymorphComponentProps<E extends React.ElementType> = React.PropsWithChildren<React.ComponentPropsWithoutRef<E> & {
+    /**
+     * What type of component or element to render this component as.
+     * 
+     * @default HTMLDivElement
+     */
+    as?: E;
+}>;
+
 export type FluidStyles<T extends string = string> = {
     [key in (T | string & {})]?: React.CSSProperties | {
         [key: string]: React.CSSProperties | undefined
@@ -39,6 +48,7 @@ export type FluidComponents = {
     badge?: FluidSelectorStyles<import('./components/display/badge').BadgeSelectors>;
     code?: FluidSelectorStyles<import('./components/display/code').CodeSelectors>;
     frame?: FluidSelectorStyles<import('./components/display/frame').FrameSelectors>;
+    gradient?: FluidSelectorStyles<import('./components/display/gradient').GradientSelectors>;
     key?: FluidSelectorStyles<import('./components/display/key').KeySelectors>;
     swatch?: FluidSelectorStyles<import('./components/display/swatch').SwatchSelectors>;
     table?: FluidSelectorStyles<import('./components/display/table').TableSelectors>;
@@ -47,8 +57,8 @@ export type FluidComponents = {
     toast?: FluidSelectorStyles<import('./components/display/toast').ToastSelectors>;
     tooltip?: FluidSelectorStyles<import('./components/display/tooltip').TooltipSelectors>;
     'circular-progress'?: FluidSelectorStyles<import('./components/feedback/circular-progress').CircularProgressSelectors>;
-    halo?: FluidSelectorStyles<import('./components/feedback/halo').HaloSelectors>;
     indicator?: FluidSelectorStyles<import('./components/feedback/indicator').IndicatorSelectors>;
+    interactable?: FluidSelectorStyles<import('./components/feedback/interactable').InteractableSelectors>;
     'progress-bar'?: FluidSelectorStyles<import('./components/feedback/progress-bar').ProgressBarSelectors>;
     skeleton?: FluidSelectorStyles<import('./components/feedback/skeleton').SkeletonSelectors>;
     button?: FluidSelectorStyles<import('./components/input/button').ButtonSelectors>;
@@ -58,6 +68,7 @@ export type FluidComponents = {
     'color-field'?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
     'color-picker'?: FluidSelectorStyles<import('./components/input/color-picker').ColorPickerSelectors>;
     'date-field'?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
+    'drop-zone'?: FluidSelectorStyles<import('./components/input/drop-zone').DropZoneSelectors>;
     field?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
     'file-field'?: FluidSelectorStyles<import('./components/input/file-field').FileFieldSelectors>;
     hamburger?: FluidSelectorStyles<import('./components/input/hamburger').HamburgerSelectors>;
@@ -79,7 +90,7 @@ export type FluidComponents = {
     'sidebar.toggle'?: FluidSelectorStyles<import('./components/layout/sidebar/toggle').SidebarToggleSelectors>;
     'sidebar.user'?: FluidSelectorStyles<import('./components/layout/sidebar/user').SidebarUserSelectors>;
     collapsible?: FluidSelectorStyles<import('./components/layout/collapsible').CollapsibleSelectors>;
-    combine?: FluidSelectorStyles<import('./components/layout/combine').CombineSelectors>;
+    group?: FluidSelectorStyles<import('./components/layout/group').GroupSelectors>;
     cull?: FluidStyles;
     divider?: FluidSelectorStyles<import('./components/layout/divider').DividerSelectors>;
     drawer?: FluidSelectorStyles<import('./components/layout/drawer').DrawerSelectors>;

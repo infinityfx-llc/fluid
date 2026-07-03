@@ -2,10 +2,33 @@
 
 import { classes, combineClasses, combineRefs } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { useRef, useState, useId, useLayoutEffect } from "react";
+import { useRef, useState, useId, useLayoutEffect, useCallback } from "react";
 import { createStyles } from "../../core/style";
 
 const speed = 100;
+
+// TODO: keyboard controls
+
+function getSizeWithoutPadding(element: HTMLElement) {
+    const { padding } = getComputedStyle(element);
+    const values = padding.split(' ').map(parseFloat);
+
+    switch (values.length) {
+        case 1:
+            values.push(...new Array(3).fill(values[0]));
+            break;
+        case 2:
+            values.push(...values);
+            break;
+        case 3:
+            values.push(0);
+    }
+
+    return {
+        width: element.offsetWidth - values[1] - values[3],
+        height: element.offsetHeight - values[0] - values[2]
+    };
+}
 
 const styles = createStyles('scrollarea', {
     '.area': {
@@ -18,6 +41,11 @@ const styles = createStyles('scrollarea', {
         userSelect: 'none',
         zIndex: 99,
         transition: 'opacity .2s'
+    },
+
+    '.v__permanent > .track': {
+        backgroundColor: 'var(--f-clr-fg-100)',
+        padding: '2px'
     },
 
     '.v__hover > .track': {
@@ -41,33 +69,23 @@ const styles = createStyles('scrollarea', {
         opacity: .8
     },
 
-    '.area[data-horizontal="false"] > .track': {
+    '.d__vertical > .track': {
         top: 0,
         right: 0,
         height: '100%'
     },
 
-    '.area[data-horizontal="true"] > .track': {
+    '.d__horizontal > .track': {
         bottom: 0,
         left: 0,
         width: '100%'
     },
 
-    '.v__permanent[data-horizontal="false"] > .track': {
-        backgroundColor: 'var(--f-clr-fg-100)',
-        paddingInline: '2px'
-    },
-
-    '.v__permanent[data-horizontal="true"] > .track': {
-        backgroundColor: 'var(--f-clr-fg-100)',
-        paddingBlock: '2px'
-    },
-
-    '.v__permanent[data-horizontal="false"]': {
+    '.v__permanent.d__vertical': {
         paddingRight: 'calc(.5rem + 4px)'
     },
 
-    '.v__permanent[data-horizontal="true"]': {
+    '.v__permanent.d__horizontal': {
         paddingBottom: 'calc(.5rem + 4px)'
     },
 
@@ -86,24 +104,37 @@ const styles = createStyles('scrollarea', {
     }
 });
 
-export type ScrollareaSelectors = Selectors<'track' | 'v__hover' | 'v__permanent' | 'handle'>;
+export type ScrollareaSelectors = Selectors<'d__vertical' | 'd__horizontal' | 'v__hover' | 'v__permanent' | 'track' | 'handle'>;
 
 /**
  * A scrollable container.
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/scrollarea}
  */
-export default function Scrollarea({ children, cc = {}, horizontal = false, variant = 'hover', behavior = 'normal', disabled = false, ref, ...props }:
+export default function Scrollarea({ children, cc = {}, direction = 'vertical', variant = 'hover', behavior = 'normal', disabled = false, ref, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: ScrollareaSelectors;
-        horizontal?: boolean;
+        /**
+         * @default 'vertical'
+         */
+        direction?: 'vertical' | 'horizontal';
+        /**
+         * @default "hover"
+         */
         variant?: 'hover' | 'permanent';
+        /**
+         * For `"shift"` behavior the container wil only scroll with the mouse wheel when holding the shift key.
+         * 
+         * @default "normal"
+         */
         behavior?: 'normal' | 'shift';
         disabled?: boolean;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
+    const id = useId();
+    const horizontal = direction === 'horizontal';
     const scrolled = useRef(false);
     const lastWheel = useRef(0);
 
@@ -152,7 +183,7 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
     }
 
     // update the scroll position and scrollbar handle position
-    function scroll(value: number) {
+    const scroll = useCallback((value: number) => {
         const el = area.current;
         if (!el || !handle.current || !track.current || matchMedia('(pointer: coarse)').matches || disabled) return; // use default behaviour for touch based devices.
 
@@ -166,28 +197,31 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
             scrolled.current = true;
         }
 
-        const offset = updated / max * (el[wKey] - handle.current[wKey]);
+        const size = getSizeWithoutPadding(track.current)[horizontal ? 'width' : 'height']; // TODO: compute only after resize
+        const offset = updated / max * (size - handle.current[wKey]);
+
         handle.current.style.translate = horizontal ? `${offset}px 0px` : `0px ${offset}px`;
         handle.current.setAttribute('aria-valuenow', (updated / max * 100).toString());
         track.current.style.translate = `${horizontal ? updated : el.scrollLeft}px ${horizontal ? el.scrollTop : updated}px`;
-    }
-
-    // update the scrollbar size based on how much the container can be scrolled
-    function resize() {
-        const el = area.current;
-        if (!el || !handle.current || !track.current) return;
-
-        const size = horizontal ? el.offsetWidth / el.scrollWidth : el.offsetHeight / el.scrollHeight;
-        handle.current.style[horizontal ? 'width' : 'height'] = size * 100 + '%';
-        handle.current.style[horizontal ? 'height' : 'width'] = '';
-        track.current.style.translate = '0px 0px';
-        handle.current.style.translate = '0px 0px';
-        setScrollable(size < 1); // only show the scrollbar when the content overflows the container (there is something to scroll)
-
-        scroll(0);
-    }
+    }, [disabled, horizontal]);
 
     useLayoutEffect(() => {
+        // update the scrollbar size based on how much the container can be scrolled
+        function resize() {
+            const el = area.current;
+            if (!el || !handle.current || !track.current) return;
+
+            track.current.style.translate = '0px 0px';
+            handle.current.style.translate = '0px 0px';
+
+            const size = horizontal ? el.offsetWidth / el.scrollWidth : el.offsetHeight / el.scrollHeight;
+            handle.current.style[horizontal ? 'width' : 'height'] = `min(max(20px, ${size * 100}%), 100%)`;
+            handle.current.style[horizontal ? 'height' : 'width'] = '';
+            setScrollable(size < 1); // only show the scrollbar when the content overflows the container (there is something to scroll)
+
+            scroll(0);
+        }
+
         resize();
 
         const observer = new ResizeObserver(resize), areaRef = area.current;
@@ -206,9 +240,7 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
             window.removeEventListener('mouseup', drag);
             areaRef.removeEventListener('wheel', wheel);
         }
-    }, [disabled, horizontal, behavior]);
-
-    const id = useId();
+    }, [scroll, horizontal, behavior]);
 
     return <div
         {...props}
@@ -217,6 +249,7 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
         className={classes(
             style.area,
             style[`v__${variant}`],
+            style[`d__${direction}`],
             props.className
         )}
         onScroll={e => {
@@ -225,13 +258,18 @@ export default function Scrollarea({ children, cc = {}, horizontal = false, vari
 
             scroll(0);
         }}
-        data-horizontal={horizontal}
         data-scrollable={scrollable}
         data-disabled={disabled}>
         {children}
 
         <div ref={track} className={style.track}>
-            <div ref={handle} className={style.handle} onMouseDown={e => drag(e.nativeEvent)} role="scrollbar" aria-controls={id} />
+            <div
+                ref={handle}
+                role="scrollbar"
+                className={style.handle}
+                onMouseDown={e => drag(e.nativeEvent)}
+                aria-orientation={direction}
+                aria-controls={id} />
         </div>
     </div>;
 }

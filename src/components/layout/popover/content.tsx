@@ -1,7 +1,7 @@
 'use client';
 
-import { combineRefs } from '../../../../src/core/utils';
-import { LayoutGroup } from '@infinityfx/lively/layout';
+import { combineRefs, getAbsoluteZIndex } from '../../../../src/core/utils';
+import { LayoutGroup } from '@infinityfx/lively';
 import { useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopover } from './root';
@@ -10,20 +10,12 @@ import Modal from '../modal';
 export default function Content({ children, ref, ...props }: React.HTMLAttributes<HTMLDivElement> & {
     ref?: React.Ref<HTMLDivElement>;
 }) {
-    const { id, mounted, isModal, trigger, content, opened, toggle } = usePopover();
+    const { id, variant, mounted, isModal, trigger, content, opened, toggle } = usePopover();
 
     const zIndex = useMemo(() => {
         if (!mounted || !trigger.current) return 1;
 
-        let index = 0, parent: HTMLElement | null = trigger.current;
-        while (parent) {
-            const i = parseInt(getComputedStyle(parent).zIndex);
-            if (!isNaN(i)) index = Math.max(index, i);
-
-            parent = parent.parentElement;
-        }
-
-        return index + 2;
+        return getAbsoluteZIndex(trigger.current) + 2;
     }, [mounted]);
 
     if (!mounted) return null;
@@ -32,8 +24,13 @@ export default function Content({ children, ref, ...props }: React.HTMLAttribute
         {children}
     </Modal>;
 
-    return createPortal(<LayoutGroup>
-        <div ref={combineRefs(content, ref)} {...props} id={id} style={{ ...props.style, position: 'fixed', zIndex }}>
+    return createPortal(<LayoutGroup ignoreWarnings>
+        <div
+            {...props}
+            ref={combineRefs(content, ref)}
+            id={id}
+            data-popover={variant}
+            style={{ ...props.style, position: 'fixed', zIndex }}>
             {opened && children}
         </div>
     </LayoutGroup>, document.getElementById('__fluid') as HTMLElement);

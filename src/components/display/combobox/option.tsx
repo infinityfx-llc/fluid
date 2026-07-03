@@ -1,9 +1,10 @@
 'use client';
 
-import Halo from '../../feedback/halo';
 import { FluidInputvalue, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses } from '../../../core/utils';
+import { usePopover } from '../../layout/popover/root';
+import Interactable from '../../feedback/interactable';
 
 const styles = createStyles('combobox.option', {
     '.option': {
@@ -18,8 +19,12 @@ const styles = createStyles('combobox.option', {
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--f-spacing-xsm)',
-        justifyContent: 'space-between',
-        lineHeight: 1.25
+        lineHeight: 1.25,
+        WebkitTapHighlightColor: 'transparent'
+    },
+
+    '.v__inverted': {
+        color: 'var(--f-clr-text-200)'
     },
 
     '.option.round': {
@@ -47,23 +52,24 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
     } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onSelect'>) {
     const style = combineClasses(styles, cc);
 
-    return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
-        <button
-            {...props}
-            type="button"
-            role="option"
-            className={classes(
-                style.option,
-                round && style.round,
-                props.className
-            )}
-            onClick={e => {
-                props.onClick?.(e);
-                onSelect?.(value);
-            }}>
-            {children}
-        </button>
-    </Halo>;
+    const { variant } = usePopover();
+
+    return <Interactable
+        {...props}
+        role="option"
+        highlightColor="var(--f-clr-primary-400)"
+        className={classes(
+            style.option,
+            style[`v__${variant}`],
+            round && style.round,
+            props.className
+        )}
+        onClick={e => {
+            props.onClick?.(e);
+            onSelect?.(value);
+        }}>
+        {children}
+    </Interactable>;
 }
 
 Option.displayName = 'Combobox.Option';

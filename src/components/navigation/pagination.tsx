@@ -1,76 +1,318 @@
 'use client';
 
 import { FluidSize, Selectors } from "../../../src/types";
-import { useState } from "react";
-import Button from "../input/button";
+import { Fragment, useId, useRef, useState } from "react";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
+import { Animate } from "@infinityfx/lively";
+import Interactable from "../feedback/interactable";
+
+// arrow controls
 
 const styles = createStyles('pagination', {
     '.pagination': {
         display: 'flex',
-        gap: 'var(--f-spacing-sml)'
+        gap: 'var(--f-spacing-xsm)'
     },
 
-    '.pagination > *': {
-        minWidth: '2.6em', // check if correct
-        minHeight: '2.6em'
+    '.pill': {
+        gap: 'var(--f-spacing-xxs)'
+    },
+
+    '.s__xsm': {
+        fontSize: 'var(--f-font-size-xxs)'
+    },
+
+    '.s__sml': {
+        fontSize: 'var(--f-font-size-xsm)'
+    },
+
+    '.s__med': {
+        fontSize: 'var(--f-font-size-sml)'
+    },
+
+    '.s__lrg': {
+        fontSize: 'var(--f-font-size-med)'
+    },
+
+    '.buttons': {
+        display: 'grid',
+        gap: 'inherit',
+        gridAutoFlow: 'column'
+    },
+
+    '.buttons .layer': {
+        width: '100%',
+        height: '100%',
+        borderRadius: 'var(--f-radius-sml)',
+        transition: 'background-color .35s'
+    },
+
+    '.pagination:not(.v__minimal) .layer': {
+        backgroundColor: 'var(--f-clr-fg-100)'
+    },
+
+    '.pagination[aria-disabled="true"] .layer': {
+        backgroundColor: 'var(--f-clr-grey-100)'
+    },
+
+    '.button': {
+        overflow: 'hidden',
+        position: 'relative',
+        color: 'var(--f-clr-text-100)',
+        width: '2.6em',
+        height: '2.6em',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 'var(--f-radius-sml)',
+        fontWeight: 500,
+        transition: 'background-color .35s, color .35s'
+    },
+
+    '.buttons .button': {
+        backgroundColor: 'transparent !important'
+    },
+
+    '.pagination:not(.v__minimal) .button:enabled': {
+        backgroundColor: 'var(--f-clr-fg-100)'
+    },
+
+    '.button:enabled': {
+        cursor: 'pointer'
+    },
+
+    '.button:disabled': {
+        backgroundColor: 'var(--f-clr-grey-100)',
+        color: 'var(--f-clr-grey-500)'
+    },
+
+    '.button[aria-current="page"]': {
+        color: 'var(--f-clr-text-200)'
+    },
+
+    '.pagination .layer.selection': {
+        backgroundColor: 'var(--color, var(--f-clr-primary-100))',
+        boxShadow: 'var(--f-shadow-sml)'
+    },
+
+    '.v__neutral .layer.selection': {
+        backgroundColor: 'var(--f-clr-text-100)'
+    },
+
+    '.pagination[aria-disabled="true"] .layer.selection': {
+        backgroundColor: 'var(--f-clr-grey-200)'
+    },
+
+    '.round .button': {
+        borderRadius: '99px'
+    },
+
+    '.round .layer': {
+        borderRadius: '99px'
+    },
+
+    '.pill > .button:first-child': {
+        borderTopLeftRadius: '1.3em',
+        borderBottomLeftRadius: '1.3em'
+    },
+
+    '.pill > .button:last-child': {
+        borderTopRightRadius: '1.3em',
+        borderBottomRightRadius: '1.3em'
+    },
+
+    '.indices': {
+        width: '7.8em',
+        height: '2.6em',
+        display: 'flex'
+    },
+
+    '.indices > *': {
+        width: '2.6em',
+        height: '2.6em',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 });
 
-export type PaginationSelectors = Selectors<'pagination'>;
+export type PaginationSelectors = Selectors<'pagination' | 'pill' | 'square' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'v__default' | 'v__neutral' | 'v__minimal' | 'buttons' | 'layer' | 'button' | 'selection' | 'indices'>;
 
 /**
  * A set of inputs used for navigation between pages.
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/pagination}
  */
-export default function Pagination({ cc = {}, page, setPage, pages, compact, skipable, round, size, variant, ...props }:
+export default function Pagination({ cc = {}, pages, defaultPage = 0, page, onChange, compact, skipable, shape = 'square', size, variant, disabled, color, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: PaginationSelectors;
-        page?: number;
-        setPage?: (page: number) => void;
         pages: number;
+        defaultPage?: number;
+        page?: number;
+        onChange?: (page: number) => void;
+        /**
+         * Hide numbered controls.
+         * 
+         * @default false
+         */
         compact?: boolean;
+        /**
+         * Show skip to start/end controls.
+         * 
+         * @default false
+         */
         skipable?: boolean;
-        round?: boolean;
+        /**
+         * @default "square"
+         */
+        shape?: 'square' | 'round' | 'pill';
         size?: FluidSize;
-        variant?: 'default' | 'neutral' | 'light';
-    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
+        variant?: 'default' | 'neutral' | 'minimal';
+        disabled?: boolean;
+        color?: string;
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'children'>) {
     const style = combineClasses(styles, cc);
 
-    const [state, setState] = page !== undefined ? [page, setPage] : useState(0);
+    const id = useId();
+    const [state, setState] = page !== undefined ? [page, onChange] : useState(defaultPage);
 
-    const update = (page: number) => setState?.(page);
-    const buttonProps = { cc, round, size, variant };
+    function getIndices() {
+        const len = Math.min(pages, 3);
 
-    return <div {...props} className={classes(style.pagination, props.className)}>
-        {compact && skipable && <Button {...buttonProps} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state < 1} onClick={() => update(0)} aria-label="1">
+        return new Array(len)
+            .fill(0)
+            .map((_, i) => {
+                if (!i) return skipable ? Math.min(Math.max(state - 1, 0), pages - 3) : 0;
+                if (i < len - 1) return Math.min(Math.max(state, 1), pages - 2);
+
+                return skipable ?
+                    Math.max(Math.min(state + 1, pages - 1), 2) :
+                    pages - 1;
+            });
+    }
+
+    const previous = useRef(getIndices());
+
+    const update = (page: number) => {
+        previous.current = getIndices();
+
+        setState?.(page);
+        onChange?.(page);
+    }
+
+    const backDisabled = state < 1 || disabled;
+    const forwardDisabled = state >= pages - 1 || disabled;
+
+    return <div
+        {...props}
+        style={{
+            ...props.style,
+            '--color': color
+        } as any}
+        role="navigation"
+        aria-disabled={disabled}
+        className={classes(
+            style.pagination,
+            style[`s__${size}`],
+            style[`v__${variant}`],
+            style[shape],
+            props.className
+        )}>
+        {skipable && <Interactable
+            disabled={backDisabled}
+            aria-label="1"
+            className={style.button}
+            onClick={() => update(0)}>
             <Icon type="first" />
-        </Button>}
+        </Interactable>}
 
-        <Button {...buttonProps} disabled={state < 1} onClick={() => update(state - 1)} aria-label={state + ''}>
+        <Interactable
+            disabled={backDisabled}
+            aria-label={state + ''}
+            className={style.button}
+            onClick={() => update(state - 1)}>
             <Icon type="left" />
-        </Button>
+        </Interactable>
 
-        {!compact && <>
-            {[0, state, pages - 1].map((idx, i) => {
-                if (i === 1 && pages >= 3 && [0, pages - 1].includes(state)) idx += state === 0 ? 1 : -1;
-                if (i !== 1 && state === idx && pages < 3) return null;
-                if (idx < 0 || idx >= pages) return null;
+        {!compact && <div className={style.buttons}>
+            {getIndices().map((index, i) => {
+                const previousIndex = previous.current[i] !== undefined ? previous.current[i] : index,
+                    gridStyle = {
+                        gridColumn: i + 1,
+                        gridRow: 1
+                    };
 
-                return <Button key={i} {...buttonProps} variant={idx === state ? variant : 'minimal'} onClick={() => update(idx)} aria-current={idx === state ? 'page' : undefined}>{idx + 1}</Button>;
+                return <Fragment key={i}>
+                    <div className={style.layer} style={gridStyle} />
+
+                    {index === state && <Animate
+                        morph={`${id}-pagination-selection`}
+                        transition={{
+                            cache: ['x'],
+                            duration: .35
+                        }}>
+                        <div className={classes(style.layer, style.selection)} style={gridStyle} />
+                    </Animate>}
+
+                    <Interactable
+                        disabled={disabled}
+                        className={classes(
+                            style.button,
+                            style.index
+                        )}
+                        style={gridStyle}
+                        aria-current={index === state ? 'page' : undefined}
+                        onClick={() => update(index)}>
+                        <Animate
+                            correction="none"
+                            clips={{
+                                forward: {
+                                    translate: ['33.3% 0%', '0% 0%'],
+                                    duration: .35
+                                },
+                                back: {
+                                    translate: ['-33.3% 0%', '0% 0%'],
+                                    duration: .35
+                                }
+                            }}
+                            triggers={{
+                                forward: [{ on: previousIndex - index < 0 ? state : false, override: true }],
+                                back: [{ on: previousIndex - index > 0 ? state : false, override: true }]
+                            }}>
+                            <div className={style.indices}>
+                                <span>
+                                    {previousIndex + 1}
+                                </span>
+                                <span>
+                                    {index + 1}
+                                </span>
+                                <span>
+                                    {previousIndex + 1}
+                                </span>
+                            </div>
+                        </Animate>
+                    </Interactable>
+                </Fragment>;
             })}
-        </>}
+        </div>}
 
-        <Button {...buttonProps} disabled={state >= pages - 1} onClick={() => update(state + 1)} aria-label={state + 2 + ''}>
+        <Interactable
+            disabled={forwardDisabled}
+            aria-label={state + 2 + ''}
+            className={style.button}
+            onClick={() => update(state + 1)}>
             <Icon type="right" />
-        </Button>
+        </Interactable>
 
-        {compact && skipable && <Button {...buttonProps} variant={variant === 'neutral' ? variant : 'minimal'} disabled={state >= pages - 1} onClick={() => update(pages - 1)} aria-label={pages + ''}>
+        {skipable && <Interactable
+            disabled={forwardDisabled}
+            aria-label={pages + ''}
+            className={style.button}
+            onClick={() => update(pages - 1)}>
             <Icon type="last" />
-        </Button>}
+        </Interactable>}
     </div>;
 }

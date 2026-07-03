@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Field, { FieldProps } from './field';
-import { Animatable } from '@infinityfx/lively';
+import { Animate } from '@infinityfx/lively';
 import Calendar from './calendar';
 import Popover from '../layout/popover';
 import { createStyles } from '../../core/style';
@@ -30,6 +30,17 @@ const styles = createStyles('date-field', fluid => ({
             boxShadow: 'var(--f-shadow-med)',
             border: 'solid 1px var(--f-clr-fg-200)'
         }
+    },
+
+    [`@media(max-width: ${fluid.breakpoints.mob}px)`]: {
+        '.calendar': {
+            background: 'none !important',
+            padding: '0 !important'
+        },
+
+        '.years': {
+            background: 'var(--f-clr-bg-100) !important'
+        }
     }
 }));
 
@@ -44,6 +55,11 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
         defaultValue?: Date;
         onChange?: (value: Date | null) => void;
         disabled?: boolean | Date[];
+        /**
+         * Whether to show a right-side 'clear' button.
+         * 
+         * @default false
+         */
         clearable?: boolean;
     } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>) {
     const style = combineClasses(styles, cc);
@@ -53,7 +69,8 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
 
     return <Popover.Root position="center" mobileContainer="modal">
         <Popover.Trigger disabled={disabled === true || props.readOnly}>
-            <Field {...props}
+            <Field
+                {...props}
                 cc={cc}
                 inputMode="none"
                 role="combobox"
@@ -73,7 +90,7 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
 
                     setPartial(null);
                 }}
-                right={clearable && <Button
+                right={clearable ? <Button
                     compact
                     aria-label="Clear date"
                     round={props.round}
@@ -85,31 +102,34 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
                     }}
                     onClick={() => setState?.(null)}>
                     <Icon type="close" />
-                </Button>}
+                </Button> : props.right}
             />
         </Popover.Trigger>
 
         <Popover.Content role="listbox">
-            <Animatable
-                id="date-field-calendar"
+            <Animate
+                correction="none"
+                key="date-field-calendar"
                 animate={{
                     opacity: [0, .2, 1],
                     scale: [.9, 1],
                     duration: .2
                 }}
-                triggers={[
-                    { on: 'mount' },
-                    { on: 'unmount', reverse: true }
-                ]}>
+                triggers={{
+                    animate: ['mount', { on: 'unmount', reverse: true }]
+                }}>
 
                 <Calendar
-                    className={style.calendar}
+                    cc={{
+                        calendar: style.calendar,
+                        years: style.years
+                    }}
                     round={props.round}
                     size={props.size}
                     disabled={disabled}
                     value={state}
                     onChange={date => setState?.(date)} />
-            </Animatable>
+            </Animate>
         </Popover.Content>
     </Popover.Root>
 }

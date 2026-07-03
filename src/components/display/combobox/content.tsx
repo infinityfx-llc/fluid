@@ -4,7 +4,7 @@ import { Children, cloneElement, isValidElement, useLayoutEffect, useMemo, useRe
 import Popover from '../../layout/popover';
 import Scrollarea from '../../layout/scrollarea';
 import Field from '../../input/field';
-import { Animatable } from '@infinityfx/lively';
+import { Animate } from '@infinityfx/lively';
 import { classes, combineClasses, combineRefs, getFocusable } from '../../../../src/core/utils';
 import { FluidSize, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
@@ -14,7 +14,7 @@ import { useDebounce } from '../../../hooks';
 
 const styles = createStyles('combobox.content', {
     '.container:not(.modal)': {
-        background: 'var(--f-clr-bg-200)',
+        backgroundColor: 'var(--f-clr-fg-100)',
         border: 'solid 1px var(--f-clr-fg-200)',
         borderRadius: 'calc(.25em + var(--f-radius-sml))',
         boxShadow: 'var(--f-shadow-med)',
@@ -24,6 +24,10 @@ const styles = createStyles('combobox.content', {
 
     '.container.round': {
         borderRadius: '1.4em'
+    },
+
+    '.v__inverted:not(.modal)': {
+        backgroundColor: 'var(--f-clr-grey-900)'
     },
 
     '.s__xsm': {
@@ -43,7 +47,6 @@ const styles = createStyles('combobox.content', {
     },
 
     '.content': {
-        padding: '.25em',
         maxHeight: '9.5em'
     },
 
@@ -67,6 +70,19 @@ const styles = createStyles('combobox.content', {
 
     '.container .field__content': {
         paddingBlock: '.5em'
+    },
+
+    '.v__inverted:not(.modal) .field': {
+        background: 'var(--f-clr-grey-900)',
+        color: 'var(--f-clr-grey-700)'
+    },
+
+    '.v__inverted:not(.modal) .field:focus-within': {
+        background: 'var(--f-clr-grey-800)'
+    },
+
+    '.v__inverted:not(.modal) .input': {
+        color: 'var(--f-clr-text-200)'
     }
 });
 
@@ -88,14 +104,30 @@ export default function Content({
         cc?: ComboboxContentSelectors;
         round?: boolean;
         size?: FluidSize;
+        /**
+         * @default false
+         */
         searchable?: boolean;
+        /**
+         * The placeholder text to show inside the optional searchbar.
+         * 
+         * @default "Search.."
+         */
         placeholder?: string;
+        /**
+         * The text to show when there are no search results to show.
+         * 
+         * @default "Nothing found"
+         */
         emptyMessage?: string;
+        /**
+         * When set to a `number` greater than `0`, will enable virtual scrolling, improving performance for large numbers of entries.
+         */
         virtualItemHeight?: number;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    const { opened, trigger, content, isModal } = usePopover();
+    const { variant, opened, trigger, content, isModal } = usePopover();
 
     const itemCount = useRef(0);
     const focus = useRef({
@@ -133,9 +165,10 @@ export default function Content({
         itemCount.current = 0;
 
         return Children.map(children, (child: any) => {
-            if (!isValidElement<any>(child)) return child;
+            const option = isValidElement<any>(child) && ('value' in child.props ? child : child.props.children); // bad way of doing this (needed for tooltips..)
+            if (!isValidElement<any>(option) || !('value' in option.props)) return child; // TODO: refactor
 
-            const value = ('value' in child.props && ('' + child.props.value).toLowerCase()) || '';
+            const value = ('' + option.props.value).toLowerCase() || '';
             if (!value.includes(query)) return null;
 
             const listIndex = itemCount.current++,
@@ -145,9 +178,9 @@ export default function Content({
             return cloneElement(child, {
                 round,
                 ref: combineRefs(el => {
-                    focus.current.list[focusIndex] = el;
+                    if (!child.props.disabled) focus.current.list[focusIndex] = el;
                 }, child.props.ref),
-                onFocus: (e: React.FocusEvent<any>) => {
+                onFocus: (e: React.FocusEvent<any>) => {  // manage focus control in deticated focus context wrapper component? (re-use for others)
                     focus.current.index = focusIndex;
                     props.onFocus?.(e);
                 },
@@ -157,24 +190,34 @@ export default function Content({
     }, [children, view, query]);
 
     return <Popover.Content>
-        <Animatable id="combobox-options-outer"
+        <Animate
+            correction="none"
+            key="combobox-options-outer"
             animate={{
                 opacity: [0, .2, 1],
                 scale: [0.9, 1],
                 duration: .2
             }}
-            triggers={[
-                { on: 'mount' },
-                { on: 'unmount', reverse: true }
-            ]}>
+            triggers={{
+                animate: ['mount', { on: 'unmount', reverse: true }]
+            }}>
 
-            <div {...props} role="listbox" className={classes(
-                style.container,
-                style[`s__${size}`],
-                round && style.round,
-                isModal && style.modal,
-                props.className
-            )}
+            <div
+                {...props}
+                role="listbox"
+                className={classes(
+                    style.container,
+                    style[`s__${size}`],
+                    style[`v__${variant}`],
+                    round && style.round,
+                    isModal && style.modal,
+                    props.className
+                )}
+                onBlur={e => {
+                    props.onBlur?.(e);
+
+                    focus.current.index = -1;
+                }}
                 onKeyDown={e => {
                     props.onKeyDown?.(e);
 
@@ -200,21 +243,27 @@ export default function Content({
                     inputRef={(el: any) => focus.current.list[0] = el}
                     autoFocus={focus.current.index == 0}
                     onFocus={() => focus.current.index = 0}
+                    defaultValue={query}
                     onChange={e => search(e.target.value.toLowerCase())}
                     cc={{
+                        ...cc,
                         field: style.field,
                         content: style.field__content,
-                        ...cc
+                        input: style.input
                     }} />}
 
                 <Scrollarea
                     className={style.content}
-                    onScroll={e => updateView(e.currentTarget.scrollTop)}>
-                    <div style={virtualItemHeight ? { minHeight: virtualItemHeight * itemCount.current } : undefined}>
+                    onScroll={e => updateView(e.currentTarget.scrollTop)}
+                    onTouchStart={e => e.stopPropagation()}>
+                    <div
+                        style={{
+                            padding: '.25em',
+                            minHeight: virtualItemHeight ? virtualItemHeight * itemCount.current : undefined
+                        }}>
                         <div style={{ height: virtualItemHeight * view.start }} />
-                        <Animatable id="combobox-options-inner"
+                        <Animate
                             inherit
-                            cachable={[]}
                             animate={{
                                 opacity: [0, 1],
                                 scale: [.95, 1],
@@ -223,7 +272,7 @@ export default function Content({
                             staggerLimit={4}
                             stagger={.05}>
                             {(!virtualItemHeight || view.end !== Infinity) && filteredChildren}
-                        </Animatable>
+                        </Animate>
 
                         {!itemCount.current && <div className={style.message}>
                             {emptyMessage}
@@ -231,7 +280,7 @@ export default function Content({
                     </div>
                 </Scrollarea>
             </div>
-        </Animatable>
+        </Animate>
     </Popover.Content>;
 }
 

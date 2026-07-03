@@ -1,7 +1,8 @@
 node_modules/
-src/
-bin/
+/src/
+/bin/
 compiled/
+.rollup.cache/
 
 rollup.config.js
 .tsconfig.json

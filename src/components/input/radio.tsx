@@ -1,8 +1,8 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
-import Halo from "../feedback/halo";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { createStyles } from "../../core/style";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('radio', {
     '.wrapper': {
@@ -32,7 +32,8 @@ const styles = createStyles('radio', {
         inset: 0,
         width: '100%',
         height: '100%',
-        zIndex: 1
+        zIndex: 1,
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.radio': {
@@ -50,8 +51,8 @@ const styles = createStyles('radio', {
     },
 
     '.input:checked:enabled + .radio': {
-        backgroundColor: 'var(--color)',
-        borderColor: 'var(--color)'
+        backgroundColor: 'var(--color, var(--f-clr-primary-300))',
+        borderColor: 'var(--color, var(--f-clr-primary-300))'
     },
 
     '.selection': {
@@ -104,7 +105,7 @@ const styles = createStyles('radio', {
         backgroundColor: 'var(--f-clr-error-200)'
     },
 
-    '.wrapper .halo': {
+    '.wrapper .highlight': {
         borderRadius: '999px',
         inset: '-.5em'
     }
@@ -117,7 +118,7 @@ export type RadioSelectors = Selectors<'wrapper' | 'input' | 'radio' | 'selectio
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/radio}
  */
-export default function Radio({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', ...props }:
+export default function Radio({ cc = {}, error, size = 'med', color, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: RadioSelectors;
@@ -129,20 +130,21 @@ export default function Radio({ cc = {}, error, size = 'med', color = 'var(--f-c
 
     const [split, rest] = useInputProps(props);
 
-    return <Halo hover={false} cc={{ halo: style.halo, ...cc }}>
-        <div {...rest}
-            className={classes(
-                style.wrapper,
-                style[`s__${size}`],
-                rest.className
-            )}
-            data-error={!!error}>
+    return <Interactable
+        {...rest}
+        as="div"
+        noHover
+        cc={{ ...cc, highlight: style.highlight }}
+        className={classes(
+            style.wrapper,
+            style[`s__${size}`],
+            rest.className
+        )}
+        data-error={!!error}>
+        <input {...split} type="radio" className={style.input} aria-invalid={!!error} />
 
-            <input {...split} type="radio" className={style.input} aria-invalid={!!error} />
-
-            <div className={style.radio} style={{ '--color': color } as any}>
-                <div className={style.selection} />
-            </div>
+        <div className={style.radio} style={{ '--color': color } as any}>
+            <div className={style.selection} />
         </div>
-    </Halo>;
+    </Interactable>;
 }

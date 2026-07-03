@@ -2,16 +2,14 @@
 
 import { Selectors } from "../../../src/types";
 import { useState } from "react";
-import Halo from "../feedback/halo";
-import { Animatable } from "@infinityfx/lively";
+import { Animate } from "@infinityfx/lively";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('hamburger', {
     '.hamburger': {
         position: 'relative',
-        border: 'none',
-        background: 'none',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-around',
@@ -19,14 +17,13 @@ const styles = createStyles('hamburger', {
         height: '2.5em',
         width: '2.5em',
         padding: '.5em',
-        borderRadius: 'var(--f-radius-sml)',
-        outline: 'none'
+        borderRadius: 'var(--f-radius-sml)'
     },
 
     '.line': {
         width: '100%',
         height: '3px',
-        backgroundColor: 'var(--color)',
+        backgroundColor: 'var(--color, var(--f-clr-text-100))',
         transformOrigin: 'bottom right',
         borderRadius: '99px'
     },
@@ -62,7 +59,7 @@ export type HamburgerSelectors = Selectors<'hamburger' | 'line' | 'cross'>
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/hamburger}
  */
-export default function Hamburger({ cc = {}, open, color = 'var(--f-clr-text-100)', ...props }: {
+export default function Hamburger({ cc = {}, open, color, ...props }: {
     ref?: React.Ref<HTMLButtonElement>;
     cc?: HamburgerSelectors;
     open?: boolean;
@@ -71,44 +68,62 @@ export default function Hamburger({ cc = {}, open, color = 'var(--f-clr-text-100
     const style = combineClasses(styles, cc);
 
     const [state, setState] = open !== undefined ? [open] : useState(false);
+    const triggers = {
+        animate: [{ on: state, composite: 'override' as const }, { on: !state, reverse: true, composite: 'override' as const }]
+    };
 
-    return <Halo disabled={props.disabled}>
-        <button {...props}
-            style={{
-                ...props.style,
-                '--color': color
-            } as any}
-            className={classes(
-                style.hamburger,
-                props.className
-            )}
-            onClick={e => {
-                setState?.(!state);
-                props.onClick?.(e);
-            }}>
-            <Animatable animate={{ scale: ['1 1', '0 1', '0 1'], duration: .6 }} deform={false} triggers={[
-                { on: state, immediate: true },
-                { on: !state, reverse: true, immediate: true }
-            ]}>
-                {new Array(3).fill(0).map((_, i) => {
-                    return <div key={i} className={style.line} />
-                })}
-            </Animatable>
+    return <Interactable
+        {...props}
+        style={{
+            ...props.style,
+            '--color': color
+        } as any}
+        className={classes(
+            style.hamburger,
+            props.className
+        )}
+        onClick={e => {
+            setState?.(!state);
+            props.onClick?.(e);
+        }}>
+        <Animate
+            transition={{ cache: [] }}
+            animate={{
+                scale: ['1 1', '0 1', '0 1'],
+                duration: .6
+            }}
+            triggers={triggers}>
+            {new Array(3).fill(0).map((_, i) => {
+                return <div key={i} className={style.line} />
+            })}
+        </Animate>
 
-            <div className={style.cross}>
-                <Animatable animate={{ scale: ['0 1', '0 1', '1 1'], duration: .6 }} deform={false} triggers={[
-                    { on: state, immediate: true },
-                    { on: !state, reverse: true, immediate: true }
-                ]}>
-                    <div className={style.line} />
-                </Animatable>
-                <Animatable animate={{ scale: ['1 0', '1 0', '1 1'], duration: .6, delay: .2 }} deform={false} triggers={[
-                    { on: state, immediate: true },
-                    { on: !state, reverse: true, immediate: true }
-                ]}>
-                    <div className={style.line} />
-                </Animatable>
-            </div>
-        </button>
-    </Halo>;
+        <div className={style.cross}>
+            <Animate
+                transition={{ cache: [] }}
+                initial={{
+                    scale: '0 1'
+                }}
+                animate={{
+                    scale: ['0 1', '0 1', '1 1'],
+                    duration: .6
+                }}
+                triggers={triggers}>
+                <div className={style.line} />
+            </Animate>
+            <Animate
+                transition={{ cache: [] }}
+                initial={{
+                    scale: '1 0'
+                }}
+                animate={{
+                    scale: ['1 0', '1 0', '1 1'],
+                    duration: .6,
+                    delay: .2
+                }}
+                triggers={triggers}>
+                <div className={style.line} />
+            </Animate>
+        </div>
+    </Interactable>;
 }

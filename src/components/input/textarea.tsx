@@ -3,7 +3,6 @@
 import { classes, combineClasses } from '../../../src/core/utils';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { FluidSize, Selectors } from '../../../src/types';
-import { useState } from 'react';
 import Scrollarea from '../layout/scrollarea';
 import { createStyles } from '../../core/style';
 
@@ -25,6 +24,8 @@ const styles = createStyles('textarea', {
     },
 
     '.textarea': {
+        display: 'flex',
+        flexDirection: 'column',
         outline: 'solid 3px transparent',
         backgroundColor: 'var(--f-clr-bg-200)',
         border: 'solid 1px var(--f-clr-fg-200)',
@@ -38,14 +39,25 @@ const styles = createStyles('textarea', {
         outlineColor: 'var(--f-clr-primary-500)'
     },
 
+    '.stretch': {
+        position: 'relative',
+        whiteSpace: 'pre-wrap',
+        padding: '.6em',
+        flexShrink: 0,
+        flexGrow: 1,
+        color: 'transparent'
+    },
+
     '.input': {
+        position: 'absolute',
+        inset: 0,
         width: '100%',
-        minHeight: 'calc(100% - 2px)',
+        height: '100%',
         resize: 'none',
         outline: 'none',
         border: 'none',
         background: 'none',
-        overflow: 'visible',
+        overflow: 'hidden',
         padding: '.6em',
         color: 'var(--f-clr-text-100)'
     },
@@ -85,12 +97,14 @@ export default function Textarea({ cc = {}, size = 'med', error, resize = 'both'
         cc?: TextareaSelectors;
         size?: FluidSize;
         error?: any;
+        /**
+         * @default "both"
+         */
         resize?: 'none' | 'vertical' | 'horizontal' | 'both';
     } & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'children' | 'cols'>) {
     const style = combineClasses(styles, cc);
 
     const [split, rest] = useInputProps(props);
-    const [rows, setRows] = useState(1);
 
     return <Scrollarea
         {...rest}
@@ -101,20 +115,19 @@ export default function Textarea({ cc = {}, size = 'med', error, resize = 'both'
         )}
         data-error={!!error}
         data-disabled={props.disabled}
+        data-fb
         style={{
             resize,
-            height: `${(props.rows || 2) * 2}em`
+            minHeight: `calc(${props.rows || 2}lh + 1.2em)`,
+            ...props.style
         }}>
-        <textarea
-            {...split}
-            rows={rows}
-            className={style.input}
-            aria-invalid={!!error}
-            onChange={e => {
-                // update the row count based on the amount of newline characters
-                split.onChange?.(e);
+        <div className={style.stretch}>
+            {split.value}
 
-                setRows(e.target.value.split(/\n/g).length);
-            }} />
+            <textarea
+                {...split}
+                className={style.input}
+                aria-invalid={!!error} />
+        </div>
     </Scrollarea>;
 }

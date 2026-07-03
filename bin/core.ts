@@ -150,10 +150,10 @@ export async function emitCss(io: IOHelper, stats: Stats, omitGlobals = false) {
             return stylesheet += entry.rules;
         }, '');
 
-    stats.files.push({ // not correct for manual css output mode
-        name: `${io.parent}-${io.timestamp}.css`,
+    stats.files.push({
+        name: cssOutput === 'automatic' ? `${io.parent}-${io.timestamp}.css` : `${io.parent}.css (partial)`,
         size: new Blob([stylesheet], { type: 'text/css' }).size
-    })
+    });
 
     cssOutput === 'automatic' ?
         io.output(`./${io.parent}-${io.timestamp}.css`, stylesheet) :

@@ -3,50 +3,58 @@
 import { classes, combineClasses } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
 import { useState } from "react";
-import Halo from "../feedback/halo";
 import Scrollarea from "../layout/scrollarea";
 import Button from "../input/button";
 import Checkbox from "../input/checkbox";
 import ActionMenu from "./action-menu/index";
 import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
+import Interactable from "../feedback/interactable";
 
-// variants: default | minimal/light mabye?
+// TODO: variants: default | minimal/light mabye?
+
+const formatHeading = (val: any) => ('' + val).charAt(0).toUpperCase() + ('' + val).slice(1).replace(/[a-z][A-Z]/g, '$1 $2');
 
 const styles = createStyles('table', {
     '.table': {
-        backgroundColor: 'var(--f-clr-bg-200)',
-        borderRadius: 'var(--f-radius-sml)',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: 'var(--f-clr-bg-100)',
+        borderRadius: 'var(--f-radius-med)',
         border: 'solid 1px var(--f-clr-fg-200)',
-        display: 'flex'
+        padding: 'var(--f-spacing-xsm)',
+        paddingTop: 0
     },
 
-    '.rows': {
+    '.body': {
         minWidth: 'max-content',
         display: 'flex',
         flexDirection: 'column',
-        flexGrow: 1
+        gap: '1px',
+        flexGrow: 1,
+        borderRadius: 'var(--f-radius-sml)',
+        overflow: 'hidden'
     },
 
     '.row': {
         position: 'relative',
         display: 'grid',
         gridAutoFlow: 'column',
-        alignItems: 'center',
+        alignItems: 'baseline',
         padding: '.6em',
         gap: 'var(--f-spacing-sml)',
         color: 'var(--f-clr-text-100)'
     },
 
-    '.row:not(:last-child)': {
-        borderBottom: 'solid 1px var(--f-clr-fg-200)'
+    '.body .row': {
+        background: 'var(--f-clr-fg-100)'
     },
 
     '.row > *:not(.collapsed)': {
         whiteSpace: 'nowrap'
     },
 
-    '.row > [role="gridcell"]': {
+    '.row > [role="cell"]': {
         paddingInline: '.4rem'
     },
 
@@ -57,8 +65,7 @@ const styles = createStyles('table', {
 
     '.header': {
         fontSize: '.9em',
-        fontWeight: 700,
-        background: 'var(--f-clr-fg-100)'
+        fontWeight: 700
     },
 
     '.label': {
@@ -69,10 +76,7 @@ const styles = createStyles('table', {
         alignItems: 'center',
         gap: 'var(--f-spacing-xxs)',
         width: 'max-content',
-        padding: '.2rem .4rem',
-        border: 'none',
-        background: 'none',
-        outline: 'none'
+        padding: '.2rem .4rem'
     },
 
     '.label:enabled': {
@@ -111,8 +115,13 @@ type TableProps<T> = {
         [column in keyof T]?: (value: T[column]) => React.ReactNode;
     };
     rowActions?: (row: T, index: number) => React.ReactNode;
+    /**
+     * Message to display when no data is defined.
+     * 
+     * @default "Nothing to display"
+     */
     emptyMessage?: string;
-} & React.HTMLAttributes<HTMLDivElement>;
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'onSelect'>;
 
 /**
  * A table displaying data.
@@ -146,10 +155,11 @@ export default function Table<T extends { [key: string]: string | number | Date;
     return <Scrollarea
         {...props}
         role="grid"
-        horizontal
+        direction="horizontal"
         behavior="shift"
-        className={classes(style.table, props.className)}>
-        <div role="rowgroup" className={style.rows}>
+        className={classes(style.table, props.className)}
+        data-fb>
+        <div role="rowgroup">
             <div role="row" className={classes(style.row, style.header)} style={{ gridTemplateColumns }}>
                 {selectable && <div className={style.collapsed}>
                     <Checkbox
@@ -174,83 +184,90 @@ export default function Table<T extends { [key: string]: string | number | Date;
 
                     // returns a column header button
                     return <div key={i} role="columnheader">
-                        <Halo disabled={!sort}>
-                            <button
-                                className={style.label}
-                                type="button"
-                                disabled={!sort}
-                                onClick={() => {
-                                    // if sorting is enabled for this column, toggles between ascending, descending and no sorting
-                                    setColumn(col as string);
+                        <Interactable
+                            disabled={!sort}
+                            className={style.label}
+                            onClick={() => {
+                                // if sorting is enabled for this column, toggles between ascending, descending and no sorting
+                                setColumn(col as string);
 
-                                    if (column !== col || sorting === 'nil') {
-                                        setSorting('asc');
-                                    } else
-                                        if (sorting === 'asc') {
-                                            setSorting('dsc');
-                                        } else {
-                                            setSorting('nil');
-                                        }
-                                }}>
-                                {col as string}
+                                if (column !== col || sorting === 'nil') {
+                                    setSorting('asc');
+                                } else
+                                    if (sorting === 'asc') {
+                                        setSorting('dsc');
+                                    } else {
+                                        setSorting('nil');
+                                    }
+                            }}>
+                            {formatHeading(col)}
 
-                                {(column !== col || sorting === 'nil') && sort && <Icon type="sort" />}
+                            {sort && <>
+                                {(column !== col || sorting === 'nil') && <Icon type="sort" />}
                                 {column === col && sorting === 'asc' && <Icon type="sortAscend" />}
                                 {column === col && sorting === 'dsc' && <Icon type="sortDescend" />}
-                            </button>
-                        </Halo>
+                            </>}
+                        </Interactable>
                     </div>;
                 })}
 
                 {rowActions ? <div className={style.collapsed} /> : null}
             </div>
+        </div>
 
+        <div role="rowgroup" className={style.body}>
             {rows.map((row, i) => {
 
-                return <Halo key={i} disabled={!selectable}>
-                    <div role="row" className={style.row} style={{ gridTemplateColumns }}>
-                        {selectable && <div className={style.collapsed}>
-                            <Checkbox
-                                size="xsm"
-                                color="var(--f-clr-text-100)"
-                                cc={{ checkbox: style.checkbox, checkmark: style.checkmark }}
-                                checked={selectedIndices.includes(i)}
-                                onChange={e => {
-                                    // select or deselect the i'th row
-                                    const updated = selectedIndices.slice();
-                                    e.target.checked ? updated.push(i) : updated.splice(updated.indexOf(i), 1);
+                return <Interactable
+                    key={i}
+                    as="div"
+                    role="row"
+                    highlightColor="var(--f-clr-primary-300)"
+                    className={style.row}
+                    style={{ gridTemplateColumns }}>
+                    {selectable && <div className={style.collapsed}>
+                        <Checkbox
+                            size="xsm"
+                            color="var(--f-clr-text-100)"
+                            cc={{ checkbox: style.checkbox, checkmark: style.checkmark }}
+                            checked={selectedIndices.includes(i)}
+                            onChange={e => {
+                                // select or deselect the i'th row
+                                const updated = selectedIndices.slice();
+                                e.target.checked ? updated.push(i) : updated.splice(updated.indexOf(i), 1);
 
-                                    updateSelected(updated);
-                                }} />
-                        </div>}
+                                updateSelected(updated);
+                            }} />
+                    </div>}
 
-                        {columns.map((col, i) => {
-                            // format row data into string values
-                            const formatter = columnFormatters[col] || (val => val.toString());
+                    {columns.map((col, i) => {
+                        // format row data into string values
+                        const formatter = columnFormatters[col] || (val => val.toString());
 
-                            return <div key={i} role="gridcell">
-                                {formatter(row[col])}
-                            </div>;
-                        })}
+                        return <div key={i} role="cell">
+                            {formatter(row[col])}
+                        </div>;
+                    })}
 
-                        {rowActions?.length ? <div className={style.collapsed}>
-                            <ActionMenu.Root>
-                                <ActionMenu.Trigger>
-                                    <Button compact variant="minimal" size="sml" style={{ marginLeft: 'auto' }}>
-                                        <Icon type="more" />
-                                    </Button>
-                                </ActionMenu.Trigger>
+                    {rowActions?.length ? <div className={style.collapsed}>
+                        <ActionMenu.Root>
+                            <ActionMenu.Trigger>
+                                <Button compact variant="minimal" size="sml" style={{ marginLeft: 'auto' }}>
+                                    <Icon type="more" />
+                                </Button>
+                            </ActionMenu.Trigger>
 
-                                <ActionMenu.Menu>
-                                    {rowActions(rows[i], i)}
-                                </ActionMenu.Menu>
-                            </ActionMenu.Root>
-                        </div> : null}
-                    </div>
-                </Halo>;
+                            <ActionMenu.Menu>
+                                {rowActions(rows[i], i)}
+                            </ActionMenu.Menu>
+                        </ActionMenu.Root>
+                    </div> : null}
+                </Interactable>;
             })}
 
-            {!rows.length && <div className={style.empty}>{emptyMessage}</div>}
+            {!rows.length && <div className={style.empty}>
+                {emptyMessage}
+            </div>}
         </div>
     </Scrollarea>;
 }

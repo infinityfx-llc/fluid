@@ -2,12 +2,12 @@
 
 import { classes, combineClasses } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { Animatable } from "@infinityfx/lively";
+import { Animate } from "@infinityfx/lively";
 import { useId } from "react";
-import Halo from "../feedback/halo";
 import ProgressBar from "../feedback/progress-bar";
 import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('stepper', {
     '.stepper': {
@@ -129,8 +129,8 @@ const styles = createStyles('stepper', {
         color: 'var(--f-clr-grey-600)'
     },
 
-    '.halo': {
-        inset: '-.5em !important'
+    '.step .highlight': {
+        inset: '-.5em'
     },
 
     '.track': {
@@ -149,6 +149,11 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: StepperSelectors;
+        /**
+         * What type of navigation through the steps to allow.
+         * 
+         * @default "backwards"
+         */
         navigation?: 'none' | 'forwards' | 'backwards' | 'both';
         variant?: 'default' | 'compact' | 'vertical';
         steps: {
@@ -163,9 +168,11 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
     const style = combineClasses(styles, cc);
 
     const id = useId();
-    const stepsArray = variant === 'compact' ?
-        steps.slice(Math.min(completed, steps.length - 1), completed + 1) :
-        steps;
+    let stepsArray = steps
+        .map((step, i) => Object.assign({
+            label: (i + 1 + '').padStart(2, '0')
+        }, step));
+    if (variant === 'compact') stepsArray = stepsArray.slice(Math.min(completed, steps.length - 1), completed + 1);
 
     return <div
         {...props}
@@ -181,8 +188,6 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
                     navigation === 'both' ? true : false) && variant !== 'compact';
             const isCompleted = variant === 'compact' ? completed === steps.length : i < completed;
 
-            if (!label) label = (i + 1 + '').padStart(2, '0');
-
             return <div
                 key={i}
                 className={style.step}
@@ -191,38 +196,30 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
                 data-error={error}>
 
                 <div className={style.header}>
-                    <Halo disabled={!navigatable} cc={{ halo: style.halo }}>
-                        <button
-                            type="button"
-                            className={style.bullet}
-                            disabled={!navigatable}
-                            onClick={() => setCompleted?.(i)}
-                            aria-labelledby={`${id}-${i}`}>
-                            <div className={style.icon}>
-                                <Animatable
-                                    initial={{
-                                        translate: isCompleted ? '0% -25%' : '0% 25%'
-                                    }}
-                                    animate={{
-                                        translate: ['0% 25%', '0% -25%'],
-                                        duration: .35
-                                    }}
-                                    triggers={[
-                                        { on: isCompleted },
-                                        { on: !isCompleted, reverse: true }
-                                    ]}>
-                                    <div className={style.icons}>
-                                        <div className={style.icon}>
-                                            {icon}
-                                        </div>
-                                        <div className={style.icon}>
-                                            <Icon type="check" />
-                                        </div>
+                    <Interactable
+                        disabled={!navigatable}
+                        cc={{ highlight: style.highlight }}
+                        className={style.bullet}
+                        onClick={() => setCompleted?.(i)}
+                        aria-labelledby={`${id}-${i}`}>
+                        <div className={style.icon}>
+                            <Animate
+                                correction="none"
+                                animate={{
+                                    translate: isCompleted ? '0% -25%' : '0% 25%',
+                                    duration: .35
+                                }}>
+                                <div className={style.icons}>
+                                    <div className={style.icon}>
+                                        {icon}
                                     </div>
-                                </Animatable>
-                            </div>
-                        </button>
-                    </Halo>
+                                    <div className={style.icon}>
+                                        <Icon type="check" />
+                                    </div>
+                                </div>
+                            </Animate>
+                        </div>
+                    </Interactable>
 
                     {i < steps.length - 1 && variant !== 'compact' && <div className={style.progress} />}
                 </div>

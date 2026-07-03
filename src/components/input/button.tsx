@@ -1,17 +1,15 @@
-import Halo from "../feedback/halo";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { FluidSize, Selectors } from "../../../src/types";
 import Spinner from "../feedback/spinner";
 import { createStyles } from "../../core/style";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('button', {
     '.button': {
         position: 'relative',
-        border: 'none',
-        outline: 'none',
         borderRadius: 'var(--f-radius-sml)',
         padding: '.8em',
-        backgroundColor: 'var(--f-clr-primary-100)',
+        backgroundColor: 'var(--color, var(--f-clr-primary-100))',
         color: 'var(--f-clr-text-100)',
         fontWeight: 600,
         display: 'flex',
@@ -24,7 +22,7 @@ const styles = createStyles('button', {
     },
 
     '.button.round': {
-        borderRadius: '999px'
+        borderRadius: 'calc(1.4em + 1px)'
     },
 
     '.s__xsm': {
@@ -48,12 +46,17 @@ const styles = createStyles('button', {
     },
 
     '.v__light': {
-        backgroundColor: 'var(--f-clr-primary-500)'
+        backgroundColor: 'var(--f-clr-fg-100)',
+        color: 'var(--color, var(--f-clr-primary-100))'
     },
 
     '.v__neutral': {
         backgroundColor: 'var(--f-clr-bg-200)',
         border: 'solid 1px var(--f-clr-fg-200)'
+    },
+
+    '.v__neutral .highlight': {
+        borderRadius: 'calc(var(--f-radius-sml) - 1px)'
     },
 
     '.button[data-loading="false"]:disabled': {
@@ -62,22 +65,23 @@ const styles = createStyles('button', {
     },
 
     '.v__minimal': {
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
+        color: 'var(--color, var(--f-clr-text-100))'
     },
 
     '.button:enabled:hover': {
         cursor: 'pointer'
     },
 
-    // '.button:enabled:active': {
-    //     translate: '0px 1px'
-    // },
-
     '.content': {
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--f-spacing-xsm)',
         lineHeight: 1
+    },
+
+    '.button:active .content': {
+        translate: '0px 1px'
     },
 
     '.button[data-loading="true"] .content': {
@@ -96,7 +100,7 @@ export type ButtonSelectors = Selectors<'button' | 'content' | 'loader' | 'round
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/button}
  */
-export default function Button({ children, cc = {}, round = false, compact = false, size = 'med', variant = 'default', loading = false, ...props }:
+export default function Button({ children, cc = {}, round = false, compact = false, size = 'med', variant = 'default', color, loading = false, ...props }:
     {
         ref?: React.Ref<HTMLButtonElement>;
         cc?: ButtonSelectors;
@@ -104,26 +108,35 @@ export default function Button({ children, cc = {}, round = false, compact = fal
         compact?: boolean;
         size?: FluidSize;
         variant?: 'default' | 'neutral' | 'light' | 'minimal';
+        color?: string;
         loading?: boolean;
     } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);
 
-    return <Halo disabled={props.disabled || loading}>
-        <button {...props}
-            type={props.type || 'button'}
-            disabled={props.disabled || loading}
-            className={classes(
-                style.button,
-                round && style.round,
-                compact && style.compact,
-                style[`s__${size}`],
-                style[`v__${variant}`],
-                props.className
-            )}
-            data-loading={loading}>
-            <span className={style.content}>{children}</span>
+    return <Interactable
+        {...props}
+        highlightColor={['light', 'neutral'].includes(variant) ? 'var(--f-clr-grey-300)' : undefined}
+        disabled={props.disabled || loading}
+        cc={{
+            ...cc,
+            highlight: style.highlight
+        }}
+        className={classes(
+            style.button,
+            round && style.round,
+            compact && style.compact,
+            style[`s__${size}`],
+            style[`v__${variant}`],
+            props.className
+        )}
+        style={{
+            '--color': color,
+            ...props.style
+        } as any}
+        data-loading={loading}
+        data-fb={variant === 'neutral' ? 'true' : undefined}>
+        <span className={style.content}>{children}</span>
 
-            {loading && <Spinner className={style.loader} />}
-        </button>
-    </Halo>;
+        {loading && <Spinner className={style.loader} />}
+    </Interactable>;
 }

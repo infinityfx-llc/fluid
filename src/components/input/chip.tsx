@@ -3,10 +3,9 @@
 import { classes, combineClasses } from '../../../src/core/utils';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { FluidSize, Selectors } from '../../../src/types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { createStyles } from '../../core/style';
-import { Animatable } from '@infinityfx/lively';
-import { useLink } from '@infinityfx/lively/hooks';
+import { Animate } from '@infinityfx/lively';
 
 const styles = createStyles('chip', {
     '.wrapper': {
@@ -40,7 +39,8 @@ const styles = createStyles('chip', {
         inset: 0,
         width: '100%',
         height: '100%',
-        borderRadius: 'inherit'
+        borderRadius: 'inherit',
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.input[type="checkbox"]:enabled': {
@@ -130,16 +130,16 @@ export default function Chip({ children, cc = {}, size = 'med', type = 'checkbox
         ref?: React.Ref<HTMLDivElement>;
         cc?: ChipSelectors;
         size?: FluidSize;
+        /**
+         * @default "checkbox"
+         */
         type?: 'checkbox' | 'radio';
         round?: boolean;
     } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'>) {
     const style = combineClasses(styles, cc);
 
     const [split, rest] = useInputProps(props);
-    const link = useLink(defaultChecked ? 1 : 0);
     const [state, setState] = checked !== undefined ? [checked] : useState(defaultChecked || false);
-
-    useEffect(() => link.set(state ? 1 : 0, { duration: .15 }), [state]);
 
     return <div {...rest}
         className={classes(
@@ -155,9 +155,11 @@ export default function Chip({ children, cc = {}, size = 'med', type = 'checkbox
 
         <div className={style.chip}>
             <svg viewBox="0 0 18 18" className={style.checkmark}>
-                <Animatable animate={{ strokeLength: link }} initial={{ strokeDashoffset: state ? 0 : 1 }}>
+                <Animate correction="none" animate={{
+                    strokeLength: state ? 1 : 0
+                }}>
                     <path d="M 3 9 L 8 13 L 15 5" fill="none" />
-                </Animatable>
+                </Animate>
             </svg>
 
             {children}

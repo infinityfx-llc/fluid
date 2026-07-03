@@ -37,7 +37,17 @@ const styles = createStyles('number-field', {
  * @see {@link https://fluid.infinityfx.dev/docs/components/number-field}
  */
 export default function NumberField({ cc = {}, precision = 3, controls = true, defaultValue, ...props }: {
+    /**
+     * Maximum number of digits to allow after the decimal.
+     * 
+     * @default 3
+     */
     precision?: number;
+    /**
+     * Show increment/decrement controls on the sides of the input field.
+     * 
+     * @default true
+     */
     controls?: boolean;
 } & Omit<FieldProps, 'type'>) {
     const style = combineClasses(styles, cc);
@@ -74,7 +84,8 @@ export default function NumberField({ cc = {}, precision = 3, controls = true, d
         round: props.round
     };
 
-    return <Field {...props}
+    return <Field
+        {...props}
         inputRef={combineRefs(inputRef, props.inputRef)}
         type="number"
         value={value}
@@ -91,14 +102,14 @@ export default function NumberField({ cc = {}, precision = 3, controls = true, d
             props.onBlur?.(e);
         }}
         cc={{
+            ...cc,
             field: style.field,
-            input: style.input,
-            ...cc
+            input: style.input
         }}
         left={controls ? <Button {...buttonProps} cc={{ button: style.button__start }} aria-label={`-${step}`} onClick={() => increment(-step)}>
             <Icon type="remove" />
-        </Button> : null}
+        </Button> : props.left}
         right={controls ? <Button {...buttonProps} cc={{ button: style.button__end }} aria-label={`+${step}`} onClick={() => increment(step)}>
             <Icon type="add" />
-        </Button> : null} />;
+        </Button> : props.right} />;
 }

@@ -21,7 +21,6 @@ const styles = createStyles('field', {
     },
 
     '.field': {
-        backgroundColor: 'var(--f-clr-bg-200)',
         borderRadius: 'var(--f-radius-sml)',
         color: 'var(--f-clr-grey-200)',
         transition: 'background-color .2s, border-color .2s, color .2s, outline-color .2s',
@@ -33,6 +32,7 @@ const styles = createStyles('field', {
     },
 
     '.v__default': {
+        backgroundColor: 'var(--f-clr-fg-100)',
         border: 'solid 1px var(--f-clr-fg-200)'
     },
 
@@ -100,7 +100,7 @@ const styles = createStyles('field', {
     },
 
     '.field.round': {
-        borderRadius: '999px'
+        borderRadius: 'calc(1.4em + 1px)'
     }
 });
 
@@ -119,6 +119,13 @@ export type FieldProps = {
     right?: React.ReactNode;
     onEnter?: () => void;
     error?: any;
+    /**
+     * Whether the input should adhear to a specific shape.
+     * 
+     * Use a `"0"` character to match any number.
+     * 
+     * Use a `"*"` character to match any upper- or lowercase letter or number.
+     */
     shape?: string;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>;
 
@@ -154,7 +161,8 @@ export default function Field({ cc = {}, round = false, size = 'med', variant = 
             props.className
         )}
         data-error={!!error}
-        data-disabled={props.disabled}>
+        data-disabled={props.disabled}
+        data-fb={variant === 'default' ? 'true' : undefined}>
         {left}
 
         <label className={style.content}>

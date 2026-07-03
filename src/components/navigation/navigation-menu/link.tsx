@@ -1,9 +1,9 @@
 'use client';
 
-import { Selectors } from '../../../../src/types';
+import { PolymorphComponentProps, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses } from '../../../core/utils';
-import Halo from '../../feedback/halo';
+import Interactable from '../../feedback/interactable';
 import { useNavigationMenu } from './root';
 
 const styles = createStyles('navigation-menu.link', {
@@ -13,36 +13,45 @@ const styles = createStyles('navigation-menu.link', {
         padding: '.4em',
         borderRadius: 'var(--f-radius-sml)',
         fontWeight: 600,
-        color: 'var(--f-clr-text-100)',
-        outline: 'none'
+        color: 'var(--f-clr-text-100)'
     }
 });
 
 export type NavigationMenuLinkSelectors = Selectors<'link'>;
 
-type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a';
+type AnchorLike = React.ComponentType<{
+    href: string;
+    className?: string;
+    onBlur?: (e: React.FocusEvent<any>) => void;
+}> | 'a';
 
-export default function Link({ children, cc = {}, Link = 'a', ...props }:
+export default function Link<A extends AnchorLike>({ children, cc = {}, as, ...props }:
     {
         ref?: React.Ref<HTMLAnchorElement>;
         cc?: NavigationMenuLinkSelectors;
-        Link?: AnchorLike<any>;
-    } & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+        /**
+         * What type of component or element to render this component as.
+         * 
+         * @default HTMLAnchorElement
+         */
+        as?: A;
+    } & Omit<PolymorphComponentProps<A>, 'as'>) {
     const style = combineClasses(styles, cc);
 
     const { root, select } = useNavigationMenu();
 
-    return <Halo color="var(--f-clr-primary-400)">
-        <Link {...props}
-            role="menuitem"
-            className={classes(style.link, props.className)}
-            onBlur={e => {
-                props.onBlur?.(e);
-                if (!root.current?.contains(e.relatedTarget)) select(undefined);
-            }}>
-            {children}
-        </Link>
-    </Halo>;
+    return <Interactable
+        {...props}
+        as={as || 'a'}
+        role="menuitem"
+        highlightColor="var(--f-clr-primary-400)"
+        className={classes(style.link, props.className)}
+        onBlur={(e: React.FocusEvent<any>) => {
+            props.onBlur?.(e);
+            if (!root.current?.contains(e.relatedTarget)) select(undefined);
+        }}>
+        {children}
+    </Interactable>;
 }
 
 Link.displayName = 'NavigationMenu.Link';

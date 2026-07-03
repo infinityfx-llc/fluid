@@ -5,7 +5,7 @@ import Overlay from './overlay';
 import { Selectors } from '../../../src/types';
 import Button from '../input/button';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
-import { Animatable } from '@infinityfx/lively';
+import { Animate } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
 import { createStyles } from '../../core/style';
 import useFluid from '../../hooks/use-fluid';
@@ -16,15 +16,18 @@ import { Icon } from '../../core/icons';
 const styles = createStyles('modal', (fluid) => ({
     '.modal': {
         background: 'var(--f-clr-bg-100)',
-        borderRadius: 'var(--f-radius-med)',
-        display: 'flex',
-        flexDirection: 'column',
-        paddingBlock: 'var(--f-spacing-med)',
+        borderRadius: 'var(--f-radius-lrg)',
         minWidth: 'min(100vw, 16em)',
         border: 'solid 1px var(--f-clr-fg-200)',
         margin: 'var(--f-spacing-lrg)',
         maxHeight: 'calc(100% - var(--f-spacing-lrg) * 2)',
         touchAction: 'none'
+    },
+
+    '.content': {
+        display: 'flex',
+        flexDirection: 'column',
+        paddingBlock: 'var(--f-spacing-med)'
     },
 
     '.scrollarea': {
@@ -40,6 +43,26 @@ const styles = createStyles('modal', (fluid) => ({
         color: 'var(--f-clr-text-100)'
     },
 
+    '.footer': {
+        overflow: 'hidden',
+        position: 'relative',
+        borderTop: 'solid 1px var(--f-clr-fg-200)',
+        padding: 'var(--f-spacing-med)',
+        borderBottomLeftRadius: 'calc(var(--f-radius-med) - 1px)',
+        borderBottomRightRadius: 'calc(var(--f-radius-med) - 1px)',
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: 'var(--f-spacing-sml)'
+    },
+
+    '.footer::before': {
+        content: '""',
+        position: 'absolute',
+        background: 'var(--f-clr-fg-100)',
+        inset: 0,
+        bottom: '-32px'
+    },
+
     '.handle': {
         position: 'relative',
         height: '5px',
@@ -52,7 +75,8 @@ const styles = createStyles('modal', (fluid) => ({
 
     '.title': {
         flexGrow: 1,
-        color: 'var(--f-clr-heading-100)'
+        color: 'var(--f-clr-heading-100)',
+        paddingRight: 'var(--f-spacing-sml)'
     },
 
     [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {
@@ -60,11 +84,14 @@ const styles = createStyles('modal', (fluid) => ({
             width: '100vw',
             alignSelf: 'flex-end',
             margin: 0,
-            borderRadius: 'var(--f-radius-lrg)',
             borderBottomRightRadius: 0,
             borderBottomLeftRadius: 0,
-            paddingBottom: 'calc(var(--f-spacing-med) + 32px)',
+            paddingBottom: '32px',
             marginBottom: '-32px'
+        },
+
+        '.footer': {
+            overflow: 'visible'
         },
 
         '.handle': {
@@ -80,21 +107,26 @@ export type ModalSelectors = Selectors<'modal' | 'header' | 'handle' | 'title'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/modal}
  */
-export default function Modal({ children, cc = {}, show, onClose, title, mobileClosing = 'handle', ref, ...props }:
+export default function Modal({ children, cc = {}, show, onClose, title, footer, mobileClosing = 'handle', ref, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: ModalSelectors;
         show: boolean;
         onClose: () => void;
         title?: React.ReactNode;
+        footer?: React.ReactNode;
+        /**
+         * @default "handle"
+         */
         mobileClosing?: 'button' | 'handle';
-    } & React.HTMLAttributes<HTMLDivElement>) {
+    } & Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>) {
     const style = combineClasses(styles, cc);
 
     const content = useRef<HTMLDivElement>(null);
     const modalRef = useRef<HTMLDivElement>(null);
     const touch = useRef<{ clientY: number; }>(null);
     const offset = useLink(0);
+    const translate = useLink(offset, val => `0px ${val}px`);
 
     const id = useId();
     const fluid = useFluid();
@@ -106,7 +138,7 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
             if (!touch.current || !modalRef.current) return;
 
             if (!e.touches.length) {
-                const py = offset() / modalRef.current.clientHeight;
+                const py = offset.get() / modalRef.current.clientHeight;
 
                 if (py > 0.35) { // close the modal when dragged below 35% the size of the modal
                     onClose();
@@ -120,7 +152,7 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
             const { clientY } = e.touches[0];
             const dy = Math.max(clientY - touch.current.clientY, -32);
 
-            offset.set(dy);
+            offset.set(dy, { duration: 0 });
         }
 
         window.addEventListener('touchmove', update);
@@ -133,18 +165,14 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
     }, []);
 
     return <Overlay show={show} onClose={onClose}>
-        <Animatable id="modal"
-            onAnimationEnd={() => offset.set(0)}
-            initial={isMobile ? {
-                translate: '0% 100%'
-            } : {
-                translate: '0px 20px',
-                opacity: 0
-            }}
+        <Animate
+            correction="none"
+            key="modal"
+            onAnimationEnd={() => offset.set(0, { duration: 0 })}
             animate={{
-                translate: offset(val => `0px ${val}px`)
+                translate
             }}
-            animations={{
+            clips={{
                 mob: {
                     translate: ['0% 100%', '0% 0%'],
                     duration: .25,
@@ -155,14 +183,11 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
                     scale: [0.9, 1],
                     duration: .25
                 }
-            }} triggers={[{
-                on: 'mount',
-                name: isMobile ? 'mob' : 'dsk'
-            }, {
-                on: 'unmount',
-                reverse: true,
-                name: isMobile ? 'mob' : 'dsk'
-            }]}>
+            }}
+            triggers={{
+                mob: isMobile ? ['mount', { on: 'unmount', reverse: true }] : [],
+                dsk: isMobile ? [] : ['mount', { on: 'unmount', reverse: true }]
+            }}>
             <div
                 {...props}
                 ref={combineRefs(ref, modalRef)}
@@ -171,22 +196,31 @@ export default function Modal({ children, cc = {}, show, onClose, title, mobileC
                 aria-modal
                 aria-labelledby={id}
                 onTouchStart={e => {
-                    if (mobileClosing === 'handle' && !content.current?.contains(e.target as HTMLElement)) touch.current = e.touches[0];
+                    if (mobileClosing === 'handle' &&
+                        !e.defaultPrevented &&
+                        !content.current?.scrollTop &&
+                        modalRef.current?.contains(e.target as HTMLElement)) touch.current = e.touches[0];
                 }}>
-                {isMobile && mobileClosing === 'handle' && <div className={style.handle} />}
+                <div className={style.content}>
+                    {isMobile && mobileClosing === 'handle' && <div className={style.handle} />}
 
-                <div className={style.header}>
-                    <span id={id} className={styles.title}>{title}</span>
+                    <div className={style.header}>
+                        <span id={id} className={style.title}>{title}</span>
 
-                    {(mobileClosing === 'button' || !isMobile) && <Button compact variant="minimal" onClick={onClose}>
-                        <Icon type="close" />
-                    </Button>}
+                        {(mobileClosing === 'button' || !isMobile) && <Button compact variant="minimal" onClick={onClose}>
+                            <Icon type="close" />
+                        </Button>}
+                    </div>
+
+                    <Scrollarea className={style.scrollarea} ref={content}>
+                        {children}
+                    </Scrollarea>
                 </div>
 
-                <Scrollarea className={style.scrollarea} ref={content}>
-                    {children}
-                </Scrollarea>
+                {footer ? <div className={style.footer}>
+                    {footer}
+                </div> : null}
             </div>
-        </Animatable>
+        </Animate>
     </Overlay>;
 }

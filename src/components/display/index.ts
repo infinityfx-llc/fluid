@@ -11,6 +11,7 @@ import Toast from "./toast";
 import Table from "./table";
 import Frame from "./frame";
 import Ticker from "./ticker";
+import Gradient from "./gradient";
 
 export {
     ActionMenu,
@@ -19,6 +20,7 @@ export {
     Badge,
     Code,
     Frame,
+    Gradient,
     Key,
     Swatch,
     Table,

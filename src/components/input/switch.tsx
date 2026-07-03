@@ -3,9 +3,10 @@
 import { classes, combineClasses } from '../../../src/core/utils';
 import { FluidSize, Selectors } from '../../../src/types';
 import { useRef, useState } from 'react';
-import Halo from '../feedback/halo';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { createStyles } from '../../core/style';
+import { Animate } from '@infinityfx/lively';
+import Interactable from '../feedback/interactable';
 
 const styles = createStyles('switch', {
     '.wrapper': {
@@ -35,7 +36,8 @@ const styles = createStyles('switch', {
         inset: 0,
         width: '100%',
         height: '100%',
-        zIndex: 2
+        zIndex: 2,
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.input:enabled': {
@@ -50,7 +52,7 @@ const styles = createStyles('switch', {
         aspectRatio: 2,
         backgroundColor: 'var(--f-clr-fg-100)',
         borderRadius: 'var(--f-radius-sml)',
-        transition: 'background-color .25s'
+        transition: 'background-color .35s'
     },
 
     '.icons': {
@@ -81,7 +83,6 @@ const styles = createStyles('switch', {
         borderRadius: 'calc(var(--f-radius-sml) - 1px)',
         height: '100%',
         aspectRatio: 1,
-        transition: 'translate .25s',
         zIndex: 1,
     },
 
@@ -91,10 +92,6 @@ const styles = createStyles('switch', {
         borderRadius: 'inherit',
         backgroundColor: 'white',
         boxShadow: 'var(--f-shadow-sml)'
-    },
-
-    '.input:checked + .switch .handle__wrapper': {
-        translate: '100% 0%'
     },
 
     '.wrapper.round .switch': {
@@ -110,7 +107,7 @@ const styles = createStyles('switch', {
     },
 
     '.input:checked:enabled + .switch': {
-        backgroundColor: 'var(--color)'
+        backgroundColor: 'var(--color, var(--f-clr-primary-300))'
     },
 
     '.wrapper[data-error="true"] .input:checked:enabled + .switch': {
@@ -121,12 +118,12 @@ const styles = createStyles('switch', {
         backgroundColor: 'var(--f-clr-grey-200)'
     },
 
-    '.wrapper .halo': {
-        borderRadius: 'var(--f-radius-sml)',
+    '.wrapper .highlight': {
+        borderRadius: 'var(--f-radius-med)',
         inset: '-.5em'
     },
 
-    '.wrapper.round .halo': {
+    '.wrapper.round .highlight': {
         borderRadius: '999px'
     }
 });
@@ -138,7 +135,7 @@ export type SwitchSelectors = Selectors<'wrapper' | 'input' | 'switch' | 'icons'
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/switch}
  */
-export default function Switch({ cc = {}, error, size = 'med', color = 'var(--f-clr-primary-300)', round = true, iconOff, iconOn, checked, defaultChecked, ...props }:
+export default function Switch({ cc = {}, error, size = 'med', color, round = true, iconOff, iconOn, checked, defaultChecked, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: SwitchSelectors;
@@ -163,7 +160,8 @@ export default function Switch({ cc = {}, error, size = 'med', color = 'var(--f-
             rest.className
         )}
         data-error={!!error}>
-        <input {...split}
+        <input
+            {...split}
             ref={inputRef}
             type="checkbox"
             className={style.input}
@@ -185,11 +183,32 @@ export default function Switch({ cc = {}, error, size = 'med', color = 'var(--f-
                 </div>
             </div>
 
-            <Halo target={inputRef} hover={false} cc={{ halo: style.halo, ...cc }}>
-                <div className={style.handle__wrapper}>
-                    <div className={style.handle} />
-                </div>
-            </Halo>
+            <Animate
+                correction="none"
+                animate={{
+                    translate: state ? '100% 0%' : '0% 0%',
+                    duration: .35
+                }}>
+                <Interactable
+                    as="div"
+                    noHover
+                    interactTarget={inputRef}
+                    cc={{ ...cc, highlight: style.highlight }}
+                    className={style.handle__wrapper}>
+                    <Animate
+                        transition={{ cache: [] }}
+                        animate={{
+                            scale: [1, '1.6 1', 1],
+                            duration: .35,
+                            composite: 'override'
+                        }}
+                        triggers={{
+                            animate: [state, !state]
+                        }}>
+                        <div className={style.handle} />
+                    </Animate>
+                </Interactable>
+            </Animate>
         </div>
     </div>;
 }

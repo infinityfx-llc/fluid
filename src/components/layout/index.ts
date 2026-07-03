@@ -3,7 +3,7 @@ import Modal from "./modal";
 import Drawer from "./drawer";
 import Scrollarea from "./scrollarea";
 import Collapsible from "./collapsible";
-import Combine from "./combine";
+import Group from "./group";
 import Accordion from "./accordion";
 import Sidebar from "./sidebar";
 import Cull from "./cull";
@@ -17,7 +17,7 @@ export {
     Drawer,
     Scrollarea,
     Collapsible,
-    Combine,
+    Group,
     Accordion,
     Sidebar,
     Cull,

@@ -2,19 +2,16 @@
 
 import { Selectors } from '../../../../src/types';
 import { classes, combineClasses } from '../../../../src/core/utils';
-import Halo from '../../feedback/halo';
 import Indicator from '../../feedback/indicator';
 import { createStyles } from '../../../core/style';
 import { useSidebar } from './root';
 import { Icon } from '../../../core/icons';
+import Interactable from '../../feedback/interactable';
 
 const styles = createStyles('sidebar.user', {
     '.user': {
         position: 'relative',
-        outline: 'none',
-        border: 'none',
         borderRadius: 'var(--f-radius-sml)',
-        background: 'none',
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--f-spacing-sml)',
@@ -108,31 +105,32 @@ export default function User({ children, cc = {}, name, status, indicator = fals
     const style = combineClasses(styles, cc);
     const { collapsed } = useSidebar();
 
-    return <Halo disabled={props.disabled} color="var(--f-clr-primary-400)">
-        <button {...props} type="button" className={classes(
+    return <Interactable
+        {...props}
+        disabled={props.disabled}
+        highlightColor="var(--f-clr-primary-400)"
+        className={classes(
             style.user,
             round && style.round,
             collapsed && style.collapsed,
             props.className
         )}>
-            <Indicator outline="var(--f-clr-bg-200)" content={indicator}>
-                <div className={style.avatar}>
-                    <div className={style.frame}>
-                        {children ? children : name.slice(0, 2)}
-                    </div>
-                </div>
-            </Indicator>
-
-            <div className={style.content}>
-                <div className={style.name}>{name}</div>
-                <div className={style.status}>{status}</div>
+        <div className={style.avatar}>
+            <Indicator outline="var(--f-clr-bg-100)" content={indicator} />
+            <div className={style.frame}>
+                {children ? children : name.slice(0, 2)}
             </div>
+        </div>
 
-            {icon && <div className={style.icon}>
-                {icon}
-            </div>}
-        </button>
-    </Halo>;
+        <div className={style.content}>
+            <div className={style.name}>{name}</div>
+            <div className={style.status}>{status}</div>
+        </div>
+
+        {icon && <div className={style.icon}>
+            {icon}
+        </div>}
+    </Interactable>;
 }
 
 User.displayName = 'Sidebar.User';

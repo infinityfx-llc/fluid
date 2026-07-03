@@ -28,7 +28,12 @@ export async function compileIcons(io: IOHelper) {
     const imports = Array.from(rawConfig.matchAll(/import\s*(.+?)from\s*(?:"|')([^"']+)(?:"|')/g))
         .concat(Array.from(rawConfig.matchAll(/(?:const|let|var)\s*(.+?)\s*=\s*require\((?:'|")([^"']+)(?:"|')/g)));
 
-    contents = imports.map(([_, value, path]) => `import ${value.replace(/:/g, ' as ')} from "${path}";`).join('') + contents; // replace local paths
+    contents = imports
+        .map(([_, value, path]) => {
+            return /^(\.|\\|\/)/.test(path) ? null : `import ${value.replace(/:/g, ' as ')} from "${path}";`;
+        })
+        .filter(val => val !== null)
+        .join('') + contents; // replace local paths
 
     io.output('./core/icons.js', contents);
 }
@@ -79,7 +84,7 @@ export async function compileComponents(io: IOHelper, entries: {
                     const parent = await io.module(path);
 
                     for (const subName in parent) {
-                        await compileFile(io, `${name}.${subName}`, path);
+                        await compileFile(io, `${name}.${subName}`, path.replace(/index\.js$/, `${subName.toLowerCase()}.js`));
                     }
                 } else {
                     await compileFile(io, name, path, name === inject);

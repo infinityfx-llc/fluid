@@ -1,7 +1,6 @@
 'use client';
 
 import { Children, useState } from 'react';
-import Halo from '../../feedback/halo';
 import { Selectors } from '../../../../src/types';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import Toggle from '../../input/toggle';
@@ -11,6 +10,7 @@ import { useSidebar } from './root';
 import useFluid from '../../../hooks/use-fluid';
 import useMediaQuery from '../../../hooks/use-media-query';
 import { Icon } from '../../../core/icons';
+import Interactable from '../../feedback/interactable';
 
 const styles = createStyles('sidebar.item', {
     '.item': {
@@ -20,7 +20,6 @@ const styles = createStyles('sidebar.item', {
         color: 'var(--f-clr-text-100)',
         display: 'flex',
         transition: 'background-color .25s, color .25s',
-        outline: 'none',
         overflow: 'hidden'
     },
 
@@ -165,53 +164,55 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
     const isMobile = useMediaQuery(`(max-width: ${fluid.breakpoints.mob}px)`);
 
     return <>
-        <Halo color={active ? undefined : 'var(--f-clr-primary-300)'} disabled={disabled}>
-            <div {...props}
-                tabIndex={0}
-                role="button"
-                className={classes(
-                    style.item,
-                    style[`s__${size}`],
-                    style[`v__${variant}`],
-                    round && style.round,
-                    compact && style.compact,
-                    collapsed && style.collapsed,
-                    props.className
-                )}
-                data-disabled={disabled}
-                data-active={active}
-                onClick={() => setOpen(!open)}>
+        <Interactable
+            {...props}
+            as="div"
+            role="button"
+            tabIndex={0}
+            highlightColor={active ? undefined : 'var(--f-clr-primary-300)'}
+            disabled={disabled}
+            className={classes(
+                style.item,
+                style[`s__${size}`],
+                style[`v__${variant}`],
+                round && style.round,
+                compact && style.compact,
+                collapsed && style.collapsed,
+                props.className
+            )}
+            data-disabled={disabled}
+            data-active={active}
+            onClick={() => setOpen(!open)}>
+            {icon !== undefined && <div className={style.icon}>
+                {icon}
+            </div>}
 
-                {icon !== undefined && <div className={style.icon}>
-                    {icon}
-                </div>}
+            <span className={style.content} data-hasicon={icon !== undefined}>
+                {label}
 
-                <span className={style.content} data-hasicon={icon !== undefined}>
-                    {label}
-
-                    {count ? <Toggle
-                        cc={{
-                            toggle: style.toggle,
-                            content: style.toggle__content,
-                            ...cc
-                        }}
-                        aria-label={label}
-                        disabled={compact}
-                        compact
-                        variant="minimal"
-                        size={size === 'med' ? 'sml' : 'xsm'}
-                        round={round}
-                        checked={open}
-                        checkedContent={<Icon type="collapseUp" />}>
-                        <Icon type="expandDown" />
-                    </Toggle> : right}
-                </span>
-            </div>
-        </Halo>
+                {count ? <Toggle
+                    cc={{
+                        ...cc,
+                        toggle: style.toggle,
+                        content: style.toggle__content
+                    }}
+                    aria-label={label}
+                    disabled={compact}
+                    readOnly
+                    compact
+                    variant="minimal"
+                    size={size === 'med' ? 'sml' : 'xsm'}
+                    round={round}
+                    checked={open}>
+                    <Icon type="expandDown" />
+                    <Icon type="collapseUp" />
+                </Toggle> : right}
+            </span>
+        </Interactable>
 
         {count ? <Collapsible
             shown={open && (isMobile || !collapsed)}
-            cc={{ content: style.children, ...cc }}
+            cc={{ ...cc, content: style.children }}
             data-collapsed={collapsed}>
             {children}
         </Collapsible> : null}

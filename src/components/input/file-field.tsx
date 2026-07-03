@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import Button from './button';
 import useInputProps from '../../../src/hooks/use-input-props';
-import { FluidSize, Selectors } from '../../../src/types';
+import { Selectors } from '../../../src/types';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
 import { Icon } from '../../core/icons';
@@ -26,7 +26,6 @@ const styles = createStyles('file-field', {
     },
 
     '.field': {
-        backgroundColor: 'var(--f-clr-bg-200)',
         borderRadius: 'var(--f-radius-sml)',
         color: 'var(--f-clr-grey-200)',
         transition: 'background-color .2s, border-color .2s, color .2s, outline-color .2s',
@@ -38,6 +37,7 @@ const styles = createStyles('file-field', {
     },
 
     '.v__default': {
+        backgroundColor: 'var(--f-clr-fg-100)',
         border: 'solid 1px var(--f-clr-fg-200)'
     },
 
@@ -105,7 +105,7 @@ const styles = createStyles('file-field', {
     },
 
     '.field.round': {
-        borderRadius: '999px'
+        borderRadius: 'calc(1.4em + 1px)'
     },
 
     '.button': {
@@ -142,7 +142,8 @@ export default function FileField({ cc = {}, size = 'med', variant = 'default', 
             props.className
         )}
         data-error={!!error}
-        data-disabled={props.disabled}>
+        data-disabled={props.disabled}
+        data-fb={variant === 'default' ? 'true' : undefined}>
 
         <div className={style.content}>
             {icon}
@@ -177,8 +178,8 @@ export default function FileField({ cc = {}, size = 'med', variant = 'default', 
             size={size}
             loading={loading}
             cc={{
-                button: style.button,
-                ...cc
+                ...cc,
+                button: style.button
             }}
             onClick={() => input.current?.click()}>
             <Icon type="upload" />

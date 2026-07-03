@@ -1,8 +1,7 @@
 'use client';
 
 import { Selectors } from "../../../src/types";
-import { Animatable } from "@infinityfx/lively";
-import { LayoutGroup } from "@infinityfx/lively/layout";
+import { Animate, LayoutGroup } from "@infinityfx/lively";
 import { useEffect, useState, useRef } from 'react';
 import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
@@ -13,12 +12,7 @@ const OverlayData = {
     count: 0
 };
 
-const toggleScroll = (value: boolean) => {
-    const isScrollable = document.documentElement.scrollHeight > document.documentElement.clientHeight; // also do for hor scrolling?
-
-    document.documentElement.style.overflowY = value ? '' : 'hidden';
-    document.body.style.overflowY = value || !isScrollable ? '' : 'scroll';
-}
+const toggleScroll = (value: boolean) => document.documentElement.style.overflowY = value ? '' : 'hidden';
 
 const styles = createStyles('overlay', {
     '.wrapper': {
@@ -40,7 +34,8 @@ const styles = createStyles('overlay', {
     '.tint': {
         position: 'absolute',
         inset: 0,
-        backgroundColor: 'rgb(0, 0, 0, .35)'
+        backgroundColor: 'rgb(0, 0, 0, .35)',
+        backdropFilter: 'blur(6px)'
     },
 
     '.overlay > *:not(:first-child)': {
@@ -111,19 +106,20 @@ export default function Overlay({ children, cc = {}, show, onClose }: {
                 style={{
                     pointerEvents: opened ? undefined : 'none'
                 }}>
-                <Animatable
-                    id="overlay"
-                    animations={{
+                <Animate
+                    key="tint"
+                    correction="none"
+                    clips={{
                         mount: { opacity: [0, 1], duration: .25 },
                         unmount: { opacity: [0, 1], duration: .25 }
                     }}
-                    triggers={[
-                        { on: 'mount', name: 'mount' },
-                        { on: 'unmount', name: 'unmount', reverse: true }
-                    ]}
+                    triggers={{
+                        mount: ['mount'],
+                        unmount: [{ on: 'unmount', reverse: true }]
+                    }}
                     onAnimationEnd={name => name === 'mount' && setOpened(true)}>
                     <div className={style.tint} onClick={onClose} />
-                </Animatable>
+                </Animate>
 
                 {children}
             </div>}

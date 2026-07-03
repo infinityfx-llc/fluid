@@ -13,8 +13,16 @@ import { changeInputValue } from '../../core/utils';
  */
 export default function Autocomplete({ completions, emptyMessage = 'No suggestions', value, defaultValue, onChange, contentSize, virtualItemHeight, ...props }: {
     completions: string[] | { label: string; value: string; }[];
+    /**
+     * The text to show when there are no completions to show.
+     * 
+     * @default "No suggestions"
+     */
     emptyMessage?: string;
     contentSize?: FluidSize;
+    /**
+     * When set to a `number` greater than `0`, will enable virtual scrolling, improving performance for large numbers of entries.
+     */
     virtualItemHeight?: number;
 } & FieldProps) {
     const field = useRef<HTMLInputElement>(null);

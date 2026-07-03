@@ -4,9 +4,8 @@ import { Children, useId } from 'react';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses } from '../../../core/utils';
-import { LayoutGroup, Morph } from '@infinityfx/lively/layout';
 import { useNavigationMenu } from './root';
-import { Animatable } from '@infinityfx/lively';
+import { Animate, LayoutGroup } from '@infinityfx/lively';
 import { Icon } from '../../../core/icons';
 
 const styles = createStyles('navigation-menu.group', {
@@ -27,7 +26,8 @@ const styles = createStyles('navigation-menu.group', {
         lineHeight: 1.25,
         display: 'flex',
         alignItems: 'center',
-        gap: 'var(--f-spacing-xsm)'
+        gap: 'var(--f-spacing-xsm)',
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.link.round': {
@@ -65,7 +65,7 @@ export type NavigationMenuGroupSelectors = Selectors<'group' | 'link' | 'arrow' 
 
 type AnchorLike<T extends React.HTMLAttributes<HTMLAnchorElement>> = React.JSXElementConstructor<T> | 'a';
 
-export default function Group({ children, cc = {}, label, round = false, href, target, active = false, position = 'center', Link = 'a', ...props }:
+export default function Group<A extends AnchorLike<any>>({ children, cc = {}, label, round = false, href, target, active = false, position = 'center', Link = 'a', ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: NavigationMenuGroupSelectors;
@@ -73,8 +73,23 @@ export default function Group({ children, cc = {}, label, round = false, href, t
         round?: boolean;
         href?: string;
         target?: '_blank' | '_parent' | '_self' | '_top';
+        /**
+         * Whether to show a selection ring around this link.
+         * 
+         * @default false
+         */
         active?: boolean;
+        /**
+         * How to align the dropdown container with regards to the link.
+         * 
+         * @default "center"
+         */
         position?: 'start' | 'center' | 'end';
+        /**
+         * What type of component or element to render as a link element.
+         * 
+         * @default HTMLAnchorElement
+         */
         Link?: AnchorLike<any>;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
@@ -96,7 +111,7 @@ export default function Group({ children, cc = {}, label, round = false, href, t
             aria-controls={hasLinks ? id + linkId : undefined}
             onMouseEnter={() => select(linkId)}
             onFocus={() => select(linkId)}
-            onBlur={e => {
+            onBlur={(e: React.FocusEvent<any>) => {
                 if (!root.current?.contains(e.relatedTarget)) select(undefined);
             }}>
 
@@ -111,28 +126,41 @@ export default function Group({ children, cc = {}, label, round = false, href, t
             </div>}
 
             <LayoutGroup>
-                {(selection ? linkId === selection : active) && <Morph
-                    id="fluid-navigation-menu-selection"
-                    group={`fluid-navigation-menu-selection-${id}`}
-                    cachable={['x', 'sx', 'borderRadius']}
-                    deform={false}
-                    transition={{ duration: .35 }}
-                    animate={{ opacity: [1, 0], duration: .25 }}
-                    triggers={[{ on: 'mount', reverse: true }, { on: 'unmount' }]}>
+                {(selection ? linkId === selection : active) && <Animate
+                    key="selection"
+                    morph={`fluid-navigation-menu-selection-${id}`}
+                    transition={{
+                        cache: ['x', 'sx'],
+                        duration: .35
+                    }}
+                    animate={{
+                        opacity: [1, 0],
+                        duration: .25
+                    }}
+                    triggers={{
+                        animate: ['unmount', { on: 'mount', reverse: true }]
+                    }}>
                     <div className={style.selection} />
-                </Morph>}
+                </Animate>}
             </LayoutGroup>
         </Link>
 
         <LayoutGroup>
-            {hasLinks && linkId === selection && <Morph
-                id="fluid-navigation-menu-group"
-                group={`fluid-navigation-menu-group-${id}`}
-                cachable={['x', 'y', 'sx', 'sy']}
-                deform={false}
-                transition={{ duration: .35 }}
-                animate={{ opacity: [1, 0], translate: ['0px 0px', '0px -8px'], duration: .25 }}
-                triggers={[{ on: 'mount', reverse: true }, { on: 'unmount' }]}>
+            {hasLinks && linkId === selection && <Animate
+                key="menu"
+                morph={`fluid-navigation-menu-group-${id}`}
+                transition={{
+                    cache: ['x', 'y', 'sx', 'sy'],
+                    duration: .35
+                }}
+                animate={{
+                    opacity: [1, 0],
+                    translate: ['0px 0px', '0px -8px'],
+                    duration: .25
+                }}
+                triggers={{
+                    animate: ['unmount', { on: 'mount', reverse: true }]
+                }}>
 
                 <div {...props}
                     id={id + linkId}
@@ -143,11 +171,11 @@ export default function Group({ children, cc = {}, label, round = false, href, t
                         left: position === 'start' ? 0 : undefined,
                         right: position === 'end' ? 0 : undefined
                     }}>
-                    <Animatable stagger={.06} triggers={[{ on: 'mount', delay: .25 }]}>
+                    <Animate stagger={.06}>
                         {children}
-                    </Animatable>
+                    </Animate>
                 </div>
-            </Morph>}
+            </Animate>}
         </LayoutGroup>
     </div>;
 }

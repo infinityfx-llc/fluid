@@ -16,31 +16,19 @@ const styles = createStyles('badge', {
     },
 
     '.v__default': {
-        backgroundColor: 'var(--f-clr-primary-300)',
+        backgroundColor: 'var(--color, var(--f-clr-primary-300))',
         color: 'var(--f-clr-text-100)'
     },
 
-    '.v__default:hover': {
-        backgroundColor: 'var(--f-clr-primary-400)'
-    },
-
     '.v__light': {
-        backgroundColor: 'var(--f-clr-bg-200)',
-        color: 'var(--f-clr-primary-100)'
-    },
-
-    '.v__light:hover': {
-        backgroundColor: 'var(--f-clr-primary-600)'
+        backgroundColor: 'var(--f-clr-fg-100)',
+        color: 'var(--color, var(--f-clr-primary-100))'
     },
 
     '.v__neutral': {
         backgroundColor: 'var(--f-clr-bg-200)',
         border: 'solid 1px var(--f-clr-fg-200)',
         color: 'var(--f-clr-text-100)'
-    },
-
-    '.v__neutral:hover': {
-        backgroundColor: 'var(--f-clr-fg-100)'
     },
 
     '.s__xsm': {
@@ -84,6 +72,7 @@ export default function Badge({ children, cc = {}, variant = 'default', round = 
         variant?: 'default' | 'light' | 'neutral';
         round?: boolean;
         size?: FluidSize;
+        color?: string;
         onClose?: () => void;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
@@ -97,13 +86,12 @@ export default function Badge({ children, cc = {}, variant = 'default', round = 
             props.className
         )}
         style={{
-            backgroundColor: variant === 'default' ? color : undefined,
-            color: variant === 'light' ? color : undefined,
+            '--color': color,
             ...props.style
-        }}>
+        } as any}>
         {children}
 
-        {onClose ? <div className={styles.close} onClick={onClose}>
+        {onClose ? <div className={style.close} onClick={onClose}>
             <Icon type="close" />
         </div> : null}
     </div>;

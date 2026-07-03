@@ -1,15 +1,15 @@
 'use client';
 
 import { useEffect, useId, useRef } from "react";
-import Halo from "../../feedback/halo";
 import Collapsible from "../collapsible";
-import { Animatable } from "@infinityfx/lively";
+import { Animate } from "@infinityfx/lively";
 import { Selectors } from "../../../../src/types";
 import { useAccordion } from "./root";
 import { classes } from "../../../../src/utils";
 import { createStyles } from "../../../core/style";
 import { combineClasses } from "../../../core/utils";
 import { Icon } from "../../../core/icons";
+import Interactable from "../../feedback/interactable";
 
 const styles = createStyles('accordion.item', {
     '.button': {
@@ -18,11 +18,7 @@ const styles = createStyles('accordion.item', {
         padding: '.6em',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 'var(--f-spacing-sml)',
-        outline: 'none',
-        border: 'none',
-        background: 'none',
+        gap: 'var(--f-spacing-xsm)',
         color: 'var(--f-clr-text-100)',
         transition: 'background-color .5s'
     },
@@ -51,7 +47,8 @@ const styles = createStyles('accordion.item', {
     '.icon': {
         height: '1em',
         overflow: 'hidden',
-        flexShrink: 0
+        flexShrink: 0,
+        marginLeft: 'auto'
     },
 
     '.arrows': {
@@ -83,29 +80,32 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
     }, []);
 
     return <>
-        <Halo disabled={disabled} color="var(--f-clr-primary-400)">
-            <button
-                type="button"
-                disabled={disabled}
-                aria-expanded={isOpen}
-                aria-controls={id}
-                className={classes(
-                    style.button,
-                    style[`v__${variant}`]
-                )}
-                onClick={() => toggle(id, !isOpen)}>
-                {label}
+        <Interactable
+            disabled={disabled}
+            highlightColor="var(--f-clr-primary-400)"
+            aria-expanded={isOpen}
+            aria-controls={id}
+            className={classes(
+                style.button,
+                style[`v__${variant}`]
+            )}
+            onClick={() => toggle(id, !isOpen)}>
+            {label}
 
-                <div className={style.icon}>
-                    <Animatable animate={{ translate: ['0% 0%', '0% -50%'], duration: .35 }} triggers={[{ on: isOpen }, { on: !isOpen, reverse: true }]}>
-                        <div className={style.arrows}>
-                            <Icon type="expandDown" />
-                            <Icon type="collapseUp" />
-                        </div>
-                    </Animatable>
-                </div>
-            </button>
-        </Halo>
+            <div className={style.icon}>
+                <Animate
+                    correction="none"
+                    animate={{
+                        translate: isOpen ? '0% -50%' : '0% 0%',
+                        duration: .35
+                    }}>
+                    <div className={style.arrows}>
+                        <Icon type="expandDown" />
+                        <Icon type="collapseUp" />
+                    </div>
+                </Animate>
+            </div>
+        </Interactable>
 
         <Collapsible shown={isOpen} id={id}>
             <div {...props} className={classes(style.content, props.className)}>

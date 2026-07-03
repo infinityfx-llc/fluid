@@ -73,6 +73,11 @@ export default function Toast({ children, cc = {}, icon, color, title, round, ac
         icon: React.ReactNode;
         color: string;
         title: string;
+        /**
+         * Content to display as the right-side 'dismiss' button.
+         * 
+         * Defaults to a close icon.
+         */
         action?: React.ReactNode;
         round?: boolean;
         onClose?: () => void;

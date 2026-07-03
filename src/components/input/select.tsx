@@ -13,7 +13,6 @@ import { Icon } from '../../core/icons';
 
 const styles = createStyles('select', {
     '.field': {
-        backgroundColor: 'var(--f-clr-bg-200)',
         borderRadius: 'var(--f-radius-sml)',
         color: 'var(--f-clr-grey-200)',
         transition: 'background-color .2s, border-color .2s, color .2s, outline-color .2s',
@@ -24,6 +23,7 @@ const styles = createStyles('select', {
     },
 
     '.v__default': {
+        backgroundColor: 'var(--f-clr-fg-100)',
         border: 'solid 1px var(--f-clr-fg-200)'
     },
 
@@ -118,7 +118,7 @@ const styles = createStyles('select', {
     },
 
     '.field.round': {
-        borderRadius: '999px'
+        borderRadius: 'calc(1.4em + 1px)'
     },
 
     '.field .badge': {
@@ -143,22 +143,44 @@ export type SelectSelectors = Selectors<'field' | 'content' | 'placeholder' | 's
 
 type SelectProps<T> = {
     cc?: SelectSelectors;
+    variant?: 'default' | 'inverted' | 'minimal';
     options: {
         label: React.ReactNode;
         value: FluidInputvalue;
         key?: string;
         disabled?: boolean;
     }[];
+    /**
+     * @default false
+     */
     searchable?: boolean;
+    /**
+     * When `multiple` = `true`, indicates the maximum number of options to be selected at a time.
+     * 
+     * Defaults to **no limit**.
+     */
     limit?: number;
+    /**
+     * The text to show when there are no options to show.
+     * 
+     * @default "Nothing found"
+     */
     emptyMessage?: string;
     value?: T | null;
     defaultValue?: T;
     onChange?: (value: T) => void;
     contentSize?: FluidSize;
+    /**
+     * How to display the Select content on mobile devices.
+     * 
+     * @default "popover"
+     */
     mobileContainer?: 'popover' | 'modal';
+    /**
+     * When set to a `number` greater than `0`, will enable virtual scrolling, improving performance for large numbers of entries.
+     */
     virtualItemHeight?: number;
-} & Omit<FieldProps, 'value' | 'defaultValue' | 'onChange' | 'onEnter' | 'left' | 'right' | 'shape'>;
+} & Omit<FieldProps, 'variant' | 'value' | 'defaultValue' | 'onChange' | 'onEnter' | 'left' | 'right' | 'shape'>;
 
 /**
  * Displays a list of selectable options.
@@ -208,6 +230,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
     return <Combobox.Root
         ref={popover}
         stretch
+        variant={variant === 'minimal' ? 'default' : variant}
         mobileContainer={mobileContainer}>
         <Combobox.Trigger disabled={props.disabled || readOnly}>
             <div
@@ -216,12 +239,13 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                 className={classes(
                     style.field,
                     style[`s__${size}`],
-                    style[`v__${variant}`],
+                    style[`v__${variant === 'inverted' ? 'default' : variant}`],
                     round && style.round,
                     props.className
                 )}
                 data-error={!!error}
-                data-disabled={props.disabled}>
+                data-disabled={props.disabled}
+                data-fb={variant === 'default' ? 'true' : undefined}>
                 <div className={style.content__wrapper}>
                     {icon}
 

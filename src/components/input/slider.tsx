@@ -2,11 +2,11 @@
 
 import { Selectors } from "../../../src/types";
 import { useId, useRef, useState, useEffect } from "react";
-import Halo from "../feedback/halo";
 import { classes, combineClasses, round, toNumber } from "../../../src/core/utils";
 import Tooltip from "../display/tooltip";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { createStyles } from "../../core/style";
+import Interactable from "../feedback/interactable";
 
 const styles = createStyles('slider', {
     '.wrapper': {
@@ -39,7 +39,8 @@ const styles = createStyles('slider', {
         width: 'calc(100% - 1.1em)',
         height: '1.1em',
         userSelect: 'none',
-        flexGrow: 1
+        flexGrow: 1,
+        WebkitTapHighlightColor: 'transparent'
     },
 
     '.wrapper.vertical .slider': {
@@ -76,7 +77,6 @@ const styles = createStyles('slider', {
         translate: '-50% 0%',
         width: '1.1em',
         height: '1.1em',
-        outline: 'none',
         borderRadius: '99px',
         touchAction: 'none'
     },
@@ -116,7 +116,7 @@ const styles = createStyles('slider', {
         backgroundColor: 'var(--f-clr-grey-300)'
     },
 
-    '.handle .halo': {
+    '.handle .highlight': {
         inset: '-.5em'
     }
 });
@@ -132,8 +132,21 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: SliderSelectors;
+        /**
+         * The number of handles this Slider should have.
+         * 
+         * @default 1
+         */
         handles?: number;
+        /**
+         * @default false
+         */
         vertical?: boolean;
+        /**
+         * When to display a tooltip for a handle.
+         * 
+         * @default "interact"
+         */
         tooltips?: 'never' | 'interact' | 'always';
         formatTooltip?: (value: number) => string;
         label?: string;
@@ -246,6 +259,8 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
                 change(e.nativeEvent);
             }}
             onTouchStart={e => {
+                e.preventDefault();
+
                 dragging.current = -1;
                 change(e.nativeEvent);
             }}>
@@ -260,31 +275,36 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
                 const val = values[i];
 
                 return <Tooltip key={i} delay={0} content={formatTooltip ? formatTooltip(round(val, 2)) : round(val, 2)} visibility={tooltips} position={vertical ? 'right' : 'bottom'}>
-                    <Halo disabled={props.disabled} cc={{ halo: style.halo }}>
-                        <div className={style.handle} role="slider" tabIndex={props.disabled ? -1 : 0} aria-disabled={!!props.disabled}
-                            onMouseDown={() => dragging.current = i}
-                            onTouchStart={() => dragging.current = i}
-                            onTouchEnd={() => dragging.current = null}
-                            onKeyDown={e => {
-                                switch (e.key) {
-                                    case 'ArrowUp':
-                                    case 'ArrowRight': return update(i, val + step);
-                                    case 'ArrowDown':
-                                    case 'ArrowLeft': return update(i, val - step);
-                                    case 'Home': return update(i, min);
-                                    case 'End': return update(i, max);
-                                }
-                            }}
-                            aria-valuenow={val}
-                            aria-valuemin={values[i - 1] || 0}
-                            aria-valuemax={values[i + 1] || 1}
-                            aria-orientation={vertical ? 'vertical' : 'horizontal'}
-                            aria-label={split["aria-label"]}
-                            aria-labelledby={label ? id : undefined}
-                            style={{
-                                [vertical ? 'bottom' : 'left']: `${toOffset(val) * 100}%`
-                            }} />
-                    </Halo>
+                    <Interactable
+                        as="div"
+                        role="slider"
+                        className={style.handle}
+                        tabIndex={props.disabled ? -1 : 0}
+                        aria-disabled={!!props.disabled}
+                        disabled={props.disabled}
+                        cc={{ highlight: style.highlight }}
+                        onMouseDown={() => dragging.current = i}
+                        onTouchStart={() => dragging.current = i}
+                        onTouchEnd={() => dragging.current = null}
+                        onKeyDown={e => {
+                            switch (e.key) {
+                                case 'ArrowUp':
+                                case 'ArrowRight': return update(i, val + step);
+                                case 'ArrowDown':
+                                case 'ArrowLeft': return update(i, val - step);
+                                case 'Home': return update(i, min);
+                                case 'End': return update(i, max);
+                            }
+                        }}
+                        aria-valuenow={val}
+                        aria-valuemin={values[i - 1] || 0}
+                        aria-valuemax={values[i + 1] || 1}
+                        aria-orientation={vertical ? 'vertical' : 'horizontal'}
+                        aria-label={split["aria-label"]}
+                        aria-labelledby={label ? id : undefined}
+                        style={{
+                            [vertical ? 'bottom' : 'left']: `${toOffset(val) * 100}%`
+                        }} />
                 </Tooltip>;
             })}
         </div>
