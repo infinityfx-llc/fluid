@@ -26,7 +26,7 @@ const styles = createStyles('code', {
     },
 
     '.body': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-surface-100)',
         flexGrow: 1
     },
 
@@ -42,7 +42,7 @@ const styles = createStyles('code', {
         color: 'var(--f-clr-grey-500)',
         paddingBlock: '1em',
         paddingRight: '.5em',
-        borderRight: 'solid 1px var(--f-clr-fg-200)'
+        borderRight: 'solid 1px var(--f-clr-surface-200)'
     },
 
     '.tab': {

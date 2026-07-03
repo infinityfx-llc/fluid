@@ -25,8 +25,8 @@ const styles = createStyles('color-field', fluid => ({
     [`@media(min-width: ${fluid.breakpoints.mob + 1}px)`]: {
         '.picker': {
             boxShadow: 'var(--f-shadow-med)',
-            backgroundColor: 'var(--f-clr-bg-200)',
-            border: 'solid 1px var(--f-clr-fg-200)',
+            backgroundColor: 'var(--f-clr-surface-100)',
+            border: 'solid 1px var(--f-clr-surface-200)',
             borderRadius: 'var(--f-radius-med)'
         }
     }

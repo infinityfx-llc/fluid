@@ -7,9 +7,9 @@ import { Icon } from "../../core/icons";
 const styles = createStyles('toast', {
     '.toast': {
         padding: '.4em',
-        backgroundColor: 'var(--f-clr-bg-200)',
+        backgroundColor: 'var(--f-clr-surface-100)',
         borderRadius: 'var(--f-radius-med)',
-        border: 'solid 1px var(--f-clr-fg-200)',
+        border: 'solid 1px var(--f-clr-surface-200)',
         display: 'flex',
         alignItems: 'flex-start',
         gap: 'var(--f-spacing-med)',

@@ -27,7 +27,7 @@ function offsetDate(date: Date, days: number) {
 
 const styles = createStyles('calendar', {
     '.calendar': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-surface-100)',
         borderRadius: 'var(--f-radius-med)',
         padding: '.6em'
     },
@@ -115,7 +115,7 @@ const styles = createStyles('calendar', {
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr',
         zIndex: 1,
-        backgroundColor: 'var(--f-clr-fg-100)'
+        backgroundColor: 'var(--f-clr-surface-100)'
     },
 
     '.dates .date': {
@@ -148,7 +148,7 @@ const styles = createStyles('calendar', {
     },
 
     '.date.today:enabled': {
-        backgroundColor: 'var(--f-clr-fg-200)'
+        backgroundColor: 'var(--f-clr-surface-200)'
     },
 
     '.date.selected:enabled': {

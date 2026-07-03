@@ -8,8 +8,8 @@ const styles = createStyles('key', {
         fontWeight: 600,
         fontSize: 'var(--f-font-size-xsm)',
         color: 'var(--f-clr-grey-700)',
-        backgroundColor: 'var(--f-clr-fg-100)',
-        border: 'solid 1px var(--f-clr-fg-200)',
+        backgroundColor: 'var(--f-clr-surface-200)',
+        border: 'solid 1px var(--f-clr-surface-300)',
         borderRadius: 'var(--f-radius-sml)',
         padding: '.3em .5em'
     }

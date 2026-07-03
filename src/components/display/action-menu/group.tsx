@@ -17,8 +17,8 @@ const styles = createStyles('action-menu.group', {
     '.menu': {
         position: 'absolute',
         padding: '.25em',
-        background: 'var(--f-clr-bg-200)',
-        border: 'solid 1px var(--f-clr-fg-200)',
+        background: 'var(--f-clr-surface-100)',
+        border: 'solid 1px var(--f-clr-surface-200)',
         borderRadius: 'calc(.25em + var(--f-radius-sml))',
         boxShadow: 'var(--f-shadow-med)',
         fontSize: 'var(--f-font-size-sml)',

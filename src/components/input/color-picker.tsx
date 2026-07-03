@@ -40,7 +40,7 @@ const styles = createStyles('color-picker', fluid => ({
         height: '12em',
         borderRadius: 'var(--f-radius-sml)',
         backgroundBlendMode: 'multiply',
-        border: 'solid 1px var(--f-clr-fg-200)',
+        border: 'solid 1px var(--f-clr-surface-200)',
         flexGrow: 1,
         userSelect: 'none',
         cursor: 'pointer',

@@ -94,6 +94,7 @@ export async function getContext(isDev?: boolean): Promise<typeof GLOBAL_CONTEXT
                 GLOBAL_CONTEXT.components = config.components || {};
                 GLOBAL_CONTEXT.paths = config.paths || GLOBAL_CONTEXT.paths;
                 GLOBAL_CONTEXT.cssOutput = config.cssOutput || GLOBAL_CONTEXT.cssOutput;
+                GLOBAL_CONTEXT.includeUtilityClasses = config.includeUtilityClasses ?? GLOBAL_CONTEXT.includeUtilityClasses;
                 GLOBAL_CONTEXT.icons = config.icons || {};
                 GLOBAL_CONTEXT.rawConfig = rawConfig;
             }

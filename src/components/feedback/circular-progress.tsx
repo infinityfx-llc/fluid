@@ -24,7 +24,7 @@ const styles = createStyles('circular-progress', {
     },
 
     '.track': {
-        stroke: 'var(--f-clr-fg-100)'
+        stroke: 'var(--f-clr-surface-200)'
     },
 
     '.progress': {

@@ -46,13 +46,13 @@ const styles = createStyles('button', {
     },
 
     '.v__light': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-surface-100)',
         color: 'var(--color, var(--f-clr-primary-100))'
     },
 
     '.v__neutral': {
-        backgroundColor: 'var(--f-clr-bg-200)',
-        border: 'solid 1px var(--f-clr-fg-200)'
+        backgroundColor: 'var(--f-clr-surface-200)',
+        border: 'solid 1px var(--f-clr-surface-300)'
     },
 
     '.v__neutral .highlight': {

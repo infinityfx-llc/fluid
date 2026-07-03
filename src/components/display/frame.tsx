@@ -12,15 +12,23 @@ const styles = createStyles('frame', {
     },
 
     '.border': {
-        border: 'solid 1px var(--f-clr-fg-200)'
+        border: 'solid 1px var(--f-clr-surface-200)'
     },
 
-    '.bg__light': {
-        background: 'var(--f-clr-fg-100)'
+    '.bg__high.border': {
+        border: 'solid 1px var(--f-clr-surface-300)'
     },
 
-    '.bg__dark': {
-        background: 'var(--f-clr-bg-200)'
+    '.bg__low': {
+        background: 'var(--f-clr-bg-100)'
+    },
+
+    '.bg__medium': {
+        background: 'var(--f-clr-surface-100)'
+    },
+
+    '.bg__high': {
+        background: 'var(--f-clr-surface-200)'
     },
 
     '.r__xsm': {
@@ -59,7 +67,7 @@ export default function Frame({ children, cc = {}, radius = 'sml', shadow, borde
         radius?: FluidSize;
         shadow?: boolean;
         border?: boolean;
-        background?: 'none' | 'dark' | 'light';
+        background?: 'none' | 'low' | 'medium' | 'high';
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 

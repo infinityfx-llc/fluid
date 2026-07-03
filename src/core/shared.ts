@@ -18,6 +18,7 @@ export const GLOBAL_CONTEXT: {
     theme: FluidTheme;
     paths: string[];
     cssOutput: 'automatic' | 'manual';
+    includeUtilityClasses: boolean;
     icons: {
         [key in FluidIcon]?: React.JSXElementConstructor<any>;
     };
@@ -38,6 +39,7 @@ export const GLOBAL_CONTEXT: {
         './components/**/*.{jsx,tsx}'
     ],
     cssOutput: 'automatic',
+    includeUtilityClasses: false,
     icons: {},
     rawConfig: '',
     isDev: false,

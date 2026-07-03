@@ -15,10 +15,10 @@ import { Icon } from '../../core/icons';
 
 const styles = createStyles('modal', (fluid) => ({
     '.modal': {
-        background: 'var(--f-clr-bg-100)',
+        background: 'var(--f-clr-surface-100)',
         borderRadius: 'var(--f-radius-lrg)',
         minWidth: 'min(100vw, 16em)',
-        border: 'solid 1px var(--f-clr-fg-200)',
+        border: 'solid 1px var(--f-clr-surface-300)',
         margin: 'var(--f-spacing-lrg)',
         maxHeight: 'calc(100% - var(--f-spacing-lrg) * 2)',
         touchAction: 'none'
@@ -46,7 +46,7 @@ const styles = createStyles('modal', (fluid) => ({
     '.footer': {
         overflow: 'hidden',
         position: 'relative',
-        borderTop: 'solid 1px var(--f-clr-fg-200)',
+        borderTop: 'solid 1px var(--f-clr-surface-200)',
         padding: 'var(--f-spacing-med)',
         borderBottomLeftRadius: 'calc(var(--f-radius-med) - 1px)',
         borderBottomRightRadius: 'calc(var(--f-radius-med) - 1px)',
@@ -58,7 +58,7 @@ const styles = createStyles('modal', (fluid) => ({
     '.footer::before': {
         content: '""',
         position: 'absolute',
-        background: 'var(--f-clr-fg-100)',
+        background: 'var(--f-clr-bg-100)',
         inset: 0,
         bottom: '-32px'
     },

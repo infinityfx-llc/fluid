@@ -50,7 +50,7 @@ const styles = createStyles('switch', {
         width: 'calc(calc(1.5em - 6px) * 2 + 6px)',
         padding: '3px',
         aspectRatio: 2,
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-surface-200)',
         borderRadius: 'var(--f-radius-sml)',
         transition: 'background-color .35s'
     },

@@ -19,9 +19,9 @@ const styles = createStyles('table', {
     '.table': {
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: 'var(--f-clr-bg-100)',
+        backgroundColor: 'var(--f-clr-surface-200)',
         borderRadius: 'var(--f-radius-med)',
-        border: 'solid 1px var(--f-clr-fg-200)',
+        border: 'solid 1px var(--f-clr-surface-300)',
         padding: 'var(--f-spacing-xsm)',
         paddingTop: 0
     },
@@ -47,7 +47,7 @@ const styles = createStyles('table', {
     },
 
     '.body .row': {
-        background: 'var(--f-clr-fg-100)'
+        background: 'var(--f-clr-surface-100)'
     },
 
     '.row > *:not(.collapsed)': {

@@ -13,12 +13,12 @@ import { Icon } from '../../core/icons';
 const styles = createStyles('drawer', {
     '.drawer': {
         position: 'absolute',
-        background: 'var(--f-clr-bg-100)',
+        background: 'var(--f-clr-surface-100)',
         display: 'flex',
         flexDirection: 'column',
         padding: 'var(--f-spacing-med)',
         width: 'min(100vw, 16em)',
-        border: 'solid 1px var(--f-clr-fg-200)',
+        border: 'solid 1px var(--f-clr-surface-300)',
         height: '100dvh',
         top: 0,
         touchAction: 'none'

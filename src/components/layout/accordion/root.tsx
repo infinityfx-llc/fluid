@@ -27,14 +27,14 @@ const styles = createStyles('accordion.root', {
     },
 
     '.v__default': {
-        backgroundColor: 'var(--f-clr-bg-200)',
+        backgroundColor: 'var(--f-clr-surface-100)',
         borderRadius: 'var(--f-radius-med)',
         padding: '.4em'
     },
 
     '.v__default .divider': {
         marginInline: 'var(--f-radius-sml)',
-        backgroundColor: 'var(--f-clr-fg-200)',
+        backgroundColor: 'var(--f-clr-surface-200)',
         height: '1px'
     },
 
@@ -44,7 +44,7 @@ const styles = createStyles('accordion.root', {
 
     '.item': {
         borderRadius: 'calc(var(--f-radius-sml) + .25em)',
-        backgroundColor: 'var(--f-clr-bg-200)',
+        backgroundColor: 'var(--f-clr-surface-100)',
         padding: '.25em'
     }
 });

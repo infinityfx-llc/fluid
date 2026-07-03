@@ -33,7 +33,7 @@ const styles = createStyles('panel', {
     },
 
     '.d__horizontal.v__default > .divider': {
-        background: 'var(--f-clr-fg-200)',
+        background: 'var(--f-clr-surface-200)',
         width: '1px'
     },
 
@@ -48,7 +48,7 @@ const styles = createStyles('panel', {
     },
 
     '.d__vertical.v__default > .divider': {
-        background: 'var(--f-clr-fg-200)',
+        background: 'var(--f-clr-surface-200)',
         height: '1px'
     },
 
@@ -77,7 +77,7 @@ const styles = createStyles('panel', {
     '.handle': {
         position: 'relative',
         borderRadius: '3px',
-        backgroundColor: 'var(--f-clr-fg-200)',
+        backgroundColor: 'var(--f-clr-surface-200)',
         display: 'grid',
         gap: '1px',
         zIndex: 1

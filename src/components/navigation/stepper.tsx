@@ -45,8 +45,8 @@ const styles = createStyles('stepper', {
         position: 'relative',
         width: '2.5em',
         height: '2.5em',
-        backgroundColor: 'var(--f-clr-bg-200)',
-        border: 'solid 1px var(--f-clr-fg-200)',
+        backgroundColor: 'var(--f-clr-surface-100)',
+        border: 'solid 1px var(--f-clr-surface-200)',
         borderRadius: '999px',
         color: 'var(--f-clr-grey-300)',
         outline: 'solid 2px transparent',
@@ -95,7 +95,7 @@ const styles = createStyles('stepper', {
 
     '.progress': {
         flexGrow: 1,
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-surface-200)',
         borderRadius: 'var(--f-radius-xsm)',
         transition: 'background-color .25s'
     },

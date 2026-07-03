@@ -6,12 +6,25 @@ import { getContext, IOHelper, printProgress, Stats } from './utils';
 import { glob } from 'glob';
 
 export async function compileTypes(io: IOHelper) {
-    const { theme } = await getContext();
+    const { theme, includeUtilityClasses } = await getContext();
 
     let palettes = Array.from(new Set([...Object.keys(theme.palettes), 'light', 'dark', 'system']).keys()),
         types = io.source('./types/src/types.d.ts');
 
     types = types.replace(/(FluidColorScheme\s*=\s*).+?(;)/, `$1${palettes.map(name => `'${name}'`).join(' | ')}$2`);
+
+    if (includeUtilityClasses) {
+        const classes: string[] = [];
+        Object.entries(theme.palettes.light).forEach(([key, arr]) => {
+            for (let i = 0; i < arr.length; i++) {
+                for (const prop of ['cl', 'bg']) {
+                    classes.push(`'${prop}-${key}-${100 * (i + 1)}'`);
+                }
+            }
+        });
+
+        types = types.replace(/(FluidColorClasses\s*=\s*).+?(;)/, `$1${classes.join(' | ')}$2`);
+    }
 
     io.override('./types/src/types.d.ts', types);
 }

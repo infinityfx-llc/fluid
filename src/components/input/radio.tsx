@@ -41,8 +41,8 @@ const styles = createStyles('radio', {
         width: '1.5em',
         height: '1.5em',
         borderRadius: '999px',
-        backgroundColor: 'var(--f-clr-bg-200)',
-        border: 'solid 1px var(--f-clr-fg-200)',
+        backgroundColor: 'var(--f-clr-surface-100)',
+        border: 'solid 1px var(--f-clr-surface-200)',
         transition: 'background-color .25s, border-color .25s'
     },
 

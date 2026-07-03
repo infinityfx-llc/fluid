@@ -25,6 +25,8 @@ export type PolymorphComponentProps<E extends React.ElementType> = React.PropsWi
     as?: E;
 }>;
 
+export type FluidColorClasses = string;
+
 export type FluidStyles<T extends string = string> = {
     [key in (T | string & {})]?: React.CSSProperties | {
         [key: string]: React.CSSProperties | undefined
@@ -108,6 +110,7 @@ export type FluidComponents = {
 
 export type FluidConfig = {
     cssOutput?: 'automatic' | 'manual';
+    includeUtilityClasses?: boolean;
     paths?: string[];
     theme?: PartialFluidTheme;
     components?: FluidComponents;

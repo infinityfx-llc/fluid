@@ -11,7 +11,7 @@ const styles = createStyles('progress-bar', {
         minWidth: 'min(100vw, 12em)',
         borderRadius: '999px',
         overflow: 'hidden',
-        backgroundColor: 'var(--f-clr-fg-100)'
+        backgroundColor: 'var(--f-clr-surface-200)'
     },
 
     '.progress': {

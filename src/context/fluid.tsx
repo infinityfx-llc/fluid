@@ -1,7 +1,7 @@
 'use client';
 
 import { cloneElement, createContext } from "react";
-import { FluidTheme, parseCSSVariables, parseColorPalettes } from "../../src/core/theme";
+import { FluidTheme, parseCSSVariables, parseColorPalettes, parseUtilityClasses } from "../../src/core/theme";
 import global from "../../src/styles/global";
 import useColorScheme from "../../src/hooks/use-color-scheme";
 import { createGlobalStyles } from "../core/style";
@@ -35,11 +35,12 @@ export default function FluidProvider({ children, initialColorScheme }: {
     const systemColorScheme = preferred in fluid.palettes ? preferred : fluid.defaultColorScheme;
 
     createGlobalStyles(() => {
-        const __fluid = GLOBAL_CONTEXT.theme;
+        const { theme, includeUtilityClasses } = GLOBAL_CONTEXT;
 
         return {
-            ...parseColorPalettes(__fluid),
-            ':root': parseCSSVariables(__fluid)
+            ...parseUtilityClasses(theme, includeUtilityClasses),
+            ...parseColorPalettes(theme),
+            ':root': parseCSSVariables(theme)
         };
     });
     createGlobalStyles(global);

@@ -1,4 +1,4 @@
-import type { FluidInputvalue, Merged, Selectors } from "../types";
+import type { FluidColorClasses, FluidInputvalue, Merged, Selectors } from "../types";
 
 export const round = (val: number, n = 2) => Math.round(val * Math.pow(10, n)) / Math.pow(10, n);
 
@@ -27,7 +27,7 @@ export function hexHash(str: string) {
 }
 
 export function random(seed: string) {
-    return hash(seed) / 2**53;
+    return hash(seed) / 2 ** 53;
 }
 
 export function changeInputValue(input: HTMLInputElement, value: FluidInputvalue) {
@@ -47,7 +47,7 @@ export function mergeRecursive<T = any, P = any>(a: T, b: P) {
     return merged as Merged<T, P>;
 }
 
-export function classes(...args: any[]) {
+export function classes(...args: (FluidColorClasses | (string & {}) | undefined | null | boolean)[]) {
     return args.filter(val => typeof val === 'string').join(' ');
 }
 

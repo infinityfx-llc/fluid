@@ -44,7 +44,7 @@ const styles = createStyles('scrollarea', {
     },
 
     '.v__permanent > .track': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-surface-100)',
         padding: '2px'
     },
 

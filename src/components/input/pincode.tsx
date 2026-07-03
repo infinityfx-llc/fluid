@@ -19,8 +19,8 @@ const styles = createStyles('pincode', {
 
     '.field': {
         outline: 'solid 3px transparent',
-        backgroundColor: 'var(--f-clr-bg-200)',
-        border: 'solid 1px var(--f-clr-fg-200)',
+        backgroundColor: 'var(--f-clr-surface-100)',
+        border: 'solid 1px var(--f-clr-surface-200)',
         borderRadius: 'var(--f-radius-sml)',
         transition: 'border-color .2s, outline-color .2s',
         display: 'flex',

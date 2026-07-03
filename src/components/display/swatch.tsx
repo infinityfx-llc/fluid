@@ -7,7 +7,7 @@ const styles = createStyles('swatch', {
         position: 'relative',
         width: '2em',
         height: '2em',
-        border: 'solid 1px var(--f-clr-fg-200)',
+        border: 'solid 1px var(--f-clr-surface-200)',
         borderRadius: 'var(--f-radius-sml)',
         overflow: 'hidden',
         background: 'linear-gradient(45deg, var(--f-clr-grey-100) 25%, transparent 25%, transparent 75%, var(--f-clr-grey-100) 75%, var(--f-clr-grey-100) 100%), linear-gradient(45deg, var(--f-clr-grey-100) 25%, var(--f-clr-bg-200) 25%, var(--f-clr-bg-200) 75%, var(--f-clr-grey-100) 75%, var(--f-clr-grey-100) 100%)',

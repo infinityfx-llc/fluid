@@ -10,14 +10,20 @@ import Interactable from "../feedback/interactable";
 
 const styles = createStyles('segmented', {
     '.segmented': {
+        borderRadius: 'calc(var(--f-radius-sml) + .3em)',
         position: 'relative',
         display: 'flex'
     },
 
-    '.v__default, .v__neutral': {
-        borderRadius: 'calc(var(--f-radius-sml) + .3em)',
-        backgroundColor: 'var(--f-clr-bg-200)',
-        border: 'solid 1px var(--f-clr-fg-200)',
+    '.v__default': {
+        backgroundColor: 'var(--f-clr-surface-100)',
+        border: 'solid 1px var(--f-clr-surface-200)',
+        padding: '.3em'
+    },
+
+    '.v__neutral': {
+        backgroundColor: 'var(--f-clr-surface-200)',
+        border: 'solid 1px var(--f-clr-surface-300)',
         padding: '.3em'
     },
 
@@ -90,11 +96,7 @@ const styles = createStyles('segmented', {
     },
 
     '.v__neutral .selection': {
-        backgroundColor: 'var(--f-clr-text-100)'
-    },
-
-    '.v__neutral .option[aria-checked="true"]:enabled': {
-        color: 'var(--f-clr-text-200)'
+        backgroundColor: 'var(--f-clr-surface-100)'
     },
 
     '.v__minimal .selection': {

@@ -10,7 +10,7 @@ import Interactable from "../feedback/interactable";
 
 const styles = createStyles('tabs', {
     '.v__default': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+        backgroundColor: 'var(--f-clr-surface-100)',
         borderRadius: 'var(--f-radius-med)'
     },
 

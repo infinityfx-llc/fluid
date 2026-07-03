@@ -54,7 +54,7 @@ const styles = createStyles('chip', {
     '.chip': {
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: 'var(--f-clr-bg-200)',
+        backgroundColor: 'var(--f-clr-surface-100)',
         borderRadius: 'inherit',
         color: 'var(--f-clr-text-100)',
         fontWeight: 600,

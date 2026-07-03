@@ -1,16 +1,11 @@
 import { FluidBreakpoint, FluidColorScheme, FluidStyles } from "../types";
 
+export type FluidColors = 'primary' | 'accent' | 'grey' | 'heading' | 'text' | 'bg' | 'surface' | 'highlight' | 'error';
+
 export type PartialFluidTheme = {
     palettes?: {
         [key: string]: {
-            primary?: string[];
-            accent?: string[];
-            grey?: string[];
-            heading?: string[];
-            text?: string[];
-            bg?: string[];
-            fg?: string[];
-            error?: string[];
+            [key in FluidColors]?: string[];
         }
     },
     defaultColorScheme?: string;
@@ -50,14 +45,7 @@ export type PartialFluidTheme = {
 export type FluidTheme = {
     palettes: {
         [key: string]: {
-            primary?: string[];
-            accent?: string[];
-            grey?: string[];
-            heading?: string[];
-            text?: string[];
-            bg?: string[];
-            fg?: string[];
-            error?: string[];
+            [key in FluidColors]?: string[];
         }
     },
     defaultColorScheme: FluidColorScheme;
@@ -102,8 +90,9 @@ export const DEFAULT_THEME = {
             grey: ['#e6e6e6', '#cccccc', '#b3b3b3', '#999999', '#808080', '#666666', '#4d4d4d', '#333333', '#191919'],
             heading: ['#000000'],
             text: ['#000000', '#ffffff'],
-            bg: ['#f7f6f5', '#ffffff'],
-            fg: ['#f2edeb', '#ede6e4'],
+            bg: ['#f7f6f5'],
+            surface: ['#ffffff', '#f2edeb', '#ede6e4'],
+            highlight: ['#e6e6e6'],
             error: ['#ff1f1f', '#ff5454', '#ff8c8c', '#ffbdbd']
         },
         dark: {
@@ -112,8 +101,9 @@ export const DEFAULT_THEME = {
             grey: ['#191919', '#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#b3b3b3', '#cccccc', '#e6e6e6'],
             heading: ['#ffffff'],
             text: ['#ffffff', '#000000'],
-            bg: ['#000000', '#171616'],
-            fg: ['#212020', '#2e2c2c'],
+            bg: ['#000000'],
+            surface: ['#171616', '#212020', '#2e2c2c'],
+            highlight: ['#808080'],
             error: ['#ff1f1f', '#b32727', '#822f2f', '#632c2c']
         }
     },
@@ -198,6 +188,23 @@ export function parseColorPalettes<T extends FluidTheme>(theme: T) {
     }
 
     return Object.assign(ruleset, mediaset);
+}
+
+export function parseUtilityClasses<T extends FluidTheme>(theme: T, include: boolean) {
+    const ruleset: FluidStyles = {};
+    if (!include) return ruleset;
+
+    Object.entries(theme.palettes.light).forEach(([key, arr]) => {
+        for (let i = 0; i < arr.length; i++) {
+            for (const prop of ['color', 'background']) {
+                ruleset[`.${prop === 'color' ? 'cl' : 'bg'}-${key}-${100 * (i + 1)}`] = {
+                    [prop]: `var(--f-clr-${key}-${100 * (i + 1)})`
+                }
+            }
+        }
+    });
+
+    return ruleset;
 }
 
 export const COLOR_SCHEME_COOKIE = 'FLUID_PREF_COLOR_SCHEME';

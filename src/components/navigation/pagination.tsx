@@ -8,7 +8,7 @@ import { Icon } from "../../core/icons";
 import { Animate } from "@infinityfx/lively";
 import Interactable from "../feedback/interactable";
 
-// arrow controls
+// todo: arrow controls
 
 const styles = createStyles('pagination', {
     '.pagination': {
@@ -50,7 +50,7 @@ const styles = createStyles('pagination', {
     },
 
     '.pagination:not(.v__minimal) .layer': {
-        backgroundColor: 'var(--f-clr-fg-100)'
+        backgroundColor: 'var(--f-clr-surface-100)'
     },
 
     '.pagination[aria-disabled="true"] .layer': {
@@ -76,7 +76,7 @@ const styles = createStyles('pagination', {
     },
 
     '.pagination:not(.v__minimal) .button:enabled': {
-        backgroundColor: 'var(--f-clr-fg-100)'
+        backgroundColor: 'var(--f-clr-surface-100)'
     },
 
     '.button:enabled': {

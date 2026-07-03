@@ -37,12 +37,12 @@ const styles = createStyles('file-field', {
     },
 
     '.v__default': {
-        backgroundColor: 'var(--f-clr-fg-100)',
-        border: 'solid 1px var(--f-clr-fg-200)'
+        backgroundColor: 'var(--f-clr-surface-100)',
+        border: 'solid 1px var(--f-clr-surface-200)'
     },
 
     '.v__minimal': {
-        backgroundColor: 'var(--f-clr-bg-200)'
+        backgroundColor: 'var(--f-clr-surface-200)'
     },
 
     '.content': {
@@ -60,7 +60,7 @@ const styles = createStyles('file-field', {
     },
 
     '.v__minimal:focus-within': {
-        backgroundColor: 'var(--f-clr-fg-100)'
+        backgroundColor: 'var(--f-clr-bg-100)'
     },
 
     '.field[data-error="true"]': {

@@ -28,7 +28,7 @@ const styles = createStyles('date-field', fluid => ({
     [`@media(min-width: ${fluid.breakpoints.mob + 1}px)`]: {
         '.calendar': {
             boxShadow: 'var(--f-shadow-med)',
-            border: 'solid 1px var(--f-clr-fg-200)'
+            border: 'solid 1px var(--f-clr-surface-200)'
         }
     },
 
