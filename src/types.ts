@@ -48,6 +48,7 @@ export type FluidComponents = {
     badge?: FluidSelectorStyles<import('./components/display/badge').BadgeSelectors>;
     code?: FluidSelectorStyles<import('./components/display/code').CodeSelectors>;
     frame?: FluidSelectorStyles<import('./components/display/frame').FrameSelectors>;
+    gradient?: FluidSelectorStyles<import('./components/display/gradient').GradientSelectors>;
     key?: FluidSelectorStyles<import('./components/display/key').KeySelectors>;
     swatch?: FluidSelectorStyles<import('./components/display/swatch').SwatchSelectors>;
     table?: FluidSelectorStyles<import('./components/display/table').TableSelectors>;

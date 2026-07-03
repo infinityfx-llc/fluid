@@ -54,7 +54,7 @@ const styles = createStyles('table', {
         whiteSpace: 'nowrap'
     },
 
-    '.row > [role="cell"]': { // TODO
+    '.row > [role="cell"]': {
         paddingInline: '.4rem'
     },
 
