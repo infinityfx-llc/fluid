@@ -81,7 +81,7 @@ const styles = createStyles('button', {
     },
 
     '.button:active .content': {
-        translate: '0px .5px'
+        translate: '0px 1px'
     },
 
     '.button[data-loading="true"] .content': {

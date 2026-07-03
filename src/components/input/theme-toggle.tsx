@@ -17,8 +17,8 @@ export default function ThemeToggle(props: Omit<ToggleProps, 'checkedContent' | 
         onChange={e => {
             setColorScheme(e.target.checked ? 'dark' : 'light');
             props.onChange?.(e);
-        }}
-        checkedContent={<Icon type="dark" />}>
+        }}>
         <Icon type="light" />
+        <Icon type="dark" />
     </Toggle>
 }
