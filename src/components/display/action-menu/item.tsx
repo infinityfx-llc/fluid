@@ -6,6 +6,7 @@ import { classes, combineClasses, combineRefs, filterFocusable } from '../../../
 import { usePopover } from '../../layout/popover/root';
 import { useRef } from 'react';
 import Interactable from '../../feedback/interactable';
+import { useMenuManager } from '../../../context/menu-manager';
 
 const styles = createStyles('action-menu.item', {
     '.item': {
@@ -53,7 +54,8 @@ export default function Item({ children, cc = {}, keepOpen, className, color, ..
     const style = combineClasses(styles, cc);
 
     const ref = useRef<HTMLButtonElement>(null);
-    const { variant, toggle } = usePopover();
+    const { toggle } = usePopover();
+    const { variant } = useMenuManager();
 
     return <Interactable
         {...props}

@@ -6,14 +6,14 @@ import useMediaQuery from "../../../hooks/use-media-query";
 
 type PopoverContext = {
     id: string;
-    variant: 'default' | 'inverted'; // also store round prop and merge into "props" object entry
+    // variant: 'default' | 'inverted'; // also store round prop and merge into "props" object entry
     mounted: boolean;
     isModal: boolean;
     trigger: React.RefObject<HTMLElement | null>;
     content: React.RefObject<HTMLElement | null>;
     opened: boolean;
     toggle: (value: boolean) => void;
-    children: React.RefObject<React.RefObject<HTMLElement | null>[]>;
+    children: React.RefObject<React.RefObject<HTMLElement | null>[]>; // TODO: check if needed?
 };
 
 export const PopoverContext = createContext<PopoverContext | null>(null);
@@ -50,7 +50,7 @@ export type PopoverRoot = {
      * @default false
      */
     stretch?: boolean;
-    variant?: 'default' | 'inverted';
+    // variant?: 'default' | 'inverted';
     onClose?: () => void;
 };
 
@@ -78,7 +78,7 @@ function getPosition(anchor: Element, element: Element, margin = '0px') {
     };
 }
 
-export default function Root({ children, ref, position = 'auto', mobileContainer = 'popover', stretch, variant = 'default', onClose }: PopoverRoot) {
+export default function Root({ children, ref, position = 'auto', mobileContainer = 'popover', stretch, onClose }: PopoverRoot) {
     const id = useId();
     const fluid = useFluid();
     const childrenRef = useRef<React.RefObject<HTMLElement>[]>([]);
@@ -128,7 +128,7 @@ export default function Root({ children, ref, position = 'auto', mobileContainer
             if (!isModal &&
                 !content.current?.contains(e.target as HTMLElement) &&
                 !trigger.current?.contains(e.target as HTMLElement) &&
-                !childrenRef.current.some(child => child.current?.contains(e.target as HTMLElement))) toggle(false);
+                !childrenRef.current.some(child => child.current?.contains(e.target as HTMLElement))) toggle(false); // TODO: optimize
         }
 
         window.addEventListener('click', click);
@@ -136,7 +136,7 @@ export default function Root({ children, ref, position = 'auto', mobileContainer
         return () => window.removeEventListener('click', click);
     }, [isModal]);
 
-    return <PopoverContext value={{ id, variant: isModal ? 'default' : variant, mounted, isModal, trigger, content, opened, toggle, children: childrenRef }}>
+    return <PopoverContext value={{ id, mounted, isModal, trigger, content, opened, toggle, children: childrenRef }}>
         {children}
     </PopoverContext>;
 }

@@ -8,6 +8,7 @@ import { createStyles } from '../../../core/style';
 import Item from './item';
 import { Icon } from '../../../core/icons';
 import { usePopover } from '../../layout/popover/root';
+import { useMenuManager } from '../../../context/menu-manager';
 
 const styles = createStyles('action-menu.group', {
     '.wrapper': {
@@ -48,7 +49,8 @@ export default function Group({ children, cc = {}, label, className, ...props }:
     const style = combineClasses(styles, cc);
 
     const id = useId();
-    const { variant } = usePopover();
+    // const { variant } = usePopover();
+    const { variant } = useMenuManager();
     const element = useRef<HTMLDivElement>(null);
     const content = useRef<HTMLDivElement>(null);
     const [state, setState] = useState({ open: false, side: 'left' });

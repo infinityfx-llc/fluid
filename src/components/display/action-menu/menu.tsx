@@ -6,6 +6,7 @@ import { classes, combineClasses } from '../../../../src/core/utils';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { usePopover } from '../../layout/popover/root';
+import { useMenuManager } from '../../../context/menu-manager';
 
 const styles = createStyles('action-menu.menu', {
     '.menu': {
@@ -33,7 +34,8 @@ export default function Menu({ children, cc = {}, className, ...props }:
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    const { variant } = usePopover();
+    // const { variant } = usePopover();
+    const { variant } = useMenuManager();
 
     return <Popover.Content role="menu">
         <Animate
