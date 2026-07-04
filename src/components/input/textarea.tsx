@@ -5,6 +5,7 @@ import useInputProps from '../../../src/hooks/use-input-props';
 import { FluidSize, Selectors } from '../../../src/types';
 import Scrollarea from '../layout/scrollarea';
 import { createStyles } from '../../core/style';
+import { useRef } from 'react';
 
 const styles = createStyles('textarea', {
     '.s__xsm': {
@@ -39,20 +40,22 @@ const styles = createStyles('textarea', {
         outlineColor: 'var(--f-clr-primary-500)'
     },
 
-    '.stretch': {
+    '.container': {
+        position: 'relative',
+        flexShrink: 0,
+        flexGrow: 1,
+    },
+
+    '.content': {
         position: 'relative',
         whiteSpace: 'pre-wrap',
         padding: '.6em',
-        flexShrink: 0,
-        flexGrow: 1,
         color: 'transparent'
     },
 
     '.input': {
-        position: 'absolute',
         inset: 0,
         width: '100%',
-        height: '100%',
         resize: 'none',
         outline: 'none',
         border: 'none',
@@ -84,7 +87,7 @@ const styles = createStyles('textarea', {
     }
 });
 
-export type TextareaSelectors = Selectors<'textarea' | 'input' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
+export type TextareaSelectors = Selectors<'textarea' | 'container' | 'content' | 'input' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
 /**
  * A form textarea.
@@ -104,7 +107,9 @@ export default function Textarea({ cc = {}, size = 'med', error, resize = 'both'
     } & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'children' | 'cols'>) {
     const style = combineClasses(styles, cc);
 
+    const content = useRef<HTMLDivElement>(null);
     const [split, rest] = useInputProps(props);
+    const fitToContent = resize === 'auto';
 
     return <Scrollarea
         {...rest}
@@ -117,18 +122,34 @@ export default function Textarea({ cc = {}, size = 'med', error, resize = 'both'
         data-disabled={props.disabled}
         data-fb
         style={{
-            resize: resize === 'auto' ? undefined : resize,
-            fieldSizing: resize === 'auto' ? 'content' : undefined,
-            minHeight: `calc(${props.rows || 2}lh + 1.2em)`,
+            resize: fitToContent ? undefined : resize,
+            height: fitToContent ? undefined : `calc(${props.rows || 2}lh + 1.2em)`,
             ...props.style
         }}>
-        <div className={style.stretch}>
-            {split.value}
+        <div className={style.container}>
+            <div
+                ref={content}
+                className={style.content}
+                style={{
+                    display: fitToContent ? 'none' : undefined
+                }}>
+                {split.value || split.defaultValue}
+            </div>
 
             <textarea
                 {...split}
                 className={style.input}
-                aria-invalid={!!error} />
+                style={{
+                    position: fitToContent ? 'relative' : 'absolute',
+                    minHeight: fitToContent ? `calc(${props.rows || 2}lh + 1.2em)` : '100%',
+                    fieldSizing: fitToContent ? 'content' : undefined
+                }}
+                aria-invalid={!!error}
+                onChange={e => {
+                    if (!content.current) return;
+
+                    content.current.innerHTML = e.target.value;
+                }} />
         </div>
     </Scrollarea>;
 }
