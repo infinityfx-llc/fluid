@@ -40,8 +40,7 @@ const styles = createStyles('accordion.item', {
     },
 
     '.v__minimal': {
-        padding: '.25em',
-        borderRadius: 'calc(var(--f-radius-sml) + .25em)',
+        borderRadius: 'var(--f-radius-sml)',
         transition: 'background-color .5s'
     },
 
@@ -93,13 +92,7 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
         mounted.current = true;
     }, []);
 
-    const Wrapper = variant === 'default' ? Fragment : 'div';
-
-    return <Wrapper
-        className={classes(
-            style.item,
-            style[`v__${variant}`]
-        )}>
+    const itemContent = <>
         <Interactable
             disabled={disabled}
             highlightColor="var(--f-clr-primary-400)"
@@ -129,7 +122,17 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
                 {children}
             </div>
         </Collapsible>
-    </Wrapper>;
+    </>;
+
+    if (variant === 'default') return itemContent;
+
+    return <div
+        className={classes(
+            style.item,
+            style[`v__${variant}`]
+        )}>
+        {itemContent}
+    </div>;
 }
 
 Item.displayName = 'Accordion.Item';
