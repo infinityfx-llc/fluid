@@ -1,7 +1,7 @@
 'use client';
 
 import { Selectors } from "../../../src/types";
-import { Fragment, useId, useState } from "react";
+import { Fragment, useId, useRef, useState } from "react";
 import Scrollarea from "../layout/scrollarea";
 import Toggle from "../input/toggle";
 import { createStyles } from "../../core/style";
@@ -105,6 +105,7 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
     const style = combineClasses(styles, cc);
 
     const id = useId();
+    const timeout = useRef<any>(undefined);
     const [copied, setCopied] = useState(false);
 
     return <div {...props} className={classes(style.wrapper, props.className)}>
@@ -133,7 +134,7 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
         <div className={style.button__align}>
             <Toggle
                 compact
-                checkedContent={<Icon type="check" />}
+                readOnly
                 checked={copied}
                 cc={{
                     ...cc,
@@ -141,8 +142,9 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
                 }}
                 aria-label="Copy code"
                 onClick={() => {
-                    // copy code content to clipboard
+                    clearTimeout(timeout.current);
 
+                    // copy code content to clipboard
                     const range = document.createRange(),
                         el = document.getElementById(id) as HTMLDivElement;
                     range.selectNodeContents(el);
@@ -156,9 +158,10 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
 
                     // toggle copy button visual state
                     setCopied(true);
-                    setTimeout(() => setCopied(false), 2000);
+                    timeout.current = setTimeout(() => setCopied(false), 2000);
                 }}>
                 <Icon type="copy" />
+                <Icon type="check" />
             </Toggle>
         </div>
     </div>;

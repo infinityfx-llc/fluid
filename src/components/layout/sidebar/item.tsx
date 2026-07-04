@@ -198,13 +198,14 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
                     }}
                     aria-label={label}
                     disabled={compact}
+                    readOnly
                     compact
                     variant="minimal"
                     size={size === 'med' ? 'sml' : 'xsm'}
                     round={round}
-                    checked={open}
-                    checkedContent={<Icon type="collapseUp" />}>
+                    checked={open}>
                     <Icon type="expandDown" />
+                    <Icon type="collapseUp" />
                 </Toggle> : right}
             </span>
         </Interactable>

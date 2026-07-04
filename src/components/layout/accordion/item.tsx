@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, useRef } from "react";
+import { Fragment, useEffect, useId, useRef } from "react";
 import Collapsible from "../collapsible";
 import { Animate } from "@infinityfx/lively";
 import { Selectors } from "../../../../src/types";
@@ -12,6 +12,11 @@ import { Icon } from "../../../core/icons";
 import Interactable from "../../feedback/interactable";
 
 const styles = createStyles('accordion.item', {
+    '.item': {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+
     '.button': {
         position: 'relative',
         borderRadius: 'var(--f-radius-sml)',
@@ -19,11 +24,10 @@ const styles = createStyles('accordion.item', {
         display: 'flex',
         alignItems: 'center',
         gap: 'var(--f-spacing-xsm)',
-        color: 'var(--f-clr-text-100)',
-        transition: 'background-color .5s'
+        color: 'var(--f-clr-text-100)'
     },
 
-    '.v__minimal[aria-expanded="true"]': {
+    '.v__neutral .button': {
         backgroundColor: 'var(--f-clr-fg-100)'
     },
 
@@ -35,7 +39,16 @@ const styles = createStyles('accordion.item', {
         color: 'var(--f-clr-grey-500)'
     },
 
-    '.v__minimal:disabled[aria-expanded="true"]': {
+    '.v__minimal': {
+        borderRadius: 'var(--f-radius-sml)',
+        transition: 'background-color .5s'
+    },
+
+    '.v__minimal:has([aria-expanded="true"])': {
+        backgroundColor: 'var(--f-clr-fg-100)'
+    },
+
+    '.v__minimal:has([aria-expanded="true"]:disabled)': {
         backgroundColor: 'var(--f-clr-fg-200)'
     },
 
@@ -79,16 +92,13 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
         mounted.current = true;
     }, []);
 
-    return <>
+    const itemContent = <>
         <Interactable
             disabled={disabled}
             highlightColor="var(--f-clr-primary-400)"
             aria-expanded={isOpen}
             aria-controls={id}
-            className={classes(
-                style.button,
-                style[`v__${variant}`]
-            )}
+            className={style.button}
             onClick={() => toggle(id, !isOpen)}>
             {label}
 
@@ -112,7 +122,17 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
                 {children}
             </div>
         </Collapsible>
-    </>
+    </>;
+
+    if (variant === 'default') return itemContent;
+
+    return <div
+        className={classes(
+            style.item,
+            style[`v__${variant}`]
+        )}>
+        {itemContent}
+    </div>;
 }
 
 Item.displayName = 'Accordion.Item';

@@ -80,6 +80,10 @@ const styles = createStyles('button', {
         lineHeight: 1
     },
 
+    '.button:active .content': {
+        translate: '0px 1px'
+    },
+
     '.button[data-loading="true"] .content': {
         opacity: 0
     },

@@ -11,42 +11,50 @@ import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
 import Interactable from "../feedback/interactable";
 
-// variants: default | minimal/light mabye?
+// TODO: variants: default | minimal/light mabye?
+
+const formatHeading = (val: any) => ('' + val).charAt(0).toUpperCase() + ('' + val).slice(1).replace(/[a-z][A-Z]/g, '$1 $2');
 
 const styles = createStyles('table', {
     '.table': {
-        backgroundColor: 'var(--f-clr-fg-100)',
-        borderRadius: 'var(--f-radius-sml)',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: 'var(--f-clr-bg-100)',
+        borderRadius: 'var(--f-radius-med)',
         border: 'solid 1px var(--f-clr-fg-200)',
-        display: 'flex'
+        padding: 'var(--f-spacing-xsm)',
+        paddingTop: 0
     },
 
-    '.rows': {
+    '.body': {
         minWidth: 'max-content',
         display: 'flex',
         flexDirection: 'column',
-        flexGrow: 1
+        gap: '1px',
+        flexGrow: 1,
+        borderRadius: 'var(--f-radius-sml)',
+        overflow: 'hidden'
     },
 
     '.row': {
         position: 'relative',
         display: 'grid',
         gridAutoFlow: 'column',
-        alignItems: 'center',
+        alignItems: 'baseline',
         padding: '.6em',
         gap: 'var(--f-spacing-sml)',
         color: 'var(--f-clr-text-100)'
     },
 
-    '.row:not(:last-child)': {
-        borderBottom: 'solid 1px var(--f-clr-fg-200)'
+    '.body .row': {
+        background: 'var(--f-clr-fg-100)'
     },
 
     '.row > *:not(.collapsed)': {
         whiteSpace: 'nowrap'
     },
 
-    '.row > [role="gridcell"]': {
+    '.row > [role="cell"]': {
         paddingInline: '.4rem'
     },
 
@@ -57,8 +65,7 @@ const styles = createStyles('table', {
 
     '.header': {
         fontSize: '.9em',
-        fontWeight: 700,
-        background: 'var(--f-clr-fg-200)'
+        fontWeight: 700
     },
 
     '.label': {
@@ -152,7 +159,7 @@ export default function Table<T extends { [key: string]: string | number | Date;
         behavior="shift"
         className={classes(style.table, props.className)}
         data-fb>
-        <div role="rowgroup" className={style.rows}>
+        <div role="rowgroup">
             <div role="row" className={classes(style.row, style.header)} style={{ gridTemplateColumns }}>
                 {selectable && <div className={style.collapsed}>
                     <Checkbox
@@ -193,25 +200,29 @@ export default function Table<T extends { [key: string]: string | number | Date;
                                         setSorting('nil');
                                     }
                             }}>
-                            {col as string}
+                            {formatHeading(col)}
 
-                            {(column !== col || sorting === 'nil') && sort && <Icon type="sort" />}
-                            {column === col && sorting === 'asc' && <Icon type="sortAscend" />}
-                            {column === col && sorting === 'dsc' && <Icon type="sortDescend" />}
+                            {sort && <>
+                                {(column !== col || sorting === 'nil') && <Icon type="sort" />}
+                                {column === col && sorting === 'asc' && <Icon type="sortAscend" />}
+                                {column === col && sorting === 'dsc' && <Icon type="sortDescend" />}
+                            </>}
                         </Interactable>
                     </div>;
                 })}
 
                 {rowActions ? <div className={style.collapsed} /> : null}
             </div>
+        </div>
 
+        <div role="rowgroup" className={style.body}>
             {rows.map((row, i) => {
 
                 return <Interactable
                     key={i}
                     as="div"
                     role="row"
-                    disabled={!selectable}
+                    highlightColor="var(--f-clr-primary-300)"
                     className={style.row}
                     style={{ gridTemplateColumns }}>
                     {selectable && <div className={style.collapsed}>
@@ -233,7 +244,7 @@ export default function Table<T extends { [key: string]: string | number | Date;
                         // format row data into string values
                         const formatter = columnFormatters[col] || (val => val.toString());
 
-                        return <div key={i} role="gridcell">
+                        return <div key={i} role="cell">
                             {formatter(row[col])}
                         </div>;
                     })}
@@ -254,7 +265,9 @@ export default function Table<T extends { [key: string]: string | number | Date;
                 </Interactable>;
             })}
 
-            {!rows.length && <div className={style.empty}>{emptyMessage}</div>}
+            {!rows.length && <div className={style.empty}>
+                {emptyMessage}
+            </div>}
         </div>
     </Scrollarea>;
 }

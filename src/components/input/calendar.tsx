@@ -245,8 +245,10 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                 checked={years}
                 onChange={e => setYears(e.target.checked)}
                 className={style.toggle}>
-                {date.toLocaleString(locale, { month: 'long', year: 'numeric' })}
-                <Icon type="expand" />
+                <>
+                    {date.toLocaleString(locale, { month: 'long', year: 'numeric' })}
+                    <Icon type="expand" />
+                </>
             </Toggle>
 
             <Button

@@ -1,12 +1,27 @@
 'use client';
 
-import { FluidSize, Selectors } from "../../../src/types";
+import { FluidInputvalue, FluidSize, Selectors } from "../../../src/types";
 import { useRef, useState } from "react";
 import useInputProps from "../../../src/hooks/use-input-props";
 import { Animate } from "@infinityfx/lively";
 import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 import Interactable from "../feedback/interactable";
+
+function inputValueToInteger({ value, checked, defaultValue, defaultChecked }: {
+    value?: FluidInputvalue;
+    checked?: boolean;
+    defaultValue?: FluidInputvalue;
+    defaultChecked?: boolean;
+}) {
+    const raw = [value, checked, defaultValue, defaultChecked].find(value => value !== undefined);
+    if (typeof raw === 'number') return raw;
+    if (typeof raw === 'boolean') return +raw;
+
+    const num = parseInt('' + raw);
+
+    return isNaN(num) ? 0 : num;
+}
 
 const styles = createStyles('toggle', {
     '.input': {
@@ -77,6 +92,10 @@ const styles = createStyles('toggle', {
         height: '100%',
     },
 
+    '.toggle:active .container': {
+        translate: '0px 1px'
+    },
+
     '.toggle.compact .content': {
         padding: '.6em'
     },
@@ -107,36 +126,40 @@ const styles = createStyles('toggle', {
 export type ToggleSelectors = Selectors<'toggle' | 'content' | 'container' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'compact' | 'v__default' | 'v__minimal' | 'v__neutral'>;
 
 export type ToggleProps = {
+    children: React.ReactNode | React.ReactNode[];
     ref?: React.Ref<HTMLDivElement>;
     cc?: ToggleSelectors;
     size?: FluidSize;
     compact?: boolean;
     round?: boolean;
     variant?: 'default' | 'minimal' | 'neutral';
-    /**
-     * Alternate content to show when the Toggle is `checked`.
-     */
-    checkedContent?: React.ReactNode;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'>;
+    transition?: 'slide' | 'morph';
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'size' | 'type'>;
 
 /**
- * A button which toggles between an on and off state.
+ * A button which cycles between 2 or more states.
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/toggle}
  */
-export default function Toggle({ children, cc = {}, size = 'med', compact = false, round = false, variant = 'default', checkedContent, ...props }: ToggleProps) {
+export default function Toggle({ children, cc = {}, size = 'med', compact = false, round = false, variant = 'default', transition = 'slide', ...props }: ToggleProps) {
     const style = combineClasses(styles, cc);
 
     const inputRef = useRef<HTMLInputElement>(null);
-    const [state, setState] = props.checked !== undefined ? [props.checked] : useState(!!props.defaultChecked);
     const [split, rest] = useInputProps(props);
+    const integer = inputValueToInteger(split);
+
+    const [selected, setSelected] = split.value !== undefined || split.checked !== undefined ?
+        [integer] :
+        useState(integer);
+    const options = Array.isArray(children) ? children : [children];
+    const checked = options.length < 3 && selected !== 0;
 
     return <Interactable
         {...rest}
         as="div"
         interactTarget={inputRef}
         disabled={props.disabled}
-        highlightColor={variant === 'minimal' && !state ? 'var(--f-clr-primary-400)' : (variant === 'neutral' ? 'var(--f-clr-grey-300)' : undefined)}
+        highlightColor={variant === 'minimal' && !checked ? 'var(--f-clr-primary-400)' : (variant === 'neutral' ? 'var(--f-clr-grey-300)' : undefined)}
         className={classes(
             style.toggle,
             round && style.round,
@@ -145,37 +168,45 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
             style[`v__${variant}`],
             props.className
         )}
-        data-checked={state}
+        data-checked={checked}
         data-disabled={!!props.disabled}
         data-fb={variant === 'neutral' ? 'true' : undefined}>
         <input
             {...split}
             ref={inputRef}
             type="checkbox"
+            value={selected}
+            checked={!!selected}
             className={style.input}
             onChange={e => {
-                setState?.(e.target.checked);
+                const updated = (selected + 1) % Math.max(options.length, 2);
+
+                Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set?.call(inputRef.current, '' + updated);
+                setSelected?.(updated);
                 split.onChange?.(e);
             }} />
 
         <div className={style.container}>
-            {checkedContent ? <Animate
-                correction="none"
-                animate={{
-                    translate: state ? '0 -100%' : '0 0',
-                    duration: .4
-                }}>
-                <div className={style.content}>{children}</div>
-            </Animate> : <div className={style.content}>{children}</div>}
+            {options.map((content, i) => {
+                const active = selected === i || options.length < 2;
+                const slide = transition === 'slide';
 
-            {checkedContent ? <Animate
-                correction="none"
-                animate={{
-                    translate: state ? '0 0' : '0 100%',
-                    duration: .4
-                }}>
-                <div className={style.content}>{checkedContent}</div>
-            </Animate> : null}
+                return <Animate
+                    key={i}
+                    correction="none"
+                    animate={{
+                        translate: active || !slide ? '0 0' : `0 ${(i - selected) * 100}%`,
+                        filter: ['blur(0px)', 'blur(6px)', 'blur(0px)'],
+                        opacity: active || slide ? 1 : 0,
+                        scale: active || slide ? 1 : .95,
+                        duration: .4
+                    }}
+                    triggers={{
+                        animate: slide ? [] : [selected]
+                    }}>
+                    <div className={style.content}>{content}</div>
+                </Animate>;
+            })}
         </div>
     </Interactable>;
 }
