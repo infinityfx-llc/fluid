@@ -2,9 +2,9 @@
 
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
-import { classes, combineClasses, combineRefs, filterFocusable } from '../../../core/utils';
+import { classes, combineClasses, combineRefs, filterFocusable, getFocusable } from '../../../core/utils';
 import { usePopover } from '../../layout/popover/root';
-import { useRef } from 'react';
+import { useId, useRef } from 'react';
 import Interactable from '../../feedback/interactable';
 import { useMenuManager } from '../../../context/menu-manager';
 
@@ -36,7 +36,7 @@ const styles = createStyles('action-menu.item', {
     },
 });
 
-export type ActionMenuItemSelectors = Selectors<'item'>;
+export type ActionMenuItemSelectors = Selectors<'item' | 'v__default' | 'v__inverted'>;
 
 // todo: home/end/escape keys
 
@@ -53,15 +53,19 @@ export default function Item({ children, cc = {}, keepOpen, className, color, ..
     } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);
 
+    const id = useId();
     const ref = useRef<HTMLButtonElement>(null);
-    const { toggle } = usePopover();
-    const { variant } = useMenuManager();
+    const { trigger, toggle } = usePopover();
+    const { variant, focus, registerOption } = useMenuManager();
+
+    const [_, focusIndex] = registerOption(id, props.disabled ? null : ref, '');
 
     return <Interactable
         {...props}
         ref={combineRefs(props.ref, ref)}
         role="menuitem"
         highlightColor="var(--highlight-color)"
+        autoFocus={focus.current.index === focusIndex}
         style={{
             ...props.style,
             '--color': color
@@ -97,11 +101,16 @@ export default function Item({ children, cc = {}, keepOpen, className, color, ..
 
             if (parent && offset !== 0) {
                 const focusable = filterFocusable(Array.from(parent.children));
-                const i = focusable.findIndex(el => el === ref.current);
+                const i = focusable.findIndex(el => el === ref.current) + offset;
 
-                const el = focusable[i + offset] as HTMLElement | undefined;
-                if (el) el.focus();
-                if (i >= 0) e.preventDefault();
+                const el = i < 0 && parent.matches('[role="group"]') ?
+                    getFocusable(trigger.current, false) :
+                    focusable[Math.min(i, focusable.length - 1)] as HTMLElement | undefined;
+
+                if (el) {
+                    el.focus();
+                    e.preventDefault();
+                }
             }
         }}>
         {children}

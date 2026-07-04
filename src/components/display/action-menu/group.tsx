@@ -7,7 +7,6 @@ import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import Item from './item';
 import { Icon } from '../../../core/icons';
-import { usePopover } from '../../layout/popover/root';
 import { useMenuManager } from '../../../context/menu-manager';
 
 const styles = createStyles('action-menu.group', {
@@ -38,7 +37,7 @@ const styles = createStyles('action-menu.group', {
     }
 });
 
-export type ActionMenuGroupSelectors = Selectors<'wrapper' | 'menu' | 'icon'>;
+export type ActionMenuGroupSelectors = Selectors<'wrapper' | 'menu' | 'v__default' | 'v__inverted' | 'icon'>;
 
 export default function Group({ children, cc = {}, label, className, ...props }:
     {
@@ -49,7 +48,6 @@ export default function Group({ children, cc = {}, label, className, ...props }:
     const style = combineClasses(styles, cc);
 
     const id = useId();
-    // const { variant } = usePopover();
     const { variant } = useMenuManager();
     const element = useRef<HTMLDivElement>(null);
     const content = useRef<HTMLDivElement>(null);

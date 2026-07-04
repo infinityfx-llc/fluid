@@ -5,7 +5,6 @@ import { Animate } from '@infinityfx/lively';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
-import { usePopover } from '../../layout/popover/root';
 import { useMenuManager } from '../../../context/menu-manager';
 
 const styles = createStyles('action-menu.menu', {
@@ -25,7 +24,7 @@ const styles = createStyles('action-menu.menu', {
     }
 });
 
-export type ActionMenuMenuSelectors = Selectors<'menu'>;
+export type ActionMenuMenuSelectors = Selectors<'menu' | 'v__default' | 'v__inverted'>;
 
 export default function Menu({ children, cc = {}, className, ...props }:
     {
@@ -34,8 +33,8 @@ export default function Menu({ children, cc = {}, className, ...props }:
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    // const { variant } = usePopover();
-    const { variant } = useMenuManager();
+    const { variant, initOptionsList } = useMenuManager();
+    initOptionsList(false);
 
     return <Popover.Content role="menu">
         <Animate
