@@ -7,7 +7,7 @@ import { createStyles } from "../../../core/style";
 import { combineClasses } from "../../../core/utils";
 
 export const AccordionContext = createContext<{
-    variant: 'default' | 'isolated' | 'minimal';
+    variant: 'default' | 'neutral' | 'minimal';
     open: string[];
     toggle: (id: string, open: boolean) => void;
 } | null>(null);
@@ -26,10 +26,18 @@ const styles = createStyles('accordion.root', {
         flexDirection: 'column'
     },
 
-    '.v__default': {
-        backgroundColor: 'var(--f-clr-fg-100)',
+    '.v__default, .v__neutral': {
         borderRadius: 'var(--f-radius-med)',
         padding: '.4em'
+    },
+
+    '.v__default': {
+        backgroundColor: 'var(--f-clr-fg-100)',
+        border: 'solid 1px var(--f-clr-fg-200)'
+    },
+
+    '.v__neutral': {
+        backgroundColor: 'var(--f-clr-fg-200)'
     },
 
     '.v__default .divider': {
@@ -38,18 +46,12 @@ const styles = createStyles('accordion.root', {
         height: '1px'
     },
 
-    '.v__isolated .divider': {
+    '.v__neutral .divider': {
         height: 'var(--f-spacing-xsm)'
-    },
-
-    '.item': {
-        borderRadius: 'calc(var(--f-radius-sml) + .25em)',
-        backgroundColor: 'var(--f-clr-fg-100)',
-        padding: '.25em'
     }
 });
 
-export type AccordionRootSelectors = Selectors<'accordion' | 'v__default' | 'v__isolated' | 'v__minimal' | 'divider'>;
+export type AccordionRootSelectors = Selectors<'accordion' | 'v__default' | 'v__neutral' | 'v__minimal' | 'divider'>;
 
 export default function Root({ children, cc = {}, multiple = false, variant = 'default', ...props }:
     {
@@ -61,7 +63,7 @@ export default function Root({ children, cc = {}, multiple = false, variant = 'd
          * @default false
          */
         multiple?: boolean;
-        variant?: 'default' | 'isolated' | 'minimal';
+        variant?: 'default' | 'neutral' | 'minimal';
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
@@ -91,11 +93,7 @@ export default function Root({ children, cc = {}, multiple = false, variant = 'd
             {arr.map((child, i) => {
 
                 return <Fragment key={i}>
-                    {variant === 'isolated' ?
-                        <div className={style.item}>
-                            {child}
-                        </div> :
-                        child}
+                    {child}
 
                     {i < arr.length - 1 &&
                         <div className={style.divider} />}
