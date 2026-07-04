@@ -100,7 +100,7 @@ export default function Textarea({ cc = {}, size = 'med', error, resize = 'both'
         /**
          * @default "both"
          */
-        resize?: 'none' | 'vertical' | 'horizontal' | 'both';
+        resize?: 'none' | 'vertical' | 'horizontal' | 'both' | 'auto';
     } & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'children' | 'cols'>) {
     const style = combineClasses(styles, cc);
 
@@ -117,7 +117,8 @@ export default function Textarea({ cc = {}, size = 'med', error, resize = 'both'
         data-disabled={props.disabled}
         data-fb
         style={{
-            resize,
+            resize: resize === 'auto' ? undefined : resize,
+            fieldSizing: resize === 'auto' ? 'content' : undefined,
             minHeight: `calc(${props.rows || 2}lh + 1.2em)`,
             ...props.style
         }}>
