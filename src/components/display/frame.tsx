@@ -15,19 +15,19 @@ const styles = createStyles('frame', {
         border: 'solid 1px var(--f-clr-surface-200)'
     },
 
-    '.bg__high.border': {
+    '.bg__front.border': {
         border: 'solid 1px var(--f-clr-surface-300)'
     },
 
-    '.bg__low': {
+    '.bg__back': {
         background: 'var(--f-clr-bg-100)'
     },
 
-    '.bg__medium': {
+    '.bg__middle': {
         background: 'var(--f-clr-surface-100)'
     },
 
-    '.bg__high': {
+    '.bg__front': {
         background: 'var(--f-clr-surface-200)'
     },
 
@@ -67,7 +67,7 @@ export default function Frame({ children, cc = {}, radius = 'sml', shadow, borde
         radius?: FluidSize;
         shadow?: boolean;
         border?: boolean;
-        background?: 'none' | 'low' | 'medium' | 'high';
+        background?: 'none' | 'back' | 'middle' | 'front';
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
