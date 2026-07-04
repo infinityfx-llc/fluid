@@ -81,7 +81,14 @@ export default function MenuManager({ children, variant = 'default', round = fal
             return [visible, index] as const;
         };
 
-        let visible = ('' + value).toLowerCase().includes(searchQuery);
+        let visible = ('' + value).toLowerCase().includes(searchQuery),
+            index = options.current.focusCount;
+
+        if (visible && element) {
+            options.current.focusCount++;
+        } else {
+            index = -1;
+        }
 
         if (visible) {
             const visibleIndex = options.current.visibleCount++;
@@ -93,26 +100,24 @@ export default function MenuManager({ children, variant = 'default', round = fal
             )) visible = false;
         }
 
-        const index = options.current.focusCount;
         options.current.list.set(id, {
             element: element ? element : { current: null },
             visible,
             index
         });
 
-        if (visible && element) options.current.focusCount++;
-
         return [visible, index] as const;
     }, [searchQuery]);
 
     function filterOptionsList(searchElement: HTMLElement | null) {
-        let count = 0, list = searchElement ? [searchElement] : [];
+        let count = 0,
+            list: (HTMLElement | null)[] = searchElement ? [searchElement] : [];
 
-        for (const { element, visible } of options.current.list.values()) {
+        for (const { element, visible, index } of options.current.list.values()) {
+            if (index >= 0) list[index] = element.current;
             if (!visible) continue;
 
             count += 1;
-            if (element.current) list.push(element.current); // TODO: do focus indexing different, not based on virtual scrolling
         }
 
         focus.current.list = list;
