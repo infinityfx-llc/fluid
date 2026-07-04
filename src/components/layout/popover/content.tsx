@@ -29,7 +29,6 @@ export default function Content({ children, ref, ...props }: React.HTMLAttribute
             {...props}
             ref={combineRefs(content, ref)}
             id={id}
-            // data-popover={variant}
             style={{ ...props.style, position: 'fixed', zIndex }}>
             {opened && children}
         </div>

@@ -29,11 +29,11 @@ const styles = createStyles('divider', {
         width: '1px'
     },
 
-    ':global([data-popover="inverted"]) .divider': { // TODO
+    ':global([data-variant="inverted"]) .divider': {
         color: 'var(--f-clr-grey-700)'
     },
 
-    ':global([data-popover="inverted"]) .line': { // TODO
+    ':global([data-variant="inverted"]) .line': {
         backgroundColor: 'var(--f-clr-grey-700)'
     }
 });

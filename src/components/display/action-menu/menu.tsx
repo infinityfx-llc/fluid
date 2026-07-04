@@ -53,6 +53,7 @@ export default function Menu({ children, cc = {}, className, ...props }:
             <div
                 {...props}
                 role="group"
+                data-variant={variant}
                 className={classes(
                     style.menu,
                     style[`v__${variant}`],

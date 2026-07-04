@@ -188,6 +188,7 @@ export default function Content({
             <div
                 {...props}
                 role="listbox"
+                data-variant={variant}
                 className={classes(
                     style.container,
                     style[`s__${size}`],

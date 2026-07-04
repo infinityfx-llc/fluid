@@ -49,7 +49,6 @@ export type PopoverRoot = {
      * @default false
      */
     stretch?: boolean;
-    // variant?: 'default' | 'inverted';
     onClose?: () => void;
 };
 
