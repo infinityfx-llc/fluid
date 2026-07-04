@@ -27,7 +27,7 @@ const styles = createStyles('combobox.content', {
         borderRadius: '1.4em'
     },
 
-    '.v__inverted:not(.modal)': {
+    '.container.v__inverted': {
         backgroundColor: 'var(--f-clr-grey-900)'
     },
 
@@ -73,16 +73,16 @@ const styles = createStyles('combobox.content', {
         paddingBlock: '.5em'
     },
 
-    '.v__inverted:not(.modal) .field': {
+    '.v__inverted .field': {
         background: 'var(--f-clr-grey-900)',
         color: 'var(--f-clr-grey-700)'
     },
 
-    '.v__inverted:not(.modal) .field:focus-within': {
+    '.v__inverted .field:focus-within': {
         background: 'var(--f-clr-grey-800)'
     },
 
-    '.v__inverted:not(.modal) .input': {
+    '.v__inverted .input': {
         color: 'var(--f-clr-text-200)'
     }
 });
@@ -170,7 +170,7 @@ export default function Content({
 
     useLayoutEffect(() => {
         filterOptionsList(searchInput.current);
-    }, [children, virtualItemHeight, searchable, virtualView, searchQuery, autoFocus]);
+    }, [children, virtualItemHeight, searchable, virtualView, searchQuery, autoFocus, isModal]);
 
     return <Popover.Content>
         <Animate
@@ -188,11 +188,11 @@ export default function Content({
             <div
                 {...props}
                 role="listbox"
-                data-variant={variant}
+                data-variant={isModal ? 'default' : variant}
                 className={classes(
                     style.container,
                     style[`s__${size}`],
-                    style[`v__${variant}`],
+                    style[`v__${isModal ? 'default' : variant}`],
                     round && style.round,
                     isModal && style.modal,
                     props.className

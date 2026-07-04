@@ -8,11 +8,11 @@ type PopoverContext = {
     id: string;
     mounted: boolean;
     isModal: boolean;
-    trigger: React.RefObject<HTMLElement | null>; // see if some things can be merged into one
+    trigger: React.RefObject<HTMLElement | null>;
     content: React.RefObject<HTMLElement | null>;
     opened: boolean;
     toggle: (value: boolean) => void;
-    children: React.RefObject<React.RefObject<HTMLElement | null>[]>; // TODO: check if needed?
+    children: React.RefObject<React.RefObject<HTMLElement | null>[]>;
 };
 
 export const PopoverContext = createContext<PopoverContext | null>(null);
@@ -126,7 +126,7 @@ export default function Root({ children, ref, position = 'auto', mobileContainer
             if (!isModal &&
                 !content.current?.contains(e.target as HTMLElement) &&
                 !trigger.current?.contains(e.target as HTMLElement) &&
-                !childrenRef.current.some(child => child.current?.contains(e.target as HTMLElement))) toggle(false); // TODO: optimize
+                !childrenRef.current.some(child => child.current?.contains(e.target as HTMLElement))) toggle(false);
         }
 
         window.addEventListener('click', click);

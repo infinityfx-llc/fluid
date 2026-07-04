@@ -4,20 +4,20 @@ import MenuManager from "../../../context/menu-manager";
 import Popover from "../../layout/popover";
 import type { PopoverRoot } from "../../layout/popover/root";
 
-export default function Root({ round, variant, autoFocus, ...props }: PopoverRoot & {
+export default function Root({ round, variant, autoFocus = true, ...props }: PopoverRoot & {
     round?: boolean;
     variant?: 'default' | 'inverted';
     /**
      * Focus the first item when opening the menu.
      * 
-     * @default false
+     * @default true
      */
     autoFocus?: boolean;
 }) {
 
     return <MenuManager
         round={round}
-        variant={props.mobileContainer === 'modal' ? 'default' : variant} // TODO
+        variant={variant}
         autoFocus={autoFocus}>
         <Popover.Root {...props}>
             {props.children}

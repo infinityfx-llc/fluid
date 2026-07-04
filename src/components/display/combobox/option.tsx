@@ -6,6 +6,7 @@ import { classes, combineClasses, combineRefs } from '../../../core/utils';
 import Interactable from '../../feedback/interactable';
 import { useMenuManager } from '../../../context/menu-manager';
 import { useId, useRef } from 'react';
+import { usePopover } from '../../layout/popover/root';
 
 const styles = createStyles('combobox.option', {
     '.option': {
@@ -54,6 +55,7 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
 
     const id = useId();
     const ref = useRef<HTMLButtonElement>(null);
+    const { isModal } = usePopover();
     const {
         round,
         variant,
@@ -72,7 +74,7 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
         ref={combineRefs(ref, props.ref)}
         className={classes(
             style.option,
-            style[`v__${variant}`],
+            style[`v__${isModal ? 'default' : variant}`],
             round && style.round,
             props.className
         )}
