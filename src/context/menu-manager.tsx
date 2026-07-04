@@ -14,6 +14,7 @@ type MenuContext = {
     }>;
     searchQuery: string;
     setSearchQuery(value: string): void;
+    mutableView: React.RefObject<{ from: number; to: number; }>;
     virtualView: {
         from: number;
         to: number;
@@ -49,7 +50,6 @@ export default function MenuManager({ children, variant = 'default', round = fal
         list: Map<string, {
             element: React.RefObject<HTMLElement | null>;
             visible: boolean;
-            inView: boolean;
             index: number;
         }>;
     }>({
@@ -58,52 +58,52 @@ export default function MenuManager({ children, variant = 'default', round = fal
         list: new Map()
     });
     const focus = useRef({
-        list: [] as HTMLElement[],
+        list: [] as (HTMLElement | null)[],
         index: autoFocus ? 0 : -1
     });
     const [optionCount, setOptionCount] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
-    const [virtualView, setVirtualView] = useState({
-        from: 0,
-        to: Infinity
-    });
+    const mutableView = useRef({ from: 0, to: Infinity });
+    const [virtualView, setVirtualView] = useState(mutableView.current);
+
+    const updateVirtualView = (view: { from: number; to: number; }) => setVirtualView(mutableView.current = view);
 
     function initOptionsList(searchable: boolean) {
-        options.current.list = new Map();
+        options.current.list.clear();
         options.current.focusCount = searchable ? 1 : 0;
+        options.current.visibleCount = 0;
     };
 
     const registerOption = useCallback((id: string, element: React.RefObject<HTMLElement | null> | null, value: FluidInputvalue) => {
         if (options.current.list.has(id)) {
-            const { visible, inView, index } = options.current.list.get(id)!;
+            const { visible, index } = options.current.list.get(id)!;
 
-            return [visible && inView, index] as const;
+            return [visible, index] as const;
         };
 
-        const visible = ('' + value).toLowerCase().includes(searchQuery);
-        let inView = true;
+        let visible = ('' + value).toLowerCase().includes(searchQuery);
 
         if (visible) {
-            const visibleIndex = ++options.current.visibleCount;
+            const visibleIndex = options.current.visibleCount++;
+            const { from, to } = mutableView.current;
 
-            inView = virtualView.to === Infinity || (
-                visibleIndex >= virtualView.from &&
-                visibleIndex <= virtualView.to
-            );
+            if (to !== Infinity && (
+                visibleIndex < from ||
+                visibleIndex > to
+            )) visible = false;
         }
 
         const index = options.current.focusCount;
         options.current.list.set(id, {
             element: element ? element : { current: null },
             visible,
-            inView,
             index
         });
-        
-        if (visible && element) options.current.focusCount += 1;
 
-        return [visible && inView, index] as const;
-    }, [searchQuery, virtualView]);
+        if (visible && element) options.current.focusCount++;
+
+        return [visible, index] as const;
+    }, [searchQuery]);
 
     function filterOptionsList(searchElement: HTMLElement | null) {
         let count = 0, list = searchElement ? [searchElement] : [];
@@ -112,7 +112,7 @@ export default function MenuManager({ children, variant = 'default', round = fal
             if (!visible) continue;
 
             count += 1;
-            if (element.current) list.push(element.current);
+            if (element.current) list.push(element.current); // TODO: do focus indexing different, not based on virtual scrolling
         }
 
         focus.current.list = list;
@@ -129,8 +129,9 @@ export default function MenuManager({ children, variant = 'default', round = fal
         focus,
         searchQuery,
         setSearchQuery,
+        mutableView,
         virtualView,
-        setVirtualView,
+        setVirtualView: updateVirtualView,
         initOptionsList,
         registerOption,
         filterOptionsList

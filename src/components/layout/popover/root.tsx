@@ -6,10 +6,9 @@ import useMediaQuery from "../../../hooks/use-media-query";
 
 type PopoverContext = {
     id: string;
-    // variant: 'default' | 'inverted'; // also store round prop and merge into "props" object entry
     mounted: boolean;
     isModal: boolean;
-    trigger: React.RefObject<HTMLElement | null>;
+    trigger: React.RefObject<HTMLElement | null>; // see if some things can be merged into one
     content: React.RefObject<HTMLElement | null>;
     opened: boolean;
     toggle: (value: boolean) => void;

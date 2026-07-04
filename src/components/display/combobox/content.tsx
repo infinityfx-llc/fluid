@@ -125,14 +125,15 @@ export default function Content({
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    const wasOpened = useRef(false);
-    const searchInputRef = useRef<HTMLInputElement>(null);
-    const { opened, trigger, content, isModal } = usePopover();
+    const scrollarea = useRef<HTMLDivElement>(null);
+    const searchInput = useRef<HTMLInputElement>(null);
+    const { opened, trigger, isModal } = usePopover();
     const {
         round,
         variant,
         autoFocus,
         searchQuery,
+        mutableView,
         virtualView,
         setSearchQuery,
         setVirtualView,
@@ -144,40 +145,32 @@ export default function Content({
 
     initOptionsList(searchable);
 
+    const updateView = useCallback((offset?: number) => {
+        if (!virtualItemHeight || !scrollarea.current) return setVirtualView({ from: 0, to: Infinity });
+
+        offset = offset ?? scrollarea.current.scrollTop;
+
+        const inView = Math.ceil(scrollarea.current.offsetHeight / virtualItemHeight),
+            index = Math.floor(offset / virtualItemHeight),
+            from = Math.max(0, index - inView * 1.5),
+            to = from + inView * 4;
+
+        if (mutableView.current.to !== to) setVirtualView({
+            from,
+            to
+        });
+    }, [virtualItemHeight]);
+
     const search = useDebounce(value => {
         updateView(0);
         setSearchQuery(value);
     }, 200);
 
-    const updateView = useCallback((scrollPosition: number) => {
-        if (!virtualItemHeight || !content.current) return setVirtualView({ from: 0, to: Infinity });
-
-        const inView = Math.ceil(content.current.offsetHeight / virtualItemHeight),
-            padding = Math.floor(inView / 2),
-            index = padding + Math.floor(scrollPosition / (virtualItemHeight * padding)) * padding,
-            start = Math.max(0, index - inView),
-            end = start + inView * 2;
-
-        if (virtualView.to !== end) setVirtualView({
-            from: start,
-            to: end
-        });
-    }, [virtualView]);
+    useLayoutEffect(updateView, [opened, virtualItemHeight]);
 
     useLayoutEffect(() => {
-        if (!opened) {
-            wasOpened.current = false;
-            return;
-        }
-
-        if (!wasOpened.current) {
-            wasOpened.current = true;
-            // setFocus(autoFocus ? 0 : -1);
-            updateView(0);
-        }
-
-        filterOptionsList(searchInputRef.current);
-    }, [opened, searchable, searchQuery, virtualView, children, virtualItemHeight, autoFocus]);
+        filterOptionsList(searchInput.current);
+    }, [children, virtualItemHeight, searchable, virtualView, searchQuery, autoFocus]);
 
     return <Popover.Content>
         <Animate
@@ -217,7 +210,7 @@ export default function Content({
                         Math.max(index - 1, -1) :
                         Math.min(index + 1, list.length - 1);
                     const child = updatedIndex < 0 ?
-                        getFocusable(trigger.current, false) : // TODO: focusing trigger not working
+                        getFocusable(trigger.current, false) :
                         list[updatedIndex];
 
                     focus.current.index = updatedIndex;
@@ -231,7 +224,7 @@ export default function Content({
                     variant="minimal"
                     placeholder={placeholder}
                     icon={<Icon type="search" />}
-                    inputRef={searchInputRef}
+                    inputRef={searchInput}
                     autoFocus={focus.current.index === 0}
                     onFocus={() => focus.current.index = 0}
                     defaultValue={searchQuery}
@@ -244,8 +237,9 @@ export default function Content({
                     }} />}
 
                 <Scrollarea
+                    ref={scrollarea}
                     className={style.content}
-                    onScroll={e => updateView(e.currentTarget.scrollTop)}
+                    onScroll={() => updateView()}
                     onTouchStart={e => e.stopPropagation()}>
                     <div
                         style={{

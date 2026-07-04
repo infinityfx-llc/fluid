@@ -27,7 +27,7 @@ export function hexHash(str: string) {
 }
 
 export function random(seed: string) {
-    return hash(seed) / 2**53;
+    return hash(seed) / 2 ** 53;
 }
 
 export function changeInputValue(input: HTMLInputElement, value: FluidInputvalue) {
@@ -114,7 +114,9 @@ const selector = 'a[href], button, input, textarea, [tabindex]';
 export function getFocusable<T extends boolean = true>(element: HTMLElement | null, list: T = true as T): T extends true | undefined ? HTMLElement[] : HTMLElement | null {
     if (!element) return (list ? [] : null) as any;
 
-    const elements = filterFocusable(Array.from(element.querySelectorAll(selector)), false);
+    const array = Array.from(element.querySelectorAll(selector));
+    if (element.matches(selector)) array.push(element);
+    const elements = filterFocusable(array, false);
 
     return (list ? elements : elements[0] || null) as any;
 }

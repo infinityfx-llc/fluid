@@ -197,6 +197,9 @@ export default function Tooltip<T extends React.ReactElement<any>>({ children, c
 
     useEffect(() => toggle(visibility === 'always'), [visibility]);
 
+    // todo: if children changes to null whilst render
+    // tooltip is not visible on subsequent re-renders
+
     return <>
         {cloneElement(children, {
             ...props,

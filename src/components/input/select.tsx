@@ -230,6 +230,8 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
     return <Combobox.Root
         ref={popover}
         stretch
+        autoFocus
+        round={round}
         variant={variant === 'minimal' ? 'default' : variant}
         mobileContainer={mobileContainer}>
         <Combobox.Trigger disabled={props.disabled || readOnly}>
@@ -283,7 +285,6 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
         </Combobox.Trigger>
 
         <Combobox.Content
-            round={round}
             size={contentSize}
             aria-multiselectable={multiple}
             searchable={searchable}

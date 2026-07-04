@@ -10,7 +10,6 @@ import Modal from '../modal';
 export default function Content({ children, ref, ...props }: React.HTMLAttributes<HTMLDivElement> & {
     ref?: React.Ref<HTMLDivElement>;
 }) {
-    // const { id, variant, mounted, isModal, trigger, content, opened, toggle } = usePopover();
     const { id, mounted, isModal, trigger, content, opened, toggle } = usePopover();
 
     const zIndex = useMemo(() => {
