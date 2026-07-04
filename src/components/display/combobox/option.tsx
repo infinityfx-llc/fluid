@@ -3,10 +3,9 @@
 import { FluidInputvalue, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses, combineRefs } from '../../../core/utils';
-import { usePopover } from '../../layout/popover/root';
 import Interactable from '../../feedback/interactable';
 import { useMenuManager } from '../../../context/menu-manager';
-import { useRef } from 'react';
+import { useId, useRef } from 'react';
 
 const styles = createStyles('combobox.option', {
     '.option': {
@@ -44,36 +43,33 @@ const styles = createStyles('combobox.option', {
 
 export type ComboboxOptionSelectors = Selectors<'option' | 'round'>;
 
-export default function Option<T extends FluidInputvalue>({ children, cc = {}, value, onSelect, ...props }:
+export default function Option<T extends FluidInputvalue>({ children, cc = {}, value, disabled = false, onSelect, ...props }:
     {
         ref?: React.Ref<HTMLButtonElement>;
         cc?: ComboboxOptionSelectors;
         value: T;
-        // round?: boolean;
         onSelect?: (value: T) => void;
     } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onSelect'>) {
     const style = combineClasses(styles, cc);
 
-    // const { variant } = usePopover();
-    const index = useRef<number>(null);
-    const { round, variant, focusIndex, focusList, searchQuery, virtualView, setFocus } = useMenuManager();
-    const key = ('' + value).toLowerCase();
+    const id = useId();
+    const ref = useRef<HTMLButtonElement>(null);
+    const {
+        round,
+        variant,
+        focus,
+        registerOption,
+    } = useMenuManager();
 
-    if (!key.includes(searchQuery) ||
-        (index.current !== null && (
-            index.current < virtualView.from ||
-            index.current > virtualView.to)
-        )) return null;
+    const [visible, focusIndex] = registerOption(id, disabled ? null : ref, value);
+    if (!visible) return null;
 
     return <Interactable
         {...props}
+        disabled={disabled}
         role="option"
         highlightColor="var(--f-clr-primary-400)"
-        ref={combineRefs(el => {
-            if (index.current !== null) return focusList[index.current] = el;
-
-            index.current = focusList.push(el) - 1;
-        }, props.ref)}
+        ref={combineRefs(ref, props.ref)}
         className={classes(
             style.option,
             style[`v__${variant}`],
@@ -85,11 +81,11 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
             onSelect?.(value);
         }}
         onFocus={e => {
-            if (index.current) setFocus(index.current);
+            focus.current.index = focusIndex;
 
             props.onFocus?.(e);
         }}
-        autoFocus={index.current === focusIndex}>
+        autoFocus={focus.current.index === focusIndex}>
         {children}
     </Interactable>;
 }
