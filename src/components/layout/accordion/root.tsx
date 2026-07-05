@@ -47,7 +47,7 @@ const styles = createStyles('accordion.root', {
     },
 
     '.v__neutral .divider, .v__minimal .divider': {
-        height: 'var(--f-spacing-xsm)'
+        height: '.4em'
     }
 });
 

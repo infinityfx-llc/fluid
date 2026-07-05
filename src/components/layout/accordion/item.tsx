@@ -13,6 +13,7 @@ import Interactable from "../../feedback/interactable";
 
 const styles = createStyles('accordion.item', {
     '.item': {
+        position: 'relative',
         display: 'flex',
         flexDirection: 'column'
     },
@@ -39,16 +40,19 @@ const styles = createStyles('accordion.item', {
         color: 'var(--f-clr-grey-500)'
     },
 
-    '.v__minimal': {
-        borderRadius: 'var(--f-radius-sml)',
-        transition: 'background-color .5s'
+    '.v__minimal .background': {
+        position: 'absolute',
+        inset: '-.25em',
+        borderRadius: 'calc(var(--f-radius-sml) + .25em)',
+        transition: 'background-color .5s',
+        zIndex: -1
     },
 
-    '.v__minimal:has([aria-expanded="true"])': {
+    '.v__minimal:has([aria-expanded="true"]) .background': {
         backgroundColor: 'var(--f-clr-surface-100)'
     },
 
-    '.v__minimal:has([aria-expanded="true"]:disabled)': {
+    '.v__minimal:has([aria-expanded="true"]:disabled) .background': {
         backgroundColor: 'var(--f-clr-surface-200)'
     },
 
@@ -70,7 +74,7 @@ const styles = createStyles('accordion.item', {
     }
 });
 
-export type AccordionItemSelectors = Selectors<'button' | 'content' | 'icon' | 'arrows'>;
+export type AccordionItemSelectors = Selectors<'item' | 'v__default' | 'v__neutral' | 'v__minimal' | 'button' | 'background' | 'content'  | 'icon' | 'arrows'>;
 
 export default function Item({ children, cc = {}, label, defaultOpen = false, disabled, ...props }:
     {
@@ -132,6 +136,8 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
             style[`v__${variant}`]
         )}>
         {itemContent}
+
+        <div className={style.background} />
     </div>;
 }
 

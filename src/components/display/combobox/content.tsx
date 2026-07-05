@@ -87,7 +87,7 @@ const styles = createStyles('combobox.content', {
     }
 });
 
-export type ComboboxContentSelectors = Selectors<'container' | 'modal' | 'content' | 'message'>;
+export type ComboboxContentSelectors = Selectors<'container' | 'v__default' | 'v__inverted' | 'modal' | 'content' | 'message'>;
 
 export default function Content({
     children,

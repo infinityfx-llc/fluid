@@ -42,7 +42,7 @@ const styles = createStyles('combobox.option', {
     }
 });
 
-export type ComboboxOptionSelectors = Selectors<'option' | 'round'>;
+export type ComboboxOptionSelectors = Selectors<'option' | 'v__default' | 'v__inverted' | 'round'>;
 
 export default function Option<T extends FluidInputvalue>({ children, cc = {}, value, disabled = false, onSelect, ...props }:
     {
