@@ -54,8 +54,9 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
     const style = combineClasses(styles, cc);
 
     const id = useId();
+    const lastVisible = useRef(true);
     const ref = useRef<HTMLButtonElement>(null);
-    const { isModal } = usePopover();
+    const { isModal, opened } = usePopover();
     const {
         round,
         variant,
@@ -64,7 +65,9 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
     } = useMenuManager();
 
     const [visible, focusIndex] = registerOption(id, disabled ? null : ref, value);
-    if (!visible) return null;
+    if (opened ? !visible : !lastVisible.current) return null;
+
+    lastVisible.current = visible;
 
     return <Interactable
         {...props}

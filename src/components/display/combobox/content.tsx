@@ -166,7 +166,11 @@ export default function Content({
         setSearchQuery(value);
     }, 200);
 
-    useLayoutEffect(updateView, [opened, virtualItemHeight]);
+    useLayoutEffect(() => {
+        updateView();
+
+        if (!opened) setVirtualView({ from: 0, to: Infinity });
+    }, [opened, virtualItemHeight]);
 
     useLayoutEffect(() => {
         filterOptionsList(searchInput.current);
@@ -197,10 +201,6 @@ export default function Content({
                     isModal && style.modal,
                     props.className
                 )}
-                onBlur={e => {
-                    props.onBlur?.(e);
-                    focus.current.index = -1;
-                }}
                 onKeyDown={e => {
                     props.onKeyDown?.(e);
 
