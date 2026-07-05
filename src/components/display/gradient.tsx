@@ -1,8 +1,13 @@
-import { useMemo } from "react";
+'use client';
+
+import { useId, useMemo } from "react";
 import { createStyles } from "../../core/style";
 import { Selectors } from "../../types";
 import { classes, combineClasses } from "../../utils";
-import { random } from "../../core/utils";
+import { random, hash } from "../../core/utils";
+import { useDefinitions } from "../../context/definitions";
+
+const bc = (b: number, c: number) => `contrast(${c}) brightness(${b})`;
 
 const styles = createStyles('gradient', {
     '.gradient': {
@@ -13,8 +18,7 @@ const styles = createStyles('gradient', {
     '.mesh': {
         width: '100%',
         height: '100%',
-        background: 'var(--background)',
-        filter: 'blur(32px)'
+        background: 'var(--background)'
     },
 
     '.noise': {
@@ -37,7 +41,7 @@ export type GradientSelectors = Selectors<'gradient' | 'mesh' | 'noise'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/gradient}
  */
-export default function Gradient({ cc = {}, stops, type = 'linear', angle = 0, noise = .05, meshSeed = 'fluid', ...props }: {
+export default function Gradient({ cc = {}, stops, type = 'linear', angle = 0, noise = .05, meshSeed = 'fluid', warp = 0, warpScale = 1, ...props }: {
     ref?: React.Ref<HTMLDivElement>;
     cc?: GradientSelectors;
     stops: string[];
@@ -52,14 +56,30 @@ export default function Gradient({ cc = {}, stops, type = 'linear', angle = 0, n
     noise?: number;
     /**
      * A random string used to generate mesh gradient positions.
+     * 
      * The same seed will always give the same mesh gradient result.
      * 
      * @default fluid
      */
     meshSeed?: string;
+    /**
+     * Apply warping to mesh gradients.
+     * 
+     * Only takes effect when `type` = `'mesh'`
+     * 
+     * @default 0
+     */
+    warp?: number;
+    /**
+     * @default 1
+     */
+    warpScale?: number;
 } & React.HTMLAttributes<HTMLDivElement>) {
+    const id = useId();
     const style = combineClasses(styles, cc);
+    const { shouldRender } = useDefinitions();
 
+    const overlapScale = 1 + warp * 0.45;
     const gradient = useMemo(() => {
         switch (type) {
             case 'linear':
@@ -70,13 +90,13 @@ export default function Gradient({ cc = {}, stops, type = 'linear', angle = 0, n
                 return stops.toReversed().map((stop, i) => {
                     if (i === stops.length - 1) return `linear-gradient(${stop}, ${stop})`;
 
-                    const x = random(meshSeed + i);
-                    const y = random('' + x);
+                    const x = .5 + (random(meshSeed + i) - .5) / overlapScale;
+                    const y = .5 + (random('' + x) - .5) / overlapScale;
 
-                    return `radial-gradient(circle at ${Math.round(x * 100)}% ${Math.round(y * 100)}%, ${stop}, transparent ${Math.round(40 + 1 / (stops.length - i - 1) * 60)}%)`
+                    return `radial-gradient(circle at ${Math.round(x * 100)}% ${Math.round(y * 100)}%, ${stop}, transparent ${Math.round(40 + 1 / (stops.length - i - 1) * 60) / overlapScale}%)`
                 }).join(', ');
         }
-    }, [type, stops, meshSeed]);
+    }, [type, stops, meshSeed, overlapScale]);
 
     return <div
         {...props}
@@ -86,6 +106,20 @@ export default function Gradient({ cc = {}, stops, type = 'linear', angle = 0, n
             '--background': gradient
         } as any}>
         <div className={style.noise} style={{ opacity: noise }} />
-        {type === 'mesh' && <div className={style.mesh} />}
+        {type === 'mesh' && <div
+            className={style.mesh}
+            style={{
+                scale: overlapScale,
+                filter: warp ? `blur(32px) url(#fluid-df-${meshSeed}) ${bc(1.3, 1.2)}` : `blur(32px) ${bc(1, 1.3)}`
+            }} />}
+
+        {shouldRender(meshSeed, id) && <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+            <defs>
+                <filter id={`fluid-df-${meshSeed}`}>
+                    <feTurbulence type="fractalNoise" seed={hash(meshSeed).toString().slice(0, 5)} baseFrequency={.005 / Math.max(warpScale, 0.01)} numOctaves={1} result="noise" />
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale={warp * 200} xChannelSelector="R" yChannelSelector="R" />
+                </filter>
+            </defs>
+        </svg>}
     </div>;
 }

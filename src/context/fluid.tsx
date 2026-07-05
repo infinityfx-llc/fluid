@@ -8,6 +8,7 @@ import { createGlobalStyles } from "../core/style";
 import useMediaQuery from "../hooks/use-media-query";
 import type { FluidColorScheme } from "../types";
 import { GLOBAL_CONTEXT } from "../core/shared";
+import DefinitionsProvider from "./definitions";
 
 const fluid = GLOBAL_CONTEXT.theme;
 
@@ -51,9 +52,11 @@ export default function FluidProvider({ children, initialColorScheme }: {
         appliedColorScheme: colorScheme === 'system' ? systemColorScheme : colorScheme,
         setColorScheme
     }}>
-        {cloneElement(children, {
-            id: '__fluid',
-            className: `scheme-${colorScheme}`
-        })}
+        <DefinitionsProvider>
+            {cloneElement(children, {
+                id: '__fluid',
+                className: `scheme-${colorScheme}`
+            })}
+        </DefinitionsProvider>
     </FluidContext>
 }
