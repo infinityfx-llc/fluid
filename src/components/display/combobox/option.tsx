@@ -2,9 +2,11 @@
 
 import { FluidInputvalue, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
-import { classes, combineClasses } from '../../../core/utils';
-import { usePopover } from '../../layout/popover/root';
+import { classes, combineClasses, combineRefs } from '../../../core/utils';
 import Interactable from '../../feedback/interactable';
+import { useMenuManager } from '../../../context/menu-manager';
+import { useId, useRef } from 'react';
+import { usePopover } from '../../layout/popover/root';
 
 const styles = createStyles('combobox.option', {
     '.option': {
@@ -42,32 +44,53 @@ const styles = createStyles('combobox.option', {
 
 export type ComboboxOptionSelectors = Selectors<'option' | 'round'>;
 
-export default function Option<T extends FluidInputvalue>({ children, cc = {}, value, round, onSelect, ...props }:
+export default function Option<T extends FluidInputvalue>({ children, cc = {}, value, disabled = false, onSelect, ...props }:
     {
         ref?: React.Ref<HTMLButtonElement>;
         cc?: ComboboxOptionSelectors;
         value: T;
-        round?: boolean;
         onSelect?: (value: T) => void;
     } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onSelect'>) {
     const style = combineClasses(styles, cc);
 
-    const { variant } = usePopover();
+    const id = useId();
+    const lastVisible = useRef(true);
+    const ref = useRef<HTMLButtonElement>(null);
+    const { isModal, opened } = usePopover();
+    const {
+        round,
+        variant,
+        focus,
+        registerOption,
+    } = useMenuManager();
+
+    const [visible, focusIndex] = registerOption(id, disabled ? null : ref, value);
+    if (opened ? !visible : !lastVisible.current) return null;
+
+    lastVisible.current = visible;
 
     return <Interactable
         {...props}
+        disabled={disabled}
         role="option"
         highlightColor="var(--f-clr-primary-400)"
+        ref={combineRefs(ref, props.ref)}
         className={classes(
             style.option,
-            style[`v__${variant}`],
+            style[`v__${isModal ? 'default' : variant}`],
             round && style.round,
             props.className
         )}
         onClick={e => {
             props.onClick?.(e);
             onSelect?.(value);
-        }}>
+        }}
+        onFocus={e => {
+            focus.current.index = focusIndex;
+
+            props.onFocus?.(e);
+        }}
+        autoFocus={focus.current.index === focusIndex}>
         {children}
     </Interactable>;
 }

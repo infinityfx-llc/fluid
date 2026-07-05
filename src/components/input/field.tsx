@@ -122,9 +122,9 @@ export type FieldProps = {
     /**
      * Whether the input should adhear to a specific shape.
      * 
-     * Use a `"0"` character to match any number.
+     * Use a `%d` character to match any number.
      * 
-     * Use a `"*"` character to match any upper- or lowercase letter or number.
+     * Use a `%w` character to match any upper- or lowercase letter or number.
      */
     shape?: string;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'defaultValue' | 'children'>;
@@ -142,13 +142,24 @@ export default function Field({ cc = {}, round = false, size = 'med', variant = 
 
     // parse a shape string into an array of mandatory characters and regex filters.
     const masks = useMemo(() => {
-        return shape?.split('')
-            .map(char => {
-                if (/0/.test(char)) return /[0-9]/; // a "0" character filters out only numbers
-                if (/\*/.test(char)) return /\w/; // "*" character filters out only word characters
+        const mask: (RegExp | string)[] = [];
+        if (!shape) return mask;
 
-                return char;
-            }) || [];
+        const chars = shape.split('');
+        for (let i = 0; i < chars.length; i++) {
+            const next = chars[i + 1];
+
+            // match filters: %d or %w
+            if (chars[i] !== '%' || !['d', 'w'].includes(next)) {
+                mask.push(chars[i]);
+            } else {
+                // add a filter for either numbers or any word characters
+                mask.push(next === 'd' ? /[0-9]/ : /\w/);
+                i++;
+            }
+        }
+
+        return mask;
     }, [shape]);
 
     return <div

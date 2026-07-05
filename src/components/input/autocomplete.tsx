@@ -39,6 +39,7 @@ export default function Autocomplete({ completions, emptyMessage = 'No suggestio
     return <Combobox.Root
         ref={popover}
         stretch
+        round={props.round}
         onClose={() => {
             if (focus.current < 2) focus.current = 0;
         }}>
@@ -68,8 +69,6 @@ export default function Autocomplete({ completions, emptyMessage = 'No suggestio
 
         <Combobox.Content
             size={contentSize}
-            round={props.round}
-            autoFocus={false}
             emptyMessage={emptyMessage}
             virtualItemHeight={virtualItemHeight}>
             {completions.map(entry => {

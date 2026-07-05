@@ -1,13 +1,28 @@
 'use client';
 
+import MenuManager from "../../../context/menu-manager";
 import Popover from "../../layout/popover";
 import type { PopoverRoot } from "../../layout/popover/root";
 
-export default function Root(props: PopoverRoot) {
+export default function Root({ round, variant, autoFocus = true, ...props }: PopoverRoot & {
+    round?: boolean;
+    variant?: 'default' | 'inverted';
+    /**
+     * Focus the first item when opening the menu.
+     * 
+     * @default true
+     */
+    autoFocus?: boolean;
+}) {
 
-    return <Popover.Root {...props}>
-        {props.children}
-    </Popover.Root>;
+    return <MenuManager
+        round={round}
+        variant={variant}
+        autoFocus={autoFocus}>
+        <Popover.Root {...props}>
+            {props.children}
+        </Popover.Root>
+    </MenuManager>;
 }
 
 Root.displayName = 'Combobox.Root';

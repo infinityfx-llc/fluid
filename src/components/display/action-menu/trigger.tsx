@@ -5,8 +5,6 @@ import Popover from "../../layout/popover";
 import { usePopover } from "../../layout/popover/root";
 import { PopoverTrigger } from "../../layout/popover/trigger";
 
-// todo: on open focus first item
-
 export default function Trigger(props: PopoverTrigger) {
     const { content } = usePopover();
 

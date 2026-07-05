@@ -1,16 +1,17 @@
 'use client';
 
-import { Children, cloneElement, isValidElement, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 import Popover from '../../layout/popover';
 import Scrollarea from '../../layout/scrollarea';
 import Field from '../../input/field';
 import { Animate } from '@infinityfx/lively';
-import { classes, combineClasses, combineRefs, getFocusable } from '../../../../src/core/utils';
+import { classes, combineClasses, getFocusable } from '../../../../src/core/utils';
 import { FluidSize, Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { usePopover } from '../../layout/popover/root';
 import { Icon } from '../../../core/icons';
 import { useDebounce } from '../../../hooks';
+import { useMenuManager } from '../../../context/menu-manager';
 
 const styles = createStyles('combobox.content', {
     '.container:not(.modal)': {
@@ -26,7 +27,7 @@ const styles = createStyles('combobox.content', {
         borderRadius: '1.4em'
     },
 
-    '.v__inverted:not(.modal)': {
+    '.container.v__inverted': {
         backgroundColor: 'var(--f-clr-grey-900)'
     },
 
@@ -72,16 +73,16 @@ const styles = createStyles('combobox.content', {
         paddingBlock: '.5em'
     },
 
-    '.v__inverted:not(.modal) .field': {
+    '.v__inverted .field': {
         background: 'var(--f-clr-grey-900)',
         color: 'var(--f-clr-grey-700)'
     },
 
-    '.v__inverted:not(.modal) .field:focus-within': {
+    '.v__inverted .field:focus-within': {
         background: 'var(--f-clr-grey-800)'
     },
 
-    '.v__inverted:not(.modal) .input': {
+    '.v__inverted .input': {
         color: 'var(--f-clr-text-200)'
     }
 });
@@ -91,9 +92,7 @@ export type ComboboxContentSelectors = Selectors<'container' | 'modal' | 'conten
 export default function Content({
     children,
     cc = {},
-    round,
     size = 'med',
-    autoFocus = true,
     searchable = false,
     placeholder = 'Search..',
     emptyMessage = 'Nothing found',
@@ -102,7 +101,6 @@ export default function Content({
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: ComboboxContentSelectors;
-        round?: boolean;
         size?: FluidSize;
         /**
          * @default false
@@ -127,67 +125,56 @@ export default function Content({
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
-    const { variant, opened, trigger, content, isModal } = usePopover();
+    const scrollarea = useRef<HTMLDivElement>(null);
+    const searchInput = useRef<HTMLInputElement>(null);
+    const { opened, trigger, isModal } = usePopover();
+    const {
+        round,
+        variant,
+        autoFocus,
+        searchQuery,
+        mutableView,
+        virtualView,
+        setSearchQuery,
+        setVirtualView,
+        initOptionsList,
+        filterOptionsList,
+        optionCount,
+        focus
+    } = useMenuManager();
 
-    const itemCount = useRef(0);
-    const focus = useRef({
-        list: [] as (HTMLElement | null)[],
-        index: autoFocus ? 0 : -1
-    });
+    initOptionsList(searchable);
 
-    const [query, setQuery] = useState('');
-    const [view, setView] = useState({ start: 0, end: Infinity });
+    const updateView = useCallback((offset?: number) => {
+        if (!virtualItemHeight || !scrollarea.current) return setVirtualView({ from: 0, to: Infinity });
+
+        offset = offset ?? scrollarea.current.scrollTop;
+
+        const inView = Math.ceil(scrollarea.current.offsetHeight / virtualItemHeight),
+            index = Math.floor(offset / virtualItemHeight),
+            from = Math.max(0, index - inView * 1.5),
+            to = from + inView * 4;
+
+        if (mutableView.current.to !== to) setVirtualView({
+            from,
+            to
+        });
+    }, [virtualItemHeight]);
+
     const search = useDebounce(value => {
         updateView(0);
-        setQuery(value);
+        setSearchQuery(value);
     }, 200);
 
-    function updateView(scrollPosition: number) {
-        if (!virtualItemHeight || !content.current) return setView({ start: 0, end: Infinity });
+    useLayoutEffect(() => {
+        updateView();
 
-        const inView = Math.ceil(content.current.offsetHeight / virtualItemHeight),
-            padding = Math.floor(inView / 2),
-            index = padding + Math.floor(scrollPosition / (virtualItemHeight * padding)) * padding,
-            start = Math.max(0, index - inView),
-            end = start + inView * 2;
-
-        if (view.end !== end) setView({
-            start,
-            end
-        });
-    }
+        if (!opened) setVirtualView({ from: 0, to: Infinity });
+    }, [opened, virtualItemHeight]);
 
     useLayoutEffect(() => {
-        if (opened) updateView(0);
-    }, [opened]);
-
-    const filteredChildren = useMemo(() => {
-        itemCount.current = 0;
-
-        return Children.map(children, (child: any) => {
-            const option = isValidElement<any>(child) && ('value' in child.props ? child : child.props.children); // bad way of doing this (needed for tooltips..)
-            if (!isValidElement<any>(option) || !('value' in option.props)) return child; // TODO: refactor
-
-            const value = ('' + option.props.value).toLowerCase() || '';
-            if (!value.includes(query)) return null;
-
-            const listIndex = itemCount.current++,
-                focusIndex = listIndex + (searchable ? 1 : 0);
-            if (listIndex < view.start || listIndex > view.end) return null;
-
-            return cloneElement(child, {
-                round,
-                ref: combineRefs(el => {
-                    if (!child.props.disabled) focus.current.list[focusIndex] = el;
-                }, child.props.ref),
-                onFocus: (e: React.FocusEvent<any>) => {  // manage focus control in deticated focus context wrapper component? (re-use for others)
-                    focus.current.index = focusIndex;
-                    props.onFocus?.(e);
-                },
-                autoFocus: focusIndex == focus.current.index
-            });
-        });
-    }, [children, view, query]);
+        filterOptionsList(searchInput.current);
+    }, [children, virtualItemHeight, searchable, virtualView, searchQuery, autoFocus, isModal]);
 
     return <Popover.Content>
         <Animate
@@ -205,33 +192,31 @@ export default function Content({
             <div
                 {...props}
                 role="listbox"
+                data-variant={isModal ? 'default' : variant}
                 className={classes(
                     style.container,
                     style[`s__${size}`],
-                    style[`v__${variant}`],
+                    style[`v__${isModal ? 'default' : variant}`],
                     round && style.round,
                     isModal && style.modal,
                     props.className
                 )}
-                onBlur={e => {
-                    props.onBlur?.(e);
-
-                    focus.current.index = -1;
-                }}
                 onKeyDown={e => {
                     props.onKeyDown?.(e);
 
                     if (e.key !== 'Tab' && e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
 
-                    const { index, list } = focus.current,
-                        updatedIndex = (e.key === 'ArrowUp' || e.shiftKey) ?
-                            Math.max(index - 1, -1) :
-                            Math.min(index + 1, list.length - 1),
-                        child = updatedIndex < 0 ?
-                            getFocusable(trigger.current, false) :
-                            list[focus.current.index = updatedIndex];
+                    const { list, index } = focus.current;
+                    const updatedIndex = (e.key === 'ArrowUp' || e.shiftKey) ?
+                        Math.max(index - 1, -1) :
+                        Math.min(index + 1, list.length - 1);
+                    const child = updatedIndex < 0 ?
+                        getFocusable(trigger.current, false) :
+                        list[updatedIndex];
 
-                    child ? child.focus() : focus.current.index = 0;
+                    focus.current.index = updatedIndex;
+                    if (child) child.focus();
+
                     if (child || e.key !== 'Tab') e.preventDefault();
                 }}>
                 {searchable && <Field
@@ -240,10 +225,10 @@ export default function Content({
                     variant="minimal"
                     placeholder={placeholder}
                     icon={<Icon type="search" />}
-                    inputRef={(el: any) => focus.current.list[0] = el}
-                    autoFocus={focus.current.index == 0}
+                    inputRef={searchInput}
+                    autoFocus={focus.current.index === 0}
                     onFocus={() => focus.current.index = 0}
-                    defaultValue={query}
+                    defaultValue={searchQuery}
                     onChange={e => search(e.target.value.toLowerCase())}
                     cc={{
                         ...cc,
@@ -253,15 +238,16 @@ export default function Content({
                     }} />}
 
                 <Scrollarea
+                    ref={scrollarea}
                     className={style.content}
-                    onScroll={e => updateView(e.currentTarget.scrollTop)}
+                    onScroll={() => updateView()}
                     onTouchStart={e => e.stopPropagation()}>
                     <div
                         style={{
                             padding: '.25em',
-                            minHeight: virtualItemHeight ? virtualItemHeight * itemCount.current : undefined
+                            minHeight: virtualItemHeight ? virtualItemHeight * optionCount : undefined
                         }}>
-                        <div style={{ height: virtualItemHeight * view.start }} />
+                        <div style={{ height: virtualItemHeight * virtualView.from }} />
                         <Animate
                             inherit
                             animate={{
@@ -271,10 +257,10 @@ export default function Content({
                             }}
                             staggerLimit={4}
                             stagger={.05}>
-                            {(!virtualItemHeight || view.end !== Infinity) && filteredChildren}
+                            {(!virtualItemHeight || virtualView.to !== Infinity) && children}
                         </Animate>
 
-                        {!itemCount.current && <div className={style.message}>
+                        {!optionCount && <div className={style.message}>
                             {emptyMessage}
                         </div>}
                     </div>

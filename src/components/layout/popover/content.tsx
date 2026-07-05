@@ -10,7 +10,7 @@ import Modal from '../modal';
 export default function Content({ children, ref, ...props }: React.HTMLAttributes<HTMLDivElement> & {
     ref?: React.Ref<HTMLDivElement>;
 }) {
-    const { id, variant, mounted, isModal, trigger, content, opened, toggle } = usePopover();
+    const { id, mounted, isModal, trigger, content, opened, toggle } = usePopover();
 
     const zIndex = useMemo(() => {
         if (!mounted || !trigger.current) return 1;
@@ -29,7 +29,6 @@ export default function Content({ children, ref, ...props }: React.HTMLAttribute
             {...props}
             ref={combineRefs(content, ref)}
             id={id}
-            data-popover={variant}
             style={{ ...props.style, position: 'fixed', zIndex }}>
             {opened && children}
         </div>
