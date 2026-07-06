@@ -3,12 +3,15 @@ import { FluidSize, Selectors } from "../../../src/types";
 import Spinner from "../feedback/spinner";
 import { createStyles } from "../../core/style";
 import Interactable from "../feedback/interactable";
+import { Children, isValidElement, useMemo } from "react";
 
 const styles = createStyles('button', {
     '.button': {
+        ['--block-padding' as any]: '.8em',
+        ['--inline-padding' as any]: '1em',
         position: 'relative',
         borderRadius: 'var(--f-radius-sml)',
-        padding: '.8em',
+        padding: 'var(--block-padding) var(--inline-padding)',
         backgroundColor: 'var(--color, var(--f-clr-primary-100))',
         color: 'var(--f-clr-text-100)',
         fontWeight: 600,
@@ -18,7 +21,16 @@ const styles = createStyles('button', {
     },
 
     '.button.compact': {
-        padding: '.6em'
+        ['--block-padding' as any]: '.6em',
+        ['--inline-padding' as any]: '.8em',
+    },
+
+    '.button:not(.start__text):has(svg:first-child)': {
+        paddingLeft: 'var(--block-padding)'
+    },
+
+    '.button:not(.end__text):has(svg:last-child)': {
+        paddingRight: 'var(--block-padding)'
     },
 
     '.button.round': {
@@ -46,12 +58,12 @@ const styles = createStyles('button', {
     },
 
     '.v__light': {
-        backgroundColor: 'var(--f-clr-surface-100)',
+        backgroundColor: 'var(--f-clr-surface-200)',
         color: 'var(--color, var(--f-clr-primary-100))'
     },
 
     '.v__neutral': {
-        backgroundColor: 'var(--f-clr-surface-200)',
+        backgroundColor: 'var(--f-clr-surface-100)',
         border: 'solid 1px var(--f-clr-surface-300)'
     },
 
@@ -113,6 +125,22 @@ export default function Button({ children, cc = {}, round = false, compact = fal
     } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);
 
+    const [start, end] = useMemo(() => {
+        let array = Children.toArray(children),
+            start = false,
+            end = false;
+
+        array.forEach((child, i) => {
+            if (!isValidElement(child)) {
+                if (i === 0) start = true;
+                if (i === array.length - 1) end = true;
+            }
+        });
+        
+        return [start, end];
+    }, [children]);
+
+
     return <Interactable
         {...props}
         highlightColor={variant === 'default' ? 'var(--f-clr-highlight-100)' : undefined}
@@ -125,6 +153,8 @@ export default function Button({ children, cc = {}, round = false, compact = fal
             style.button,
             round && style.round,
             compact && style.compact,
+            start && style.start__text,
+            end && style.end__text,
             style[`s__${size}`],
             style[`v__${variant}`],
             props.className

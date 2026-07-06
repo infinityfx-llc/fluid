@@ -17,7 +17,7 @@ const styles = createStyles('divider', {
     },
 
     '.line': {
-        backgroundColor: 'var(--f-clr-surface-200)',
+        backgroundColor: 'var(--f-clr-surface-300)',
         flexGrow: 1
     },
 

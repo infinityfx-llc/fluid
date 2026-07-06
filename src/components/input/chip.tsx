@@ -54,7 +54,7 @@ const styles = createStyles('chip', {
     '.chip': {
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: 'var(--f-clr-surface-100)',
+        backgroundColor: 'var(--f-clr-surface-200)',
         borderRadius: 'inherit',
         color: 'var(--f-clr-text-100)',
         fontWeight: 600,
@@ -67,7 +67,7 @@ const styles = createStyles('chip', {
     },
 
     '.checkmark': {
-        backgroundColor: 'var(--f-clr-bg-100)',
+        backgroundColor: 'var(--f-clr-surface-100)',
         borderRadius: '3px',
         padding: '.2em',
         width: '1.2em',

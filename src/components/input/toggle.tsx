@@ -41,7 +41,7 @@ const styles = createStyles('toggle', {
     '.toggle': {
         position: 'relative',
         display: 'block',
-        backgroundColor: 'var(--f-clr-surface-100)',
+        backgroundColor: 'var(--f-clr-surface-200)',
         color: 'var(--f-clr-text-100)',
         borderRadius: 'var(--f-radius-sml)',
         transition: 'background-color .25s, color .25s'
@@ -72,7 +72,7 @@ const styles = createStyles('toggle', {
     },
 
     '.v__neutral': {
-        backgroundColor: 'var(--f-clr-surface-200)',
+        backgroundColor: 'var(--f-clr-surface-100)',
         border: 'solid 1px var(--f-clr-surface-300)'
     },
 
@@ -106,7 +106,7 @@ const styles = createStyles('toggle', {
     },
 
     '.v__neutral[data-checked="true"]': {
-        backgroundColor: 'var(--f-clr-surface-100)'
+        backgroundColor: 'var(--f-clr-surface-200)'
     },
 
     '.v__minimal[data-checked="true"]': {
@@ -154,12 +154,16 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
     const options = Array.isArray(children) ? children : [children];
     const checked = options.length < 3 && selected !== 0;
 
+    let highlightColor = undefined;
+    if (variant === 'minimal' && !checked) highlightColor = 'var(--f-clr-primary-400)';
+    if (variant !== 'neutral' && checked) highlightColor = 'var(--f-clr-highlight-100)';
+
     return <Interactable
         {...rest}
         as="div"
         interactTarget={inputRef}
         disabled={props.disabled}
-        highlightColor={variant === 'minimal' && !checked ? 'var(--f-clr-primary-400)' : (variant === 'neutral' ? 'var(--f-clr-grey-300)' : undefined)}
+        highlightColor={highlightColor}
         className={classes(
             style.toggle,
             round && style.round,

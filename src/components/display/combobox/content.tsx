@@ -16,7 +16,7 @@ import { useMenuManager } from '../../../context/menu-manager';
 const styles = createStyles('combobox.content', {
     '.container:not(.modal)': {
         backgroundColor: 'var(--f-clr-surface-100)',
-        border: 'solid 1px var(--f-clr-surface-200)',
+        border: 'solid 1px var(--f-clr-surface-300)',
         borderRadius: 'calc(.25em + var(--f-radius-sml))',
         boxShadow: 'var(--f-shadow-med)',
         minWidth: 'min(100vw, 10em)',
