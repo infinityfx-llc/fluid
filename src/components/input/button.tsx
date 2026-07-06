@@ -25,11 +25,11 @@ const styles = createStyles('button', {
         ['--inline-padding' as any]: '.8em',
     },
 
-    '.start__icon': {
+    '.button:not(.start__text):has(svg:first-child)': {
         paddingLeft: 'var(--block-padding)'
     },
 
-    '.end__icon': {
+    '.button:not(.end__text):has(svg:last-child)': {
         paddingRight: 'var(--block-padding)'
     },
 
@@ -105,7 +105,7 @@ const styles = createStyles('button', {
     }
 });
 
-export type ButtonSelectors = Selectors<'button' | 'content' | 'loader' | 'round' | 'compact' | 'start__icon' | 'end__icon' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'v__default' | 'v__neutral' | 'v__light' | 'v__minimal'>;
+export type ButtonSelectors = Selectors<'button' | 'content' | 'loader' | 'round' | 'compact' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'v__default' | 'v__neutral' | 'v__light' | 'v__minimal'>;
 
 /**
  * A button.
@@ -131,7 +131,7 @@ export default function Button({ children, cc = {}, round = false, compact = fal
             end = false;
 
         array.forEach((child, i) => {
-            if (isValidElement(child) && child.type === 'svg') {
+            if (!isValidElement(child)) {
                 if (i === 0) start = true;
                 if (i === array.length - 1) end = true;
             }
@@ -153,8 +153,8 @@ export default function Button({ children, cc = {}, round = false, compact = fal
             style.button,
             round && style.round,
             compact && style.compact,
-            start && style.start__icon,
-            end && style.end__icon,
+            start && style.start__text,
+            end && style.end__text,
             style[`s__${size}`],
             style[`v__${variant}`],
             props.className
