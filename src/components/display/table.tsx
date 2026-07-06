@@ -6,7 +6,7 @@ import { useState } from "react";
 import Scrollarea from "../layout/scrollarea";
 import Button from "../input/button";
 import Checkbox from "../input/checkbox";
-import ActionMenu from "./action-menu/index";
+import { ActionMenuRoot, ActionMenuMenu, ActionMenuTrigger } from "./action-menu";
 import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
 import Interactable from "../feedback/interactable";
@@ -250,17 +250,17 @@ export default function Table<T extends { [key: string]: string | number | Date;
                     })}
 
                     {rowActions?.length ? <div className={style.collapsed}>
-                        <ActionMenu.Root>
-                            <ActionMenu.Trigger>
+                        <ActionMenuRoot>
+                            <ActionMenuTrigger>
                                 <Button compact variant="minimal" size="sml" style={{ marginLeft: 'auto' }}>
                                     <Icon type="more" />
                                 </Button>
-                            </ActionMenu.Trigger>
+                            </ActionMenuTrigger>
 
-                            <ActionMenu.Menu>
+                            <ActionMenuMenu>
                                 {rowActions(rows[i], i)}
-                            </ActionMenu.Menu>
-                        </ActionMenu.Root>
+                            </ActionMenuMenu>
+                        </ActionMenuRoot>
                     </div> : null}
                 </Interactable>;
             })}

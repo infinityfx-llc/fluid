@@ -1,11 +1,13 @@
 import Tabs from "./tabs";
 import Pagination from "./pagination";
 import Stepper from "./stepper";
-import NavigationMenu from "./navigation-menu";
+import { NavigationMenuRoot, NavigationMenuGroup, NavigationMenuLink } from "./navigation-menu";
 
 export {
     Tabs,
     Pagination,
     Stepper,
-    NavigationMenu
+    NavigationMenuRoot,
+    NavigationMenuGroup,
+    NavigationMenuLink
 }

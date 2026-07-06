@@ -1,10 +1,15 @@
 'use client';
 
 import MenuManager from "../../../context/menu-manager";
-import Popover from "../../layout/popover";
-import type { PopoverRoot } from "../../layout/popover/root";
+import { PopoverRoot } from "../../layout/popover";
+import type { PopoverRoot as PopoverRootProps } from "../../layout/popover/root";
 
-export default function Root({ round, variant, autoFocus = false, ...props }: Omit<PopoverRoot, 'mobileContainer'> & {
+/**
+ * Displays a menu with actions or options.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/action-menu}
+ */
+export default function Root({ round, variant, autoFocus = false, ...props }: Omit<PopoverRootProps, 'mobileContainer'> & {
     round?: boolean;
     variant?: 'default' | 'inverted';
     /**
@@ -19,10 +24,10 @@ export default function Root({ round, variant, autoFocus = false, ...props }: Om
         round={round}
         variant={variant}
         autoFocus={autoFocus}>
-        <Popover.Root {...props}>
+        <PopoverRoot {...props}>
             {props.children}
-        </Popover.Root>
+        </PopoverRoot>
     </MenuManager>;
 }
 
-Root.displayName = 'ActionMenu.Root';
+Root.displayName = 'ActionMenuRoot';

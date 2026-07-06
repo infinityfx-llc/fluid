@@ -87,4 +87,4 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
     });
 }
 
-Trigger.displayName = 'Popover.Trigger';
+Trigger.displayName = 'PopoverTrigger';

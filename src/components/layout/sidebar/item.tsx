@@ -12,7 +12,7 @@ import useMediaQuery from '../../../hooks/use-media-query';
 import { Icon } from '../../../core/icons';
 import Interactable from '../../feedback/interactable';
 
-const styles = createStyles('sidebar.item', {
+const styles = createStyles('sidebar-item', {
     '.item': {
         position: 'relative',
         fontWeight: 600,
@@ -219,4 +219,4 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
     </>;
 }
 
-Item.displayName = 'Sidebar.Item';
+Item.displayName = 'SidebarItem';

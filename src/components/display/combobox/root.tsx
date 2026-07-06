@@ -1,10 +1,15 @@
 'use client';
 
 import MenuManager from "../../../context/menu-manager";
-import Popover from "../../layout/popover";
-import type { PopoverRoot } from "../../layout/popover/root";
+import { PopoverRoot } from "../../layout/popover";
+import type { PopoverRoot as PopoverRootProps } from "../../layout/popover/root";
 
-export default function Root({ round, variant, autoFocus = true, ...props }: PopoverRoot & {
+/**
+ * Displays a list of selectable options that can be searched through.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/combobox}
+ */
+export default function Root({ round, variant, autoFocus = true, ...props }: PopoverRootProps & {
     round?: boolean;
     variant?: 'default' | 'inverted';
     /**
@@ -19,10 +24,10 @@ export default function Root({ round, variant, autoFocus = true, ...props }: Pop
         round={round}
         variant={variant}
         autoFocus={autoFocus}>
-        <Popover.Root {...props}>
+        <PopoverRoot {...props}>
             {props.children}
-        </Popover.Root>
+        </PopoverRoot>
     </MenuManager>;
 }
 
-Root.displayName = 'Combobox.Root';
+Root.displayName = 'ComboboxRoot';

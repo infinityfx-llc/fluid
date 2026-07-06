@@ -8,7 +8,7 @@ import { useSidebar } from './root';
 import Button from '../../input/button';
 import Interactable from '../../feedback/interactable';
 
-const styles = createStyles('sidebar.toggle', {
+const styles = createStyles('sidebar-toggle', {
     '.wrapper': {
         display: 'flex',
         justifyContent: 'space-between',
@@ -93,4 +93,4 @@ export default function Toggle({ children, cc = {}, toggle = 'square', ...props 
     </div>;
 }
 
-Toggle.displayName = 'Sidebar.Toggle';
+Toggle.displayName = 'SidebarToggle';

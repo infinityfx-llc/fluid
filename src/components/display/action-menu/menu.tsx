@@ -1,13 +1,13 @@
 'use client';
 
-import Popover from '../../layout/popover';
+import { PopoverContent } from '../../layout/popover';
 import { Animate } from '@infinityfx/lively';
 import { classes, combineClasses } from '../../../../src/core/utils';
 import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { useMenuManager } from '../../../context/menu-manager';
 
-const styles = createStyles('action-menu.menu', {
+const styles = createStyles('action-menu-menu', {
     '.menu': {
         padding: '.25em',
         background: 'var(--f-clr-surface-100)',
@@ -36,7 +36,7 @@ export default function Menu({ children, cc = {}, className, ...props }:
     const { variant, initOptionsList } = useMenuManager();
     initOptionsList(false);
 
-    return <Popover.Content role="menu">
+    return <PopoverContent role="menu">
         <Animate
             correction="none"
             key="action-menu"
@@ -70,7 +70,7 @@ export default function Menu({ children, cc = {}, className, ...props }:
                 </Animate>
             </div>
         </Animate>
-    </Popover.Content>;
+    </PopoverContent>;
 }
 
-Menu.displayName = 'ActionMenu.Menu';
+Menu.displayName = 'ActionMenuMenu';

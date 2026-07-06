@@ -8,7 +8,7 @@ import { useId, useRef } from 'react';
 import Interactable from '../../feedback/interactable';
 import { useMenuManager } from '../../../context/menu-manager';
 
-const styles = createStyles('action-menu.item', {
+const styles = createStyles('action-menu-item', {
     '.item': {
         position: 'relative',
         padding: '.5rem .8rem',
@@ -117,4 +117,4 @@ export default function Item({ children, cc = {}, keepOpen, className, color, ..
     </Interactable>;
 }
 
-Item.displayName = 'ActionMenu.Item';
+Item.displayName = 'ActionMenuItem';

@@ -13,9 +13,16 @@ async function extractDependents(name: string, content: string, external = false
     if (external) { // optimize
         extractImports(content, 'fluid').forEach(key => key && dependents[name].push(key));
     } else {
-        Array.from(content.matchAll(/import\s+\w+\s+from\s*(?:'|").*?\/([^\/]+)(\/index)?\.js(?:'|")/g))
-            .forEach(([_, entry]) => {
-                if (!entry.startsWith('use')) dependents[name].push(entry);
+        Array.from(content.matchAll(/import\s+\w+\s+from\s*(?:'|").*?\/([^\/]+)(?:\/([^\/]+))?\.js(?:'|")/g))
+            .forEach(([_, entryOrParent, entry]) => {
+                if (entry) {
+                    if (['display', 'feedback', 'input', 'layout', 'navigation'].includes(entryOrParent)) {
+                        entryOrParent = entry;
+                    } else {
+                        entryOrParent = `${entryOrParent}-${entry}`;
+                    }
+                }
+                if (!entryOrParent.startsWith('use')) dependents[name].push(entryOrParent);
             });
     }
 }
@@ -61,7 +68,7 @@ export async function compileFile(io: IOHelper, name: string, path: string, appe
 
 async function processFileCSS(name: string, content: string) {
     const { styles } = await getContext();
-    const { selectors } = styles[name.replace(/([a-z])([A-Z])/, '$1-$2').toLowerCase()] || {};
+    const { selectors } = styles[name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()] || {};
 
     const createStyles = content.match(/import\s*\{[^{]*(createStyles(?:\s*as\s*([^\s},]+))?)[^}]*\}/);
 

@@ -6,7 +6,7 @@ import Button from './button';
 import { FluidInputvalue, FluidSize, PopoverRootReference, Selectors } from '../../../src/types';
 import { classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import Badge from '../display/badge';
-import Combobox from '../display/combobox';
+import { ComboboxRoot, ComboboxContent, ComboboxOption, ComboboxTrigger } from '../display/combobox';
 import useInputProps from '../../../src/hooks/use-input-props';
 import { createStyles } from '../../core/style';
 import { Icon } from '../../core/icons';
@@ -227,14 +227,14 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
             (state as any)[0]);
     }, [multiple, isMult]);
 
-    return <Combobox.Root
+    return <ComboboxRoot
         ref={popover}
         stretch
         autoFocus
         round={round}
         variant={variant === 'minimal' ? 'default' : variant}
         mobileContainer={mobileContainer}>
-        <Combobox.Trigger disabled={props.disabled || readOnly}>
+        <ComboboxTrigger disabled={props.disabled || readOnly}>
             <div
                 {...rest}
                 aria-haspopup="listbox"
@@ -282,9 +282,9 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                     <Icon type="expand" />
                 </Button>
             </div>
-        </Combobox.Trigger>
+        </ComboboxTrigger>
 
-        <Combobox.Content
+        <ComboboxContent
             size={contentSize}
             aria-multiselectable={multiple}
             searchable={searchable}
@@ -293,7 +293,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
             {options.map(({ label, value, key, disabled }) => {
                 const selected = isMult ? state.includes(value) : state === value;
 
-                return <Combobox.Option
+                return <ComboboxOption
                     key={'' + value}
                     value={key || ('' + label)}
                     disabled={disabled}
@@ -323,8 +323,8 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                     {selected && <div className={style.icon}>
                         <Icon type="check" />
                     </div>}
-                </Combobox.Option>;
+                </ComboboxOption>;
             })}
-        </Combobox.Content>
-    </Combobox.Root>;
+        </ComboboxContent>
+    </ComboboxRoot>;
 }

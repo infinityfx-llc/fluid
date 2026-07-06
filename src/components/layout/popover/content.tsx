@@ -5,7 +5,7 @@ import { LayoutGroup } from '@infinityfx/lively';
 import { useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopover } from './root';
-import Modal from '../modal';
+import { ModalContent, ModalRoot } from '../modal';
 
 export default function Content({ children, ref, ...props }: React.HTMLAttributes<HTMLDivElement> & {
     ref?: React.Ref<HTMLDivElement>;
@@ -20,9 +20,16 @@ export default function Content({ children, ref, ...props }: React.HTMLAttribute
 
     if (!mounted) return null;
 
-    if (isModal) return <Modal ref={combineRefs(content, ref)} {...props} id={id} show={opened} onClose={() => toggle(false)}>
-        {children}
-    </Modal>;
+    if (isModal) return <ModalRoot
+        {...props}
+        id={id}
+        ref={combineRefs(content, ref)}
+        show={opened}
+        onClose={() => toggle(false)}>
+        <ModalContent>
+            {children}
+        </ModalContent>
+    </ModalRoot>;
 
     return createPortal(<LayoutGroup ignoreWarnings>
         <div
@@ -35,4 +42,4 @@ export default function Content({ children, ref, ...props }: React.HTMLAttribute
     </LayoutGroup>, document.getElementById('__fluid') as HTMLElement);
 }
 
-Content.displayName = 'Popover.Content';
+Content.displayName = 'PopoverContent';

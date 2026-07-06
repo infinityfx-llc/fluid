@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Field, { FieldProps } from "./field";
 import { FluidInputvalue, FluidSize, PopoverRootReference } from '../../../src/types';
-import Combobox from '../display/combobox';
+import { ComboboxRoot, ComboboxContent, ComboboxOption, ComboboxTrigger } from '../display/combobox';
 import { changeInputValue } from '../../core/utils';
 
 /**
@@ -36,14 +36,14 @@ export default function Autocomplete({ completions, emptyMessage = 'No suggestio
         if (focus.current) popover.current?.[completions.length ? 'open' : 'close']();
     }, [completions]);
 
-    return <Combobox.Root
+    return <ComboboxRoot
         ref={popover}
         stretch
         round={props.round}
         onClose={() => {
             if (focus.current < 2) focus.current = 0;
         }}>
-        <Combobox.Trigger disabled>
+        <ComboboxTrigger disabled>
             <Field
                 {...props}
                 inputRef={field}
@@ -65,16 +65,16 @@ export default function Autocomplete({ completions, emptyMessage = 'No suggestio
                     focus.current = 2;
                     if (completions.length) popover.current?.open();
                 }} />
-        </Combobox.Trigger>
+        </ComboboxTrigger>
 
-        <Combobox.Content
+        <ComboboxContent
             size={contentSize}
             emptyMessage={emptyMessage}
             virtualItemHeight={virtualItemHeight}>
             {completions.map(entry => {
                 const { label, value } = typeof entry === 'string' ? { label: entry, value: entry } : entry;
 
-                return <Combobox.Option
+                return <ComboboxOption
                     key={value}
                     value={value}
                     onSelect={val => {
@@ -84,8 +84,8 @@ export default function Autocomplete({ completions, emptyMessage = 'No suggestio
                         field.current.focus();
                     }}>
                     {label}
-                </Combobox.Option>;
+                </ComboboxOption>;
             })}
-        </Combobox.Content>
-    </Combobox.Root>;
+        </ComboboxContent>
+    </ComboboxRoot>;
 }

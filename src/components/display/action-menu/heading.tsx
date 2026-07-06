@@ -4,7 +4,7 @@ import { Selectors } from '../../../../src/types';
 import { createStyles } from '../../../core/style';
 import { classes, combineClasses } from '../../../core/utils';
 
-const styles = createStyles('action-menu.heading', {
+const styles = createStyles('action-menu-heading', {
     '.heading': {
         padding: '.4rem .8rem .4rem .8rem',
         fontWeight: 700,
@@ -27,4 +27,4 @@ export default function Heading({ children, cc = {}, className, ...props }:
     </div>;
 }
 
-Heading.displayName = 'ActionMenu.Heading';
+Heading.displayName = 'ActionMenuHeading';

@@ -11,7 +11,7 @@ import { combineClasses } from "../../../core/utils";
 import { Icon } from "../../../core/icons";
 import Interactable from "../../feedback/interactable";
 
-const styles = createStyles('accordion.item', {
+const styles = createStyles('accordion-item', {
     '.item': {
         position: 'relative',
         display: 'flex',
@@ -141,4 +141,4 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
     </div>;
 }
 
-Item.displayName = 'Accordion.Item';
+Item.displayName = 'AccordionItem';

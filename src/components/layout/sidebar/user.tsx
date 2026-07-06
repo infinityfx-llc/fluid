@@ -8,7 +8,7 @@ import { useSidebar } from './root';
 import { Icon } from '../../../core/icons';
 import Interactable from '../../feedback/interactable';
 
-const styles = createStyles('sidebar.user', {
+const styles = createStyles('sidebar-user', {
     '.user': {
         position: 'relative',
         borderRadius: 'var(--f-radius-sml)',
@@ -133,4 +133,4 @@ export default function User({ children, cc = {}, name, status, indicator = fals
     </Interactable>;
 }
 
-User.displayName = 'Sidebar.User';
+User.displayName = 'SidebarUser';
