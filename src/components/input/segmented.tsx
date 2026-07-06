@@ -96,7 +96,7 @@ const styles = createStyles('segmented', {
     },
 
     '.v__neutral .selection': {
-        backgroundColor: 'var(--f-clr-surface-100)'
+        backgroundColor: 'white'
     },
 
     '.v__minimal .selection': {
@@ -109,6 +109,10 @@ const styles = createStyles('segmented', {
 
     '.segmented[data-error="true"]': {
         border: 'solid 1px var(--f-clr-error-100)'
+    },
+
+    '.v__neutral .option[aria-checked="true"]:enabled': {
+        color: 'black'
     },
 
     '.segmented .highlight': {
