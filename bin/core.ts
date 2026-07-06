@@ -13,9 +13,16 @@ async function extractDependents(name: string, content: string, external = false
     if (external) { // optimize
         extractImports(content, 'fluid').forEach(key => key && dependents[name].push(key));
     } else {
-        Array.from(content.matchAll(/import\s+\w+\s+from\s*(?:'|").*?\/([^\/]+)(\/index)?\.js(?:'|")/g))
-            .forEach(([_, entry]) => {
-                if (!entry.startsWith('use')) dependents[name].push(entry);
+        Array.from(content.matchAll(/import\s+\w+\s+from\s*(?:'|").*?\/([^\/]+)(?:\/([^\/]+))?\.js(?:'|")/g))
+            .forEach(([_, entryOrParent, entry]) => {
+                if (entry) {
+                    if (['display', 'feedback', 'input', 'layout', 'navigation'].includes(entryOrParent)) {
+                        entryOrParent = entry;
+                    } else {
+                        entryOrParent = `${entryOrParent}-${entry}`;
+                    }
+                }
+                if (!entryOrParent.startsWith('use')) dependents[name].push(entryOrParent);
             });
     }
 }

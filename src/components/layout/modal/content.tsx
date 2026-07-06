@@ -8,7 +8,7 @@ import Scrollarea from "../scrollarea";
 import Button from "../../input/button";
 import { useModal } from "./root";
 
-const styles = createStyles('modal.content', {
+const styles = createStyles('modal-content', {
     '.content': {
         display: 'flex',
         flexDirection: 'column',
@@ -73,4 +73,4 @@ export default function Content({ children, cc = {}, title, ...props }:
     </div>;
 }
 
-Content.displayName = 'Modal.Content';
+Content.displayName = 'ModalContent';

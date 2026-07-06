@@ -21,7 +21,7 @@ export function useNavigationMenu() {
     return context;
 }
 
-const styles = createStyles('navigation-menu.root', {
+const styles = createStyles('navigation-menu-root', {
     '.navigation': {
         display: 'flex',
         alignItems: 'center',
@@ -34,6 +34,11 @@ const styles = createStyles('navigation-menu.root', {
 
 export type NavigationMenuRootSelectors = Selectors<'navigation'>;
 
+/**
+ * A horizontal tree of links used for navigation.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/navigation-menu}
+ */
 export default function Root({ children, cc = {}, ref, ...props }:
     {
         ref?: React.Ref<HTMLElement>;
@@ -58,4 +63,4 @@ export default function Root({ children, cc = {}, ref, ...props }:
     </nav>;
 }
 
-Root.displayName = 'NavigationMenu.Root';
+Root.displayName = 'NavigationMenuRoot';

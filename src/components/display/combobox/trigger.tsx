@@ -1,15 +1,15 @@
 'use client';
 
 import { getFocusable } from "../../../core/utils";
-import Popover from "../../layout/popover";
+import { PopoverTrigger } from "../../layout/popover";
 import { usePopover } from "../../layout/popover/root";
-import { PopoverTrigger } from "../../layout/popover/trigger";
+import type { PopoverTrigger as PopoverTriggerProps } from "../../layout/popover/trigger";
 
-export default function Trigger(props: PopoverTrigger) {
+export default function Trigger(props: PopoverTriggerProps) {
     const { content } = usePopover();
 
     // aria-autocomplete="list"
-    return <Popover.Trigger
+    return <PopoverTrigger
         {...props}
         role="combobox"
         onKeyDown={e => {
@@ -28,7 +28,7 @@ export default function Trigger(props: PopoverTrigger) {
             }
         }}>
         {props.children}
-    </Popover.Trigger>;
+    </PopoverTrigger>;
 }
 
-Trigger.displayName = 'Combobox.Trigger';
+Trigger.displayName = 'ComboboxTrigger';

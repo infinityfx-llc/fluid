@@ -3,8 +3,8 @@ import Annotation from "./annotation";
 import Badge from "./badge";
 import Tooltip from "./tooltip";
 import Swatch from "./swatch";
-import ActionMenu from "./action-menu";
-import Combobox from "./combobox";
+import { ActionMenuRoot, ActionMenuMenu, ActionMenuGroup, ActionMenuHeading, ActionMenuItem, ActionMenuTrigger } from "./action-menu";
+import { ComboboxRoot, ComboboxContent, ComboboxOption, ComboboxTrigger } from "./combobox";
 import Timeline from './timeline';
 import Code from "./code";
 import Toast from "./toast";
@@ -14,8 +14,16 @@ import Ticker from "./ticker";
 import Gradient from "./gradient";
 
 export {
-    ActionMenu,
-    Combobox,
+    ActionMenuRoot,
+    ActionMenuMenu,
+    ActionMenuGroup,
+    ActionMenuHeading,
+    ActionMenuItem,
+    ActionMenuTrigger,
+    ComboboxRoot,
+    ComboboxContent,
+    ComboboxOption,
+    ComboboxTrigger,
     Annotation,
     Badge,
     Code,

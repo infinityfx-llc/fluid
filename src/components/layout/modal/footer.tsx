@@ -4,7 +4,7 @@ import { Selectors } from "../../../../src/types";
 import { createStyles } from "../../../core/style";
 import { classes, combineClasses } from "../../../core/utils";
 
-const styles = createStyles('modal.footer', fluid => ({
+const styles = createStyles('modal-footer', fluid => ({
     '.footer': {
         position: 'relative',
         display: 'flex',
@@ -38,4 +38,4 @@ export default function Footer({ children, cc = {}, ...props }:
     </div>;
 }
 
-Footer.displayName = 'Modal.Footer';
+Footer.displayName = 'ModalFooter';

@@ -1,24 +1,6 @@
-'use client';
-
-import Root from "./root";
-import Trigger from "./trigger";
-import Menu from "./menu";
-import Group from "./group";
-import Item from "./item";
-import Heading from "./heading";
-
-/**
- * Displays a menu with actions or options.
- * 
- * @see {@link https://fluid.infinityfx.dev/docs/components/action-menu}
- */
-const ActionMenu = {
-    Root,
-    Trigger,
-    Menu,
-    Group,
-    Item,
-    Heading
-};
-
-export default ActionMenu;
+export { default as ActionMenuRoot } from './root';
+export { default as ActionMenuTrigger } from './trigger';
+export { default as ActionMenuMenu } from './menu';
+export { default as ActionMenuGroup } from './group';
+export { default as ActionMenuItem } from './item';
+export { default as ActionMenuHeading } from './heading';

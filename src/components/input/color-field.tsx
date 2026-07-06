@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Field, { FieldProps } from './field';
 import { Animate } from '@infinityfx/lively';
-import Popover from '../layout/popover';
+import { PopoverRoot, PopoverContent, PopoverTrigger } from '../layout/popover';
 import { createStyles } from '../../core/style';
 import { combineClasses, hexToRgb, rgbToHex } from '../../core/utils';
 import ColorPicker from './color-picker';
@@ -49,8 +49,8 @@ export default function ColorField({ cc = {}, value, defaultValue, onChange, dis
     const [state, setState] = value !== undefined ? [value, onChange] : useState(defaultValue || '');
     const [partial, setPartial] = useState<string | null>(null);
 
-    return <Popover.Root position="center" mobileContainer="modal">
-        <Popover.Trigger disabled={disabled}>
+    return <PopoverRoot position="center" mobileContainer="modal">
+        <PopoverTrigger disabled={disabled}>
             <Field {...props}
                 cc={cc}
                 inputMode="none"
@@ -69,9 +69,9 @@ export default function ColorField({ cc = {}, value, defaultValue, onChange, dis
                 }}
                 onBlur={() => setPartial(null)}
             />
-        </Popover.Trigger>
+        </PopoverTrigger>
 
-        <Popover.Content role="listbox" aria-multiselectable={false}>
+        <PopoverContent role="listbox" aria-multiselectable={false}>
             <Animate
                 correction="none"
                 key="date-field-calendar"
@@ -88,6 +88,6 @@ export default function ColorField({ cc = {}, value, defaultValue, onChange, dis
                     <ColorPicker value={state} onChange={hex => setState?.(`#${hex}`)} disabled={props.readOnly || disabled} />
                 </div>
             </Animate>
-        </Popover.Content>
-    </Popover.Root>
+        </PopoverContent>
+    </PopoverRoot>;
 }

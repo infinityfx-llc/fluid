@@ -20,7 +20,7 @@ export function useAccordion() {
     return context;
 }
 
-const styles = createStyles('accordion.root', {
+const styles = createStyles('accordion-root', {
     '.accordion, .item': {
         display: 'flex',
         flexDirection: 'column'
@@ -53,6 +53,11 @@ const styles = createStyles('accordion.root', {
 
 export type AccordionRootSelectors = Selectors<'accordion' | 'v__default' | 'v__neutral' | 'v__minimal' | 'divider'>;
 
+/**
+ * A vertical list of collapsible sections that can be opened and closed.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/accordion}
+ */
 export default function Root({ children, cc = {}, multiple = false, variant = 'default', ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
@@ -103,4 +108,4 @@ export default function Root({ children, cc = {}, multiple = false, variant = 'd
     </div>;
 }
 
-Root.displayName = 'Accordion.Root';
+Root.displayName = 'AccordionRoot';

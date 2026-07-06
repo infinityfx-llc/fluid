@@ -25,7 +25,7 @@ export function useModal() {
     return context;
 }
 
-const styles = createStyles('modal.root', (fluid) => ({
+const styles = createStyles('modal-root', (fluid) => ({
     '.modal': {
         background: 'var(--f-clr-surface-100)',
         borderRadius: 'var(--f-radius-lrg)',
@@ -51,6 +51,11 @@ const styles = createStyles('modal.root', (fluid) => ({
 
 export type ModalRootSelectors = Selectors<'modal' | 'header' | 'handle' | 'title'>;
 
+/**
+ * Displays a container with content overlayed onto the page.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/modal}
+ */
 export default function Root({ children, cc = {}, show, onClose, mobileClosing = 'handle', ref, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
@@ -154,4 +159,4 @@ export default function Root({ children, cc = {}, show, onClose, mobileClosing =
     </Overlay>;
 }
 
-Root.displayName = 'Modal.Root';
+Root.displayName = 'ModalRoot';

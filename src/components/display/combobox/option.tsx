@@ -8,7 +8,7 @@ import { useMenuManager } from '../../../context/menu-manager';
 import { useId, useRef } from 'react';
 import { usePopover } from '../../layout/popover/root';
 
-const styles = createStyles('combobox.option', {
+const styles = createStyles('combobox-option', {
     '.option': {
         position: 'relative',
         padding: '.5em',
@@ -95,4 +95,4 @@ export default function Option<T extends FluidInputvalue>({ children, cc = {}, v
     </Interactable>;
 }
 
-Option.displayName = 'Combobox.Option';
+Option.displayName = 'ComboboxOption';

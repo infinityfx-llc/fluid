@@ -17,7 +17,7 @@ export function useSidebar() {
     return use(SidebarContext);
 }
 
-const styles = createStyles('sidebar.root', {
+const styles = createStyles('sidebar-root', {
     '.sidebar': {
         display: 'flex',
         flexDirection: 'column',
@@ -33,6 +33,11 @@ const styles = createStyles('sidebar.root', {
 
 export type SidebarRootSelectors = Selectors<'sidebar' | 'collapsed'>;
 
+/**
+ * A collapsible sidebar.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/sidebar}
+ */
 export default function Root({ children, cc = {}, collapsed, setCollapsed, ...props }: {
     ref?: React.Ref<HTMLElement>;
     cc?: SidebarRootSelectors;
@@ -52,4 +57,4 @@ export default function Root({ children, cc = {}, collapsed, setCollapsed, ...pr
     </SidebarContext>;
 }
 
-Root.displayName = 'Sidebar.Root';
+Root.displayName = 'SidebarRoot';

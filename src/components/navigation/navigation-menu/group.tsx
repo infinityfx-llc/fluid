@@ -8,7 +8,7 @@ import { useNavigationMenu } from './root';
 import { Animate, LayoutGroup } from '@infinityfx/lively';
 import { Icon } from '../../../core/icons';
 
-const styles = createStyles('navigation-menu.group', {
+const styles = createStyles('navigation-menu-group', {
     '.group': {
         position: 'relative',
         display: 'flex',
@@ -180,4 +180,4 @@ export default function Group<A extends AnchorLike<any>>({ children, cc = {}, la
     </div>;
 }
 
-Group.displayName = 'NavigationMenu.Group';
+Group.displayName = 'NavigationMenuGroup';

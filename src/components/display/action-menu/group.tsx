@@ -9,7 +9,7 @@ import Item from './item';
 import { Icon } from '../../../core/icons';
 import { useMenuManager } from '../../../context/menu-manager';
 
-const styles = createStyles('action-menu.group', {
+const styles = createStyles('action-menu-group', {
     '.wrapper': {
         position: 'relative'
     },
@@ -144,4 +144,4 @@ export default function Group({ children, cc = {}, label, className, ...props }:
     </div>;
 }
 
-Group.displayName = 'ActionMenu.Group';
+Group.displayName = 'ActionMenuGroup';

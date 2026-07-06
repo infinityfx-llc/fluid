@@ -76,6 +76,11 @@ function getPosition(anchor: Element, element: Element, margin = '0px') {
     };
 }
 
+/**
+ * Displays a popup with content when a trigger is clicked.
+ * 
+ * @see {@link https://fluid.infinityfx.dev/docs/components/popover}
+ */
 export default function Root({ children, ref, position = 'auto', mobileContainer = 'popover', stretch, onClose }: PopoverRoot) {
     const id = useId();
     const fluid = useFluid();
@@ -139,4 +144,4 @@ export default function Root({ children, ref, position = 'auto', mobileContainer
     </PopoverContext>;
 }
 
-Root.displayName = 'Popover.Root';
+Root.displayName = 'PopoverRoot';

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Field, { FieldProps } from './field';
 import { Animate } from '@infinityfx/lively';
 import Calendar from './calendar';
-import Popover from '../layout/popover';
+import { PopoverRoot, PopoverContent, PopoverTrigger } from '../layout/popover';
 import { createStyles } from '../../core/style';
 import { combineClasses } from '../../core/utils';
 import Button from './button';
@@ -67,8 +67,8 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
     const [state, setState] = value !== undefined ? [value, onChange] : useState<Date | null>(defaultValue || null);
     const [partial, setPartial] = useState<string | null>(null);
 
-    return <Popover.Root position="center" mobileContainer="modal">
-        <Popover.Trigger disabled={disabled === true || props.readOnly}>
+    return <PopoverRoot position="center" mobileContainer="modal">
+        <PopoverTrigger disabled={disabled === true || props.readOnly}>
             <Field
                 {...props}
                 cc={cc}
@@ -104,9 +104,9 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
                     <Icon type="close" />
                 </Button> : props.right}
             />
-        </Popover.Trigger>
+        </PopoverTrigger>
 
-        <Popover.Content role="listbox">
+        <PopoverContent role="listbox">
             <Animate
                 correction="none"
                 key="date-field-calendar"
@@ -130,6 +130,6 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
                     value={state}
                     onChange={date => setState?.(date)} />
             </Animate>
-        </Popover.Content>
-    </Popover.Root>
+        </PopoverContent>
+    </PopoverRoot>;
 }

@@ -6,7 +6,7 @@ import { classes, combineClasses } from '../../../core/utils';
 import Interactable from '../../feedback/interactable';
 import { useNavigationMenu } from './root';
 
-const styles = createStyles('navigation-menu.link', {
+const styles = createStyles('navigation-menu-link', {
     '.link': {
         position: 'relative',
         display: 'block',
@@ -54,4 +54,4 @@ export default function Link<A extends AnchorLike>({ children, cc = {}, as, ...p
     </Interactable>;
 }
 
-Link.displayName = 'NavigationMenu.Link';
+Link.displayName = 'NavigationMenuLink';

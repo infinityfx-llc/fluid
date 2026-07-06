@@ -5,7 +5,7 @@ import { classes, combineClasses } from '../../../../src/core/utils';
 import { createStyles } from '../../../core/style';
 import { useSidebar } from './root';
 
-const styles = createStyles('sidebar.heading', {
+const styles = createStyles('sidebar-heading', {
     '.heading': {
         color: 'var(--f-clr-text-100)',
         fontSize: 'var(--f-font-size-xsm)',
@@ -42,4 +42,4 @@ export default function Heading({ children, cc = {}, ...props }:
     </div>;
 }
 
-Heading.displayName = 'Sidebar.Heading';
+Heading.displayName = 'SidebarHeading';

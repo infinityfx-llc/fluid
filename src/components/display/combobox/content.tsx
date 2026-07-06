@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useLayoutEffect, useRef } from 'react';
-import Popover from '../../layout/popover';
+import { PopoverContent } from '../../layout/popover';
 import Scrollarea from '../../layout/scrollarea';
 import Field from '../../input/field';
 import { Animate } from '@infinityfx/lively';
@@ -13,7 +13,7 @@ import { Icon } from '../../../core/icons';
 import { useDebounce } from '../../../hooks';
 import { useMenuManager } from '../../../context/menu-manager';
 
-const styles = createStyles('combobox.content', {
+const styles = createStyles('combobox-content', {
     '.container:not(.modal)': {
         backgroundColor: 'var(--f-clr-surface-100)',
         border: 'solid 1px var(--f-clr-surface-300)',
@@ -177,7 +177,7 @@ export default function Content({
         filterOptionsList(searchInput.current);
     }, [children, virtualItemHeight, searchable, virtualView, searchQuery, autoFocus, isModal]);
 
-    return <Popover.Content>
+    return <PopoverContent>
         <Animate
             correction="none"
             key="combobox-options-outer"
@@ -268,7 +268,7 @@ export default function Content({
                 </Scrollarea>
             </div>
         </Animate>
-    </Popover.Content>;
+    </PopoverContent>;
 }
 
-Content.displayName = 'Combobox.Content';
+Content.displayName = 'ComboboxContent';

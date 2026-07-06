@@ -1,27 +1,36 @@
 import Overlay from "./overlay";
-import Modal from "./modal";
+import { ModalRoot, ModalContent, ModalFooter } from "./modal";
 import Drawer from "./drawer";
 import Scrollarea from "./scrollarea";
 import Collapsible from "./collapsible";
 import Group from "./group";
-import Accordion from "./accordion";
-import Sidebar from "./sidebar";
+import { AccordionRoot, AccordionItem } from "./accordion";
+import { SidebarRoot, SidebarHeading, SidebarItem, SidebarToggle, SidebarUser } from "./sidebar";
 import Cull from "./cull";
-import Popover from "./popover";
+import { PopoverRoot, PopoverContent, PopoverTrigger } from "./popover";
 import Divider from "./divider";
 import Panel from "./panel";
 
 export {
     Overlay,
-    Modal,
+    ModalRoot,
+    ModalContent,
+    ModalFooter,
     Drawer,
     Scrollarea,
     Collapsible,
     Group,
-    Accordion,
-    Sidebar,
+    AccordionRoot,
+    AccordionItem,
+    SidebarRoot,
+    SidebarHeading,
+    SidebarItem,
+    SidebarToggle,
+    SidebarUser,
     Cull,
-    Popover,
+    PopoverRoot,
+    PopoverContent,
+    PopoverTrigger,
     Divider,
     Panel
 }
