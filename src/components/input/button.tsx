@@ -92,7 +92,7 @@ const styles = createStyles('button', {
         lineHeight: 1
     },
 
-    '.button:active .content': {
+    '.button:enabled:active .content': {
         translate: '0px 1px'
     },
 
