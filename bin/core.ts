@@ -68,7 +68,7 @@ export async function compileFile(io: IOHelper, name: string, path: string, appe
 
 async function processFileCSS(name: string, content: string) {
     const { styles } = await getContext();
-    const { selectors } = styles[name.replace(/([a-z])([A-Z])/, '$1-$2').toLowerCase()] || {};
+    const { selectors } = styles[name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()] || {};
 
     const createStyles = content.match(/import\s*\{[^{]*(createStyles(?:\s*as\s*([^\s},]+))?)[^}]*\}/);
 

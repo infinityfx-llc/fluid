@@ -65,7 +65,7 @@ export function stripImports(content: string) {
 export const keyFromImport = (str: string) => str
     .replace(/^\s+|\s+(as\s+.+)?$/g, '')
     .replace(/\.\w+$/, '')
-    .replace(/([a-z])([A-Z])/, '$1-$2')
+    .replace(/([a-z])([A-Z])/g, '$1-$2')
     .toLowerCase();
 
 export function extractImports(content: string, namespace: string) {
