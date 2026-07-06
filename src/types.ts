@@ -96,7 +96,9 @@ export type FluidComponents = {
     cull?: FluidStyles;
     divider?: FluidSelectorStyles<import('./components/layout/divider').DividerSelectors>;
     drawer?: FluidSelectorStyles<import('./components/layout/drawer').DrawerSelectors>;
-    modal?: FluidSelectorStyles<import('./components/layout/modal').ModalSelectors>;
+    'modal.root'?: FluidSelectorStyles<import('./components/layout/modal/root').ModalRootSelectors>;
+    'modal.content'?: FluidSelectorStyles<import('./components/layout/modal/content').ModalContentSelectors>;
+    'modal.footer'?: FluidSelectorStyles<import('./components/layout/modal/footer').ModalFooterSelectors>;
     overlay?: FluidSelectorStyles<import('./components/layout/overlay').OverlaySelectors>;
     panel?: FluidSelectorStyles<import('./components/layout/panel').PanelSelectors>;
     scrollarea?: FluidSelectorStyles<import('./components/layout/scrollarea').ScrollareaSelectors>;

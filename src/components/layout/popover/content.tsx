@@ -20,9 +20,16 @@ export default function Content({ children, ref, ...props }: React.HTMLAttribute
 
     if (!mounted) return null;
 
-    if (isModal) return <Modal ref={combineRefs(content, ref)} {...props} id={id} show={opened} onClose={() => toggle(false)}>
-        {children}
-    </Modal>;
+    if (isModal) return <Modal.Root
+        {...props}
+        id={id}
+        ref={combineRefs(content, ref)}
+        show={opened}
+        onClose={() => toggle(false)}>
+        <Modal.Content>
+            {children}
+        </Modal.Content>
+    </Modal.Root>;
 
     return createPortal(<LayoutGroup ignoreWarnings>
         <div

@@ -1,3 +1,5 @@
+'use client';
+
 import Root from "./root";
 import Trigger from "./trigger";
 import Menu from "./menu";

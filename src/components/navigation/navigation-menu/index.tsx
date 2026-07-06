@@ -1,3 +1,5 @@
+'use client';
+
 import Root from "./root";
 import Group from "./group";
 import Link from "./link";

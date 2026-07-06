@@ -1,3 +1,5 @@
+'use client';
+
 import Root from "./root";
 import Item from "./item";
 
