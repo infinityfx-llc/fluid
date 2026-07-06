@@ -23,7 +23,7 @@ const styles = createStyles('group', {
     '.divider::after': {
         content: '""',
         position: 'absolute',
-        backgroundColor: 'var(--f-clr-surface-200)'
+        backgroundColor: 'var(--f-clr-surface-300)'
     },
 
     '.d__horizontal > .divider::after': {
