@@ -40,7 +40,7 @@ const styles = createStyles('interactable', {
         minHeight: '280%',
         aspectRatio: 1,
         borderRadius: '9999px',
-        backgroundColor: 'var(--f-clr-grey-500)',
+        backgroundColor: 'var(--f-clr-highlight-200)',
         zIndex: -1
     },
 

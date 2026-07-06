@@ -92,7 +92,7 @@ export const DEFAULT_THEME = {
             text: ['#000000', '#ffffff'],
             bg: ['#f7f6f5'],
             surface: ['#ffffff', '#f2edeb', '#ede6e4'],
-            highlight: ['#e6e6e6'],
+            highlight: ['#f7f7f7', '#c7c7c7', '#414141'],
             error: ['#ff1f1f', '#ff5454', '#ff8c8c', '#ffbdbd']
         },
         dark: {
@@ -103,7 +103,7 @@ export const DEFAULT_THEME = {
             text: ['#ffffff', '#000000'],
             bg: ['#000000'],
             surface: ['#171616', '#212020', '#2e2c2c'],
-            highlight: ['#808080'],
+            highlight: ['#252525', '#424242', '#bebebe'],
             error: ['#ff1f1f', '#b32727', '#822f2f', '#632c2c']
         }
     },

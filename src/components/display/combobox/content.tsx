@@ -28,7 +28,8 @@ const styles = createStyles('combobox.content', {
     },
 
     '.container.v__inverted': {
-        backgroundColor: 'var(--f-clr-grey-900)'
+        backgroundColor: 'var(--f-clr-grey-900)',
+        borderColor: 'var(--f-clr-grey-800)'
     },
 
     '.s__xsm': {
@@ -74,12 +75,12 @@ const styles = createStyles('combobox.content', {
     },
 
     '.v__inverted .field': {
-        background: 'var(--f-clr-grey-900)',
-        color: 'var(--f-clr-grey-700)'
+        background: 'var(--f-clr-grey-800)',
+        color: 'var(--f-clr-grey-600)'
     },
 
     '.v__inverted .field:focus-within': {
-        background: 'var(--f-clr-grey-800)'
+        background: 'var(--f-clr-highlight-300)'
     },
 
     '.v__inverted .input': {

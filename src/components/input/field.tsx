@@ -55,7 +55,7 @@ const styles = createStyles('field', {
     },
 
     '.v__minimal:focus-within': {
-        backgroundColor: 'var(--f-clr-bg-100)'
+        backgroundColor: 'var(--f-clr-highlight-100)'
     },
 
     '.field[data-error="true"]': {

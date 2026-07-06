@@ -115,7 +115,7 @@ export default function Button({ children, cc = {}, round = false, compact = fal
 
     return <Interactable
         {...props}
-        highlightColor={['light', 'neutral'].includes(variant) ? 'var(--f-clr-grey-300)' : undefined}
+        highlightColor={variant === 'default' ? 'var(--f-clr-highlight-100)' : undefined}
         disabled={props.disabled || loading}
         cc={{
             ...cc,
