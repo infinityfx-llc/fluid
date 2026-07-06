@@ -11,6 +11,8 @@ import { Icon } from "../../core/icons";
 const styles = createStyles('code', {
     '.wrapper': {
         fontSize: 'var(--f-font-size-sml)',
+        backgroundColor: 'var(--f-clr-surface-200)',
+        border: 'solid 1px var(--f-clr-surface-200)',
         borderRadius: 'var(--f-radius-med)',
         overflow: 'hidden',
         position: 'relative',
@@ -20,12 +22,12 @@ const styles = createStyles('code', {
     },
 
     '.header': {
-        backgroundColor: 'var(--f-clr-primary-400)',
         padding: '.8em 1em',
         fontWeight: 500
     },
 
     '.body': {
+        borderRadius: 'calc(var(--f-radius-med) - 1px)',
         backgroundColor: 'var(--f-clr-surface-100)',
         flexGrow: 1
     },
