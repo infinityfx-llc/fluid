@@ -3,12 +3,15 @@ import { FluidSize, Selectors } from "../../../src/types";
 import Spinner from "../feedback/spinner";
 import { createStyles } from "../../core/style";
 import Interactable from "../feedback/interactable";
+import { Children, isValidElement, useMemo } from "react";
 
 const styles = createStyles('button', {
     '.button': {
+        ['--block-padding' as any]: '.8em',
+        ['--inline-padding' as any]: '1em',
         position: 'relative',
         borderRadius: 'var(--f-radius-sml)',
-        padding: '.8em',
+        padding: 'var(--block-padding) var(--inline-padding)',
         backgroundColor: 'var(--color, var(--f-clr-primary-100))',
         color: 'var(--f-clr-text-100)',
         fontWeight: 600,
@@ -18,7 +21,16 @@ const styles = createStyles('button', {
     },
 
     '.button.compact': {
-        padding: '.6em'
+        ['--block-padding' as any]: '.6em',
+        ['--inline-padding' as any]: '.8em',
+    },
+
+    '.start__icon': {
+        paddingLeft: 'var(--block-padding)'
+    },
+
+    '.end__icon': {
+        paddingRight: 'var(--block-padding)'
     },
 
     '.button.round': {
@@ -46,12 +58,12 @@ const styles = createStyles('button', {
     },
 
     '.v__light': {
-        backgroundColor: 'var(--f-clr-surface-100)',
+        backgroundColor: 'var(--f-clr-surface-200)',
         color: 'var(--color, var(--f-clr-primary-100))'
     },
 
     '.v__neutral': {
-        backgroundColor: 'var(--f-clr-surface-200)',
+        backgroundColor: 'var(--f-clr-surface-100)',
         border: 'solid 1px var(--f-clr-surface-300)'
     },
 
@@ -93,7 +105,7 @@ const styles = createStyles('button', {
     }
 });
 
-export type ButtonSelectors = Selectors<'button' | 'content' | 'loader' | 'round' | 'compact' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'v__default' | 'v__neutral' | 'v__light' | 'v__minimal'>;
+export type ButtonSelectors = Selectors<'button' | 'content' | 'loader' | 'round' | 'compact' | 'start__icon' | 'end__icon' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'v__default' | 'v__neutral' | 'v__light' | 'v__minimal'>;
 
 /**
  * A button.
@@ -113,6 +125,22 @@ export default function Button({ children, cc = {}, round = false, compact = fal
     } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);
 
+    const [start, end] = useMemo(() => {
+        let array = Children.toArray(children),
+            start = false,
+            end = false;
+
+        array.forEach((child, i) => {
+            if (isValidElement(child) && child.type === 'svg') {
+                if (i === 0) start = true;
+                if (i === array.length - 1) end = true;
+            }
+        });
+        
+        return [start, end];
+    }, [children]);
+
+
     return <Interactable
         {...props}
         highlightColor={variant === 'default' ? 'var(--f-clr-highlight-100)' : undefined}
@@ -125,6 +153,8 @@ export default function Button({ children, cc = {}, round = false, compact = fal
             style.button,
             round && style.round,
             compact && style.compact,
+            start && style.start__icon,
+            end && style.end__icon,
             style[`s__${size}`],
             style[`v__${variant}`],
             props.className
