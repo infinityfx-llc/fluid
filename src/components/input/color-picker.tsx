@@ -10,7 +10,7 @@ import Field from "./field";
 import NumberField from "./number-field";
 import Group from "../layout/group";
 
-// maybe sizes?
+// todo: maybe sizes?
 
 const styles = createStyles('color-picker', fluid => ({
     '.wrapper': {

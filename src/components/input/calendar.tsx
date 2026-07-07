@@ -10,7 +10,7 @@ import { Animate, LayoutGroup } from "@infinityfx/lively";
 import Toggle from "./toggle";
 import Interactable from "../feedback/interactable";
 
-// multiple/range select
+// todo: multiple/range select
 
 function isEqual(a: Date, b: Date) {
     return a.getFullYear() === b.getFullYear() &&

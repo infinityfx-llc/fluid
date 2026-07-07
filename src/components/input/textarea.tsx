@@ -101,6 +101,8 @@ export default function Textarea({ cc = {}, size = 'med', error, resize = 'both'
         size?: FluidSize;
         error?: any;
         /**
+         * A value of `"auto"` allows the textarea to grow with it contents.
+         * 
          * @default "both"
          */
         resize?: 'none' | 'vertical' | 'horizontal' | 'both' | 'auto';

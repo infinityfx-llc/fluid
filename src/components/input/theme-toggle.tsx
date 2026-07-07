@@ -9,7 +9,7 @@ import { Icon } from "../../core/icons";
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/theme-toggle}
  */
-export default function ThemeToggle(props: Omit<ToggleProps, 'checkedContent' | 'checked'>) {
+export default function ThemeToggle(props: Omit<ToggleProps, 'children' | 'checked'>) {
     const { appliedColorScheme, setColorScheme } = useFluid();
 
     return <Toggle {...props}
@@ -20,5 +20,5 @@ export default function ThemeToggle(props: Omit<ToggleProps, 'checkedContent' | 
         }}>
         <Icon type="light" />
         <Icon type="dark" />
-    </Toggle>
+    </Toggle>;
 }

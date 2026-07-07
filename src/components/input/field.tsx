@@ -115,7 +115,13 @@ export type FieldProps = {
     size?: FluidSize;
     variant?: 'default' | 'minimal';
     icon?: React.ReactNode;
+    /**
+     * Display a component to the left of the field.
+     */
     left?: React.ReactNode;
+    /**
+     * Display a component to the right of the field.
+     */
     right?: React.ReactNode;
     onEnter?: () => void;
     error?: any;

@@ -7,8 +7,6 @@ import { createStyles } from "../../core/style";
 
 const speed = 100;
 
-// TODO: keyboard controls
-
 function getSizeWithoutPadding(element: HTMLElement) {
     const { padding } = getComputedStyle(element);
     const values = padding.split(' ').map(parseFloat);
@@ -33,39 +31,44 @@ function getSizeWithoutPadding(element: HTMLElement) {
 const styles = createStyles('scrollarea', {
     '.area': {
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        outline: 'none'
     },
 
     '.track': {
         position: 'absolute',
         userSelect: 'none',
         zIndex: 99,
+        padding: '2px',
         transition: 'opacity .2s'
     },
 
     '.v__permanent > .track': {
-        backgroundColor: 'var(--f-clr-surface-100)',
-        padding: '2px'
+        backgroundColor: 'var(--f-clr-surface-100)'
     },
 
     '.v__hover > .track': {
         opacity: 0
     },
 
-    '.v__hover:hover > .track': {
+    '.v__hover:hover > .track, .area:focus-visible > .track': {
         opacity: 1
     },
 
     '.handle': {
         width: '.5rem',
         height: '.5rem',
-        backgroundColor: 'var(--f-clr-grey-500)',
+        backgroundColor: 'var(--f-clr-highlight-200)',
         opacity: .35,
         borderRadius: '99px',
         transition: 'opacity .2s'
     },
 
     '.track:hover .handle': {
+        opacity: .8
+    },
+
+    '.area:focus-visible > .track .handle': {
         opacity: .8
     },
 
@@ -136,7 +139,7 @@ export default function Scrollarea({ children, cc = {}, direction = 'vertical', 
     const id = useId();
     const horizontal = direction === 'horizontal';
     const scrolled = useRef(false);
-    const lastWheel = useRef(0);
+    const lastScroll = useRef(0);
 
     const area = useRef<HTMLDivElement>(null);
     const track = useRef<HTMLDivElement>(null);
@@ -144,23 +147,22 @@ export default function Scrollarea({ children, cc = {}, direction = 'vertical', 
     const dragging = useRef<{ x: number; y: number; }>(null);
     const [scrollable, setScrollable] = useState(false);
 
-    // update scroll position when using scroll wheel
-    function wheel(e: WheelEvent) {
+    // scroll by a fixed amount based on a keyboard or scrollwheel input 
+    function scroll(e: Event, delta: number) {
         const el = area.current;
-        if (!el || (!e.shiftKey && behavior === 'shift')) return;
+        if (!el) return;
 
-        const amount = Math.sign(e.deltaY) * speed;
-
+        const amount = Math.sign(delta) * speed;
         const val = el[horizontal ? 'scrollLeft' : 'scrollTop'];
         const max = el[horizontal ? 'scrollWidth' : 'scrollHeight'] - el[horizontal ? 'offsetWidth' : 'offsetHeight'];
 
-        if ((amount > 0 ? val < max : val > 0) || e.timeStamp - lastWheel.current < 350) { // prevent overscrolling
+        if ((amount > 0 ? val < max : val > 0) || e.timeStamp - lastScroll.current < 350) { // prevent overscrolling
             e.stopPropagation();
             e.preventDefault();
-            lastWheel.current = e.timeStamp;
+            lastScroll.current = e.timeStamp;
         }
 
-        scroll(amount);
+        updateScrollPosition(amount);
     }
 
     // update scroll position based on mouse position when dragging scrollbar handle
@@ -177,13 +179,13 @@ export default function Scrollarea({ children, cc = {}, direction = 'vertical', 
         const value = horizontal ?
             (e.x - dragging.current.x) / ((1 - el.clientWidth / el.scrollWidth) * el.clientWidth) * (el.scrollWidth - el.clientWidth) :
             (e.y - dragging.current.y) / ((1 - el.clientHeight / el.scrollHeight) * el.clientHeight) * (el.scrollHeight - el.clientHeight);
-        scroll(value);
+        updateScrollPosition(value);
 
         dragging.current = e;
     }
 
     // update the scroll position and scrollbar handle position
-    const scroll = useCallback((value: number) => {
+    const updateScrollPosition = useCallback((value: number) => {
         const el = area.current;
         if (!el || !handle.current || !track.current || matchMedia('(pointer: coarse)').matches || disabled) return; // use default behaviour for touch based devices.
 
@@ -219,26 +221,28 @@ export default function Scrollarea({ children, cc = {}, direction = 'vertical', 
             handle.current.style[horizontal ? 'height' : 'width'] = '';
             setScrollable(size < 1); // only show the scrollbar when the content overflows the container (there is something to scroll)
 
-            scroll(0);
+            updateScrollPosition(0);
         }
 
         resize();
 
-        const observer = new ResizeObserver(resize), areaRef = area.current;
+        const observer = new ResizeObserver(resize),
+            ctrl = new AbortController(),
+            areaRef = area.current;
         if (!areaRef) return;
 
         observer.observe(areaRef);
         if (areaRef.children.length) observer.observe(areaRef.children[0]);
 
-        areaRef.addEventListener('wheel', wheel);
-        window.addEventListener('mousemove', drag);
-        window.addEventListener('mouseup', drag);
+        areaRef.addEventListener('wheel', e => {
+            if (behavior !== 'shift' || e.shiftKey) scroll(e, e.deltaY);
+        }, { signal: ctrl.signal });
+        window.addEventListener('mousemove', drag, { signal: ctrl.signal });
+        window.addEventListener('mouseup', drag, { signal: ctrl.signal });
 
         return () => {
             observer.disconnect();
-            window.removeEventListener('mousemove', drag);
-            window.removeEventListener('mouseup', drag);
-            areaRef.removeEventListener('wheel', wheel);
+            ctrl.abort();
         }
     }, [scroll, horizontal, behavior]);
 
@@ -246,6 +250,7 @@ export default function Scrollarea({ children, cc = {}, direction = 'vertical', 
         {...props}
         ref={combineRefs(ref, area)}
         id={id}
+        tabIndex={0}
         className={classes(
             style.area,
             style[`v__${variant}`],
@@ -256,7 +261,14 @@ export default function Scrollarea({ children, cc = {}, direction = 'vertical', 
             props.onScroll?.(e);
             if (scrolled.current) return scrolled.current = false;
 
-            scroll(0);
+            updateScrollPosition(0);
+        }}
+        onKeyDown={e => {
+            props.onKeyDown?.(e);
+
+            if (e.key === 'ArrowDown') scroll(e.nativeEvent, 1);
+            if (e.key === 'ArrowUp') scroll(e.nativeEvent, -1);
+            // todo: home, end
         }}
         data-scrollable={scrollable}
         data-disabled={disabled}>

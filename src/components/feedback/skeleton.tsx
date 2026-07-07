@@ -30,8 +30,17 @@ export default function Skeleton({ cc = {}, w, h, ar, radius = 'sml', ...props }
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: SkeletonSelectors;
+        /**
+         * The width of the skeleton loader.
+         */
         w?: number | string;
+        /**
+         * The height of the skeleton loader.
+         */
         h?: number | string;
+        /**
+         * The aspect ratio of the skeleton loader.
+         */
         ar?: number;
         radius?: FluidSize | 'max';
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {

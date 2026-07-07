@@ -8,6 +8,8 @@ import { createStyles } from "../../core/style";
 import { classes, combineClasses } from "../../core/utils";
 import { Icon } from "../../core/icons";
 
+// todo: variants?
+
 const styles = createStyles('code', {
     '.wrapper': {
         fontSize: 'var(--f-font-size-sml)',

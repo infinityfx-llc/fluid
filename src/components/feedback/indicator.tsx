@@ -41,6 +41,13 @@ export default function Indicator({ cc = {}, content, color, outline, ref, ...pr
         cc?: IndicatorSelectors;
         content?: number | string | boolean;
         color?: string;
+        /**
+         * The color of outline around the indicator.
+         * 
+         * Ideally this should be the same color as the background.
+         * 
+         * @default "none"
+         */
         outline?: string;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'>) {
     const style = combineClasses(styles, cc);

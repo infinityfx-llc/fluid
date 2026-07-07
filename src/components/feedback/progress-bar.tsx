@@ -5,6 +5,8 @@ import { FluidSize, Selectors } from "../../../src/types";
 import { Animate } from "@infinityfx/lively";
 import { createStyles } from "../../core/style";
 
+// todo: vertical variant?
+
 const styles = createStyles('progress-bar', {
     '.track': {
         height: '.4em',
@@ -40,8 +42,6 @@ const styles = createStyles('progress-bar', {
 });
 
 export type ProgressBarSelectors = Selectors<'track' | 'progress' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
-
-// vertical variant?
 
 /**
  * An indicator displaying the progress of something.

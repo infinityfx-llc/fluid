@@ -34,7 +34,7 @@ const styles = createStyles('overlay', {
     '.tint': {
         position: 'absolute',
         inset: 0,
-        backgroundColor: 'color-mix(in srgb, var(--f-clr-bg-100) 65%, transparent)', // TODO: only commit when full color rework is done
+        backgroundColor: 'color-mix(in srgb, var(--f-clr-bg-100) 65%, transparent)',
         backdropFilter: 'blur(6px)'
     },
 

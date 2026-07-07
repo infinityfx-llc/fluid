@@ -7,6 +7,8 @@ import { useState } from 'react';
 import { createStyles } from '../../core/style';
 import { Animate } from '@infinityfx/lively';
 
+// todo: variants?
+
 const styles = createStyles('chip', {
     '.wrapper': {
         position: 'relative',

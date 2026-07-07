@@ -133,6 +133,11 @@ export type ToggleProps = {
     compact?: boolean;
     round?: boolean;
     variant?: 'default' | 'minimal' | 'neutral';
+    /**
+     * What transition to use when switching between states.
+     * 
+     * @default 'slide'
+     */
     transition?: 'slide' | 'morph';
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'size' | 'type'>;
 

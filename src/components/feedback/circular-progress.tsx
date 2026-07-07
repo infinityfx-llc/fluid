@@ -70,6 +70,13 @@ export default function CircularProgress({ children, cc = {}, size = 'med', slic
         value?: number;
         color?: string;
         gap?: number;
+        /**
+         * Let the stroke width be indepedent from the overall size of the progress element.
+         * 
+         * If set to `"false"`, the progress bar will appear thicker when the progress element size is larger.
+         * 
+         * @default true
+         */
         fixedStrokeWidth?: boolean;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
