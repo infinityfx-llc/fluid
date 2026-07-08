@@ -111,11 +111,11 @@ export type PincodeSelectors = Selectors<'pincode' | 'field' | 'input' | 's__xsm
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/pincode}
  */
-export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size = 'med', round = false, value, error, onChange, defaultvalue, autoFocus, ...props }:
+export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size = 'med', round = false, value, error, onChange, defaultValue, autoFocus, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: PincodeSelectors;
-        defaultvalue?: FluidInputvalue;
+        defaultValue?: FluidInputvalue;
         /**
          * An `array` of numbers indicating how many inputs to show.
          * 
@@ -143,7 +143,7 @@ export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size =
     const refs = useRef<(HTMLInputElement | null)[]>([]);
 
     const length = format.reduce((len, val) => len + val, 0);
-    const [state, setState] = value !== undefined ? [value] : useState(defaultvalue?.toString().slice(0, length) || '');
+    const [state, setState] = value !== undefined ? [value] : useState(defaultValue?.toString().slice(0, length) || '');
 
     // update value and focus when user is typing
     function handleKey(e: React.KeyboardEvent<HTMLInputElement>, index: number) {

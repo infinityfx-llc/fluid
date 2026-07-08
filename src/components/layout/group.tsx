@@ -3,6 +3,8 @@ import { classes, combineClasses } from '../../../src/core/utils';
 import { Selectors } from '../../../src/types';
 import { createStyles } from '../../core/style';
 
+// todo: check data-fb props on new elements with border
+
 const styles = createStyles('group', {
     '.group': {
         display: 'flex',
