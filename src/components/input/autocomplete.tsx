@@ -39,6 +39,7 @@ export default function Autocomplete({ completions, emptyMessage = 'No suggestio
     return <ComboboxRoot
         ref={popover}
         stretch
+        autoFocus={false}
         round={props.round}
         onClose={() => {
             if (focus.current < 2) focus.current = 0;
