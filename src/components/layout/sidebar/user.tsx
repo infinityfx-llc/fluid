@@ -2,7 +2,7 @@
 
 import { Selectors } from '../../../../src/types';
 import { classes, combineClasses } from '../../../../src/core/utils';
-import Indicator from '../../feedback/indicator';
+import { IndicatorBadge, IndicatorRoot } from '../../feedback/indicator';
 import { createStyles } from '../../../core/style';
 import { useSidebar } from './root';
 import { Icon } from '../../../core/icons';
@@ -115,22 +115,27 @@ export default function User({ children, cc = {}, name, status, indicator = fals
             collapsed && style.collapsed,
             props.className
         )}>
-        <div className={style.avatar}>
-            <Indicator outline="var(--f-clr-bg-100)" content={indicator} />
+        <IndicatorRoot className={style.avatar}>
             <div className={style.frame}>
                 {children ? children : name.slice(0, 2)}
             </div>
-        </div>
+
+            <IndicatorBadge outline="var(--f-clr-bg-100)">
+                {indicator}
+            </IndicatorBadge>
+        </IndicatorRoot>
 
         <div className={style.content}>
             <div className={style.name}>{name}</div>
             <div className={style.status}>{status}</div>
         </div>
 
-        {icon && <div className={style.icon}>
-            {icon}
-        </div>}
-    </Interactable>;
+        {
+            icon && <div className={style.icon}>
+                {icon}
+            </div>
+        }
+    </Interactable >;
 }
 
 User.displayName = 'SidebarUser';

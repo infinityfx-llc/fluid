@@ -10,13 +10,11 @@ import { Icon } from '../../core/icons';
 
 const styles = createStyles('number-field', {
     '.field .button__start': {
-        marginLeft: '.25em',
-        color: 'var(--f-clr-text-100)'
+        marginLeft: '.25em'
     },
 
     '.field .button__end': {
-        marginRight: '.25em',
-        color: 'var(--f-clr-text-100)'
+        marginRight: '.25em'
     },
 
     '.input': {
@@ -77,7 +75,7 @@ export default function NumberField({ cc = {}, precision = 3, controls = true, d
 
     const buttonProps = {
         compact: true,
-        variant: 'light' as const,
+        variant: 'muted' as const,
         size: props.size,
         disabled: props.disabled,
         round: props.round

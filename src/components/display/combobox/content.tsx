@@ -67,7 +67,13 @@ const styles = createStyles('combobox-content', {
 
     '.container .field': {
         margin: '.25em',
-        marginBottom: 0
+        marginBottom: 0,
+        outline: 'none',
+        border: 'none'
+    },
+
+    '.container .field:focus-within': {
+        backgroundColor: 'var(--f-clr-highlight-100)'
     },
 
     '.container .field__content': {

@@ -59,7 +59,8 @@ export type FluidComponents = {
     toast?: FluidSelectorStyles<import('./components/display/toast').ToastSelectors>;
     tooltip?: FluidSelectorStyles<import('./components/display/tooltip').TooltipSelectors>;
     'circular-progress'?: FluidSelectorStyles<import('./components/feedback/circular-progress').CircularProgressSelectors>;
-    indicator?: FluidSelectorStyles<import('./components/feedback/indicator').IndicatorSelectors>;
+    'indicator-root'?: FluidSelectorStyles<import('./components/feedback/indicator/root').IndicatorRootSelectors>;
+    'indicator-badge'?: FluidSelectorStyles<import('./components/feedback/indicator/badge').IndicatorBadgeSelectors>;
     interactable?: FluidSelectorStyles<import('./components/feedback/interactable').InteractableSelectors>;
     'progress-bar'?: FluidSelectorStyles<import('./components/feedback/progress-bar').ProgressBarSelectors>;
     skeleton?: FluidSelectorStyles<import('./components/feedback/skeleton').SkeletonSelectors>;

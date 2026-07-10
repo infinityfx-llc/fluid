@@ -25,12 +25,12 @@ const styles = createStyles('button', {
         ['--inline-padding' as any]: '.8em',
     },
 
-    '.button:not(.start__text):has(svg:first-child)': {
-        paddingLeft: 'var(--block-padding)'
+    '.start__icon': {
+        paddingInlineStart: 'var(--block-padding)'
     },
 
-    '.button:not(.end__text):has(svg:last-child)': {
-        paddingRight: 'var(--block-padding)'
+    '.end__icon': {
+        paddingInlineEnd: 'var(--block-padding)'
     },
 
     '.button.round': {
@@ -116,7 +116,7 @@ export type ButtonSelectors = Selectors<'button' | 'content' | 'loader' | 'round
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/button}
  */
-export default function Button({ children, cc = {}, round = false, compact = false, size = 'med', variant = 'default', color, loading = false, ...props }:
+export default function Button({ children, cc = {}, round = false, compact = false, size = 'med', variant = 'default', color, loading = false, hasIcon = 'auto', ...props }:
     {
         ref?: React.Ref<HTMLButtonElement>;
         cc?: ButtonSelectors;
@@ -126,23 +126,26 @@ export default function Button({ children, cc = {}, round = false, compact = fal
         variant?: 'default' | 'neutral' | 'muted' | 'inverted' | 'minimal';
         color?: string;
         loading?: boolean;
+        hasIcon?: 'auto' | 'start' | 'end' | 'only';
     } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const style = combineClasses(styles, cc);
 
     const [start, end] = useMemo(() => {
         let array = Children.toArray(children),
-            start = false,
-            end = false;
+            start = hasIcon !== 'end',
+            end = hasIcon !== 'start';
 
-        array.forEach((child, i) => {
-            if (!isValidElement(child)) {
-                if (i === 0) start = true;
-                if (i === array.length - 1) end = true;
-            }
-        });
-        
+        if (hasIcon === 'auto') {
+            array.forEach((child, i) => {
+                if (!isValidElement(child)) {
+                    if (i === 0) start = false;
+                    if (i === array.length - 1) end = false;
+                }
+            });
+        }
+
         return [start, end];
-    }, [children]);
+    }, [children, hasIcon]);
 
 
     return <Interactable
@@ -157,8 +160,8 @@ export default function Button({ children, cc = {}, round = false, compact = fal
             style.button,
             round && style.round,
             compact && style.compact,
-            start && style.start__text,
-            end && style.end__text,
+            start && style.start__icon,
+            end && style.end__icon,
             style[`s__${size}`],
             style[`v__${variant}`],
             props.className
