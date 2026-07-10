@@ -20,7 +20,7 @@ const styles = createStyles('badge', {
         color: 'var(--f-clr-text-100)'
     },
 
-    '.v__light': {
+    '.v__inverted': {
         backgroundColor: 'var(--f-clr-surface-100)',
         color: 'var(--color, var(--f-clr-primary-100))'
     },
@@ -58,7 +58,7 @@ const styles = createStyles('badge', {
     }
 });
 
-export type BadgeSelectors = Selectors<'badge' | 'v__default' | 'v__light' | 'v__neutral' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
+export type BadgeSelectors = Selectors<'badge' | 'v__default' | 'v__inverted' | 'v__neutral' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
 /**
  * A badge used for displaying attributes or small information snippets.
@@ -69,7 +69,7 @@ export default function Badge({ children, cc = {}, variant = 'default', round = 
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: BadgeSelectors;
-        variant?: 'default' | 'light' | 'neutral';
+        variant?: 'default' | 'inverted' | 'neutral';
         round?: boolean;
         size?: FluidSize;
         color?: string;

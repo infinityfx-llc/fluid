@@ -19,12 +19,22 @@ const styles = createStyles('pincode', {
 
     '.field': {
         outline: 'solid 3px transparent',
-        backgroundColor: 'var(--f-clr-surface-100)',
-        border: 'solid 1px var(--f-clr-surface-200)',
         borderRadius: 'var(--f-radius-sml)',
+        border: 'solid 1px var(--border-color)',
         transition: 'border-color .2s, outline-color .2s',
         display: 'flex',
         flexGrow: 1
+    },
+
+    '.v__default .field': {
+        backgroundColor: 'var(--f-clr-surface-100)',
+        ['--border-color' as any]: 'var(--f-clr-surface-200)'
+    },
+
+    '.v__minimal .field': {
+        backgroundColor: 'var(--f-clr-surface-200)',
+        border: 'solid 1px transparent',
+        ['--border-color' as any]: 'var(--f-clr-surface-300)'
     },
 
     '.group .field + .field': {
@@ -33,14 +43,29 @@ const styles = createStyles('pincode', {
         borderBottomLeftRadius: 0
     },
 
+    '.v__minimal .field + .field': {
+        borderLeftColor: 'var(--border-color)'
+    },
+
     '.group .field:not(:last-child)': {
         borderTopRightRadius: 0,
         borderBottomRightRadius: 0
     },
 
-    '.field:focus-within': {
-        borderColor: 'var(--f-clr-primary-100)',
+    '.v__minimal .field:not(:last-child)': {
+        borderRightColor: 'var(--border-color)'
+    },
+
+    '.v__default .field:focus-within': {
+        ['--border-color' as any]: 'var(--f-clr-primary-100)',
         outlineColor: 'var(--f-clr-primary-500)',
+        zIndex: 1
+    },
+
+    '.v__minimal .field:focus-within': {
+        ['--border-color' as any]: 'var(--f-clr-grey-400)',
+        borderColor: 'var(--border-color)',
+        outlineColor: 'var(--f-clr-highlight-200)',
         zIndex: 1
     },
 
@@ -84,7 +109,7 @@ const styles = createStyles('pincode', {
 
     '.pincode[data-disabled="true"] .field': {
         backgroundColor: 'var(--f-clr-grey-100)',
-        borderColor: 'var(--f-clr-grey-200)'
+        ['--border-color' as any]: 'var(--f-clr-grey-200)'
     },
 
     '.pincode[data-disabled="true"] .input': {
@@ -92,7 +117,8 @@ const styles = createStyles('pincode', {
     },
 
     '.pincode[data-error="true"] .field': {
-        borderColor: 'var(--f-clr-error-100)'
+        ['--border-color' as any]: 'var(--f-clr-error-100)',
+        borderColor: 'var(--border-color)'
     },
 
     '.pincode[data-error="true"] .field:focus-within': {
@@ -104,14 +130,14 @@ const styles = createStyles('pincode', {
     }
 });
 
-export type PincodeSelectors = Selectors<'pincode' | 'field' | 'input' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
+export type PincodeSelectors = Selectors<'pincode' | 'field' | 'input' | 'V__default' | 'v__minimal' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
 /**
  * An input used for entering numerical codes.
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/pincode}
  */
-export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size = 'med', round = false, value, error, onChange, defaultValue, autoFocus, ...props }:
+export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, round = false, size = 'med', variant = 'default', value, error, onChange, defaultValue, autoFocus, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: PincodeSelectors;
@@ -132,8 +158,9 @@ export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size =
          * @default false
          */
         masked?: boolean;
-        size?: FluidSize;
         round?: boolean;
+        size?: FluidSize;
+        variant?: 'default' | 'minimal';
         value?: string;
         error?: any;
         onChange?: (value: string) => void;
@@ -195,6 +222,7 @@ export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, size =
         className={classes(
             style.pincode,
             style[`s__${size}`],
+            style[`v__${variant}`],
             round && style.round,
             props.className
         )}

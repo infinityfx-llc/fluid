@@ -42,7 +42,8 @@ const styles = createStyles('file-field', {
     },
 
     '.v__minimal': {
-        backgroundColor: 'var(--f-clr-surface-200)'
+        backgroundColor: 'var(--f-clr-surface-200)',
+        border: 'solid 1px transparent'
     },
 
     '.content': {
@@ -60,7 +61,8 @@ const styles = createStyles('file-field', {
     },
 
     '.v__minimal:focus-within': {
-        backgroundColor: 'var(--f-clr-highlight-100)'
+        borderColor: 'var(--f-clr-grey-400)',
+        outlineColor: 'var(--f-clr-highlight-200)'
     },
 
     '.field[data-error="true"]': {
@@ -80,7 +82,10 @@ const styles = createStyles('file-field', {
     },
 
     '.field[data-disabled="true"]': {
-        backgroundColor: 'var(--f-clr-grey-100)',
+        backgroundColor: 'var(--f-clr-grey-100)'
+    },
+
+    '.v__default[data-disabled="true"]': {
         borderColor: 'var(--f-clr-grey-200)'
     },
 
@@ -113,7 +118,7 @@ const styles = createStyles('file-field', {
     }
 });
 
-export type FileFieldSelectors = Selectors<'input' | 'placeholder' | 'field' | 'content' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
+export type FileFieldSelectors = Selectors<'input' | 'placeholder' | 'field' | 'content' | 'V__default' | 'v__minimal' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
 /**
  * An input used for selecting files.

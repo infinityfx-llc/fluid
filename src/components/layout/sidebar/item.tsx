@@ -61,7 +61,7 @@ const styles = createStyles('sidebar-item', {
         color: 'var(--f-clr-text-200)'
     },
 
-    '.v__light[data-active="true"]': {
+    '.v__inverted[data-active="true"]': {
         backgroundColor: 'var(--f-clr-primary-600)',
         color: 'var(--f-clr-primary-100)'
     },
@@ -138,7 +138,7 @@ const styles = createStyles('sidebar-item', {
     }
 });
 
-export type SidebarItemSelectors = Selectors<'item' | 'collapsed' | 's__sml' | 's__med' | 'v__default' | 'v__light' | 'round' | 'compact' | 'icon' | 'content' | 'children'>;
+export type SidebarItemSelectors = Selectors<'item' | 'collapsed' | 's__sml' | 's__med' | 'v__default' | 'v__inverted' | 'round' | 'compact' | 'icon' | 'content' | 'children'>;
 
 export default function Item({ children, cc = {}, size = 'med', label, icon, right, active = false, round, compact, variant = 'default', disabled = false, defaultOpen = false, ...props }:
     {
@@ -149,7 +149,7 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
         icon?: React.ReactNode;
         right?: React.ReactNode;
         active?: boolean;
-        variant?: 'default' | 'light',
+        variant?: 'default' | 'inverted',
         round?: boolean;
         compact?: boolean;
         defaultOpen?: boolean;

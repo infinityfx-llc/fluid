@@ -92,7 +92,7 @@ const styles = createStyles('scrollarea', {
         paddingBottom: 'calc(.5rem + 4px)'
     },
 
-    '.area[data-scrollable="false"] > .track, .area[data-disabled="true"] > .track': {
+    '.area[data-scrollable="false"] > .track, .area[data-scroll-disabled="true"] > .track': {
         display: 'none'
     },
 
@@ -271,7 +271,7 @@ export default function Scrollarea({ children, cc = {}, direction = 'vertical', 
             // todo: home, end
         }}
         data-scrollable={scrollable}
-        data-disabled={disabled}>
+        data-scroll-disabled={disabled}>
         {children}
 
         <div ref={track} className={style.track}>

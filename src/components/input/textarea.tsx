@@ -28,16 +28,29 @@ const styles = createStyles('textarea', {
         display: 'flex',
         flexDirection: 'column',
         outline: 'solid 3px transparent',
-        backgroundColor: 'var(--f-clr-surface-100)',
-        border: 'solid 1px var(--f-clr-surface-200)',
         borderRadius: 'var(--f-radius-sml)',
         transition: 'border-color .2s, outline-color .2s',
         minWidth: 'min(var(--width, 100vw), 12em)'
     },
 
-    '.textarea:focus-within': {
+    '.v__default': {
+        backgroundColor: 'var(--f-clr-surface-100)',
+        border: 'solid 1px var(--f-clr-surface-200)'
+    },
+
+    '.v__minimal': {
+        backgroundColor: 'var(--f-clr-surface-200)',
+        border: 'solid 1px transparent'
+    },
+
+    '.v__default[data-disabled="false"]:focus-within': {
         borderColor: 'var(--f-clr-primary-100)',
         outlineColor: 'var(--f-clr-primary-500)'
+    },
+
+    '.v__minimal[data-disabled="false"]:focus-within': {
+        borderColor: 'var(--f-clr-grey-400)',
+        outlineColor: 'var(--f-clr-highlight-200)'
     },
 
     '.container': {
@@ -69,7 +82,7 @@ const styles = createStyles('textarea', {
         borderColor: 'var(--f-clr-error-100)'
     },
 
-    '.textarea[data-error="true"]:focus-within': {
+    '.textarea[data-error="true"][data-disabled="false"]:focus-within': {
         outlineColor: 'var(--f-clr-error-400)'
     },
 
@@ -78,7 +91,10 @@ const styles = createStyles('textarea', {
     },
 
     '.textarea[data-disabled="true"]': {
-        backgroundColor: 'var(--f-clr-grey-100)',
+        backgroundColor: 'var(--f-clr-grey-100)'
+    },
+
+    '.v__default[data-disabled="true"]': {
         borderColor: 'var(--f-clr-grey-200)'
     },
 
@@ -87,18 +103,19 @@ const styles = createStyles('textarea', {
     }
 });
 
-export type TextareaSelectors = Selectors<'textarea' | 'container' | 'content' | 'input' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
+export type TextareaSelectors = Selectors<'textarea' | 'container' | 'content' | 'input' | 'V__default' | 'v__minimal' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
 /**
  * A form textarea.
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/textarea}
  */
-export default function Textarea({ cc = {}, size = 'med', error, resize = 'both', ...props }:
+export default function Textarea({ cc = {}, size = 'med', variant = 'default', error, resize = 'both', ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: TextareaSelectors;
         size?: FluidSize;
+        variant?: 'default' | 'minimal';
         error?: any;
         /**
          * A value of `"auto"` allows the textarea to grow with it contents.
@@ -118,6 +135,7 @@ export default function Textarea({ cc = {}, size = 'med', error, resize = 'both'
         className={classes(
             style.textarea,
             style[`s__${size}`],
+            style[`v__${variant}`],
             props.className
         )}
         data-error={!!error}

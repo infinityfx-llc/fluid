@@ -57,9 +57,13 @@ const styles = createStyles('button', {
         color: 'var(--f-clr-text-200)'
     },
 
-    '.v__light': {
+    '.v__inverted': {
         backgroundColor: 'var(--f-clr-surface-100)',
         color: 'var(--color, var(--f-clr-primary-100))'
+    },
+
+    '.v__muted': {
+        backgroundColor: 'var(--color, var(--f-clr-surface-200))'
     },
 
     '.v__neutral': {
@@ -105,7 +109,7 @@ const styles = createStyles('button', {
     }
 });
 
-export type ButtonSelectors = Selectors<'button' | 'content' | 'loader' | 'round' | 'compact' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'v__default' | 'v__neutral' | 'v__light' | 'v__minimal'>;
+export type ButtonSelectors = Selectors<'button' | 'content' | 'loader' | 'round' | 'compact' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'v__default' | 'v__neutral' | 'v__muted' | 'v__inverted' | 'v__minimal'>;
 
 /**
  * A button.
@@ -119,7 +123,7 @@ export default function Button({ children, cc = {}, round = false, compact = fal
         round?: boolean;
         compact?: boolean;
         size?: FluidSize;
-        variant?: 'default' | 'neutral' | 'light' | 'minimal';
+        variant?: 'default' | 'neutral' | 'muted' | 'inverted' | 'minimal';
         color?: string;
         loading?: boolean;
     } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
