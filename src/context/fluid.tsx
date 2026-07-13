@@ -39,7 +39,7 @@ export default function FluidProvider({ children, initialColorScheme }: {
         const { theme, includeUtilityClasses } = GLOBAL_CONTEXT;
 
         return {
-            ...parseUtilityClasses(theme, includeUtilityClasses), // todo: also export shadow helpers
+            ...parseUtilityClasses(theme, includeUtilityClasses),
             ...parseColorPalettes(theme),
             ':root': parseCSSVariables(theme)
         };

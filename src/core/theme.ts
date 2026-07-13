@@ -204,6 +204,13 @@ export function parseUtilityClasses<T extends FluidTheme>(theme: T, include: boo
         }
     });
 
+    ruleset['sd-100'] = {
+        boxShadow: 'var(--f-shadow-sml)'
+    };
+    ruleset['sd-200'] = {
+        boxShadow: 'var(--f-shadow-med)'
+    };
+
     return ruleset;
 }
 
