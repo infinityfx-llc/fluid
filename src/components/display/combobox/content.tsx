@@ -190,7 +190,7 @@ export default function Content({
             animate={{
                 opacity: [0, .2, 1],
                 scale: [0.9, 1],
-                duration: .2
+                duration: .175
             }}
             triggers={{
                 animate: ['mount', { on: 'unmount', reverse: true }]
@@ -260,10 +260,10 @@ export default function Content({
                             animate={{
                                 opacity: [0, 1],
                                 scale: [.95, 1],
-                                duration: .2
+                                duration: .175
                             }}
                             staggerLimit={4}
-                            stagger={.05}>
+                            stagger={.035}>
                             {(!virtualItemHeight || virtualView.to !== Infinity) && children}
                         </Animate>
 

@@ -115,12 +115,11 @@ export default function Group({ children, cc = {}, label, className, ...props }:
                 visibility: ['hidden', 'visible'],
                 opacity: [0, .2, 1],
                 scale: [0.9, 1],
-                duration: .2
+                duration: .175
             }}
             triggers={{
                 animate: [{ on: state.open, override: true }, { on: !state.open, cascade: 'reverse', reverse: true, override: true }]
-            }}
-            stagger={.05}>
+            }}>
             <div
                 ref={content}
                 id={id}
@@ -135,8 +134,9 @@ export default function Group({ children, cc = {}, label, className, ...props }:
                     animate={{
                         opacity: [0, 1],
                         scale: [0.95, 1],
-                        duration: .2
-                    }}>
+                        duration: .175
+                    }}
+                    stagger={.035}>
                     {children}
                 </Animate>
             </div>

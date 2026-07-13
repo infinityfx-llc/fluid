@@ -78,7 +78,7 @@ export default function ColorField({ cc = {}, value, defaultValue, onChange, dis
                 animate={{
                     opacity: [0, .2, 1],
                     scale: [.9, 1],
-                    duration: .2
+                    duration: .175
                 }}
                 triggers={{
                     animate: ['mount', { on: 'unmount', reverse: true }]

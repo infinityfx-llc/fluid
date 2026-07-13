@@ -154,7 +154,8 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
                         {state === value && <Animate
                             morph={`tabs-selection-${id}`}
                             transition={{
-                                cache: ['x', 'sx']
+                                cache: ['x', 'sx'],
+                                duration: .4
                             }}>
                             <div className={style.selection} />
                         </Animate>}

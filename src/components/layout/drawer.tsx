@@ -103,7 +103,7 @@ export default function Drawer({ children, cc = {}, show, onClose, position = 'r
             key="drawer"
             animate={{
                 translate: [`${position === 'right' ? 100 : -100}% 0%`, '0% 0%'],
-                duration: .25
+                duration: .3
             }}
             triggers={{
                 animate: ['mount', { on: 'unmount', reverse: true }]

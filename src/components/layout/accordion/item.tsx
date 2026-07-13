@@ -111,7 +111,7 @@ export default function Item({ children, cc = {}, label, defaultOpen = false, di
                     correction="none"
                     animate={{
                         translate: isOpen ? '0% -50%' : '0% 0%',
-                        duration: .35
+                        duration: .3
                     }}>
                     <div className={style.arrows}>
                         <Icon type="expandDown" />

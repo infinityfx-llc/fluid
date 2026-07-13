@@ -90,7 +90,7 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
             transition={{ cache: [] }}
             animate={{
                 scale: ['1 1', '0 1', '0 1'],
-                duration: .6
+                duration: .5
             }}
             triggers={triggers}>
             {new Array(3).fill(0).map((_, i) => {
@@ -106,7 +106,7 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
                 }}
                 animate={{
                     scale: ['0 1', '0 1', '1 1'],
-                    duration: .6
+                    duration: .5
                 }}
                 triggers={triggers}>
                 <div className={style.line} />
@@ -118,7 +118,7 @@ export default function Hamburger({ cc = {}, open, color, ...props }: {
                 }}
                 animate={{
                     scale: ['1 0', '1 0', '1 1'],
-                    duration: .6,
+                    duration: .5,
                     delay: .2
                 }}
                 triggers={triggers}>

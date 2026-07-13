@@ -3,6 +3,8 @@ import { Selectors } from "../../../src/types";
 import { Animate, LayoutGroup } from "@infinityfx/lively";
 import { createStyles } from "../../core/style";
 
+// todo: ani duration override?
+
 const styles = createStyles('collapsible', {
     '.content': {
         overflow: 'hidden'

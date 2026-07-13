@@ -267,7 +267,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                     correction="none"
                     animate={{
                         opacity: [0, 1],
-                        duration: .35
+                        duration: .2
                     }}
                     triggers={{
                         animate: ['mount', { on: 'unmount', reverse: true }]
@@ -294,14 +294,14 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                 correction="none"
                                 transition={{
                                     cache: ['y'],
-                                    duration: .35,
+                                    duration: .3,
                                     easing: 'ease-out'
                                 }}
                                 animate={{
                                     opacity: [0, 1],
-                                    duration: .25,
+                                    duration: .2,
                                     easing: 'ease-out',
-                                    delay: .25 + Math.abs(3 - Math.floor(i / 3)) * .05
+                                    delay: .25 + Math.abs(3 - Math.floor(i / 3)) * .035
                                 }}>
                                 <Interactable
                                     highlightColor="var(--f-clr-primary-300)"
@@ -341,17 +341,17 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                         left: {
                             translate: ['-8px 0px', '0px 0px'],
                             opacity: [0, 1],
-                            duration: .25,
+                            duration: .2,
                             easing: 'ease-out'
                         },
                         right: {
                             translate: ['8px 0px', '0px 0px'],
                             opacity: [0, 1],
-                            duration: .25,
+                            duration: .2,
                             easing: 'ease-out'
                         }
                     }}
-                    stagger={.05}
+                    stagger={.035}
                     triggers={{
                         left: [{ on: leftCount, override: true }],
                         right: [{ on: rightCount, override: true }]

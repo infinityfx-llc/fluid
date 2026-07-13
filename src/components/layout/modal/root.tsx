@@ -91,7 +91,7 @@ export default function Root({ children, cc = {}, show, onClose, mobileClosing =
                 if (py > 0.35) { // close the modal when dragged below 35% the size of the modal
                     onClose();
                 } else {
-                    offset.set(0, { duration: .25 });
+                    offset.set(0, { duration: .3 });
                 }
 
                 return touch.current = null;
@@ -124,13 +124,13 @@ export default function Root({ children, cc = {}, show, onClose, mobileClosing =
                 clips={{
                     mob: {
                         translate: ['0% 100%', '0% 0%'],
-                        duration: .25,
+                        duration: .3,
                         composite: 'combine'
                     },
                     dsk: {
                         opacity: [0, .2, 1],
                         scale: [0.9, 1],
-                        duration: .25
+                        duration: .225
                     }
                 }}
                 triggers={{

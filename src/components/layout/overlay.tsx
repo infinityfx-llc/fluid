@@ -110,8 +110,8 @@ export default function Overlay({ children, cc = {}, show, onClose }: {
                     key="tint"
                     correction="none"
                     clips={{
-                        mount: { opacity: [0, 1], duration: .25 },
-                        unmount: { opacity: [0, 1], duration: .25 }
+                        mount: { opacity: [0, 1], duration: .2 },
+                        unmount: { opacity: [0, 1], duration: .2 }
                     }}
                     triggers={{
                         mount: ['mount'],

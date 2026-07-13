@@ -207,7 +207,7 @@ export default function Stepper({ cc = {}, steps, completed, setCompleted, navig
                                 correction="none"
                                 animate={{
                                     translate: isCompleted ? '0% -25%' : '0% 25%',
-                                    duration: .35
+                                    duration: .3
                                 }}>
                                 <div className={style.icons}>
                                     <div className={style.icon}>

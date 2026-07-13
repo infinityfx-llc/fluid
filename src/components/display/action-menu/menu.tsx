@@ -43,12 +43,11 @@ export default function Menu({ children, cc = {}, className, ...props }:
             animate={{
                 opacity: [0, .2, 1],
                 scale: [0.9, 1],
-                duration: .2
+                duration: .175
             }}
             triggers={{
                 animate: ['mount', { on: 'unmount', reverse: true }]
-            }}
-            stagger={.05}>
+            }}>
 
             <div
                 {...props}
@@ -64,8 +63,9 @@ export default function Menu({ children, cc = {}, className, ...props }:
                     animate={{
                         opacity: [0, 1],
                         scale: [0.95, 1],
-                        duration: .2
-                    }}>
+                        duration: .175
+                    }}
+                    stagger={.035}>
                     {children}
                 </Animate>
             </div>

@@ -187,7 +187,7 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
                 correction="none"
                 animate={{
                     translate: state ? '100% 0%' : '0% 0%',
-                    duration: .35
+                    duration: .3
                 }}>
                 <Interactable
                     as="div"
@@ -199,7 +199,7 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
                         transition={{ cache: [] }}
                         animate={{
                             scale: [1, '1.6 1', 1],
-                            duration: .35,
+                            duration: .3,
                             composite: 'override'
                         }}
                         triggers={{
