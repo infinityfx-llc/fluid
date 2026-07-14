@@ -275,7 +275,7 @@ export default function Table<T extends { [key: string]: string | number | Date;
                         key={i}
                         as="div"
                         role="row"
-                        highlightColor="var(--f-clr-primary-300)"
+                        highlightColor="var(--f-clr-primary-400)"
                         className={style.row}>
                         {selectable && <div className={style.collapsed}>
                             <Checkbox

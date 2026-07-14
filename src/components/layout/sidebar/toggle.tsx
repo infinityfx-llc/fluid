@@ -75,7 +75,7 @@ export default function Toggle({ children, cc = {}, toggle = 'square', ...props 
     return <div {...props} className={classes(style.wrapper, props.className)}>
         <Interactable
             disabled={!collapsed}
-            highlightColor="var(--f-clr-primary-300)"
+            highlightColor="var(--f-clr-primary-400)"
             className={style.toggle}
             onClick={() => setCollapsed(false)}>
             <div className={style.logo}>

@@ -113,7 +113,7 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
                         <Interactable
                             role="tab"
                             disabled={disabled}
-                            highlightColor={variant === 'default' ? 'var(--f-clr-primary-300)' : 'var(--f-clr-primary-400)'}
+                            highlightColor="var(--f-clr-primary-400)"
                             ref={el => {
                                 tabs.current[i] = disabled ? null : el;
                             }}

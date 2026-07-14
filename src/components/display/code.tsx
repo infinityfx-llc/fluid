@@ -1,7 +1,7 @@
 'use client';
 
 import { Selectors } from "../../../src/types";
-import { Fragment, useId, useRef, useState } from "react";
+import { Fragment, useId, useLayoutEffect, useRef, useState } from "react";
 import Scrollarea from "../layout/scrollarea";
 import Toggle from "../input/toggle";
 import { createStyles } from "../../core/style";
@@ -111,6 +111,8 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
     const id = useId();
     const timeout = useRef<any>(undefined);
     const [copied, setCopied] = useState(false);
+
+    useLayoutEffect(() => () => clearTimeout(timeout.current), []);
 
     return <div {...props} className={classes(style.wrapper, props.className)}>
         {title && <div className={style.header}>

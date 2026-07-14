@@ -304,7 +304,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                                     delay: .25 + Math.abs(3 - Math.floor(i / 3)) * .035
                                 }}>
                                 <Interactable
-                                    highlightColor="var(--f-clr-primary-300)"
+                                    highlightColor="var(--f-clr-primary-400)"
                                     disabled={yearDisabled}
                                     aria-label={label}
                                     className={classes(
@@ -367,7 +367,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
 
                                 return <div key={ci} role="gridcell">
                                     <Interactable
-                                        highlightColor="var(--f-clr-primary-300)"
+                                        highlightColor="var(--f-clr-primary-400)"
                                         disabled={dayDisabled}
                                         ref={el => {
                                             dates.current[index] = el;

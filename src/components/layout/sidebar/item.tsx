@@ -169,7 +169,7 @@ export default function Item({ children, cc = {}, size = 'med', label, icon, rig
             as="div"
             role="button"
             tabIndex={0}
-            highlightColor={active ? undefined : 'var(--f-clr-primary-300)'}
+            highlightColor={active ? undefined : 'var(--f-clr-primary-400)'}
             disabled={disabled}
             className={classes(
                 style.item,

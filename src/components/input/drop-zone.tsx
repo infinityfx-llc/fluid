@@ -184,7 +184,6 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
         as="div"
         role="button"
         tabIndex={0}
-        highlightColor="var(--f-clr-grey-300)"
         disabled={!!file || isDisabled}
         aria-disabled={!!file || isDisabled}
         className={classes(
