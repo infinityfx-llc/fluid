@@ -266,8 +266,11 @@ export default function Scrollarea({ children, cc = {}, direction = 'vertical', 
         onKeyDown={e => {
             props.onKeyDown?.(e);
 
-            if (e.key === 'ArrowDown') scroll(e.nativeEvent, 1);
-            if (e.key === 'ArrowUp') scroll(e.nativeEvent, -1);
+            const forward = direction === 'horizontal' ? 'ArrowRight' : 'ArrowDown';
+            const back = direction === 'horizontal' ? 'ArrowLeft' : 'ArrowUp';
+
+            if (e.key === forward) scroll(e.nativeEvent, 1);
+            if (e.key === back) scroll(e.nativeEvent, -1);
             // todo: home, end
         }}
         data-scrollable={scrollable}

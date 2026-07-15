@@ -4,6 +4,7 @@ import { createStyles } from "../../core/style";
 
 const styles = createStyles('key', {
     '.key': {
+        display: 'inline',
         position: 'relative',
         fontWeight: 600,
         fontSize: 'var(--f-font-size-xsm)',

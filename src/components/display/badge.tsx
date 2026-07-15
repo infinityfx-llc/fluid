@@ -9,7 +9,7 @@ const styles = createStyles('badge', {
         borderRadius: 'var(--f-radius-sml)',
         padding: '.3em .6em',
         transition: 'background-color .15s',
-        display: 'flex',
+        display: 'inline-flex',
         alignItems: 'center',
         gap: 'var(--f-spacing-xxs)',
         lineHeight: 1.2

@@ -15,7 +15,8 @@ const styles = createStyles('accordion-item', {
     '.item': {
         position: 'relative',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        isolation: 'isolate'
     },
 
     '.button': {

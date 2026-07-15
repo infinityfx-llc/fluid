@@ -5,8 +5,11 @@ export type FluidColors = 'primary' | 'accent' | 'grey' | 'heading' | 'text' | '
 export type PartialFluidTheme = {
     palettes?: {
         [key: string]: {
-            [key in FluidColors]?: string[];
+            [key in FluidColors]: string[];
         }
+    } & {
+        light: { [key in FluidColors]?: string[]; };
+        dark: { [key in FluidColors]?: string[]; };
     },
     defaultColorScheme?: string;
     spacing?: {
@@ -45,7 +48,7 @@ export type PartialFluidTheme = {
 export type FluidTheme = {
     palettes: {
         [key: string]: {
-            [key in FluidColors]?: string[];
+            [key in FluidColors]: string[];
         }
     },
     defaultColorScheme: FluidColorScheme;
