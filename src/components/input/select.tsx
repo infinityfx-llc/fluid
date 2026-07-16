@@ -14,7 +14,6 @@ import { Icon } from '../../core/icons';
 const styles = createStyles('select', {
     '.field': {
         borderRadius: 'var(--f-radius-sml)',
-        color: 'var(--f-clr-grey-200)',
         transition: 'background-color .2s, border-color .2s, color .2s, outline-color .2s',
         display: 'flex',
         alignItems: 'center',
@@ -24,12 +23,14 @@ const styles = createStyles('select', {
 
     '.v__default': {
         backgroundColor: 'var(--f-clr-surface-100)',
-        border: 'solid 1px var(--f-clr-surface-200)'
+        border: 'solid 1px var(--f-clr-surface-200)',
+        color: 'var(--f-clr-grey-200)'
     },
 
     '.v__minimal': {
         backgroundColor: 'var(--f-clr-surface-200)',
-        border: 'solid 1px transparent'
+        border: 'solid 1px transparent',
+        color: 'var(--f-clr-grey-300)'
     },
 
     '.v__default:focus-within': {
@@ -40,6 +41,7 @@ const styles = createStyles('select', {
 
     '.v__minimal:focus-within': {
         borderColor: 'var(--f-clr-grey-400)',
+        color: 'var(--f-clr-grey-400)',
         outlineColor: 'var(--f-clr-highlight-200)'
     },
 
