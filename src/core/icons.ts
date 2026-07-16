@@ -1,5 +1,5 @@
 import { createElement } from "react";
-import { LuArrowDownWideNarrow, LuArrowUpDown, LuArrowUpNarrowWide, LuCheck, LuChevronDown, LuChevronFirst, LuChevronLast, LuChevronLeft, LuChevronRight, LuChevronUp, LuChevronsUpDown, LuCopy, LuEye, LuEyeOff, LuFileUp, LuMinus, LuMoon, LuEllipsisVertical, LuPanelLeftClose, LuPanelLeftOpen, LuPlus, LuSearch, LuSun, LuX, LuFile } from "react-icons/lu";
+import { LuArrowDownWideNarrow, LuArrowUpDown, LuArrowUpNarrowWide, LuCheck, LuChevronDown, LuChevronFirst, LuChevronLast, LuChevronLeft, LuChevronRight, LuChevronUp, LuChevronsUpDown, LuCopy, LuEye, LuEyeOff, LuFileUp, LuMinus, LuMoon, LuEllipsisVertical, LuPanelLeftClose, LuPanelLeftOpen, LuPlus, LuSearch, LuSun, LuX, LuFile, LuCircleAlert } from "react-icons/lu";
 
 export const ICONS = {
     add: LuPlus,
@@ -28,7 +28,8 @@ export const ICONS = {
     up: LuChevronUp,
     upload: LuFileUp,
     remove: LuMinus,
-    right: LuChevronRight
+    right: LuChevronRight,
+    alert: LuCircleAlert
 }
 
 export function Icon({ type }: { type: keyof typeof ICONS }) {

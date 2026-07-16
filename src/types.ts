@@ -49,6 +49,7 @@ export type FluidComponents = {
     annotation?: FluidSelectorStyles<import('./components/display/annotation').AnnotationSelectors>;
     badge?: FluidSelectorStyles<import('./components/display/badge').BadgeSelectors>;
     code?: FluidSelectorStyles<import('./components/display/code').CodeSelectors>;
+    empty?: FluidSelectorStyles<import('./components/display/empty').EmptySelectors>;
     frame?: FluidSelectorStyles<import('./components/display/frame').FrameSelectors>;
     gradient?: FluidSelectorStyles<import('./components/display/gradient').GradientSelectors>;
     key?: FluidSelectorStyles<import('./components/display/key').KeySelectors>;

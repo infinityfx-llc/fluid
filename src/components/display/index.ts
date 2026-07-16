@@ -12,6 +12,7 @@ import Table from "./table";
 import Frame from "./frame";
 import Ticker from "./ticker";
 import Gradient from "./gradient";
+import Empty from "./empty";
 
 export {
     ActionMenuRoot,
@@ -35,5 +36,6 @@ export {
     Ticker,
     Timeline,
     Toast,
-    Tooltip
+    Tooltip,
+    Empty
 }
