@@ -2,172 +2,238 @@
 
 import { classes, combineClasses } from '../../../src/core/utils';
 import { Selectors } from '../../../src/types';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { createStyles } from '../../core/style';
 import { Animate, LayoutGroup } from '@infinityfx/lively';
+import { Animator } from '@infinityfx/lively';
+
+const toChars = (str: string | number) => str.toString().split('');
+
+const deepCopy = (array: string[][]) => array.slice().map(value => value.slice());
+
+function isEqual(data: string[][], value: string) {
+    if (data.length !== value.length) return false;
+
+    for (let i = 0; i < data.length; i++) {
+        if (data[i][0] !== value[i]) return false;
+    }
+
+    return true;
+}
 
 const styles = createStyles('ticker', {
     '.ticker': {
-        display: 'flex',
-        alignItems: 'flex-end',
-        height: '1.25em',
+        boxSizing: 'content-box',
+        height: 'calc(1em * var(--line-height))',
         overflow: 'hidden'
+    },
+
+    '.fade': {
+        paddingBlock: '.2em',
+        maskImage: 'linear-gradient(transparent, white .25em, white calc(1em * var(--line-height) + .25em), transparent)'
+    },
+
+    '.row': {
+        display: 'flex',
+        alignItems: 'start',
+        height: 'calc(1em * var(--line-height))'
     },
 
     '.column': {
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'start'
     },
 
     '.column > *': {
-        height: '1.25em',
-        lineHeight: 1.2,
+        height: 'calc(1em * var(--line-height))',
+        lineHeight: 'var(--line-height)',
         width: '100%',
         whiteSpace: 'pre'
+    },
+
+    '.column > :not(:first-child)': {
+        width: '0px'
     }
 });
 
-export type TickerSelectors = Selectors<'text' | 'column'>;
+export type TickerSelectors = Selectors<'ticker' | 'fade' | 'row' | 'column'>;
 
 /**
- * Animated text display.
+ * Animated text/number display.
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/ticker}
  */
-export default function Ticker({ children, cc = {}, align = 'left', selective, duration = .7, stagger = .1, ...props }: {
-    children: number | string | (number | string)[];
+export default function Ticker({ cc = {}, value, lineHeight = 1.1, selective, interpolateNumbers, fadeEdges = true, duration = .4, stagger = .05, ...props }: {
     ref?: React.Ref<HTMLDivElement>;
     cc?: TickerSelectors;
+    value: number | string;
     /**
-     * @default "left"
+     * @default 1.1
      */
-    align?: 'left' | 'right';
+    lineHeight?: number;
     /**
      * Only animate characters that have changed since last render.
      * 
      * @default false
      */
     selective?: boolean;
+    /**
+     * Add intermediate values when animating between different numbers.
+     * 
+     * @default false
+     */
+    interpolateNumbers?: boolean;
+    /**
+     * @default true
+     */
+    fadeEdges?: boolean;
+    /**
+     * Animation duration in seconds.
+     * 
+     * @default .4
+     */
     duration?: number;
+    /**
+     * Animation staggering in seconds.
+     * 
+     * @default .05
+     */
     stagger?: number;
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
     const style = combineClasses(styles, cc);
 
-    const mutableTriggerCount = useRef(0);
-    const [triggerCount, trigger] = useState(0);
-    const prev = useRef(children.toString());
-    const mutable = useRef<{
-        char: string | null;
-        active: 0 | 1;
-    }[][]>(children.toString().split('').map(char => [{
-        char,
-        active: 1
-    }]));
-    const prevLastRow = useRef<(string | null)[]>([]);
-    const [state, setState] = useState(mutable.current);
+    const timeouts = useRef<any[]>([]);
+    const cullTimeout = useRef<any>(0);
+    const animator = useRef<Animator<'scroll' | 'animate'>>(null);
+    const data = useRef(toChars(value).map(char => [char]));
+    const [columns, setColumns] = useState(deepCopy(data.current));
 
-    function trim() {
-        // trim character arrays to remove characters that are out of view
-        const trimmed = [];
+    const cull = useCallback((count: number) => {
+        cullTimeout.current = 0;
 
-        for (let i = 0; i < mutable.current.length; i++) {
-            let chars = mutable.current[i];
-            chars = chars.slice(chars.length > 2 ? 1 : 0);
+        for (let i = data.current.length - 1; i >= 0; i--) {
+            const column = data.current[i];
+            const index = Math.min(column.length - 1, count);
 
-            if (chars[chars.length - 1].char !== null || chars.length > 2) trimmed.push(chars);
+            if (index > 0) column.splice(-index, index);
+
+            if (column.every(val => !val)) data.current.splice(i, 1);
         }
 
-        mutable.current = trimmed;
-        setState(trimmed);
-    }
+        setColumns(deepCopy(data.current));
+    }, []);
+
+    const update = useCallback((value: string[]) => {
+        if (!animator.current) return;
+
+        const delta = value.length - data.current.length;
+
+        if (delta > 0) data.current.push(...new Array(delta).fill(0).map(() => ['']));
+
+        let changed = new Array(data.current.length),
+            rows = 0;
+        for (let i = 0; i < data.current.length; i++) {
+            const column = data.current[i];
+            changed[i] = value[i] !== column[0];
+
+            if (!selective || changed[i]) column.unshift(value[i] ?? '');
+            rows = Math.max(rows, column.length);
+        }
+
+        const tag = Date.now().toString();
+        animator.current.play('scroll', { tag });
+        animator.current.forEachTrack((track, i) => {
+            if (!changed[i] && selective) track.clear(tag);
+        });
+
+        setColumns(deepCopy(data.current));
+
+        if (!cullTimeout.current) {
+            cullTimeout.current = setTimeout(() => cull(rows - 1), (duration + stagger * data.current.length) * 1000);
+        }
+    }, [selective, duration, stagger]);
 
     useEffect(() => {
-        if (prev.current === children.toString()) return; // if content hasn't changed return
-        prev.current = children.toString();
+        if (isEqual(data.current, value.toString())) return;
 
-        const chars = prev.current.split(''),
-            updated = mutable.current,
-            diff = updated.length - chars.length;
+        timeouts.current.forEach(clearTimeout);
+        timeouts.current = [];
 
-        prevLastRow.current = updated.map(col => col[col.length - 1].char);
+        if (typeof value === 'number' && interpolateNumbers) {
+            const previous = parseFloat(data.current.map(col => col[0]).join(''));
+            const delta = value - previous;
+            const length = value.toString().length;
 
-        // match length between previous and current content by filling from left or right with null values
-        if (diff > 0) chars[align === 'right' ? 'unshift' : 'push'](...new Array(diff).fill(null));
+            for (let i = 0; i < 4; i++) {
+                const addition = delta / 4 * (i + 1);
+                const chars = toChars(previous + addition);
 
-        // loop over new content character by character
-        for (let i = chars.length - 1; i >= 0; i--) {
-            const columnIndex = align == 'right' ? i + Math.min(diff, 0) : i;
-
-            if (Array.isArray(updated[columnIndex])) {
-                // if character index already exists in previous content, append to array
-                updated[columnIndex].push({
-                    char: chars[i],
-                    active: 1
-                });
-            } else {
-                // else add a new array at the left or right
-                const newColumn = [{
-                    char: chars[i],
-                    active: 1 as const
-                }];
-
-                align === 'right' ?
-                    updated.unshift(newColumn) :
-                    updated[columnIndex] = newColumn;
+                timeouts.current.push(
+                    setTimeout(() => update(chars.slice(0, length)), i * 50) // todo: fix causes flashing..
+                );
             }
-
-            setTimeout(() => {
-                // set offscreen characters to "inactive", so they don't take up width
-                const col = mutable.current[i];
-                if (col?.length > 1) col[col.length - 2].active = 0;
-
-                setState(mutable.current.slice());
-            }, i * stagger * 1000);
+        } else {
+            update(toChars(value));
         }
+    }, [value]);
 
-        // after animation ends remove previous characters that are out of view
-        setTimeout(trim, (duration + (updated.length - 1) * stagger) * 1000);
+    useEffect(() => () => {
+        timeouts.current.forEach(clearTimeout);
+        clearTimeout(cullTimeout.current);
+        cullTimeout.current = 0;
+    }, []);
 
-        trigger(++mutableTriggerCount.current);
-    }, [children]);
-
-    return <div {...props} className={classes(style.ticker, props.className)}>
+    return <div
+        {...props}
+        style={{
+            ...props.style,
+            '--line-height': lineHeight
+        } as any}
+        className={classes(
+            style.ticker,
+            fadeEdges && style.fade,
+            props.className
+        )}>
         <LayoutGroup skipInitialMount ignoreWarnings>
-            {state.map((column, i) => {
-                const key = (align === 'right' ? state.length - 1 - i : i).toString();
-
-                return <Animate
-                    key={key}
-                    transition={{
-                        cache: ['x', 'sx'],
-                        duration
-                    }}
-                    initial={{ translate: '0em 0em' }}
-                    animate={{
-                        translate: ['0em 1.2em', '0em 0em'],
-                        composite: 'combine',
-                        duration,
-                        delay: i * stagger
-                    }}
-                    triggers={{
-                        animate: [
-                            { on: 'mount', commit: false },
-                            { on: !selective || prevLastRow.current[i] !== column[column.length - 1].char ? triggerCount : false, commit: false }
-                        ]
+            <div className={style.row}>
+                <Animate
+                    ref={animator}
+                    correction="parent"
+                    stagger={stagger}
+                    clips={{
+                        scroll: {
+                            translate: [`0em -${lineHeight}em`, '0em 0em'],
+                            composite: 'combine',
+                            duration
+                        }
                     }}>
+                    {columns.map((column, i) => {
 
-                    <div className={style.column}>
-                        {column.map(({ char, active }, j) => <div key={j}>
-                            <div style={{
-                                position: active ? undefined : 'absolute'
-                            }}>
-                                {char || ' '}
-                            </div>
-                        </div>)}
-                    </div>
+                        return <div key={i}>
+                            <Animate
+                                transition={{
+                                    cache: ['width'],
+                                    duration
+                                }}
+                                animate={{
+                                    maxWidth: ['0em', '1.2em'],
+                                    translate: [`0em -${lineHeight}em`, '0em 0em'],
+                                    duration
+                                }}
+                                triggers={{
+                                    animate: [{ on: 'mount', commit: false }]
+                                }}>
+                                <div className={style.column}>
+                                    {column.map((char, j) =>
+                                        <span key={j}>{char}</span>
+                                    )}
+                                </div>
+                            </Animate>
+                        </div>;
+                    })}
                 </Animate>
-            })}
-        </LayoutGroup>
-    </div>;
+            </div>
+        </LayoutGroup >
+    </div >;
 }
