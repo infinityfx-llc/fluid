@@ -1,19 +1,23 @@
 'use client';
 
-import { createContext, use, useCallback, useRef, useState } from "react";
+import { createContext, use, useCallback, useEffect, useId, useRef, useState } from "react";
 
 type SingletonsContext = {
     shouldRender(key: string, id: string): boolean;
+    unmount(id: string): void;
 };
 
 export const SingletonsContext = createContext<SingletonsContext | null>(null);
 
-export function useSingleton() {
+export function useSingleton(key: string) {
+    const id = useId();
     const context = use(SingletonsContext);
 
     if (!context) throw new Error('Unable to access Singletons context');
 
-    return context;
+    useEffect(() => () => context.unmount(id), []);
+
+    return () => context.shouldRender(key, id);
 }
 
 export default function SingletonsProvider({ children }: {
@@ -45,7 +49,18 @@ export default function SingletonsProvider({ children }: {
         return true;
     }, [updates]);
 
-    return <SingletonsContext value={{ shouldRender }}>
+    function unmount(id: string) {
+        const assignedKey = assigned.current[id];
+
+        if (assignedKey) {
+            delete mutableRegister.current[assigned.current[id]];
+            delete assigned.current[id];
+
+            setTimeout(() => update(updates + 1));
+        }
+    }
+
+    return <SingletonsContext value={{ shouldRender, unmount }}>
         {children}
     </SingletonsContext>;
 }

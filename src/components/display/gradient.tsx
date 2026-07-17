@@ -1,13 +1,11 @@
 'use client';
 
-import { useId, useMemo } from "react";
+import { useMemo } from "react";
 import { createStyles } from "../../core/style";
 import { Selectors } from "../../types";
 import { classes, combineClasses } from "../../utils";
 import { random, hash } from "../../core/utils";
 import { useSingleton } from "../../context/singletons";
-
-const bc = (b: number, c: number) => `contrast(${c}) brightness(${b})`;
 
 const styles = createStyles('gradient', {
     '.gradient': {
@@ -18,7 +16,8 @@ const styles = createStyles('gradient', {
     '.mesh': {
         width: '100%',
         height: '100%',
-        background: 'var(--background)'
+        background: 'var(--background)',
+        willChange: 'transform'
     },
 
     '.noise': {
@@ -75,11 +74,11 @@ export default function Gradient({ cc = {}, stops, type = 'linear', angle = 0, n
      */
     warpScale?: number;
 } & React.HTMLAttributes<HTMLDivElement>) {
-    const id = useId();
     const style = combineClasses(styles, cc);
-    const { shouldRender } = useSingleton();
 
     const warpId = `${meshSeed}-${warp.toFixed(2)}-${warpScale.toFixed(2)}`;
+    const shouldRender = useSingleton(warpId);
+
     const overlapScale = 1 + warp * 0.45;
     const gradient = useMemo(() => {
         switch (type) {
@@ -111,12 +110,12 @@ export default function Gradient({ cc = {}, stops, type = 'linear', angle = 0, n
             className={style.mesh}
             style={{
                 scale: overlapScale,
-                filter: warp ? `blur(32px) url(#df-${warpId}) ${bc(1.3, 1.2)}` : `blur(32px) ${bc(1, 1.3)}`
+                filter: `blur(32px) ${warp ? `url(#df-${warpId}) blur(2px)` : ''} brightness(.92) contrast(1.6)`
             }} />}
 
-        {shouldRender(warpId, id) && <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+        {shouldRender() && <svg style={{ position: 'absolute', width: 0, height: 0 }}>
             <defs>
-                <filter id={`df-${warpId}`}>
+                <filter x="-25%" y="-25%" width="150%" height="150%" id={`df-${warpId}`} colorInterpolationFilters="sRGB">
                     <feTurbulence type="fractalNoise" seed={hash(meshSeed).toString().slice(0, 5)} baseFrequency={.005 / Math.max(warpScale, 0.01)} numOctaves={1} result="noise" />
                     <feDisplacementMap in="SourceGraphic" in2="noise" scale={warp * 200} xChannelSelector="R" yChannelSelector="R" />
                 </filter>
