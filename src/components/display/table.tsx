@@ -11,12 +11,10 @@ import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
 import Interactable from "../feedback/interactable";
 
-// TODO: variants: default | minimal/light mabye?
-
 const formatHeading = (val: any) => ('' + val).charAt(0).toUpperCase() + ('' + val).slice(1).replace(/[a-z][A-Z]/g, '$1 $2');
 
 const styles = createStyles('table', {
-    '.container': {
+    '.v__default': {
         backgroundColor: 'var(--f-clr-surface-200)',
         borderRadius: 'var(--f-radius-med)',
         border: 'solid 1px var(--f-clr-surface-300)'
@@ -24,7 +22,10 @@ const styles = createStyles('table', {
 
     '.table': {
         height: '100%',
-        minWidth: 'max-content',
+        minWidth: 'max-content'
+    },
+
+    '.v__default .table': {
         padding: '.25em',
         paddingTop: 0
     },
@@ -44,8 +45,16 @@ const styles = createStyles('table', {
         color: 'var(--f-clr-text-100)'
     },
 
-    '.body .row': {
+    '.v__default .body .row': {
         background: 'var(--f-clr-surface-100)'
+    },
+
+    '.v__minimal .body .row': {
+        background: 'var(--f-clr-bg-100)'
+    },
+
+    '.v__minimal .header.row': {
+        paddingBlock: '.4em',
     },
 
     '.body .cell': {
@@ -139,13 +148,14 @@ const styles = createStyles('table', {
     }
 });
 
-export type TableSelectors = Selectors<'table' | 'container' | 'group' | 'row' | 'cell' | 'collapsed' | 'header' | 'label' | 'checkbox' | 'checkmark' | 'empty'>;
+export type TableSelectors = Selectors<'table' | 'v__default' | 'v__minimal' | 'container' | 'group' | 'row' | 'cell' | 'collapsed' | 'header' | 'label' | 'checkbox' | 'checkmark' | 'empty'>;
 
 type TableProps<T> = {
     ref?: React.Ref<HTMLDivElement>;
     cc?: TableSelectors;
     data: T[];
     columns: (keyof T)[];
+    variant?: 'default' | 'minimal';
     maxColumnWidth?: string;
     selectable?: boolean;
     sortable?: boolean | (keyof T)[];
@@ -168,7 +178,7 @@ type TableProps<T> = {
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/table}
  */
-export default function Table<T extends { [key: string]: string | number | Date; }>({ cc = {}, data, columns, maxColumnWidth = 'auto', selectable, sortable, selected, onSelect,
+export default function Table<T extends { [key: string]: string | number | Date; }>({ cc = {}, data, columns, variant = 'default', maxColumnWidth = 'auto', selectable, sortable, selected, onSelect,
     columnFormatters = {}, rowActions, emptyMessage = 'Nothing to display', ...props }: TableProps<T>) {
     const style = combineClasses(styles, cc);
 
@@ -197,7 +207,11 @@ export default function Table<T extends { [key: string]: string | number | Date;
         {...props}
         direction="horizontal"
         behavior="shift"
-        className={classes(style.container, props.className)}
+        className={classes(
+            style.container,
+            style[`v__${variant}`],
+            props.className
+        )}
         data-fb>
         <div
             role="grid"

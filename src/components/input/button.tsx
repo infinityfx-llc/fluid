@@ -1,5 +1,5 @@
 import { classes, combineClasses } from "../../../src/core/utils";
-import { FluidSize, Selectors } from "../../../src/types";
+import { FluidSize, PolymorphComponentProps, Selectors } from "../../../src/types";
 import Spinner from "../feedback/spinner";
 import { createStyles } from "../../core/style";
 import Interactable from "../feedback/interactable";
@@ -96,7 +96,7 @@ const styles = createStyles('button', {
         lineHeight: 1
     },
 
-    '.button:enabled:active .content': {
+    '.button:not(:disabled):active .content': {
         translate: '0px 1px'
     },
 
@@ -116,7 +116,7 @@ export type ButtonSelectors = Selectors<'button' | 'content' | 'loader' | 'round
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/button}
  */
-export default function Button({ children, cc = {}, round = false, compact = false, size = 'med', variant = 'default', color, loading = false, hasIcon = 'auto', ...props }:
+export default function Button<E extends React.ElementType = 'button'>({ children, cc = {}, as, round = false, compact = false, size = 'med', variant = 'default', color, loading = false, hasIcon = 'auto', ...props }:
     {
         ref?: React.Ref<HTMLButtonElement>;
         cc?: ButtonSelectors;
@@ -127,7 +127,7 @@ export default function Button({ children, cc = {}, round = false, compact = fal
         color?: string;
         loading?: boolean;
         hasIcon?: 'auto' | 'start' | 'end' | 'only';
-    } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+    } & PolymorphComponentProps<E>) {
     const style = combineClasses(styles, cc);
 
     const [start, end] = useMemo(() => {
@@ -147,9 +147,9 @@ export default function Button({ children, cc = {}, round = false, compact = fal
         return [start, end];
     }, [children, hasIcon]);
 
-
     return <Interactable
         {...props}
+        as={as || 'button'}
         highlightColor={variant === 'default' ? 'var(--f-clr-highlight-100)' : undefined}
         disabled={props.disabled || loading}
         cc={{
