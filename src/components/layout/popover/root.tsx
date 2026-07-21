@@ -49,7 +49,6 @@ export type PopoverRoot = {
      * @default false
      */
     stretch?: boolean;
-    onOpen?: () => void;
     onClose?: () => void;
 };
 
@@ -82,7 +81,7 @@ function getPosition(anchor: Element, element: Element, margin = '0px') {
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/popover}
  */
-export default function Root({ children, ref, position = 'auto', mobileContainer = 'popover', stretch, onOpen, onClose }: PopoverRoot) {
+export default function Root({ children, ref, position = 'auto', mobileContainer = 'popover', stretch, onClose }: PopoverRoot) {
     const id = useId();
     const fluid = useFluid();
     const childrenRef = useRef<React.RefObject<HTMLElement>[]>([]);
@@ -118,7 +117,7 @@ export default function Root({ children, ref, position = 'auto', mobileContainer
         window.addEventListener('resize', reposition);
         window.addEventListener('scroll', reposition);
 
-        if (mounted) opened ? onOpen?.() : onClose?.();
+        if (mounted && !opened) onClose?.();
         if (!mounted && parent) parent.children.current.push(content);
 
         return () => {

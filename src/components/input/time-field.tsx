@@ -9,7 +9,7 @@ import { Animate } from '@infinityfx/lively';
 import Dial from './dial';
 import Button from './button';
 import Segmented from './segmented';
-import { Selectors } from '../../types';
+import { PopoverRootReference, Selectors } from '../../types';
 
 // parse a time string into 24h hours and minutes
 function parseTime(time: string) {
@@ -161,6 +161,7 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
     }
 
     const dial = useRef<HTMLDivElement>(null);
+    const popover = useRef<PopoverRootReference>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const [value, setValue] = props.value !== undefined ? [props.value] : useState(defaultValue || '');
     const [time, setTime] = useState(toLocaleTime(value as string, locale));
@@ -178,17 +179,16 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
     useEffect(() => setTime(toLocaleTime(value as string, locale)), [locale]);
 
     return <PopoverRoot
+        ref={popover}
         stretch
         position="center"
-        mobileContainer="modal"
-        onOpen={() => {
-            dial.current?.focus(); // todo: doesn't fix weird jump when popover/modal is open
-        }}>
+        mobileContainer="modal">
         <PopoverTrigger disabled={props.disabled || props.readOnly}>
             <Field
                 {...props}
                 inputRef={combineRefs(inputRef, props.inputRef)}
                 shape="%d%d:%d%d %w%w"
+                inputMode="none"
                 value={value}
                 onChange={e => {
                     setValue?.(e.target.value);
@@ -221,6 +221,7 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
                     <div className={style.columns}>
                         <div className={style.dials}>
                             <Dial
+                                autoFocus
                                 ref={dial}
                                 min={0}
                                 max={time[2] ? 12 : 23}
@@ -271,6 +272,8 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
                             compact
                             onClick={() => {
                                 if (inputRef.current) changeInputValue(inputRef.current, timeToString(time[0], time[1], locale, time[2]));
+                                
+                                popover.current?.close();
                             }}>
                             Save
                         </Button>

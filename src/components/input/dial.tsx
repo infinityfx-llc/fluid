@@ -26,7 +26,7 @@ const styles = createStyles('dial', {
         overflow: 'hidden',
         maskImage: 'linear-gradient(transparent, black calc(1em * var(--row-height)), black calc(1em * (var(--rows) - 1) * var(--row-height)), transparent)',
         userSelect: 'none',
-        touchAction: 'none',
+        touchAction: 'none', // todo: causes issue where react click events are not fired after rapid swiping
         cursor: 'move',
         outline: 'none'
     },
@@ -95,7 +95,7 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
     const viewSize = view * 3;
     const maxLength = Math.max(min.toString().length, max.toString().length);
 
-    function formatValue(value: number) {
+    function formatValue(value: number) { // todo: refactor
         if (value < 0) {
             return '-' + Math.abs(value).toString().padStart(maxLength, '0');
         }
@@ -118,9 +118,11 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
     }
 
     function snap(e: React.PointerEvent) {
-        if (data.current.pointerId !== e.pointerId) return;
+        if (data.current.pointerId === e.pointerId &&
+            e.currentTarget.hasPointerCapture(e.pointerId)) {
+            e.currentTarget.releasePointerCapture(e.pointerId);
+        }
 
-        e.currentTarget.releasePointerCapture(data.current.pointerId);
         update(Math.round(target.current));
         data.current.y = -1;
     }
@@ -134,7 +136,7 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
                 const nextCenter = windowCenterRef.current - shiftSteps;
 
                 setCenter(windowCenterRef.current = nextCenter);
-                link.set(val - shiftSteps, { duration: 0 }); // todo: DON'T update velocity!
+                link.set(val - shiftSteps, { duration: 0 });
                 target.current -= shiftSteps;
                 link.set(target.current);
             }
@@ -144,6 +146,8 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
     useEffect(() => {
         if (!dial.current) return;
 
+        if (split.autoFocus) dial.current.focus();
+
         const ctrl = new AbortController();
         dial.current.addEventListener('wheel', e => {
             update(Math.round(target.current) + Math.sign(e.deltaY));
@@ -152,7 +156,7 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
         }, { signal: ctrl.signal });
 
         return () => ctrl.abort();
-    }, []);
+    }, [split.autoFocus]);
 
     useEffect(() => {
         if (value === undefined || value === lastEmittedValueRef.current) return;
@@ -193,7 +197,10 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
 
             if (data.current.y >= 0) return;
 
-            e.currentTarget.setPointerCapture(e.pointerId);
+            if (e.pointerType === 'mouse') {
+                e.currentTarget.setPointerCapture(e.pointerId);
+            }
+
             const fontSize = parseFloat(getComputedStyle(e.currentTarget).fontSize);
 
             data.current.pointerId = e.pointerId;
@@ -205,7 +212,7 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
         onPointerMove={e => {
             if (data.current.y < 0) return;
 
-            update(link.get() + (e.clientY - data.current.y) / (data.current.fontSize * rowHeight), 0); // todo: also add to velocity?
+            update(link.get() + (e.clientY - data.current.y) / (data.current.fontSize * rowHeight), 0);
 
             data.current.y = e.clientY;
         }}
