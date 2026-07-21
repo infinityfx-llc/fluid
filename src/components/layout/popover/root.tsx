@@ -49,6 +49,7 @@ export type PopoverRoot = {
      * @default false
      */
     stretch?: boolean;
+    onOpen?: () => void;
     onClose?: () => void;
 };
 
@@ -81,7 +82,7 @@ function getPosition(anchor: Element, element: Element, margin = '0px') {
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/popover}
  */
-export default function Root({ children, ref, position = 'auto', mobileContainer = 'popover', stretch, onClose }: PopoverRoot) {
+export default function Root({ children, ref, position = 'auto', mobileContainer = 'popover', stretch, onOpen, onClose }: PopoverRoot) {
     const id = useId();
     const fluid = useFluid();
     const childrenRef = useRef<React.RefObject<HTMLElement>[]>([]);
@@ -117,7 +118,7 @@ export default function Root({ children, ref, position = 'auto', mobileContainer
         window.addEventListener('resize', reposition);
         window.addEventListener('scroll', reposition);
 
-        if (mounted && !opened) onClose?.();
+        if (mounted) opened ? onOpen?.() : onClose?.();
         if (!mounted && parent) parent.children.current.push(content);
 
         return () => {
@@ -127,17 +128,25 @@ export default function Root({ children, ref, position = 'auto', mobileContainer
     }, [opened, parent]);
 
     useEffect(() => {
+        if (!opened || isModal) return;
+
         function click(e: MouseEvent) {
-            if (!isModal &&
-                !content.current?.contains(e.target as HTMLElement) &&
-                !trigger.current?.contains(e.target as HTMLElement) &&
-                !childrenRef.current.some(child => child.current?.contains(e.target as HTMLElement))) toggle(false);
+            if (content.current?.contains(e.target as HTMLElement) ||
+                trigger.current?.contains(e.target as HTMLElement) ||
+                childrenRef.current.some(child => child.current?.contains(e.target as HTMLElement))) return;
+
+            toggle(false);
         }
 
-        window.addEventListener('click', click);
+        const timeout = setTimeout(() => {
+            window.addEventListener('click', click);
+        });
 
-        return () => window.removeEventListener('click', click);
-    }, [isModal]);
+        return () => {
+            clearTimeout(timeout);
+            window.removeEventListener('click', click);
+        };
+    }, [opened, isModal]);
 
     return <PopoverContext value={{ id, mounted, isModal, trigger, content, opened, toggle, children: childrenRef }}>
         {children}

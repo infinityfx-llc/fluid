@@ -192,7 +192,7 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
                 <Interactable
                     as="div"
                     noHover
-                    interactTarget={inputRef}
+                    interactTarget={inputRef.current}
                     cc={{ ...cc, highlight: style.highlight }}
                     className={style.handle__wrapper}>
                     <Animate

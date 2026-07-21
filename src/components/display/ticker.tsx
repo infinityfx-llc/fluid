@@ -69,7 +69,7 @@ export default function Ticker({ cc = {}, value, lineHeight = 1.1, selective, in
     cc?: TickerSelectors;
     value: number | string;
     /**
-     * @default 1.1
+     * @default 1.1 // todo: change default based on fadeEdges?
      */
     lineHeight?: number;
     /**

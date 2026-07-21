@@ -21,6 +21,8 @@ import Calendar from "./calendar";
 import DateField from "./date-field";
 import Textarea from "./textarea";
 import DropZone from "./drop-zone";
+import Dial from "./dial";
+import TimeField from "./time-field";
 
 export {
     Autocomplete,
@@ -45,5 +47,7 @@ export {
     Calendar,
     DateField,
     Textarea,
-    DropZone
+    DropZone,
+    TimeField,
+    Dial
 }

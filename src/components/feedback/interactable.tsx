@@ -86,7 +86,7 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
          * 
          * @default self
          */
-        interactTarget?: React.RefObject<P | null>;
+        interactTarget?: P | null;
     } & PolymorphComponentProps<E>) {
     const style = combineClasses(styles, cc);
 
@@ -101,7 +101,7 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
     const translate = useLink('0% 0%');
 
     useLayoutEffect(() => {
-        const focusEl = interactTarget?.current || container.current,
+        const focusEl = interactTarget || container.current,
             highlightEl = highlight.current,
             ctrl = new AbortController(),
             signal = ctrl.signal;
@@ -175,7 +175,7 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
             clearTimeout(timeout.current);
             ctrl.abort();
         };
-    }, [props.disabled]);
+    }, [props.disabled, interactTarget]);
 
     const Wrapper = as || 'button';
     const defaultProps = Wrapper === 'button' ? {

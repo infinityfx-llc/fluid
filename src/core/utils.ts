@@ -132,9 +132,12 @@ export function filterFocusable(elements: Element[], types = true) {
                 el = child;
             }
 
-            return el.hasAttribute('disabled') || el.getAttribute('tabindex') === '-1' || el.closest('[aria-hidden="true"]') ?
-                null :
-                el;
+            const notFocusable = el.getAttribute('type') === 'hidden' ||
+                el.hasAttribute('disabled') ||
+                el.getAttribute('tabindex') === '-1' ||
+                el.closest('[aria-hidden="true"], [hidden]');
+
+            return notFocusable ? null : el;
         })
         .filter(el => el !== null);
 }

@@ -162,6 +162,8 @@ const styles = createStyles('calendar', {
     }
 });
 
+// todo: replace year picker with Dial
+
 export type CalendarSelectors = Selectors<'calendar' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'header' | 'content' | 'grid' | 'row' | 'label' | 'date' | 'dates' | 'years' | 'unavailable' | 'bold' | 'today' | 'selected'>;
 
 /**
@@ -173,7 +175,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: CalendarSelectors;
-        locale?: Intl.LocalesArgument;
+        locale?: string;
         size?: FluidSize;
         round?: boolean;
         value?: Date | null;
@@ -210,7 +212,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
 
     try {
         // make sure locale is valid
-        new Intl.Locale(locale as any);
+        if (locale !== undefined) new Intl.Locale(locale);
     } catch (ex) {
         locale = 'en';
     }

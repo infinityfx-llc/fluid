@@ -72,6 +72,7 @@ export type FluidComponents = {
     'color-field'?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
     'color-picker'?: FluidSelectorStyles<import('./components/input/color-picker').ColorPickerSelectors>;
     'date-field'?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
+    'dial'?: FluidSelectorStyles<import('./components/input/dial').DialSelectors>;
     'drop-zone'?: FluidSelectorStyles<import('./components/input/drop-zone').DropZoneSelectors>;
     field?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
     'file-field'?: FluidSelectorStyles<import('./components/input/file-field').FileFieldSelectors>;
@@ -85,6 +86,7 @@ export type FluidComponents = {
     slider?: FluidSelectorStyles<import('./components/input/slider').SliderSelectors>;
     switch?: FluidSelectorStyles<import('./components/input/switch').SwitchSelectors>;
     textarea?: FluidSelectorStyles<import('./components/input/textarea').TextareaSelectors>;
+    'time-field'?: FluidSelectorStyles<import('./components/input/time-field').TimeFieldSelectors>;
     toggle?: FluidSelectorStyles<import('./components/input/toggle').ToggleSelectors>;
     'accordion-item'?: FluidSelectorStyles<import('./components/layout/accordion/item').AccordionItemSelectors>;
     'accordion-root'?: FluidSelectorStyles<import('./components/layout/accordion/root').AccordionRootSelectors>;
