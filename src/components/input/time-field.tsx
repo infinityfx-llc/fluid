@@ -132,8 +132,6 @@ const styles = createStyles('time-field', fluid => ({
 
 export type TimeFieldSelectors = Selectors<'container' | 'columns' | 'dials' | 'background' | 'seperator' | 'dial' | 'buttons'>;
 
-// todo: save and clear buttons label lang support
-
 /**
  * An input used for entering time.
  * 

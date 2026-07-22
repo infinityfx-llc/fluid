@@ -40,6 +40,7 @@ const styles = createStyles('slider', {
         height: '1.1em',
         userSelect: 'none',
         flexGrow: 1,
+        touchAction: 'none',
         WebkitTapHighlightColor: 'transparent'
     },
 
@@ -56,7 +57,6 @@ const styles = createStyles('slider', {
         borderRadius: '999px',
         backgroundColor: 'var(--f-clr-surface-200)',
         overflow: 'hidden',
-        touchAction: 'none',
         flexGrow: 1
     },
 
@@ -157,12 +157,16 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
     const style = combineClasses(styles, cc);
 
     const id = useId();
+    const slider = useRef<HTMLDivElement>(null);
     const track = useRef<HTMLDivElement>(null);
-    const dragging = useRef<number>(null);
+    const data = useRef({
+        pointerId: 0,
+        dragIndex: null as number | null
+    });
+
     const max = toNumber(props.max, 1);
     const min = toNumber(props.min, 0);
     const step = toNumber(props.step, 0.1);
-
     const toOffset = (val: number) => (val - min) / (max - min);
     const toValue = (val: number) => min + val * (max - min);
 
@@ -181,30 +185,28 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
 
     useEffect(() => setValues?.(fromHandles()), [handles]);
 
-    // update the value of a handle depending on mouse position
-    function change(e: MouseEvent | TouchEvent) {
-        if (!track.current || props.disabled) return;
-        e.stopPropagation();
-
-        const dp = ('touches' in e ? e.touches[0] : e)?.[vertical ? 'clientY' : 'clientX'];
-        if (dp === undefined) return;
+    // update the value of a handle depending on pointer position
+    function change(clientPos: number) {
+        if (!track.current || props.disabled) return null;
 
         const { y, height, x, width } = track.current.getBoundingClientRect();
-        const value = toValue(vertical ? 1 - (dp - y) / height : (dp - x) / width);
+        const value = toValue(vertical ? 1 - (clientPos - y) / height : (clientPos - x) / width);
 
         // if a handle is currently being dragged use that one
-        // else find the handle nearest to the current mouse position
-        const idx = dragging.current === null || dragging.current < 0 ?
+        // else find the handle nearest to the current pointer position
+        data.current.dragIndex = data.current.dragIndex === null ?
             values.reduce((res, val, i) => {
                 const d = Math.abs(val - value);
                 return d < res[0] ? [d, i] : res;
             }, [Number.MAX_VALUE, 0])[1] :
-            dragging.current;
+            data.current.dragIndex;
 
-        update(idx, value);
+        update(data.current.dragIndex, value);
+
+        return data.current.dragIndex;
     }
 
-    // update the value of a handle given and index
+    // update the value of a handle given an index
     function update(index: number, value: number) {
         if (index > 0) value = Math.max(value, values[index - 1] + step); // value can not be smaller than previous handle's value 
         if (index < handles - 1) value = Math.min(value, values[index + 1] - step); // value can not be larger than next handle's value
@@ -219,28 +221,35 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
         onChange?.(updated);
     }
 
-    useEffect(() => {
-        const cancel = () => dragging.current = null;
-        const drag = (e: MouseEvent | TouchEvent) => dragging.current !== null && change(e);
-
-        window.addEventListener('mousemove', drag);
-        window.addEventListener('touchmove', drag);
-        window.addEventListener('mouseup', cancel);
-
-        return () => {
-            window.removeEventListener('mousemove', drag);
-            window.removeEventListener('touchmove', drag);
-            window.removeEventListener('mouseup', cancel);
+    function release(e: React.PointerEvent) {
+        if (data.current.pointerId === e.pointerId &&
+            e.currentTarget.hasPointerCapture(e.pointerId)) {
+            e.currentTarget.releasePointerCapture(e.pointerId);
         }
-    }, [values, props.disabled]);
+
+        data.current.dragIndex = null;
+    }
 
     const [split, rest] = useInputProps(props);
+
+    useEffect(() => {
+        if (!slider.current) return;
+
+        const ctrl = new AbortController();
+
+        slider.current.addEventListener('touchmove', e => {
+            if (data.current.dragIndex !== null) e.preventDefault();
+        }, { signal: ctrl.signal });
+
+        return () => ctrl.abort();
+    }, []);
 
     let scale = toOffset(values[0]);
     const offset = handles < 2 ? 0 : scale;
     if (handles > 1) scale = toOffset(values[handles - 1]) - scale;
 
-    return <div {...rest}
+    return <div
+        {...rest}
         className={classes(
             style.wrapper,
             vertical && style.vertical,
@@ -251,19 +260,38 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
         {label && <div id={id} className={style.label}>{label}</div>}
 
         <div
+            ref={slider}
             className={style.slider}
             data-disabled={!!props.disabled}
-            onTouchEnd={() => dragging.current = null}
-            onMouseDown={e => {
-                dragging.current = -1;
-                change(e.nativeEvent);
-            }}
-            onTouchStart={e => {
-                e.preventDefault();
+            onPointerDown={e => {
+                rest.onPointerDown?.(e);
 
-                dragging.current = -1;
-                change(e.nativeEvent);
-            }}>
+                if (props.disabled) return;
+
+                const index = change(vertical ? e.clientY : e.clientX);
+                const handle = index !== null ? e.currentTarget.querySelectorAll<HTMLElement>('[role="slider"]')[index] : null;
+
+                if (handle) {
+                    handle.setPointerCapture(e.pointerId);
+                    data.current.pointerId = e.pointerId;
+                    e.stopPropagation();
+
+                    if (e.pointerType === 'touch') {
+                        requestAnimationFrame(() => {
+                            try {
+                                handle.dispatchEvent(new Event('touchstart', { bubbles: true, cancelable: true }));
+                            } catch { }
+                        });
+                    }
+                }
+            }}
+            onPointerMove={e => {
+                if (data.current.dragIndex === null) return;
+
+                change(vertical ? e.clientY : e.clientX);
+            }}
+            onPointerUp={release}
+            onPointerCancel={release}>
             <div ref={track} className={style.track}>
                 <div className={style.progress} style={{
                     scale: vertical ? `1 ${scale}` : `${scale} 1`,
@@ -274,7 +302,12 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
             {new Array(handles).fill(0).map((_, i) => {
                 const val = values[i];
 
-                return <Tooltip key={i} delay={0} content={formatTooltip ? formatTooltip(round(val, 2)) : round(val, 2)} visibility={tooltips} position={vertical ? 'right' : 'bottom'}>
+                return <Tooltip
+                    key={i}
+                    delay={0}
+                    content={formatTooltip ? formatTooltip(round(val, 2)) : round(val, 2)}
+                    visibility={tooltips}
+                    position={vertical ? 'right' : 'bottom'}>
                     <Interactable
                         as="div"
                         role="slider"
@@ -283,18 +316,30 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
                         aria-disabled={!!props.disabled}
                         disabled={props.disabled}
                         cc={{ highlight: style.highlight }}
-                        onMouseDown={() => dragging.current = i}
-                        onTouchStart={() => dragging.current = i}
-                        onTouchEnd={() => dragging.current = null}
-                        onKeyDown={e => {
-                            switch (e.key) {
-                                case 'ArrowUp':
-                                case 'ArrowRight': return update(i, val + step);
-                                case 'ArrowDown':
-                                case 'ArrowLeft': return update(i, val - step);
-                                case 'Home': return update(i, min);
-                                case 'End': return update(i, max);
+                        onPointerDown={e => {
+                            data.current.dragIndex = i;
+
+                            if (e.pointerType === 'mouse') {
+                                e.currentTarget.setPointerCapture(e.pointerId);
+                                data.current.pointerId = e.pointerId;
                             }
+
+                            e.stopPropagation();
+                        }}
+                        onKeyDown={e => {
+                            const value = {
+                                ArrowUp: val + step,
+                                ArrowRight: val + step,
+                                ArrowDown: val - step,
+                                ArrowLeft: val - step,
+                                Home: min,
+                                End: max
+                            }[e.key];
+
+                            if (value === undefined) return;
+
+                            e.preventDefault();
+                            update(i, value);
                         }}
                         aria-valuenow={val}
                         aria-valuemin={values[i - 1] || 0}
