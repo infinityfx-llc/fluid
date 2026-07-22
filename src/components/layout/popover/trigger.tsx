@@ -79,11 +79,12 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
     }, [toggle, isDisabled, opened]);
 
     return cloneElement(children, {
-        ...props,
-        ref: combineRefs(trigger, children.props.ref),
+        'aria-haspopup': 'dialog',
         'aria-expanded': opened,
         'aria-controls': id,
-        'aria-disabled': isDisabled
+        'aria-disabled': isDisabled,
+        ...props,
+        ref: combineRefs(trigger, children.props.ref)
     });
 }
 

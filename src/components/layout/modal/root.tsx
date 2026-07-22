@@ -110,7 +110,7 @@ export default function Root({ children, cc = {}, show, onClose, mobileClosing =
             window.removeEventListener('touchmove', update);
             window.removeEventListener('touchend', update);
         }
-    }, []);
+    }, [onClose]);
 
     return <Overlay show={show} onClose={onClose}>
         <ModalContext value={{ id, closeType, content, onClose }}>

@@ -26,9 +26,14 @@ const styles = createStyles('dial', {
         overflow: 'hidden',
         maskImage: 'linear-gradient(transparent, black calc(1em * var(--row-height)), black calc(1em * (var(--rows) - 1) * var(--row-height)), transparent)',
         userSelect: 'none',
-        touchAction: 'none', // todo: causes issue where react click events are not fired after rapid swiping
+        touchAction: 'none',
         cursor: 'move',
         outline: 'none'
+    },
+
+    '.dial[aria-disabled="true"]': {
+        cursor: 'default',
+        color: 'var(--f-clr-grey-500)'
     },
 
     '.column': {
@@ -60,7 +65,7 @@ export type DialSelectors = Selectors<'dial' | 'column'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/dial}
  */
-export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, rowHeight = 1.2, value, defaultValue, onChange, ...props }:
+export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, rowHeight = 1.2, value, defaultValue, onChange, disabled, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: DialSelectors;
@@ -89,31 +94,25 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
     const [state, setState] = value !== undefined ? [value, onChange] : useState(defaultValue ?? min);
     const [center, setCenter] = useState(Math.round((state - min) / step));
     const windowCenterRef = useRef(center);
-    const lastEmittedValueRef = useRef(state);
+    const previousValue = useRef(state);
 
     const view = rows % 2 === 0 ? rows + 1 : rows;
     const viewSize = view * 3;
     const maxLength = Math.max(min.toString().length, max.toString().length);
 
-    function formatValue(value: number) { // todo: refactor
-        if (value < 0) {
-            return '-' + Math.abs(value).toString().padStart(maxLength, '0');
-        }
-
-        return value.toString().padStart(maxLength, '0');
-    }
-
     function update(value: number, duration?: number) {
+        if (disabled) return;
+
         link.set(target.current = value, { duration });
 
         const currentStepIndex = windowCenterRef.current - Math.round(value);
-        const newSelectedValue = toCircularValue(currentStepIndex, min, max, step);
+        const updatedValue = toCircularValue(currentStepIndex, min, max, step);
 
-        if (newSelectedValue !== lastEmittedValueRef.current) {
-            lastEmittedValueRef.current = newSelectedValue;
+        if (updatedValue !== previousValue.current) {
+            previousValue.current = updatedValue;
 
-            setState?.(newSelectedValue);
-            onChange?.(newSelectedValue);
+            setState?.(updatedValue);
+            onChange?.(updatedValue);
         }
     }
 
@@ -141,7 +140,7 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
                 link.set(target.current);
             }
         });
-    }, [view, min, max, step, onChange]);
+    }, [view, min, max, step]);
 
     useEffect(() => {
         if (!dial.current) return;
@@ -155,14 +154,18 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
             e.preventDefault();
         }, { signal: ctrl.signal });
 
+        dial.current.addEventListener('touchmove', e => {
+            if (data.current.y >= 0) e.preventDefault();
+        }, { signal: ctrl.signal });
+
         return () => ctrl.abort();
-    }, [split.autoFocus]);
+    }, [split.autoFocus, disabled, onChange]);
 
     useEffect(() => {
-        if (value === undefined || value === lastEmittedValueRef.current) return;
-        setState?.(lastEmittedValueRef.current = value);
+        if (value === undefined || value === previousValue.current) return;
+        setState?.(previousValue.current = value);
 
-        const count = Math.floor((max - min) / step) + 1;
+        const count = Math.floor((max - min) / step) + 1; // todo: refactor
         const positiveModulo = (n: number, m: number) => ((n % m) + m) % m;
 
         const targetWrappedIndex = Math.round((value - min) / step);
@@ -173,11 +176,16 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
         if (delta > count / 2) delta -= count;
 
         if (delta !== 0) update(target.current - delta);
-    }, [value, min, max, step]);
+    }, [value, min, max, step, disabled]);
 
     return <div
         {...rest}
-        tabIndex={0}
+        tabIndex={disabled ? -1 : 0}
+        role="spinbutton"
+        aria-valuenow={state}
+        aria-valuemin={min}
+        aria-valuemax={max}
+        aria-disabled={disabled}
         ref={combineRefs(dial, props.ref)}
         className={classes(
             style.dial,
@@ -231,6 +239,7 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
         <Interactable
             as="div"
             noHover
+            disabled={disabled}
             highlightColor="var(--f-clr-primary-400)"
             interactTarget={dial.current}
             className={style.selection} />
@@ -238,12 +247,13 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
         <Animate animate={{
             translate
         }}>
-            <div className={style.column}>
+            <div className={style.column} aria-hidden>
                 {Array.from({ length: viewSize }, (_, i) => {
                     const index = center - Math.floor(viewSize / 2) + i;
                     const value = toCircularValue(index, min, max, step);
+                    const formatted = (value < 0 ? '-' : '' + Math.abs(value)).padStart(maxLength, '0');
 
-                    return <span key={i}>{formatValue(value)}</span>;
+                    return <span key={i}>{formatted}</span>;
                 })}
             </div>
         </Animate>

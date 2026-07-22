@@ -327,7 +327,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                     }}>
                     {label}
 
-                    {selected && <div className={style.icon}>
+                    {selected && <div className={style.icon} aria-hidden>
                         <Icon type="check" />
                     </div>}
                 </ComboboxOption>;

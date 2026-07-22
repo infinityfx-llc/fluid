@@ -1,6 +1,6 @@
 import { Selectors } from "../../../src/types";
 import Button from "../input/button";
-import { classes, combineClasses } from "../../../src/core/utils";
+import { ariaLabels, classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
 
@@ -102,7 +102,7 @@ export default function Toast({ children, cc = {}, icon, color, title, round, ac
             {children}
         </div>
 
-        {action && <Button compact variant="minimal" round={round} onClick={onClose} aria-label="Close">
+        {action && <Button compact variant="minimal" round={round} onClick={onClose} aria-label={ariaLabels.close}>
             {action}
         </Button>}
     </div>;

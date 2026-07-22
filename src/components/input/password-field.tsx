@@ -6,7 +6,7 @@ import { FluidInputvalue } from '../../../src/types';
 import Toggle from './toggle';
 import ProgressBar from '../feedback/progress-bar';
 import useInputProps from '../../../src/hooks/use-input-props';
-import { classes, combineClasses } from '../../../src/core/utils';
+import { ariaLabels, classes, combineClasses } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
 import { Icon } from '../../core/icons';
 
@@ -91,7 +91,7 @@ export default function PasswordField({ cc = {}, strengthBar = false, size = 'me
             }}
             right={<Toggle
                 compact
-                aria-label="Toggle visibility"
+                aria-label={visible ? ariaLabels.hide : ariaLabels.show}
                 round={round}
                 size={size}
                 variant="minimal"

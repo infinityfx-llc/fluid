@@ -5,7 +5,7 @@ import { Fragment, useId, useLayoutEffect, useRef, useState } from "react";
 import Scrollarea from "../layout/scrollarea";
 import Toggle from "../input/toggle";
 import { createStyles } from "../../core/style";
-import { classes, combineClasses } from "../../core/utils";
+import { ariaLabels, classes, combineClasses } from "../../core/utils";
 import { Icon } from "../../core/icons";
 
 // todo: variants?
@@ -146,7 +146,7 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
                     ...cc,
                     toggle: style.toggle
                 }}
-                aria-label="Copy code"
+                aria-label={ariaLabels.copy}
                 onClick={() => {
                     clearTimeout(timeout.current);
 

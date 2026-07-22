@@ -5,8 +5,6 @@ import { FluidSize, Selectors } from "../../../src/types";
 import { Animate } from "@infinityfx/lively";
 import { createStyles } from "../../core/style";
 
-// todo: vertical variant?
-
 const styles = createStyles('progress-bar', {
     '.track': {
         height: '.4em',

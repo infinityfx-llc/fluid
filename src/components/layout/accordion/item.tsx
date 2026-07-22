@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import Collapsible from "../collapsible";
 import { Animate } from "@infinityfx/lively";
 import { Selectors } from "../../../../src/types";

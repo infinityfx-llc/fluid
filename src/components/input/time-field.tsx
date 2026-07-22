@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Field, { FieldProps } from "./field";
-import { changeInputValue, combineClasses, combineRefs } from '../../../src/core/utils';
+import { ariaLabels, changeInputValue, combineClasses, combineRefs } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
 import { PopoverContent, PopoverRoot, PopoverTrigger } from '../layout';
 import { Animate } from '@infinityfx/lively';
@@ -266,7 +266,7 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
 
                                 if (inputRef.current) changeInputValue(inputRef.current, '');
                             }}>
-                            Clear
+                            {ariaLabels.clear}
                         </Button>
                         <Button
                             compact
@@ -275,7 +275,7 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
                                 
                                 popover.current?.close();
                             }}>
-                            Save
+                            {ariaLabels.save}
                         </Button>
                     </div>
                 </div>

@@ -9,6 +9,7 @@ import { Icon } from "../../core/icons";
 import { Animate, LayoutGroup } from "@infinityfx/lively";
 import Toggle from "./toggle";
 import Interactable from "../feedback/interactable";
+import Dial from "./dial";
 
 // todo: multiple/range select
 
@@ -111,11 +112,14 @@ const styles = createStyles('calendar', {
         transition: 'background-color .25s, color .25s'
     },
 
-    '.years.grid': {
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr',
+    '.years': {
+        gridArea: '1 / 1',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         zIndex: 1,
-        backgroundColor: 'var(--f-clr-surface-100)'
+        backgroundColor: 'var(--f-clr-surface-100)',
+        fontSize: '2em'
     },
 
     '.dates .date': {
@@ -162,8 +166,6 @@ const styles = createStyles('calendar', {
     }
 });
 
-// todo: replace year picker with Dial
-
 export type CalendarSelectors = Selectors<'calendar' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'header' | 'content' | 'grid' | 'row' | 'label' | 'date' | 'dates' | 'years' | 'unavailable' | 'bold' | 'today' | 'selected'>;
 
 /**
@@ -187,6 +189,13 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'children' | 'onChange'>) {
     const style = combineClasses(styles, cc);
 
+    try {
+        // make sure locale is valid
+        if (locale !== undefined) new Intl.Locale(locale);
+    } catch (ex) {
+        locale = 'en';
+    }
+
     const [leftCount, left] = useState(0);
     const [rightCount, right] = useState(0);
     const dates = useRef<(HTMLButtonElement | null)[]>([]);
@@ -208,13 +217,6 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
         const dt = date.getMonth() - newDate.getMonth();
         if (dt > 0) left(leftCount + 1);
         if (dt < 0) right(rightCount + 1);
-    }
-
-    try {
-        // make sure locale is valid
-        if (locale !== undefined) new Intl.Locale(locale);
-    } catch (ex) {
-        locale = 'en';
     }
 
     const buttonProps = {
@@ -274,57 +276,35 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                     triggers={{
                         animate: ['mount', { on: 'unmount', reverse: true }]
                     }}>
-                    <div
-                        role="grid"
-                        className={classes(
-                            style.grid,
-                            style.years
-                        )}>
-                        {new Array(21).fill(0).map((_, i) => {
-                            const year = new Date(date),
-                                current = Math.round(year.getFullYear() / 3) * 3;
-                            year.setFullYear(current + i - 10);
-
-                            const startOfYear = new Date(year.getFullYear(), 1, 1),
-                                label = year.toLocaleString(locale, { year: 'numeric' }),
-                                yearDisabled = disabled === true ||
-                                    (minDate ? minDate > startOfYear : false) ||
-                                    (maxDate ? maxDate < startOfYear : false);
-
-                            return <Animate
-                                key={label}
-                                correction="none"
-                                transition={{
-                                    cache: ['y'],
-                                    duration: .3,
-                                    easing: 'ease-out'
-                                }}
-                                animate={{
-                                    opacity: [0, 1],
-                                    duration: .2,
-                                    easing: 'ease-out',
-                                    delay: .25 + Math.abs(3 - Math.floor(i / 3)) * .035
-                                }}>
-                                <Interactable
-                                    highlightColor="var(--f-clr-primary-400)"
-                                    disabled={yearDisabled}
-                                    aria-label={label}
-                                    className={classes(
-                                        style.date,
-                                        style.bold,
-                                        year.getFullYear() === date.getFullYear() && style.selected
-                                    )}
-                                    onClick={() => update(year)}>
-                                    {label}
-                                </Interactable>
-                            </Animate>;
-                        })}
+                    <div className={style.years}>
+                        <Dial
+                            style={{
+                                paddingInline: '.4em'
+                            }}
+                            autoFocus
+                            min={minDate ? minDate.getFullYear() : 0}
+                            max={maxDate ? maxDate.getFullYear() : 9999}
+                            rowHeight={1.5}
+                            value={date.getFullYear()}
+                            onChange={year => {
+                                const updated = new Date(date);
+                                updated.setFullYear(year);
+                                update(updated);
+                            }}
+                            onKeyDown={e => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    setYears(false);
+                                }
+                            }}
+                            disabled={disabled === true} />
                     </div>
                 </Animate>}
             </LayoutGroup>
 
             <div
                 role="grid"
+                aria-hidden={years}
                 className={classes(
                     style.grid,
                     style.dates
@@ -338,6 +318,7 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
                 </div>
 
                 <Animate
+                    paused={years}
                     correction="none"
                     clips={{
                         left: {

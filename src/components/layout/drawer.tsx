@@ -4,7 +4,7 @@ import { useId, useRef } from 'react';
 import Overlay from './overlay';
 import { Selectors } from '../../../src/types';
 import Button from '../input/button';
-import { classes, combineClasses } from '../../../src/core/utils';
+import { ariaLabels, classes, combineClasses } from '../../../src/core/utils';
 import { Animate } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
 import { createStyles } from '../../core/style';
@@ -122,7 +122,11 @@ export default function Drawer({ children, cc = {}, show, onClose, position = 'r
                 <div className={style.header}>
                     <span id={id} className={style.title}>{title}</span>
 
-                    <Button compact variant="minimal" onClick={onClose}>
+                    <Button
+                        compact
+                        variant="minimal"
+                        aria-label={ariaLabels.close}
+                        onClick={onClose}>
                         <Icon type="close" />
                     </Button>
                 </div>

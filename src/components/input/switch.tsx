@@ -163,6 +163,7 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
         <input
             {...split}
             ref={inputRef}
+            role="switch"
             type="checkbox"
             className={style.input}
             aria-invalid={!!error}
@@ -173,7 +174,7 @@ export default function Switch({ cc = {}, error, size = 'med', color, round = tr
             }} />
 
         <div className={style.switch} style={{ '--color': color } as any}>
-            <div className={style.icons}>
+            <div className={style.icons} aria-hidden>
                 <div className={style.icon}>
                     {iconOn}
                 </div>

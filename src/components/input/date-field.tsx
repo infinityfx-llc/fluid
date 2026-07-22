@@ -6,7 +6,7 @@ import { Animate } from '@infinityfx/lively';
 import Calendar from './calendar';
 import { PopoverRoot, PopoverContent, PopoverTrigger } from '../layout/popover';
 import { createStyles } from '../../core/style';
-import { combineClasses } from '../../core/utils';
+import { ariaLabels, combineClasses } from '../../core/utils';
 import Button from './button';
 import { Icon } from '../../core/icons';
 
@@ -88,7 +88,7 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
                 }}
                 right={clearable ? <Button
                     compact
-                    aria-label="Clear date"
+                    aria-label={ariaLabels.clear}
                     round={props.round}
                     size={props.size}
                     disabled={disabled === true || props.readOnly}

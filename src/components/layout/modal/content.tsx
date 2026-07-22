@@ -2,7 +2,7 @@
 
 import { Selectors } from "../../../../src/types";
 import { createStyles } from "../../../core/style";
-import { classes, combineClasses } from "../../../core/utils";
+import { ariaLabels, classes, combineClasses } from "../../../core/utils";
 import { Icon } from "../../../core/icons";
 import Scrollarea from "../scrollarea";
 import Button from "../../input/button";
@@ -62,7 +62,11 @@ export default function Content({ children, cc = {}, title, ...props }:
         <div className={style.header}>
             <span id={id} className={style.title}>{title}</span>
 
-            {closeType === 'button' && <Button compact variant="minimal" onClick={onClose}>
+            {closeType === 'button' && <Button
+                compact
+                variant="minimal"
+                aria-label={ariaLabels.close}
+                onClick={onClose}>
                 <Icon type="close" />
             </Button>}
         </div>
