@@ -238,7 +238,10 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
         const ctrl = new AbortController();
 
         slider.current.addEventListener('touchmove', e => {
-            if (data.current.dragIndex !== null) e.preventDefault();
+            if (data.current.dragIndex !== null) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
         }, { signal: ctrl.signal });
 
         return () => ctrl.abort();
@@ -279,8 +282,19 @@ export default function Slider({ cc = {}, handles = 1, vertical = false, tooltip
                     if (e.pointerType === 'touch') {
                         requestAnimationFrame(() => {
                             try {
-                                handle.dispatchEvent(new Event('touchstart', { bubbles: true, cancelable: true }));
-                            } catch { }
+                                const event = new Event('touchstart', {
+                                    bubbles: true,
+                                    cancelable: true
+                                });
+
+                                (event as any).touches = (event as any).changedTouches = [{
+                                    clientX: e.clientX,
+                                    clientY: e.clientY,
+                                    target: handle
+                                }];
+
+                                handle.dispatchEvent(event);
+                            } catch (err) { console.log(err) }
                         });
                     }
                 }
