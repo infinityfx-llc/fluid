@@ -65,7 +65,7 @@ export type DialSelectors = Selectors<'dial' | 'column'>;
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/dial}
  */
-export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, rowHeight = 1.2, value, defaultValue, onChange, disabled, ...props }:
+export default function Dial({ cc = {}, min, max, step = 1, rows = 4, rowHeight = 1.2, value, defaultValue, onChange, disabled, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: DialSelectors;
@@ -90,7 +90,7 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
         value?: number;
         defaultValue?: number;
         onChange?: (value: number) => void;
-    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'defaultValue' | 'onChange'>) {
+    } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'value' | 'defaultValue' | 'onChange'>) {
     const style = combineClasses(styles, cc);
 
     const [split, rest] = useInputProps(props);
