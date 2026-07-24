@@ -120,7 +120,7 @@ const styles = createStyles('file-field', {
     }
 });
 
-export type FileFieldSelectors = Selectors<'input' | 'placeholder' | 'field' | 'content' | 'V__default' | 'v__minimal' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
+export type FileFieldSelectors = Selectors<'input' | 'placeholder' | 'field' | 'content' | 'v__default' | 'v__minimal' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
 /**
  * An input used for selecting files.

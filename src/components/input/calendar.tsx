@@ -177,6 +177,9 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: CalendarSelectors;
+        /**
+         * A language and/or region identifier, determining the displayed language.
+         */
         locale?: string;
         size?: FluidSize;
         round?: boolean;

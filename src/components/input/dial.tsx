@@ -71,8 +71,21 @@ export default function Dial({ children, cc = {}, min, max, step = 1, rows = 4, 
         cc?: DialSelectors;
         min: number;
         max: number;
+        /**
+         * @default 1
+         */
         step?: number;
+        /**
+         * The number of options in view, which subsequently determines the height of the dial.
+         * 
+         * @default 4
+         */
         rows?: number;
+        /**
+         * The height of an option row relative to the font size. Will also determine spacing between options.
+         * 
+         * @default 1.2
+         */
         rowHeight?: number;
         value?: number;
         defaultValue?: number;

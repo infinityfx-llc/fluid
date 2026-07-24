@@ -8,6 +8,7 @@ import { createStyles } from '../../core/style';
 import { combineClasses, hexToRgb, rgbToHex } from '../../core/utils';
 import ColorPicker from './color-picker';
 import Swatch from '../display/swatch';
+import { Selectors } from '../../types';
 
 function parsePartialHex(str: string) {
     return `#${rgbToHex(hexToRgb(str.replace(/[^\da-f]/g, '').slice(0, 6)))}`;
@@ -32,6 +33,8 @@ const styles = createStyles('color-field', fluid => ({
     }
 }));
 
+export type ColorFieldSelectors = Selectors<'calendar'>;
+
 /**
  * An input field which displays a color picker.
  * 
@@ -39,6 +42,7 @@ const styles = createStyles('color-field', fluid => ({
  */
 export default function ColorField({ cc = {}, value, defaultValue, onChange, disabled, ...props }:
     {
+        cc?: ColorFieldSelectors;
         value?: string;
         defaultValue?: string;
         onChange?: (value: string) => void;

@@ -94,7 +94,7 @@ const styles = createStyles('combobox-content', {
     }
 });
 
-export type ComboboxContentSelectors = Selectors<'container' | 'v__default' | 'v__inverted' | 'modal' | 'content' | 'message'>;
+export type ComboboxContentSelectors = Selectors<'container' | 'round' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'v__default' | 'v__inverted' | 'modal' | 'content' | 'message'>;
 
 export default function Content({
     children,

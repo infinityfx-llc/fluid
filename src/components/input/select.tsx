@@ -146,7 +146,7 @@ const styles = createStyles('select', {
     }
 });
 
-export type SelectSelectors = Selectors<'field' | 'content' | 'placeholder' | 'V__default' | 'v__minimal' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'badge' | 'icon'>;
+export type SelectSelectors = Selectors<'field' | 'content' | 'placeholder' | 'v__default' | 'v__minimal' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round' | 'badge' | 'icon'>;
 
 type SelectProps<T> = {
     cc?: SelectSelectors;

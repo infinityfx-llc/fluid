@@ -58,7 +58,7 @@ const styles = createStyles('table', {
     },
 
     '.body .cell': {
-        paddingInline: '.4rem',
+        paddingInline: '.4em',
     },
 
     '.collapsed': {
@@ -79,7 +79,7 @@ const styles = createStyles('table', {
         alignItems: 'center',
         gap: 'var(--f-spacing-xxs)',
         width: 'max-content',
-        padding: '.2rem .4rem'
+        padding: '.222em .444em'
     },
 
     '.label:enabled': {

@@ -128,7 +128,7 @@ const styles = createStyles('switch', {
     }
 });
 
-export type SwitchSelectors = Selectors<'wrapper' | 'input' | 'switch' | 'icons' | 'icon' | 'hanlde' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
+export type SwitchSelectors = Selectors<'wrapper' | 'input' | 'switch' | 'icons' | 'icon' | 'handle' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
 /**
  * An input that switches between an on and off state.

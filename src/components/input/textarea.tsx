@@ -103,7 +103,7 @@ const styles = createStyles('textarea', {
     }
 });
 
-export type TextareaSelectors = Selectors<'textarea' | 'container' | 'content' | 'input' | 'V__default' | 'v__minimal' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
+export type TextareaSelectors = Selectors<'textarea' | 'container' | 'content' | 'input' | 'v__default' | 'v__minimal' | 's__xsm' | 's__sml' | 's__med' | 's__lrg'>;
 
 /**
  * A form textarea.

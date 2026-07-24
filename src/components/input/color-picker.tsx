@@ -137,6 +137,15 @@ type HSV = [number, number, number];
 type ColorPickerProps<T> = {
     ref?: React.Ref<HTMLDivElement>;
     cc?: ColorPickerSelectors;
+    /**
+     * Determines the type representing the color value, can either be:
+     * 
+     * `hex`, a string value in hex format.
+     * 
+     * `rgb`, an array of red, green and blue color values.
+     * 
+     * @default "hex"
+     */
     format?: T;
     value?: T extends 'hex' ? string : RGB;
     defaultValue?: T extends 'hex' ? string : RGB;

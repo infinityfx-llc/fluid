@@ -9,6 +9,7 @@ import { createStyles } from '../../core/style';
 import { ariaLabels, combineClasses } from '../../core/utils';
 import Button from './button';
 import { Icon } from '../../core/icons';
+import { Selectors } from '../../types';
 
 // format a date in yyyy-mm-dd format
 function toString(date?: Date | null) {
@@ -40,13 +41,16 @@ const styles = createStyles('date-field', fluid => ({
     }
 }));
 
+export type DateFieldSelectors = Selectors<'calendar'>;
+
 /**
  * An input used for entering dates.
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/date-field}
  */
-export default function DateField({ cc = {}, value, defaultValue, onChange, disabled, clearable, ...props }:
+export default function DateField({ cc = {}, value, defaultValue, onChange, disabled, clearable, min, max, locale, ...props }:
     {
+        cc?: DateFieldSelectors;
         value?: Date | null;
         defaultValue?: Date;
         onChange?: (value: Date | null) => void;
@@ -57,6 +61,10 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
          * @default false
          */
         clearable?: boolean;
+        /**
+         * A language and/or region identifier, determining the displayed language.
+         */
+        locale?: string;
     } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>) {
     const style = combineClasses(styles, cc);
 
@@ -119,6 +127,9 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
                     cc={{
                         calendar: style.calendar
                     }}
+                    minDate={min ? new Date(min) : undefined}
+                    maxDate={max ? new Date(max) : undefined}
+                    locale={locale}
                     round={props.round}
                     size={props.size}
                     disabled={disabled}

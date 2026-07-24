@@ -111,7 +111,7 @@ const styles = createStyles('field', {
     }
 });
 
-export type FieldSelectors = Selectors<'input' | 'field' | 'content' | 'V__default' | 'v__minimal' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
+export type FieldSelectors = Selectors<'input' | 'field' | 'content' | 'v__default' | 'v__minimal' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
 export type FieldProps = {
     ref?: React.Ref<HTMLDivElement>;

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Field, { FieldProps } from "./field";
-import { ariaLabels, changeInputValue, combineClasses, combineRefs } from '../../../src/core/utils';
+import { ariaLabels, changeInputValue, classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
 import { PopoverContent, PopoverRoot, PopoverTrigger } from '../layout';
 import { Animate } from '@infinityfx/lively';
@@ -66,6 +66,10 @@ const styles = createStyles('time-field', fluid => ({
         padding: '.6em'
     },
 
+    '.round': {
+        borderRadius: 'var(--f-radius-xlg)'
+    },
+
     '.columns': {
         display: 'grid',
         alignItems: 'center',
@@ -90,6 +94,10 @@ const styles = createStyles('time-field', fluid => ({
         backgroundColor: 'var(--f-clr-bg-100)',
         borderRadius: 'var(--f-radius-med)',
         zIndex: -1
+    },
+
+    '.round .background': {
+        borderRadius: '99px'
     },
 
     '.columns .selection': {
@@ -147,6 +155,9 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
      * Maximum time specified in 24H-based hh:mm format.
      */
     max?: string;
+    /**
+     * A language and/or region identifier, determining the displayed language.
+     */
     locale?: string;
 } & Omit<FieldProps, 'type' | 'min' | 'max' | 'shape'>) {
     const style = combineClasses(styles, cc);
@@ -215,7 +226,10 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
                 triggers={{
                     animate: ['mount', { on: 'unmount', reverse: true }]
                 }}>
-                <div className={style.container}>
+                <div className={classes(
+                    style.container,
+                    props.round && style.round
+                )}>
                     <div className={style.columns}>
                         <div className={style.dials}>
                             <Dial
@@ -243,6 +257,7 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
 
                         {time[2] && <Segmented
                             vertical
+                            round={props.round}
                             variant="minimal"
                             cc={{
                                 selection: style.selection
@@ -258,6 +273,7 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
                     <div className={style.buttons}>
                         <Button
                             compact
+                            round={props.round}
                             variant="muted"
                             onClick={() => {
                                 setTime(toLocaleTime('', locale));
@@ -268,9 +284,10 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
                         </Button>
                         <Button
                             compact
+                            round={props.round}
                             onClick={() => {
                                 if (inputRef.current) changeInputValue(inputRef.current, timeToString(time[0], time[1], locale, time[2]));
-                                
+
                                 popover.current?.close();
                             }}>
                             {ariaLabels.save}

@@ -69,9 +69,9 @@ export type FluidComponents = {
     calendar?: FluidSelectorStyles<import('./components/input/calendar').CalendarSelectors>;
     checkbox?: FluidSelectorStyles<import('./components/input/checkbox').CheckboxSelectors>;
     chip?: FluidSelectorStyles<import('./components/input/chip').ChipSelectors>;
-    'color-field'?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
+    'color-field'?: FluidSelectorStyles<import('./components/input/color-field').ColorFieldSelectors>;
     'color-picker'?: FluidSelectorStyles<import('./components/input/color-picker').ColorPickerSelectors>;
-    'date-field'?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;
+    'date-field'?: FluidSelectorStyles<import('./components/input/date-field').DateFieldSelectors>;
     'dial'?: FluidSelectorStyles<import('./components/input/dial').DialSelectors>;
     'drop-zone'?: FluidSelectorStyles<import('./components/input/drop-zone').DropZoneSelectors>;
     field?: FluidSelectorStyles<import('./components/input/field').FieldSelectors>;

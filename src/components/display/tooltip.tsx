@@ -60,6 +60,11 @@ export default function Tooltip<T extends React.ReactElement<any>>({ children, c
          */
         visibility?: 'never' | 'interact' | 'always';
         variant?: 'default' | 'inverted';
+        /**
+         * Delay in seconds before tooltip shows after interaction.
+         * 
+         * @default .3
+         */
         delay?: number;
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>) {
     const style = combineClasses(styles, cc);

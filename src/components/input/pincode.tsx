@@ -130,7 +130,7 @@ const styles = createStyles('pincode', {
     }
 });
 
-export type PincodeSelectors = Selectors<'pincode' | 'field' | 'input' | 'V__default' | 'v__minimal' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
+export type PincodeSelectors = Selectors<'pincode' | 'group' | 'field' | 'input' | 'V__default' | 'v__minimal' | 's__xsm' | 's__sml' | 's__med' | 's__lrg' | 'round'>;
 
 /**
  * An input used for entering numerical codes.

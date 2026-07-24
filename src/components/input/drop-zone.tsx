@@ -140,6 +140,9 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
         cc?: DropZoneSelectors;
         loading?: boolean;
         error?: any;
+        /**
+         * @default "Drop files or click to browse"
+         */
         text?: string;
         annotation?: string;
         icon?: React.ReactNode;
