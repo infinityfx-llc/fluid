@@ -55,18 +55,26 @@ export async function purge(io: IOHelper, entries: {
     file: string;
 }[]) {
     for (const { file } of entries) {
-        const content = io.source(file).replace(/\.\/compiled/g, '');
+        const content = io.source(file).replace(/\/compiled/g, '');
         io.override(file, content);
     }
 
-    const files = await glob(io.root + 'compiled/*.css');
+    const files = await glob(io.root + 'dist/compiled/*.css');
     await Promise.all(files.map(unlink));
 
-    fs.cpSync(io.root + 'dist/', io.root + 'compiled/', {
+    fs.cpSync(io.root + 'dist/', io.root + 'temp/', {
         recursive: true,
         filter(src) {
-            return !/((bin|styles|types)$|\.map$)/.test(src);
+            return !/((compiled|bin|styles|types)$|\.map$)/.test(src);
         }
+    });
+
+    fs.cpSync(io.root + 'temp/', io.root + 'dist/compiled', {
+        recursive: true
+    })
+
+    fs.rmSync(io.root + 'temp/', {
+        recursive: true
     });
 }
 
@@ -107,7 +115,7 @@ export async function compileComponents(io: IOHelper, entries: {
             }
         }
 
-        io.override(file, content.replace(/(from\s*(?:'|"))\.\/(.*?(?:'|");)/g, '$1../compiled/$2'));
+        io.override(file, content.replace(/(from\s*(?:'|"))\.\/(.*?(?:'|");)/g, '$1./compiled/$2'));
     }
 
     await emitCss(io, stats, io.parent !== 'fluid');

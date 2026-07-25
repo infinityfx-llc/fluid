@@ -106,7 +106,7 @@ async function insertCssImport(path: string, contents: string, name: string) {
     if (cssInsert?.index === undefined || cssOutput === 'manual') return contents;
 
     const idx = cssInsert.index + cssInsert[0].length;
-    return replace(contents, idx, idx, `import "./${path.split(/\/|\\/g).slice(2).map(() => '../').join('')}${name}.css";`);
+    return replace(contents, idx, idx, `import "./${path.split(/\/|\\/g).slice(2).map(() => '../').join('')}${name}.css";`); // todo: check if correct?
 }
 
 // - figure out how to handle * import, where all components need to be included..

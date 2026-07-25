@@ -145,7 +145,7 @@ export function getIOHelper(base: string, isInternal = false): IOHelper | null {
             return fs.readFileSync(root + 'dist/' + file, { encoding: 'ascii' });
         },
         output(file: string, content: string) {
-            fs.writeFileSync(root + 'compiled/' + file, content);
+            fs.writeFileSync(root + 'dist/compiled/' + file, content);
         },
         override(file: string, content: string) {
             fs.writeFileSync(root + 'dist/' + file, content);

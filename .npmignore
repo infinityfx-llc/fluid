@@ -1,7 +1,7 @@
 node_modules/
 /src/
 /bin/
-compiled/
+dist/compiled/
 .rollup.cache/
 
 rollup.config.js
