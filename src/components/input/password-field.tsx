@@ -6,9 +6,10 @@ import { FluidInputvalue } from '../../../src/types';
 import Toggle from './toggle';
 import ProgressBar from '../feedback/progress-bar';
 import useInputProps from '../../../src/hooks/use-input-props';
-import { ariaLabels, classes, combineClasses } from '../../../src/core/utils';
+import { classes, combineClasses } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
 import { Icon } from '../../core/icons';
+import { useLang } from '../../context/lang';
 
 const colors = ['#eb2a1c', '#eb2a1c', '#e8831e', '#f0d030', '#fff952', '#5aff54'];
 
@@ -48,6 +49,7 @@ export default function PasswordField({ cc = {}, strengthBar = false, size = 'me
 } & Omit<FieldProps, 'type'>) {
     const style = combineClasses(styles, cc);
 
+    const lang = useLang();
     const [value, setValue] = props.value !== undefined ? [props.value] : useState<FluidInputvalue>(defaultValue || '');
     const [visible, setVisible] = useState(false);
 
@@ -91,7 +93,7 @@ export default function PasswordField({ cc = {}, strengthBar = false, size = 'me
             }}
             right={<Toggle
                 compact
-                aria-label={visible ? ariaLabels.hide : ariaLabels.show}
+                aria-label={visible ? lang.hide : lang.show}
                 round={round}
                 size={size}
                 variant="minimal"

@@ -2,11 +2,12 @@
 
 import { Selectors } from "../../../../src/types";
 import { createStyles } from "../../../core/style";
-import { ariaLabels, classes, combineClasses } from "../../../core/utils";
+import { classes, combineClasses } from "../../../core/utils";
 import { Icon } from "../../../core/icons";
 import Scrollarea from "../scrollarea";
 import Button from "../../input/button";
 import { useModal } from "./root";
+import { useLang } from "../../../context/lang";
 
 const styles = createStyles('modal-content', {
     '.content': {
@@ -54,6 +55,7 @@ export default function Content({ children, cc = {}, title, ...props }:
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>) {
     const style = combineClasses(styles, cc);
 
+    const lang = useLang();
     const { id, closeType, content, onClose } = useModal();
 
     return <div {...props} className={classes(style.content, props.className)}>
@@ -65,7 +67,7 @@ export default function Content({ children, cc = {}, title, ...props }:
             {closeType === 'button' && <Button
                 compact
                 variant="minimal"
-                aria-label={ariaLabels.close}
+                aria-label={lang.close}
                 onClick={onClose}>
                 <Icon type="close" />
             </Button>}

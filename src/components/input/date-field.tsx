@@ -6,10 +6,11 @@ import { Animate } from '@infinityfx/lively';
 import Calendar from './calendar';
 import { PopoverRoot, PopoverContent, PopoverTrigger } from '../layout/popover';
 import { createStyles } from '../../core/style';
-import { ariaLabels, combineClasses } from '../../core/utils';
+import { combineClasses } from '../../core/utils';
 import Button from './button';
 import { Icon } from '../../core/icons';
 import { Selectors } from '../../types';
+import { useLang } from '../../context/lang';
 
 // format a date in yyyy-mm-dd format
 function toString(date?: Date | null) {
@@ -68,6 +69,7 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
     } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>) {
     const style = combineClasses(styles, cc);
 
+    const lang = useLang();
     const [state, setState] = value !== undefined ? [value, onChange] : useState<Date | null>(defaultValue || null);
     const [partial, setPartial] = useState<string | null>(null);
 
@@ -96,7 +98,7 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
                 }}
                 right={clearable ? <Button
                     compact
-                    aria-label={ariaLabels.clear}
+                    aria-label={lang.clear}
                     round={props.round}
                     size={props.size}
                     disabled={disabled === true || props.readOnly}

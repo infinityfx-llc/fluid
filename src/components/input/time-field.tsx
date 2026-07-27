@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Field, { FieldProps } from "./field";
-import { ariaLabels, changeInputValue, classes, combineClasses, combineRefs } from '../../../src/core/utils';
+import { changeInputValue, classes, combineClasses, combineRefs } from '../../../src/core/utils';
 import { createStyles } from '../../core/style';
 import { PopoverContent, PopoverRoot, PopoverTrigger } from '../layout';
 import { Animate } from '@infinityfx/lively';
@@ -10,6 +10,7 @@ import Dial from './dial';
 import Button from './button';
 import Segmented from './segmented';
 import { PopoverRootReference, Selectors } from '../../types';
+import { useLang } from '../../context/lang';
 
 // parse a time string into 24h hours and minutes
 function parseTime(time: string) {
@@ -161,6 +162,7 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
     locale?: string;
 } & Omit<FieldProps, 'type' | 'min' | 'max' | 'shape'>) {
     const style = combineClasses(styles, cc);
+    const lang = useLang();
 
     try {
         // make sure locale is valid
@@ -280,7 +282,7 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
 
                                 if (inputRef.current) changeInputValue(inputRef.current, '');
                             }}>
-                            {ariaLabels.clear}
+                            {lang.clear}
                         </Button>
                         <Button
                             compact
@@ -290,7 +292,7 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
 
                                 popover.current?.close();
                             }}>
-                            {ariaLabels.save}
+                            {lang.save}
                         </Button>
                     </div>
                 </div>

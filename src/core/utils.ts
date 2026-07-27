@@ -1,14 +1,5 @@
 import type { FluidColorClasses, FluidInputvalue, Merged, Selectors } from "../types";
 
-export const ariaLabels = { // todo: add to config
-    copy: 'Copy',
-    clear: 'Clear',
-    close: 'Close',
-    hide: 'Hide',
-    save: 'Save',
-    show: 'Show'
-};
-
 export const round = (val: number, n = 2) => Math.round(val * Math.pow(10, n)) / Math.pow(10, n);
 
 export const toNumber = (val: any, fallback: number): number => {

@@ -1,8 +1,11 @@
+'use client';
+
 import { Selectors } from "../../../src/types";
 import Button from "../input/button";
-import { ariaLabels, classes, combineClasses } from "../../../src/core/utils";
+import { classes, combineClasses } from "../../../src/core/utils";
 import { createStyles } from "../../core/style";
 import { Icon } from "../../core/icons";
+import { useLang } from "../../context/lang";
 
 const styles = createStyles('toast', {
     '.toast': {
@@ -83,6 +86,7 @@ export default function Toast({ children, cc = {}, icon, color, title, round, ac
         onClose?: () => void;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
+    const lang = useLang();
 
     return <div {...props}
         className={classes(
@@ -102,7 +106,7 @@ export default function Toast({ children, cc = {}, icon, color, title, round, ac
             {children}
         </div>
 
-        {action && <Button compact variant="minimal" round={round} onClick={onClose} aria-label={ariaLabels.close}>
+        {action && <Button compact variant="minimal" round={round} onClick={onClose} aria-label={lang.close}>
             {action}
         </Button>}
     </div>;

@@ -5,8 +5,9 @@ import { Fragment, useId, useLayoutEffect, useRef, useState } from "react";
 import Scrollarea from "../layout/scrollarea";
 import Toggle from "../input/toggle";
 import { createStyles } from "../../core/style";
-import { ariaLabels, classes, combineClasses } from "../../core/utils";
+import { classes, combineClasses } from "../../core/utils";
 import { Icon } from "../../core/icons";
+import { useLang } from "../../context/lang";
 
 // todo: variants?
 
@@ -109,6 +110,7 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
     const style = combineClasses(styles, cc);
 
     const id = useId();
+    const lang = useLang();
     const timeout = useRef<any>(undefined);
     const [copied, setCopied] = useState(false);
 
@@ -146,7 +148,7 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
                     ...cc,
                     toggle: style.toggle
                 }}
-                aria-label={ariaLabels.copy}
+                aria-label={lang.copy}
                 onClick={() => {
                     clearTimeout(timeout.current);
 

@@ -4,11 +4,12 @@ import { useId, useRef } from 'react';
 import Overlay from './overlay';
 import { Selectors } from '../../../src/types';
 import Button from '../input/button';
-import { ariaLabels, classes, combineClasses } from '../../../src/core/utils';
+import { classes, combineClasses } from '../../../src/core/utils';
 import { Animate } from '@infinityfx/lively';
 import Scrollarea from './scrollarea';
 import { createStyles } from '../../core/style';
 import { Icon } from '../../core/icons';
+import { useLang } from '../../context/lang';
 
 const styles = createStyles('drawer', {
     '.drawer': {
@@ -85,6 +86,7 @@ export default function Drawer({ children, cc = {}, show, onClose, position = 'r
     const style = combineClasses(styles, cc);
 
     const id = useId();
+    const lang = useLang();
     const prev = useRef({ clientX: 0, clientY: 0 });
 
     // detect a sideward swipe to close the drawer
@@ -125,7 +127,7 @@ export default function Drawer({ children, cc = {}, show, onClose, position = 'r
                     <Button
                         compact
                         variant="minimal"
-                        aria-label={ariaLabels.close}
+                        aria-label={lang.close}
                         onClick={onClose}>
                         <Icon type="close" />
                     </Button>

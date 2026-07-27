@@ -9,6 +9,7 @@ import useMediaQuery from "../hooks/use-media-query";
 import type { FluidColorScheme } from "../types";
 import { GLOBAL_CONTEXT } from "../core/shared";
 import SingletonsProvider from "./singletons";
+import LanguageProvider, { LocaleTokens } from "./lang";
 
 const fluid = GLOBAL_CONTEXT.theme;
 
@@ -25,9 +26,10 @@ export const FluidContext = createContext<FluidContext | null>(null);
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/get-started}
  */
-export default function FluidProvider({ children, initialColorScheme }: {
+export default function FluidProvider({ children, initialColorScheme, localeTokens }: {
     children: React.ReactElement<any>;
     initialColorScheme?: FluidColorScheme;
+    localeTokens?: Partial<LocaleTokens>;
 }) {
 
     const colorSchemes = Object.keys(fluid.palettes).concat('system');
@@ -52,11 +54,13 @@ export default function FluidProvider({ children, initialColorScheme }: {
         appliedColorScheme: colorScheme === 'system' ? systemColorScheme : colorScheme,
         setColorScheme
     }}>
-        <SingletonsProvider>
-            {cloneElement(children, {
-                id: '__fluid',
-                className: `scheme-${colorScheme}`
-            })}
-        </SingletonsProvider>
+        <LanguageProvider tokens={localeTokens}>
+            <SingletonsProvider>
+                {cloneElement(children, {
+                    id: '__fluid',
+                    className: `scheme-${colorScheme}`
+                })}
+            </SingletonsProvider>
+        </LanguageProvider>
     </FluidContext>
 }
