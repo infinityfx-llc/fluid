@@ -79,7 +79,7 @@ async function processFileCSS(name: string, content: string) {
         JSON.stringify(selectors || {}));
 
     const createGlobalStyles = content.match(/import\s*\{[^{]*(createGlobalStyles(?:\s*as\s*([^\s},]+))?)[^}]*\}/);
-    let matches = content.matchAll(new RegExp(`(=|,|;|\\s|:)${createGlobalStyles?.[2] || createGlobalStyles?.[1]}\\(`, 'g')),
+    let matches = content.matchAll(new RegExp(`(?:}|=|,|;|\\s|:)${createGlobalStyles?.[2] || createGlobalStyles?.[1]}\\(`, 'g')),
         globalStyle,
         globalStyleOffset = 0;
 
