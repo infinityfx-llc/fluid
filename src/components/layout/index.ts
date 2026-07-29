@@ -10,6 +10,7 @@ import Cull from "./cull";
 import { PopoverRoot, PopoverContent, PopoverTrigger } from "./popover";
 import Divider from "./divider";
 import Panel from "./panel";
+import { Box, BoxContent, BoxHeader, BoxBackdrop } from "./box";
 
 export {
     Overlay,
@@ -32,5 +33,9 @@ export {
     PopoverContent,
     PopoverTrigger,
     Divider,
-    Panel
+    Panel,
+    Box,
+    BoxContent,
+    BoxHeader,
+    BoxBackdrop
 }

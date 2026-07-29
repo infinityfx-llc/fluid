@@ -76,8 +76,7 @@ export default function Annotation({ children, cc = {}, label, error, ...props }
         </div>}
 
         {cloneElement(children, {
-            'aria-labelledby': label ? id : undefined,
-            'data-fc': true
+            'aria-labelledby': label ? id : undefined
         })}
 
         <Collapsible shown={!!error}>

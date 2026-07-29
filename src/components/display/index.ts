@@ -9,7 +9,6 @@ import Timeline from './timeline';
 import Code from "./code";
 import Toast from "./toast";
 import Table from "./table";
-import Frame from "./frame";
 import Ticker from "./ticker";
 import Gradient from "./gradient";
 import Empty from "./empty";
@@ -28,7 +27,6 @@ export {
     Annotation,
     Badge,
     Code,
-    Frame,
     Gradient,
     Key,
     Swatch,

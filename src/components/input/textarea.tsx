@@ -140,7 +140,7 @@ export default function Textarea({ cc = {}, size = 'med', variant = 'default', e
         )}
         data-error={!!error}
         data-disabled={props.disabled}
-        data-fb
+        data-fb={variant === 'default' ? 'true' : undefined}
         style={{
             resize: fitToContent ? undefined : resize,
             height: fitToContent ? undefined : `calc(${props.rows || 2}lh + 1.2em)`,

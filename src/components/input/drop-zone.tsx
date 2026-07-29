@@ -185,6 +185,7 @@ export default function DropZone({ cc = {}, loading = false, error, text = 'Drop
     return <Interactable
         {...rest}
         as="div"
+        data-fb
         role="button"
         tabIndex={0}
         disabled={!!file || isDisabled}

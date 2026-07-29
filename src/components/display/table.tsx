@@ -212,7 +212,7 @@ export default function Table<T extends { [key: string]: string | number | Date;
             style[`v__${variant}`],
             props.className
         )}
-        data-fb>
+        data-fb={variant === 'default' ? 'true' : undefined}>
         <div
             role="grid"
             className={style.table}

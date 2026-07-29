@@ -3,8 +3,6 @@ import { classes, combineClasses } from '../../../src/core/utils';
 import { Selectors } from '../../../src/types';
 import { createStyles } from '../../core/style';
 
-// todo: check data-fb props on new elements with border
-
 const styles = createStyles('group', {
     '.group': {
         display: 'flex',
@@ -44,22 +42,22 @@ const styles = createStyles('group', {
         flexDirection: 'column'
     },
 
-    '.d__horizontal > :not(:last-child), .d__horizontal > :not(:last-child) [data-fc]': {
+    '.d__horizontal > :not(:last-child), .d__horizontal > :not(:last-child) [data-fb]': {
         borderTopRightRadius: 'var(--radius) !important',
         borderBottomRightRadius: 'var(--radius) !important'
     },
 
-    '.d__horizontal > :not(:first-child), .d__horizontal > :not(:first-child) [data-fc]': {
+    '.d__horizontal > :not(:first-child), .d__horizontal > :not(:first-child) [data-fb]': {
         borderTopLeftRadius: 'var(--radius) !important',
         borderBottomLeftRadius: 'var(--radius) !important'
     },
 
-    '.d__vertical > :not(:last-child), .d__vertical > :not(:last-child) [data-fc]': {
+    '.d__vertical > :not(:last-child), .d__vertical > :not(:last-child) [data-fb]': {
         borderBottomLeftRadius: 'var(--radius) !important',
         borderBottomRightRadius: 'var(--radius) !important'
     },
 
-    '.d__vertical > :not(:first-child), .d__vertical > :not(:first-child) [data-fc]': {
+    '.d__vertical > :not(:first-child), .d__vertical > :not(:first-child) [data-fb]': {
         borderTopLeftRadius: 'var(--radius) !important',
         borderTopRightRadius: 'var(--radius) !important'
     },

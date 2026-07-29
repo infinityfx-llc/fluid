@@ -50,7 +50,6 @@ export type FluidComponents = {
     badge?: FluidSelectorStyles<import('./components/display/badge').BadgeSelectors>;
     code?: FluidSelectorStyles<import('./components/display/code').CodeSelectors>;
     empty?: FluidSelectorStyles<import('./components/display/empty').EmptySelectors>;
-    frame?: FluidSelectorStyles<import('./components/display/frame').FrameSelectors>;
     gradient?: FluidSelectorStyles<import('./components/display/gradient').GradientSelectors>;
     key?: FluidSelectorStyles<import('./components/display/key').KeySelectors>;
     swatch?: FluidSelectorStyles<import('./components/display/swatch').SwatchSelectors>;
@@ -90,6 +89,9 @@ export type FluidComponents = {
     toggle?: FluidSelectorStyles<import('./components/input/toggle').ToggleSelectors>;
     'accordion-item'?: FluidSelectorStyles<import('./components/layout/accordion/item').AccordionItemSelectors>;
     'accordion-root'?: FluidSelectorStyles<import('./components/layout/accordion/root').AccordionRootSelectors>;
+    'box-content'?: FluidSelectorStyles<import('./components/layout/box/content').BoxContentSelectors>;
+    'box-header'?: FluidSelectorStyles<import('./components/layout/box/header').BoxHeaderSelectors>;
+    'box-backdrop'?: FluidSelectorStyles<import('./components/layout/box/backdrop').BoxBackdropSelectors>;
     'sidebar-heading'?: FluidSelectorStyles<import('./components/layout/sidebar/heading').SidebarHeadingSelectors>;
     'sidebar-item'?: FluidSelectorStyles<import('./components/layout/sidebar/item').SidebarItemSelectors>;
     'sidebar-root'?: FluidSelectorStyles<import('./components/layout/sidebar/root').SidebarRootSelectors>;

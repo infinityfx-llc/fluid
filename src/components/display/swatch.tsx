@@ -59,9 +59,11 @@ export default function Swatch({ cc = {}, size = 'med', round = false, color = [
         color?: string | string[];
     } & Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'color'>) {
     const style = combineClasses(styles, cc);
-    color = Array.isArray(color) ? color: [color];
+    color = Array.isArray(color) ? color : [color];
 
-    return <div {...props}
+    return <div
+        {...props}
+        data-fb
         className={classes(
             style.swatch,
             style[`s__${size}`],

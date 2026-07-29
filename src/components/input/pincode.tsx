@@ -228,7 +228,7 @@ export default function Pincode({ cc = {}, format = [1, 1, 1, 1], masked, round 
         )}
         data-error={!!error}
         data-disabled={props.disabled}
-        data-fb>
+        data-fb={variant === 'default' ? 'true' : undefined}>
 
         {format.map((count, i) => {
             const min = format.slice(0, i).reduce((len, val) => len + val, 0);

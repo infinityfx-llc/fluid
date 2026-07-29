@@ -9,7 +9,8 @@ const styles = createStyles('divider', {
         gap: 'var(--f-spacing-xsm)',
         fontSize: 'var(--f-font-size-xsm)',
         fontWeight: 600,
-        color: 'var(--f-clr-grey-200)'
+        color: 'var(--f-clr-grey-200)',
+        alignSelf: 'stretch'
     },
 
     '.divider[aria-orientation="vertical"]': {
