@@ -25,7 +25,7 @@ const styles = createStyles('action-menu-group', {
 
     '.v__inverted': {
         background: 'var(--f-clr-grey-900)',
-        borderColor: 'var(--f-clr-grey-800)'
+        border: 'solid 1px var(--f-clr-grey-800)'
     },
 
     '.icon': {
@@ -122,8 +122,8 @@ export default function Group({ children, cc = {}, label, className, ...props }:
                 id={id}
                 role="menu"
                 className={classes(
-                    'card',
-                    'front',
+                    variant === 'default' && 'card',
+                    variant === 'default' && 'front',
                     'sd-med',
                     style.menu,
                     style[`v__${variant}`]

@@ -17,7 +17,7 @@ const styles = createStyles('action-menu-menu', {
 
     '.v__inverted': {
         background: 'var(--f-clr-grey-900)',
-        borderColor: 'var(--f-clr-grey-800)'
+        border: 'solid 1px var(--f-clr-grey-800)'
     }
 });
 
@@ -51,8 +51,8 @@ export default function Menu({ children, cc = {}, className, ...props }:
                 role="group"
                 data-variant={variant}
                 className={classes(
-                    'card',
-                    'front',
+                    variant === 'default' && 'card',
+                    variant === 'default' && 'front',
                     'sd-med',
                     style.menu,
                     style[`v__${variant}`],

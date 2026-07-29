@@ -28,7 +28,7 @@ createGlobalStyles({
         border: 'solid 1px var(--f-clr-surface-300)'
     },
 
-    '.card.border': {
+    '.border': {
         border: 'solid 1px var(--f-clr-surface-300)'
     },
 

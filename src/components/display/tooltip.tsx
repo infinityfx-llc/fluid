@@ -2,7 +2,7 @@
 
 import { classes, combineClasses, combineRefs, getAbsoluteZIndex } from "../../../src/core/utils";
 import { Selectors } from "../../../src/types";
-import { cloneElement, useState, useRef, useId, useEffect } from "react";
+import { cloneElement, useState, useRef, useId, useEffect, isValidElement } from "react";
 import { createPortal } from "react-dom";
 import { createStyles } from "../../core/style";
 
@@ -206,11 +206,11 @@ export default function Tooltip<T extends React.ReactElement<any>>({ children, c
     // tooltip is not visible on subsequent re-renders
 
     return <>
-        {cloneElement(children, {
+        {isValidElement(children) ? cloneElement(children, {
             ...props,
             'aria-describedby': id,
-            ref: combineRefs(element, props.ref, children?.props?.ref)
-        })}
+            ref: combineRefs(element, props.ref, children.props?.ref)
+        }) : children}
 
         {mounted && createPortal(<div
             ref={tooltip}

@@ -24,9 +24,9 @@ const styles = createStyles('combobox-content', {
         borderRadius: '1.4em'
     },
 
-    '.container.v__inverted': {
+    '.v__inverted': {
         backgroundColor: 'var(--f-clr-grey-900)',
-        borderColor: 'var(--f-clr-grey-800)'
+        border: 'solid 1px var(--f-clr-grey-800)'
     },
 
     '.s__xsm': {
@@ -198,8 +198,8 @@ export default function Content({
                 role="listbox"
                 data-variant={isModal ? 'default' : variant}
                 className={classes(
-                    'card',
-                    'front',
+                    variant === 'default' && 'card',
+                    variant === 'default' && 'front',
                     'sd-med',
                     style.container,
                     style[`s__${size}`],
