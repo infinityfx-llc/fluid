@@ -166,7 +166,7 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
     return <Interactable
         {...rest}
         as="div"
-        interactTarget={inputRef.current}
+        interactTarget={inputRef}
         disabled={props.disabled}
         highlightColor={highlightColor}
         className={classes(

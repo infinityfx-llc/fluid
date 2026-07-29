@@ -250,7 +250,7 @@ export default function Scrollarea({ children, cc = {}, direction = 'vertical', 
         {...props}
         ref={combineRefs(ref, area)}
         id={id}
-        tabIndex={0}
+        tabIndex={scrollable ? 0 : -1}
         className={classes(
             style.area,
             style[`v__${variant}`],

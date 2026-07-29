@@ -38,22 +38,20 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
         }
 
         function start(e: MouseEvent | TouchEvent | KeyboardEvent) {
-            const isTouch = 'changedTouches' in e;
+            const isTouch = touchOnly.current = 'changedTouches' in e;
             const isValidKey = 'key' in e && (e.key === 'Enter' || e.key === ' ');
             const isValidClick = 'button' in e && e.button === 0 && !touchOnly.current;
+            const isValidAction = isValidClick || isTouch || isValidKey;
 
-            if (isTouch) {
-                touchOnly.current = true;
-                touch.current = e.changedTouches[0];
-            }
-
-            if (longpress && (isValidClick || isTouch || isValidKey)) {
-                pressed.current = true;
-                action(400);
-            }
+            if (isTouch) touch.current = e.changedTouches[0];
+            if (isValidAction) pressed.current = true;
+            if (longpress && isValidAction) action(400);
         }
 
         function end(e: MouseEvent | TouchEvent | KeyboardEvent) {
+            if (!pressed.current) return;
+            pressed.current = false;
+
             const isValidTouch = 'changedTouches' in e &&
                 Math.abs(touch.current.clientX - e.changedTouches[0].clientX) + Math.abs(touch.current.clientY - e.changedTouches[0].clientY) < 8;
             const isValidKey = 'key' in e && (e.key === 'Enter' || e.key === ' ');
@@ -65,7 +63,6 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
 
             clearTimeout(timeout.current);
             if ('button' in e) touchOnly.current = false;
-            pressed.current = false;
         }
 
         el.addEventListener('mousedown', start, { signal });
@@ -74,6 +71,7 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
         el.addEventListener('touchend', end, { signal });
         el.addEventListener('keydown', start, { signal });
         el.addEventListener('keyup', end, { signal });
+        el.addEventListener('blur', () => pressed.current = false, { signal });
 
         return () => ctrl.abort();
     }, [toggle, isDisabled, opened]);

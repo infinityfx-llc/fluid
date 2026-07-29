@@ -7,6 +7,16 @@ import { useLink } from "@infinityfx/lively/hooks";
 import { useRef, useState, useLayoutEffect } from "react";
 import { createStyles } from "../../core/style";
 
+function getFocusElement(
+    container: React.RefObject<HTMLElement | null>,
+    target?: React.RefObject<HTMLElement | null> | HTMLElement | null
+) {
+    if (!target) return container.current;
+    if ('current' in target) return target.current;
+
+    return target;
+}
+
 const styles = createStyles('interactable', {
     '.interactable': {
         isolation: 'isolate',
@@ -86,7 +96,7 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
          * 
          * @default self
          */
-        interactTarget?: P | null;
+        interactTarget?: React.RefObject<P | null> | P | null;
     } & PolymorphComponentProps<E>) {
     const style = combineClasses(styles, cc);
 
@@ -94,6 +104,8 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
     const timeout = useRef<any>(undefined);
     const container = useRef<HTMLElement>(null);
     const highlight = useRef<HTMLDivElement>(null);
+    const mounted = useRef(false);
+    const focusEl = getFocusElement(container, interactTarget);
 
     const mutableRippleCount = useRef(0);
     const [rippleCount, ripple] = useState(0);
@@ -101,7 +113,7 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
     const translate = useLink('0% 0%');
 
     useLayoutEffect(() => {
-        const focusEl = interactTarget || container.current,
+        const focusEl = getFocusElement(container, interactTarget),
             highlightEl = highlight.current,
             ctrl = new AbortController(),
             signal = ctrl.signal;
@@ -168,14 +180,18 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
 
         focusEl.addEventListener('focusin', () => focus(), { signal });
         focusEl.addEventListener('focusout', () => focus(), { signal });
-        focus(':focus');
+
+        if (!mounted.current) {
+            focus(':focus');
+            mounted.current = true;
+        }
 
         return () => {
             highlightEl.classList.remove(style.active as any);
             clearTimeout(timeout.current);
             ctrl.abort();
         };
-    }, [props.disabled, interactTarget]);
+    }, [disabled, focusEl]);
 
     const Wrapper = as || 'button';
     const defaultProps = Wrapper === 'button' ? {
