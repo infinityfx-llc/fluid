@@ -4,7 +4,6 @@ import { createGlobalStyles } from "../../../core/style";
 
 createGlobalStyles({
     '.card': {
-        // position: 'relative',
         isolation: 'isolate'
     },
 
