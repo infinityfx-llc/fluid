@@ -15,9 +15,7 @@ const formatHeading = (val: any) => ('' + val).charAt(0).toUpperCase() + ('' + v
 
 const styles = createStyles('table', {
     '.v__default': {
-        backgroundColor: 'var(--f-clr-surface-200)',
-        borderRadius: 'var(--f-radius-med)',
-        border: 'solid 1px var(--f-clr-surface-300)'
+        borderRadius: 'var(--f-radius-med)'
     },
 
     '.table': {
@@ -208,6 +206,8 @@ export default function Table<T extends { [key: string]: string | number | Date;
         direction="horizontal"
         behavior="shift"
         className={classes(
+            variant === 'default' && 'card',
+            variant === 'default' && 'top',
             style.container,
             style[`v__${variant}`],
             props.className

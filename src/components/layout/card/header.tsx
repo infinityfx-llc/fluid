@@ -3,7 +3,7 @@ import { classes } from "../../../../src/utils";
 import { createStyles } from "../../../core/style";
 import { combineClasses } from "../../../core/utils";
 
-const styles = createStyles('box-header', {
+const styles = createStyles('card-header', {
     '.header': {
         display: 'flex',
         alignItems: 'baseline',
@@ -20,12 +20,15 @@ const styles = createStyles('box-header', {
     }
 });
 
-export type BoxHeaderSelectors = Selectors<'header' | 'p__bottom' | 'p__top'>;
+export type CardHeaderSelectors = Selectors<'header' | 'p__bottom' | 'p__top'>;
 
 export default function Header({ children, cc = {}, pad, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
-        cc?: BoxHeaderSelectors;
+        cc?: CardHeaderSelectors;
+        /**
+         * When set adds spacing below or above the header.
+         */
         pad?: 'bottom' | 'top';
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
@@ -41,4 +44,4 @@ export default function Header({ children, cc = {}, pad, ...props }:
     </div>;
 }
 
-Header.displayName = 'BoxHeader';
+Header.displayName = 'CardHeader';

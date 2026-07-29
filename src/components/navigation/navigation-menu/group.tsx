@@ -53,9 +53,6 @@ const styles = createStyles('navigation-menu-group', {
         top: 'calc(100% + var(--f-spacing-sml))',
         borderRadius: 'calc(.25em + var(--f-radius-sml))',
         padding: '.25em',
-        backgroundColor: 'var(--f-clr-surface-100)',
-        border: 'solid 1px var(--f-clr-surface-200)',
-        boxShadow: 'var(--f-shadow-med)',
         overflow: 'hidden',
         zIndex: 99
     }
@@ -165,7 +162,13 @@ export default function Group<A extends AnchorLike<any>>({ children, cc = {}, la
                 <div {...props}
                     id={id + linkId}
                     role="menu"
-                    className={classes(style.menu, props.className)}
+                    className={classes(
+                        'card',
+                        'front',
+                        'sd-med',
+                        style.menu,
+                        props.className
+                    )}
                     style={{
                         ...props.style,
                         left: position === 'start' ? 0 : undefined,

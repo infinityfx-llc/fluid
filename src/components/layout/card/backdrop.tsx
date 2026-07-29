@@ -3,7 +3,7 @@ import { classes } from "../../../../src/utils";
 import { createStyles } from "../../../core/style";
 import { combineClasses } from "../../../core/utils";
 
-const styles = createStyles('box-backdrop', {
+const styles = createStyles('card-backdrop', {
     '.backdrop': {
         position: 'absolute',
         inset: 0,
@@ -65,12 +65,15 @@ const styles = createStyles('box-backdrop', {
     }
 });
 
-export type BoxBackdropSelectors = Selectors<'backdrop' | 'fade' | 'blur' | 'top' | 'bottom'>;
+export type CardBackdropSelectors = Selectors<'backdrop' | 'fade' | 'blur' | 'top' | 'bottom'>;
 
 export default function Backdrop({ children, cc = {}, fade, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
-        cc?: BoxBackdropSelectors;
+        cc?: CardBackdropSelectors;
+        /**
+         * When set will fade out the backdrop to allow for contrast with overlayed content.
+         */
         fade?: 'bottom' | 'top';
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
@@ -92,4 +95,4 @@ export default function Backdrop({ children, cc = {}, fade, ...props }:
     </div>;
 }
 
-Backdrop.displayName = 'BoxBackdrop';
+Backdrop.displayName = 'CardBackdrop';

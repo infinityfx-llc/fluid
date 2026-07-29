@@ -28,7 +28,6 @@ function offsetDate(date: Date, days: number) {
 
 const styles = createStyles('calendar', {
     '.calendar': {
-        backgroundColor: 'var(--f-clr-surface-100)',
         borderRadius: 'var(--f-radius-med)',
         padding: '.6em'
     },
@@ -232,6 +231,9 @@ export default function Calendar({ cc = {}, locale, size = 'med', round, default
     };
 
     return <div {...props} className={classes(
+        'card',
+        'front',
+        'borderless',
         style.calendar,
         round && style.round,
         style[`s__${size}`],

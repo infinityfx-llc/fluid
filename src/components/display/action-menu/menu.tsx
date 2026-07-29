@@ -10,10 +10,7 @@ import { useMenuManager } from '../../../context/menu-manager';
 const styles = createStyles('action-menu-menu', {
     '.menu': {
         padding: '.25em',
-        background: 'var(--f-clr-surface-100)',
-        border: 'solid 1px var(--f-clr-surface-300)',
         borderRadius: 'calc(.25em + var(--f-radius-sml))',
-        boxShadow: 'var(--f-shadow-med)',
         fontSize: 'var(--f-font-size-sml)',
         minWidth: 'min(100vw, 10em)'
     },
@@ -54,6 +51,9 @@ export default function Menu({ children, cc = {}, className, ...props }:
                 role="group"
                 data-variant={variant}
                 className={classes(
+                    'card',
+                    'front',
+                    'sd-med',
                     style.menu,
                     style[`v__${variant}`],
                     className

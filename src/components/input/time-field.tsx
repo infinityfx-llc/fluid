@@ -11,6 +11,7 @@ import Button from './button';
 import Segmented from './segmented';
 import { PopoverRootReference, Selectors } from '../../types';
 import { useLang } from '../../context/lang';
+import { useFluid, useMediaQuery } from '../../hooks';
 
 // parse a time string into 24h hours and minutes
 function parseTime(time: string) {
@@ -126,20 +127,18 @@ const styles = createStyles('time-field', fluid => ({
     },
 
     [`@media(min-width: ${fluid.breakpoints.mob + 1}px)`]: {
-        '.container': {
-            background: 'var(--f-clr-surface-100)',
-            border: 'solid 1px var(--f-clr-surface-200)',
-            boxShadow: 'var(--f-shadow-med)'
-        },
-
         '.dials': {
             fontSize: 'var(--f-font-size-lrg)',
             gridColumn: 'span 2'
+        },
+
+        '.dials.stretch': {
+            gridColumn: 'span 3'
         }
     }
 }));
 
-export type TimeFieldSelectors = Selectors<'container' | 'columns' | 'dials' | 'background' | 'seperator' | 'dial' | 'buttons'>;
+export type TimeFieldSelectors = Selectors<'container' | 'columns' | 'dials' | 'stretch' | 'background' | 'seperator' | 'dial' | 'buttons'>;
 
 /**
  * An input used for entering time.
@@ -162,6 +161,9 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
     locale?: string;
 } & Omit<FieldProps, 'type' | 'min' | 'max' | 'shape'>) {
     const style = combineClasses(styles, cc);
+
+    const { breakpoints } = useFluid();
+    const isModal = useMediaQuery(`(max-width: ${breakpoints.mob}px)`);
     const lang = useLang();
 
     try {
@@ -229,11 +231,18 @@ export default function TimeField({ cc = {}, min, max, locale, defaultValue, ...
                     animate: ['mount', { on: 'unmount', reverse: true }]
                 }}>
                 <div className={classes(
+                    !isModal && 'card',
+                    !isModal && 'front',
+                    !isModal && 'sd-med',
                     style.container,
                     props.round && style.round
                 )}>
                     <div className={style.columns}>
-                        <div className={style.dials}>
+                        <div
+                            className={classes(
+                                style.dials,
+                                !time[2] && style.stretch
+                            )}>
                             <Dial
                                 autoFocus
                                 ref={dial}

@@ -27,10 +27,8 @@ export function useModal() {
 
 const styles = createStyles('modal-root', (fluid) => ({
     '.modal': {
-        background: 'var(--f-clr-surface-100)',
         borderRadius: 'var(--f-radius-lrg)',
         minWidth: 'min(100vw, 16em)',
-        border: 'solid 1px var(--f-clr-surface-300)',
         margin: 'var(--f-spacing-lrg)',
         maxHeight: 'calc(100% - var(--f-spacing-lrg) * 2)',
         touchAction: 'none'
@@ -140,7 +138,12 @@ export default function Root({ children, cc = {}, show, onClose, mobileClosing =
                 <div
                     {...props}
                     ref={combineRefs(ref, modal)}
-                    className={classes(style.modal, props.className)}
+                    className={classes(
+                        'card',
+                        'front',
+                        style.modal,
+                        props.className
+                    )}
                     role="dialog"
                     aria-modal
                     aria-labelledby={id}

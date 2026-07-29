@@ -10,7 +10,6 @@ import Interactable from "../feedback/interactable";
 
 const styles = createStyles('tabs', {
     '.v__default': {
-        backgroundColor: 'var(--f-clr-surface-100)',
         borderRadius: 'var(--f-radius-med)'
     },
 
@@ -102,6 +101,9 @@ export default function Tabs<T extends FluidInputvalue>({ options, cc = {}, vari
 
     return <div {...props} className={classes(
         style.wrapper,
+        variant === 'default' && 'card',
+        variant === 'default' && 'front',
+        'borderless',
         style[`v__${variant}`],
         props.className
     )}>

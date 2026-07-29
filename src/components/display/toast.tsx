@@ -10,9 +10,7 @@ import { useLang } from "../../context/lang";
 const styles = createStyles('toast', {
     '.toast': {
         padding: '.4em',
-        backgroundColor: 'var(--f-clr-surface-100)',
         borderRadius: 'var(--f-radius-med)',
-        border: 'solid 1px var(--f-clr-surface-200)',
         display: 'flex',
         alignItems: 'flex-start',
         gap: 'var(--f-spacing-med)',
@@ -90,6 +88,8 @@ export default function Toast({ children, cc = {}, icon, color, title, round, ac
 
     return <div {...props}
         className={classes(
+            'card',
+            'front',
             style.toast,
             round && style.round,
             props.className

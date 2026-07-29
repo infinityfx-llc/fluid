@@ -3,30 +3,33 @@ import { classes } from "../../../../src/utils";
 import { createGlobalStyles } from "../../../core/style";
 
 createGlobalStyles({
-    '.box': {
-        position: 'relative',
-        isolation: 'isolate',
-        overflow: 'hidden'
+    '.card': {
+        // position: 'relative',
+        isolation: 'isolate'
     },
 
-    '.box > img': {
+    '.card > img': {
         display: 'block',
         objectFit: 'cover'
     },
 
-    '.box.back': {
+    '.card.back': {
         background: 'var(--f-clr-bg-100)'
     },
 
-    '.box.front': {
+    '.card.front': {
         background: 'var(--f-clr-surface-100)'
     },
 
-    '.box.top': {
+    '.card.top': {
         background: 'var(--f-clr-surface-200)'
     },
 
-    '.box:not(.borderless)': {
+    '.card:not(.borderless)': {
+        border: 'solid 1px var(--f-clr-surface-300)'
+    },
+
+    '.card.border': {
         border: 'solid 1px var(--f-clr-surface-300)'
     },
 
@@ -102,12 +105,14 @@ createGlobalStyles({
 /**
  * A versatile composable container component.
  * 
- * @see {@link https://fluid.infinityfx.dev/docs/components/box}
+ * @see {@link https://fluid.infinityfx.dev/docs/components/card}
  */
 export default function Root({ children, elevated, borderless, radius = 'med', color = 'front', pad = 'med', ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         /**
+         * Shows a backdrop shadow.
+         * 
          * @default false
          */
         elevated?: boolean;
@@ -133,7 +138,7 @@ export default function Root({ children, elevated, borderless, radius = 'med', c
         {...props}
         data-fb={!borderless ? 'true' : undefined}
         className={classes(
-            'box',
+            'card',
             color,
             borderless && 'borderless',
             elevated && `sd-med`,
@@ -145,4 +150,4 @@ export default function Root({ children, elevated, borderless, radius = 'med', c
     </div>;
 }
 
-Root.displayName = 'Box';
+Root.displayName = 'Card';

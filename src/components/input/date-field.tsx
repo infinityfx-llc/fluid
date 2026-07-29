@@ -6,11 +6,12 @@ import { Animate } from '@infinityfx/lively';
 import Calendar from './calendar';
 import { PopoverRoot, PopoverContent, PopoverTrigger } from '../layout/popover';
 import { createStyles } from '../../core/style';
-import { combineClasses } from '../../core/utils';
+import { classes, combineClasses } from '../../core/utils';
 import Button from './button';
 import { Icon } from '../../core/icons';
 import { Selectors } from '../../types';
 import { useLang } from '../../context/lang';
+import { useFluid, useMediaQuery } from '../../hooks';
 
 // format a date in yyyy-mm-dd format
 function toString(date?: Date | null) {
@@ -26,21 +27,12 @@ function format(value: string) {
     return [nums.slice(0, 4), nums.slice(4, 6), nums.slice(6, 8)].filter(val => val.length).join('-');
 }
 
-const styles = createStyles('date-field', fluid => ({
-    [`@media(min-width: ${fluid.breakpoints.mob + 1}px)`]: {
-        '.calendar': {
-            boxShadow: 'var(--f-shadow-med)',
-            border: 'solid 1px var(--f-clr-surface-200)'
-        }
-    },
-
-    [`@media(max-width: ${fluid.breakpoints.mob}px)`]: {
-        '.calendar': {
-            background: 'none !important',
-            padding: '0 !important'
-        }
+const styles = createStyles('date-field', {
+    '.calendar': {
+        background: 'none !important',
+        padding: '0 !important'
     }
-}));
+});
 
 export type DateFieldSelectors = Selectors<'calendar'>;
 
@@ -70,6 +62,9 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
     const style = combineClasses(styles, cc);
 
     const lang = useLang();
+    const { breakpoints } = useFluid();
+    const isModal = useMediaQuery(`(max-width: ${breakpoints.mob}px)`);
+
     const [state, setState] = value !== undefined ? [value, onChange] : useState<Date | null>(defaultValue || null);
     const [partial, setPartial] = useState<string | null>(null);
 
@@ -126,9 +121,11 @@ export default function DateField({ cc = {}, value, defaultValue, onChange, disa
                 }}>
 
                 <Calendar
-                    cc={{
-                        calendar: style.calendar
-                    }}
+                    className={classes(
+                        !isModal && 'border',
+                        !isModal && 'sd-med',
+                        isModal && style.calendar
+                    )}
                     minDate={min ? new Date(min) : undefined}
                     maxDate={max ? new Date(max) : undefined}
                     locale={locale}

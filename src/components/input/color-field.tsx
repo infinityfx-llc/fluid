@@ -5,35 +5,28 @@ import Field, { FieldProps } from './field';
 import { Animate } from '@infinityfx/lively';
 import { PopoverRoot, PopoverContent, PopoverTrigger } from '../layout/popover';
 import { createStyles } from '../../core/style';
-import { combineClasses, hexToRgb, rgbToHex } from '../../core/utils';
+import { classes, combineClasses, hexToRgb, rgbToHex } from '../../core/utils';
 import ColorPicker from './color-picker';
 import Swatch from '../display/swatch';
 import { Selectors } from '../../types';
+import { useFluid, useMediaQuery } from '../../hooks';
 
 function parsePartialHex(str: string) {
     return `#${rgbToHex(hexToRgb(str.replace(/[^\da-f]/g, '').slice(0, 6)))}`;
 }
 
-const styles = createStyles('color-field', fluid => ({
+const styles = createStyles('color-field', {
     '.picker': {
-        padding: 'var(--f-spacing-sml)'
+        padding: 'var(--f-spacing-sml)',
+        borderRadius: 'var(--f-radius-med)'
     },
 
     '.swatch': {
         marginLeft: '.4em'
-    },
-
-    [`@media(min-width: ${fluid.breakpoints.mob + 1}px)`]: {
-        '.picker': {
-            boxShadow: 'var(--f-shadow-med)',
-            backgroundColor: 'var(--f-clr-surface-100)',
-            border: 'solid 1px var(--f-clr-surface-200)',
-            borderRadius: 'var(--f-radius-med)'
-        }
     }
-}));
+});
 
-export type ColorFieldSelectors = Selectors<'calendar'>;
+export type ColorFieldSelectors = Selectors<'picker'>;
 
 /**
  * An input field which displays a color picker.
@@ -49,6 +42,9 @@ export default function ColorField({ cc = {}, value, defaultValue, onChange, dis
         disabled?: boolean;
     } & Omit<FieldProps, 'disabled' | 'value' | 'defaultValue' | 'onChange'>) {
     const style = combineClasses(styles, cc);
+
+    const { breakpoints } = useFluid();
+    const isModal = useMediaQuery(`(max-width: ${breakpoints.mob}px)`);
 
     const [state, setState] = value !== undefined ? [value, onChange] : useState(defaultValue || '');
     const [partial, setPartial] = useState<string | null>(null);
@@ -88,7 +84,12 @@ export default function ColorField({ cc = {}, value, defaultValue, onChange, dis
                     animate: ['mount', { on: 'unmount', reverse: true }]
                 }}>
 
-                <div className={style.picker}>
+                <div className={classes(
+                    !isModal && 'card',
+                    !isModal && 'front',
+                    !isModal && 'sd-med',
+                    style.picker
+                )}>
                     <ColorPicker value={state} onChange={hex => setState?.(`#${hex}`)} disabled={props.readOnly || disabled} />
                 </div>
             </Animate>

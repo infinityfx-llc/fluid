@@ -14,12 +14,10 @@ import { useLang } from '../../context/lang';
 const styles = createStyles('drawer', {
     '.drawer': {
         position: 'absolute',
-        background: 'var(--f-clr-surface-100)',
         display: 'flex',
         flexDirection: 'column',
         padding: 'var(--f-spacing-med)',
         width: 'min(100vw, 16em)',
-        border: 'solid 1px var(--f-clr-surface-300)',
         height: '100dvh',
         top: 0,
         touchAction: 'none'
@@ -115,6 +113,8 @@ export default function Drawer({ children, cc = {}, show, onClose, position = 'r
                 aria-modal
                 aria-labelledby={id}
                 className={classes(
+                    'card',
+                    'front',
                     style.drawer,
                     props.className
                 )}

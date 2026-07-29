@@ -15,10 +15,7 @@ import { useMenuManager } from '../../../context/menu-manager';
 
 const styles = createStyles('combobox-content', {
     '.container:not(.modal)': {
-        backgroundColor: 'var(--f-clr-surface-100)',
-        border: 'solid 1px var(--f-clr-surface-300)',
         borderRadius: 'calc(.25em + var(--f-radius-sml))',
-        boxShadow: 'var(--f-shadow-med)',
         minWidth: 'min(100vw, 10em)',
         width: '100%'
     },
@@ -201,6 +198,9 @@ export default function Content({
                 role="listbox"
                 data-variant={isModal ? 'default' : variant}
                 className={classes(
+                    'card',
+                    'front',
+                    'sd-med',
                     style.container,
                     style[`s__${size}`],
                     style[`v__${isModal ? 'default' : variant}`],

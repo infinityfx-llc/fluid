@@ -17,10 +17,7 @@ const styles = createStyles('action-menu-group', {
     '.menu': {
         position: 'absolute',
         padding: '.25em',
-        background: 'var(--f-clr-surface-100)',
-        border: 'solid 1px var(--f-clr-surface-300)',
         borderRadius: 'calc(.25em + var(--f-radius-sml))',
-        boxShadow: 'var(--f-shadow-med)',
         fontSize: 'var(--f-font-size-sml)',
         minWidth: 'min(100vw, 10em)',
         top: 'calc(-1px - .25em)'
@@ -125,6 +122,9 @@ export default function Group({ children, cc = {}, label, className, ...props }:
                 id={id}
                 role="menu"
                 className={classes(
+                    'card',
+                    'front',
+                    'sd-med',
                     style.menu,
                     style[`v__${variant}`]
                 )}

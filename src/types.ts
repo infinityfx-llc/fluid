@@ -89,9 +89,9 @@ export type FluidComponents = {
     toggle?: FluidSelectorStyles<import('./components/input/toggle').ToggleSelectors>;
     'accordion-item'?: FluidSelectorStyles<import('./components/layout/accordion/item').AccordionItemSelectors>;
     'accordion-root'?: FluidSelectorStyles<import('./components/layout/accordion/root').AccordionRootSelectors>;
-    'box-content'?: FluidSelectorStyles<import('./components/layout/box/content').BoxContentSelectors>;
-    'box-header'?: FluidSelectorStyles<import('./components/layout/box/header').BoxHeaderSelectors>;
-    'box-backdrop'?: FluidSelectorStyles<import('./components/layout/box/backdrop').BoxBackdropSelectors>;
+    'card-content'?: FluidSelectorStyles<import('./components/layout/card/content').CardContentSelectors>;
+    'card-header'?: FluidSelectorStyles<import('./components/layout/card/header').CardHeaderSelectors>;
+    'card-backdrop'?: FluidSelectorStyles<import('./components/layout/card/backdrop').CardBackdropSelectors>;
     'sidebar-heading'?: FluidSelectorStyles<import('./components/layout/sidebar/heading').SidebarHeadingSelectors>;
     'sidebar-item'?: FluidSelectorStyles<import('./components/layout/sidebar/item').SidebarItemSelectors>;
     'sidebar-root'?: FluidSelectorStyles<import('./components/layout/sidebar/root').SidebarRootSelectors>;

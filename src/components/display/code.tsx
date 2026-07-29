@@ -14,8 +14,6 @@ import { useLang } from "../../context/lang";
 const styles = createStyles('code', {
     '.wrapper': {
         fontSize: 'var(--f-font-size-sml)',
-        backgroundColor: 'var(--f-clr-surface-200)',
-        border: 'solid 1px var(--f-clr-surface-200)',
         borderRadius: 'var(--f-radius-med)',
         overflow: 'hidden',
         position: 'relative',
@@ -116,7 +114,12 @@ export default function Code({ children, cc = {}, title, lineNumbers = true, dan
 
     useLayoutEffect(() => () => clearTimeout(timeout.current), []);
 
-    return <div {...props} className={classes(style.wrapper, props.className)}>
+    return <div {...props} className={classes(
+        'card',
+        'top',
+        style.wrapper,
+        props.className
+    )}>
         {title && <div className={style.header}>
             {title}
         </div>}
