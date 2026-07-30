@@ -174,9 +174,7 @@ export default function Group<A extends AnchorLike<any>>({ children, cc = {}, la
                         left: position === 'start' ? 0 : undefined,
                         right: position === 'end' ? 0 : undefined
                     }}>
-                    <Animate stagger={.05}>
-                        {children}
-                    </Animate>
+                    {children}
                 </div>
             </Animate>}
         </LayoutGroup>

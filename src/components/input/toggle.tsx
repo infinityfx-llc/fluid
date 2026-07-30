@@ -183,7 +183,7 @@ export default function Toggle({ children, cc = {}, size = 'med', compact = fals
         <input
             {...split}
             ref={inputRef}
-            type="checkbox"
+            type="checkbox" // todo: also support radio?
             value={selected}
             checked={!!selected}
             className={style.input}
