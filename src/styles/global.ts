@@ -16,13 +16,13 @@ export default {
 
     'html, body': {
         width: '100%',
-        minHeight: '100dvh',
-        fontFamily: 'var(--f-font-family), system-ui, sans-serif'
+        minHeight: '100dvh'
     },
 
-    body: {
+    '#__fluid': {
         backgroundColor: 'var(--f-clr-bg-100)',
-        color: 'var(--f-clr-text-100)'
+        color: 'var(--f-clr-text-100)',
+        fontFamily: 'var(--f-font-family), system-ui, sans-serif'
     },
 
     a: {
