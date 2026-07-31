@@ -38,12 +38,15 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
         }
 
         function start(e: MouseEvent | TouchEvent | KeyboardEvent) {
-            const isTouch = touchOnly.current = 'changedTouches' in e;
+            const isTouch = 'changedTouches' in e;
             const isValidKey = 'key' in e && (e.key === 'Enter' || e.key === ' ');
             const isValidClick = 'button' in e && e.button === 0 && !touchOnly.current;
             const isValidAction = isValidClick || isTouch || isValidKey;
 
-            if (isTouch) touch.current = e.changedTouches[0];
+            if (isTouch) {
+                touchOnly.current = true;
+                touch.current = e.changedTouches[0];
+            }
             if (isValidAction) pressed.current = true;
             if (longpress && isValidAction) action(400);
         }
