@@ -27,9 +27,15 @@
 	},
 	"typesVersions": {
 		"*": {
-			"hooks": ["./dist/types/src/hooks.d.ts"],
-			"utils": ["./dist/types/src/utils.d.ts"],
-			"css": ["./dist/types/src/css.d.ts"]
+			"hooks": [
+				"./dist/types/src/hooks.d.ts"
+			],
+			"utils": [
+				"./dist/types/src/utils.d.ts"
+			],
+			"css": [
+				"./dist/types/src/css.d.ts"
+			]
 		}
 	},
 	"repository": "infinityfx-llc/fluid",
@@ -49,15 +55,19 @@
 	],
 	"scripts": {
 		"build": "rollup -c --environment NODE_ENV:production",
-		"watch": "rollup -c -w --watch.onEnd=\"npx fluid compile\""
+		"watch": "rollup -c -w --watch.onEnd=\"npx fluid compile\"",
+		"demo": "npx fluid compile -d && vite e2e/demo --port 5173",
+		"test:e2e": "playwright test --project=\"e2e\"",
+		"test:videos": "playwright test --project=\"videos\"",
+		"test:ui": "playwright test --ui"
 	},
 	"bin": {
 		"@infinityfx/fluid": "dist/bin/cli.js",
 		"fluid": "dist/bin/cli.js"
 	},
 	"dependencies": {
-		"tslib": "^2.8.1",
-		"glob": "^13.0.6"
+		"glob": "^13.0.6",
+		"tslib": "^2.8.1"
 	},
 	"peerDependencies": {
 		"@infinityfx/lively": ">=5.0.0",
@@ -66,14 +76,16 @@
 		"react-icons": ">=5.4.0"
 	},
 	"devDependencies": {
+		"@types/node": "^26.1.2",
 		"@infinityfx/lively": "^5.0.0",
+		"@playwright/test": "^1.50.0",
 		"@rollup/plugin-commonjs": "^29.0.3",
 		"@rollup/plugin-node-resolve": "^16.0.3",
 		"@rollup/plugin-terser": "^1.0.0",
 		"@rollup/plugin-typescript": "^12.3.0",
-		"@types/node": "^26.1.1",
 		"@types/react": "^19.2.17",
 		"@types/react-dom": "^19.2.3",
+		"@vitejs/plugin-react": "^4.3.4",
 		"react": "^19.2.8",
 		"react-dom": "^19.2.8",
 		"react-icons": "^5.7.0",
@@ -81,7 +93,8 @@
 		"rollup-plugin-delete": "^3.0.2",
 		"rollup-plugin-preserve-directives": "^0.4.0",
 		"rollup-plugin-preserve-shebangs": "^0.2.0",
-		"typescript": "^6.0.3"
+		"typescript": "^6.0.3",
+		"vite": "^6.0.7"
 	},
 	"sideEffects": false
 }
