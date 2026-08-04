@@ -6,10 +6,11 @@ test.describe('Fields', () => {
     await injectCursorOverlay(page);
 
     await page.goto('/field');
-    await page.waitForTimeout(600);
   });
 
   test('Field demo', async ({ page }) => {
+    await page.waitForTimeout(1200);
+    
     const frame = page.frameLocator('iframe');
 
     const field = frame.getByLabel('username');

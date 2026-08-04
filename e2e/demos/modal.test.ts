@@ -6,10 +6,11 @@ test.describe('Modals', () => {
     await injectCursorOverlay(page);
 
     await page.goto('/modal');
-    await page.waitForTimeout(600);
   });
 
   test('Modal demo', async ({ page }) => {
+    await page.waitForTimeout(1200);
+    
     const frame = page.frameLocator('iframe');
 
     const openBtn = frame.getByRole('button', { name: 'open' });

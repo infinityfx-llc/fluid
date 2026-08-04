@@ -112,10 +112,74 @@ export const test = baseTest.extend({
 			ffmpegProcess.stdin.end();
 		}
 
-		// Wait for FFmpeg to finish encoding MP4
+		// Wait for raw FFmpeg encoding to complete
 		await new Promise<void>((resolve) => {
 			ffmpegProcess.on('close', () => resolve());
 		});
+
+		// Post-process with FFmpeg: trim initial load delay + apply smooth zoom-out (start) promo effect
+		const tempPath = targetPath.replace(/\.mp4$/, '-raw.mp4');
+		if (fs.existsSync(targetPath)) {
+			try {
+				fs.renameSync(targetPath, tempPath);
+
+				await new Promise<void>((resolve) => {
+					// Duration of zoom transitions in frames (36 frames = 0.6s at 60fps)
+					const D = 36;
+					// Calculate actual total frames minus 0.5s (30 frames trimmed at start)
+					const actualTotalFrames = Math.max(D * 2, framesWritten - 30);
+					const endStart = Math.max(D + 1, actualTotalFrames - D);
+
+					// Double-precision floating point (.0) zoompan evaluation for smooth subpixel motion at 1080x1920
+					const zoomFilter = `zoompan=z=if(lte(on\\,${D})\\,1.18-0.18*(1-(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0))\\,if(gte(on\\,${endStart})\\,1.0+0.18*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)\\,1.0)):x=(iw/2.0)-(iw/zoom/2.0):y=(ih/2.0)-(ih/zoom/2.0):d=1:s=1080x1920:fps=60`;
+
+					// Color fade in (start) and fade out (end) to #f7f6f5
+					const fadeOutStartSec = Math.max(0.5, (actualTotalFrames - 24) / 60).toFixed(2);
+					const fadeInFilter = `fade=t=in:st=0:d=0.4:color=0xf7f6f5`;
+					const fadeOutFilter = `fade=t=out:st=${fadeOutStartSec}:d=0.4:color=0xf7f6f5`;
+
+					const vfFilter = `${zoomFilter},${fadeInFilter},${fadeOutFilter}`;
+
+					const postProcess = spawn(ffmpegPath.path, [
+						'-y',
+						'-ss', '0.5', // Trim initial page loading delay
+						'-i', tempPath,
+						'-vf', vfFilter,
+						'-c:v', 'libx264',
+						'-pix_fmt', 'yuv420p',
+						targetPath
+					]);
+
+					postProcess.stderr.on('data', (data) => {
+						// Log FFmpeg errors if any occur
+						const msg = data.toString();
+						if (msg.includes('Error') || msg.includes('Invalid')) {
+							console.error('FFmpeg post-process msg:', msg);
+						}
+					});
+
+					postProcess.on('error', (err) => {
+						console.error('Post-process error:', err);
+						if (fs.existsSync(tempPath) && !fs.existsSync(targetPath)) {
+							fs.renameSync(tempPath, targetPath);
+						}
+						resolve();
+					});
+
+					postProcess.on('close', (code) => {
+						if (code !== 0 && fs.existsSync(tempPath) && !fs.existsSync(targetPath)) {
+							console.error(`FFmpeg post-process exited with code ${code}`);
+							fs.renameSync(tempPath, targetPath);
+						} else if (fs.existsSync(tempPath)) {
+							fs.unlinkSync(tempPath);
+						}
+						resolve();
+					});
+				});
+			} catch (err) {
+				console.error('Failed to post-process video:', err);
+			}
+		}
 	}
 });
 

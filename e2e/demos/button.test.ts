@@ -6,10 +6,11 @@ test.describe('Buttons', () => {
     await injectCursorOverlay(page);
 
     await page.goto('/button');
-    await page.waitForTimeout(600);
   });
 
   test('Button demo', async ({ page }) => {
+    await page.waitForTimeout(1200);
+    
     const frame = page.frameLocator('iframe');
 
     let btn;
