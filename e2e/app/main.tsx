@@ -2,6 +2,7 @@ import '../../fluid.css';
 
 import ReactDOM from 'react-dom/client';
 import { Badge, Card, CardContent, FluidProvider } from '@/fluid';
+import { useEffect } from 'react';
 
 const modules = import.meta.glob<{ default: React.ComponentType }>('../demos/*.tsx');
 const routes: Record<string, () => Promise<{ default: React.ComponentType }>> = {};
@@ -19,6 +20,12 @@ const loader = path ? routes[path] : null;
 const Component = loader ? (await loader()).default : null;
 
 function DemoView() {
+	useEffect(() => {
+		console.log('demoload');
+
+		requestAnimationFrame(() => document.documentElement.dataset.rTick = String(performance.now()));
+	}, []);
+
 	return <FluidProvider>
 		<body
 			style={{

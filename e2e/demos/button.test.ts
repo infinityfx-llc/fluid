@@ -1,26 +1,15 @@
 import { test } from '../utils/video-recorder';
-import { injectCursorOverlay } from '../utils/cursor-overlay';
+import { getUtilities, setupDemoTest } from '../utils/commands';
 
 test.describe('Buttons', () => {
-  test.beforeEach(async ({ page }) => {
-    await injectCursorOverlay(page);
-
-    await page.goto('/button');
-  });
+  test.beforeEach(setupDemoTest('/button'));
 
   test('Button demo', async ({ page }) => {
-    await page.waitForTimeout(1600);
+    const { delay, click } = getUtilities(page);
+    await delay(1000);
 
-    const frame = page.frameLocator('iframe');
+    for (const name of ['default', 'inverted', 'muted', 'minimal']) await click(name);
 
-    let btn;
-
-    for (const name of ['default', 'inverted', 'muted', 'minimal']) {
-      btn = frame.getByRole('button', { name });
-      await btn.click({ delay: 80 });
-      await page.waitForTimeout(800);
-    }
-
-    await page.waitForTimeout(800);
+    await delay(1000);
   });
 });

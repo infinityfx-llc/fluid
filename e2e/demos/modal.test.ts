@@ -1,30 +1,17 @@
 import { test } from '../utils/video-recorder';
-import { injectCursorOverlay } from '../utils/cursor-overlay';
+import { getUtilities, setupDemoTest } from '../utils/commands';
 
 test.describe('Modals', () => {
-  test.beforeEach(async ({ page }) => {
-    await injectCursorOverlay(page);
-
-    await page.goto('/modal');
-  });
+  test.beforeEach(setupDemoTest('/modal'));
 
   test('Modal demo', async ({ page }) => {
-    await page.waitForTimeout(1600);
-    
-    const frame = page.frameLocator('iframe');
+    const { delay, click, typeByLabel } = getUtilities(page);
+    await delay(1000);
 
-    const openBtn = frame.getByRole('button', { name: 'open' });
-    await openBtn.click({ delay: 80 });
-    await page.waitForTimeout(800);
+    await click('open');
+    await typeByLabel('first name', 'John');
+    await click('confirm');
 
-    const field = frame.getByLabel('first name');
-    field.click({ delay: 80 });
-    await page.waitForTimeout(300);
-    page.keyboard.type('John', { delay: 100 });
-    await page.waitForTimeout(1000);
-
-    const confirmBtn = frame.getByRole('button', { name: 'confirm' });
-    await confirmBtn.click({ delay: 80 });
-    await page.waitForTimeout(1600);
+    await delay(1000);
   });
 });

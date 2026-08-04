@@ -40,15 +40,19 @@ export const test = baseTest.extend({
 		ffmpegProcess.on('error', (err) => console.error('FFmpeg error:', err));
 
 		let startTime = -1;
+		let startWallClock = -1;
 		let framesWritten = 0;
 		let lastBuffer: Buffer | null = null;
+		let demoloadReceived = false;
 
-		// Reset recording clock when main page finishes navigating to ignore initial page loading delays
-		page.on('framenavigated', (frame) => {
-			if (frame === page.mainFrame()) {
+		// Reset recording clock when React main.tsx logs 'demoload'
+		page.on('console', (msg) => {
+			if (msg.text() === 'demoload') {
 				startTime = -1;
+				startWallClock = -1;
 				framesWritten = 0;
 				lastBuffer = null;
+				demoloadReceived = true;
 			}
 		});
 
@@ -60,16 +64,20 @@ export const test = baseTest.extend({
 				height: 1920
 			},
 			onFrame: ({ data, timestamp }) => {
+				// Ignore pre-render frames until the current page fires 'demoload'
+				if (!demoloadReceived) return;
+
 				const timeInSeconds = timestamp / 1000;
 
 				if (startTime === -1) {
 					startTime = timeInSeconds;
+					startWallClock = Date.now() / 1000; // Capture matching wall clock baseline
 					lastBuffer = data;
 					return;
 				}
 
 				const elapsedTime = timeInSeconds - startTime;
-				const targetFrames = Math.round(elapsedTime * TARGET_FPS);
+				const targetFrames = elapsedTime ? Math.round(elapsedTime * TARGET_FPS) : 1;
 
 				// Output frames only when wall-clock time reaches new 30fps frame bucket(s)
 				if (targetFrames > framesWritten) {
@@ -89,16 +97,12 @@ export const test = baseTest.extend({
 		// Run test
 		await use(page);
 
-		// Stop screencast
-		await page.screencast.stop();
+		// Pad any static time remaining at the end of the test using matching Date.now() wall clock
+		const endWallClock = Date.now() / 1000;
+		if (startWallClock !== -1 && lastBuffer) {
+			const elapsedWallClock = endWallClock - startWallClock;
+			const finalTargetFrames = Math.round(elapsedWallClock * TARGET_FPS);
 
-		// Calculate total elapsed time at the end of the test to capture static pauses (e.g. page.waitForTimeout at end)
-		const endTimeInSeconds = Date.now() / 1000;
-		if (startTime !== -1 && lastBuffer) {
-			const finalElapsedTime = endTimeInSeconds - startTime;
-			const finalTargetFrames = Math.round(finalElapsedTime * TARGET_FPS);
-
-			// Pad the remaining static time all the way to the end of the test
 			while (framesWritten < finalTargetFrames) {
 				if (ffmpegProcess.stdin && !ffmpegProcess.stdin.destroyed) {
 					ffmpegProcess.stdin.write(lastBuffer);
@@ -106,6 +110,9 @@ export const test = baseTest.extend({
 				framesWritten++;
 			}
 		}
+
+		// Stop screencast
+		await page.screencast.stop();
 
 		// Flush final frame & send EOF to FFmpeg
 		if (ffmpegProcess.stdin && !ffmpegProcess.stdin.destroyed) {
@@ -117,23 +124,19 @@ export const test = baseTest.extend({
 			ffmpegProcess.on('close', () => resolve());
 		});
 
-		// Post-process with FFmpeg: trim initial load delay + apply smooth zoom-out (start) promo effect
+		// Post-process with FFmpeg: apply smooth promo zoom & color fade transitions (page load is excluded by 'demoload')
 		const tempPath = targetPath.replace(/\.mp4$/, '-raw.mp4');
 		if (fs.existsSync(targetPath)) {
 			try {
 				fs.renameSync(targetPath, tempPath);
 
 				await new Promise<void>((resolve) => {
-					// Time in seconds to trim off the start to exclude page load delay
-					const TRIM_START_SEC = 0.8;
-					const trimmedFrames = Math.round(TRIM_START_SEC * TARGET_FPS);
-
 					// Transition duration synchronized for both zoom & color fade (0.25s = 15 frames at 60fps)
 					const TRANSITION_SEC = 0.25;
 					const D = Math.round(TRANSITION_SEC * TARGET_FPS); // 15 frames
 
-					// Calculate exact remaining frame count and timestamps AFTER trimming
-					const actualTotalFrames = Math.max(D * 2, framesWritten - trimmedFrames);
+					// Calculate exact total frames (demoload excluded initial page loading)
+					const actualTotalFrames = Math.max(D * 2, framesWritten);
 					const endStart = Math.max(D + 1, actualTotalFrames - D);
 
 					// Double-precision floating point (.0) zoompan evaluation for smooth subpixel motion at 1080x1920
@@ -148,7 +151,6 @@ export const test = baseTest.extend({
 
 					const postProcess = spawn(ffmpegPath.path, [
 						'-y',
-						'-ss', String(TRIM_START_SEC), // Trim initial page loading delay
 						'-i', tempPath,
 						'-vf', vfFilter,
 						'-c:v', 'libx264',
