@@ -19,6 +19,7 @@ export default defineConfig({
 		},
 		{
 			name: 'videos',
+			workers: 1,
 			testDir: './e2e/demos',
 			testMatch: /.*\.test\.ts/,
 			outputDir: './videos',
@@ -27,8 +28,13 @@ export default defineConfig({
 				viewport: { width: 1080, height: 1920 },
 				isMobile: true,
 				hasTouch: true,
+				headless: false,
 				launchOptions: {
-					slowMo: 500
+					args: [
+						'--disable-frame-rate-limit',
+						'--run-all-compositor-stages-before-draw',
+						'--disable-gpu-throttling'
+					]
 				}
 			}
 		}

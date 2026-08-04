@@ -22,13 +22,16 @@ export const test = baseTest.extend({
 		const cleanName = testInfo.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 		const targetPath = path.join(outputDir, `${cleanName}.mp4`);
 
+		const TARGET_FPS = 60;
+
 		// Spawn FFmpeg to read raw mjpeg frames from stdin pipe
 		const ffmpegProcess = spawn(ffmpegPath.path, [
 			'-y', // Overwrite output files
 			'-f', 'image2pipe', // Read images from pipe
 			'-vcodec', 'mjpeg', // Input format is JPEG
-			'-r', '30', // Input framerate
+			'-framerate', String(TARGET_FPS), // Set input pipe framerate matching TARGET_FPS
 			'-i', '-', // Input from stdin
+			'-r', String(TARGET_FPS), // Output framerate (60fps CFR)
 			'-c:v', 'libx264', // Encode with H.264
 			'-pix_fmt', 'yuv420p', // Pixel format for maximum player compatibility
 			targetPath // Output file
@@ -40,9 +43,18 @@ export const test = baseTest.extend({
 		let framesWritten = 0;
 		let lastBuffer: Buffer | null = null;
 
+		// Reset recording clock when main page finishes navigating to ignore initial page loading delays
+		page.on('framenavigated', (frame) => {
+			if (frame === page.mainFrame()) {
+				startTime = -1;
+				framesWritten = 0;
+				lastBuffer = null;
+			}
+		});
+
 		// Use Playwright's official page.screencast API
 		await page.screencast.start({
-			quality: 100,
+			quality: 90,
 			size: {
 				width: 1080,
 				height: 1920
@@ -53,20 +65,23 @@ export const test = baseTest.extend({
 				if (startTime === -1) {
 					startTime = timeInSeconds;
 					lastBuffer = data;
+					return;
 				}
 
-				// Calculate how many total 30fps frames SHOULD exist by this timestamp
 				const elapsedTime = timeInSeconds - startTime;
-				const targetFrames = Math.round(elapsedTime * 30);
+				const targetFrames = Math.round(elapsedTime * TARGET_FPS);
 
-				// Fill static time gaps with the previous frame to achieve Constant Frame Rate (30fps)
-				while (framesWritten < targetFrames) {
-					if (ffmpegProcess.stdin && !ffmpegProcess.stdin.destroyed && lastBuffer) {
-						ffmpegProcess.stdin.write(lastBuffer);
+				// Output frames only when wall-clock time reaches new 30fps frame bucket(s)
+				if (targetFrames > framesWritten) {
+					while (framesWritten < targetFrames) {
+						if (ffmpegProcess.stdin && !ffmpegProcess.stdin.destroyed && lastBuffer) {
+							ffmpegProcess.stdin.write(lastBuffer);
+						}
+						framesWritten++;
 					}
-					framesWritten++;
 				}
 
+				// Store the newest frame for the current or next frame slot
 				lastBuffer = data;
 			}
 		});
@@ -81,7 +96,7 @@ export const test = baseTest.extend({
 		const endTimeInSeconds = Date.now() / 1000;
 		if (startTime !== -1 && lastBuffer) {
 			const finalElapsedTime = endTimeInSeconds - startTime;
-			const finalTargetFrames = Math.round(finalElapsedTime * 30);
+			const finalTargetFrames = Math.round(finalElapsedTime * TARGET_FPS);
 
 			// Pad the remaining static time all the way to the end of the test
 			while (framesWritten < finalTargetFrames) {
