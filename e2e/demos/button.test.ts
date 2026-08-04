@@ -9,8 +9,8 @@ test.describe('Buttons', () => {
   });
 
   test('Button demo', async ({ page }) => {
-    await page.waitForTimeout(1200);
-    
+    await page.waitForTimeout(1600);
+
     const frame = page.frameLocator('iframe');
 
     let btn;
@@ -20,5 +20,7 @@ test.describe('Buttons', () => {
       await btn.click({ delay: 80 });
       await page.waitForTimeout(800);
     }
+
+    await page.waitForTimeout(800);
   });
 });

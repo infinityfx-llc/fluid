@@ -20,6 +20,6 @@ test.describe('Fields', () => {
     await page.waitForTimeout(800);
 
     field.blur();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(1600);
   });
 });

@@ -9,7 +9,7 @@ test.describe('Modals', () => {
   });
 
   test('Modal demo', async ({ page }) => {
-    await page.waitForTimeout(1200);
+    await page.waitForTimeout(1600);
     
     const frame = page.frameLocator('iframe');
 
@@ -25,6 +25,6 @@ test.describe('Modals', () => {
 
     const confirmBtn = frame.getByRole('button', { name: 'confirm' });
     await confirmBtn.click({ delay: 80 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(1600);
   });
 });

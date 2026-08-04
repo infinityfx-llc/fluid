@@ -124,25 +124,31 @@ export const test = baseTest.extend({
 				fs.renameSync(targetPath, tempPath);
 
 				await new Promise<void>((resolve) => {
-					// Duration of zoom transitions in frames (36 frames = 0.6s at 60fps)
-					const D = 36;
-					// Calculate actual total frames minus 0.5s (30 frames trimmed at start)
-					const actualTotalFrames = Math.max(D * 2, framesWritten - 30);
+					// Time in seconds to trim off the start to exclude page load delay
+					const TRIM_START_SEC = 0.8;
+					const trimmedFrames = Math.round(TRIM_START_SEC * TARGET_FPS);
+
+					// Transition duration synchronized for both zoom & color fade (0.25s = 15 frames at 60fps)
+					const TRANSITION_SEC = 0.25;
+					const D = Math.round(TRANSITION_SEC * TARGET_FPS); // 15 frames
+
+					// Calculate exact remaining frame count and timestamps AFTER trimming
+					const actualTotalFrames = Math.max(D * 2, framesWritten - trimmedFrames);
 					const endStart = Math.max(D + 1, actualTotalFrames - D);
 
 					// Double-precision floating point (.0) zoompan evaluation for smooth subpixel motion at 1080x1920
 					const zoomFilter = `zoompan=z=if(lte(on\\,${D})\\,1.18-0.18*(1-(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0))\\,if(gte(on\\,${endStart})\\,1.0+0.18*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)\\,1.0)):x=(iw/2.0)-(iw/zoom/2.0):y=(ih/2.0)-(ih/zoom/2.0):d=1:s=1080x1920:fps=60`;
 
-					// Color fade in (start) and fade out (end) to #f7f6f5
-					const fadeOutStartSec = Math.max(0.5, (actualTotalFrames - 24) / 60).toFixed(2);
-					const fadeInFilter = `fade=t=in:st=0:d=0.4:color=0xf7f6f5`;
-					const fadeOutFilter = `fade=t=out:st=${fadeOutStartSec}:d=0.4:color=0xf7f6f5`;
+					// Synchronized 0.25s color fade in (start) and fade out (end) to #f7f6f5
+					const fadeOutStartSec = Math.max(TRANSITION_SEC, (actualTotalFrames - D) / TARGET_FPS).toFixed(2);
+					const fadeInFilter = `fade=t=in:st=0:d=${TRANSITION_SEC}:color=0xf7f6f5`;
+					const fadeOutFilter = `fade=t=out:st=${fadeOutStartSec}:d=${TRANSITION_SEC}:color=0xf7f6f5`;
 
 					const vfFilter = `${zoomFilter},${fadeInFilter},${fadeOutFilter}`;
 
 					const postProcess = spawn(ffmpegPath.path, [
 						'-y',
-						'-ss', '0.5', // Trim initial page loading delay
+						'-ss', String(TRIM_START_SEC), // Trim initial page loading delay
 						'-i', tempPath,
 						'-vf', vfFilter,
 						'-c:v', 'libx264',
