@@ -9,6 +9,7 @@ rollup.config.js
 fluid.config.js
 .gitignore
 
+fluid.css
 e2e/
 playwright.config.ts
 playwright-report/

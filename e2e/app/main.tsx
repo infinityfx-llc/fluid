@@ -1,7 +1,8 @@
+import '../../fluid.css';
+
 import ReactDOM from 'react-dom/client';
 import { Badge, Card, CardContent, FluidProvider } from '@/fluid';
 
-// @ts-expect-error
 const modules = import.meta.glob<{ default: React.ComponentType }>('../demos/*.tsx');
 const routes: Record<string, () => Promise<{ default: React.ComponentType }>> = {};
 

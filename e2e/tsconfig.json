@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "types": ["node", "vite/client"],
     "paths": {
       "@/fluid": ["../dist/types/src/index.d.ts"]
     }

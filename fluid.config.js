@@ -16,5 +16,6 @@ export default {
                 accent: ['#ffffff']
             }
         }
-    }
+    },
+    cssOutput: 'manual'
 }

@@ -3,5 +3,6 @@ dist/
 compiled/
 .rollup.cache/
 
+fluid.css
 playwright-report/
 videos/
