@@ -34,7 +34,7 @@ export default defineConfig({
 		}
 	],
 	webServer: {
-		command: 'npx vite e2e/demo --port 5173',
+		command: 'npx fluid compile -d && npx vite e2e/app --port 5173',
 		url: 'http://localhost:5173',
 		reuseExistingServer: true
 	},

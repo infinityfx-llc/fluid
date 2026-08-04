@@ -21,13 +21,13 @@ This skill defines the broad guidelines and architectural rules for working with
   - *Labels and Error Messages:* Use `<Annotation>` to provide context or errors.
   - *Separation:* Use `<Divider>` instead of standard `<hr />` elements.
   - *Scrollable Containers:* Use `<Scrollarea>` for custom scrolling areas.
-- **Strict Adherence:** Rules regarding [Theming and Styling](rules/theming-and-styling.md) (especially concerning color usage and variants) are **STRICTLY ENFORCED**. Do not deviate from them.
+- **Strict Adherence:** Rules regarding [Theming and Styling](rules/theming-and-styling.md) (especially concerning CSS variable naming schemas, color usage, and variants) are **STRICTLY ENFORCED**. Do not deviate from them.
 
 ## 2. Specialized Skills
 
 For detailed instructions, refer to the following specialized skill files in the `rules/` directory:
 
 - [Configuration and Setup](rules/configuration-and-setup.md): Rules for initializing Fluid UI, compiling CSS, and configuring `fluid.config.js`.
-- [Theming and Styling](rules/theming-and-styling.md): **CRITICAL.** Rules for applying colors, variants, and custom styles safely.
+- [Theming and Styling](rules/theming-and-styling.md): **CRITICAL.** Rules for CSS variable naming schemas (`--f-clr-primary-100`, `--f-spacing-lrg`), colors, variants, and custom styles safely.
 - [Component Composition](rules/component-composition.md): Best practices for combining components, accessibility, and layouts.
 - [Animations](rules/animations.md): Guidelines for using `@infinityfx/lively` to animate custom elements and layouts.

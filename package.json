@@ -1,6 +1,6 @@
 {
 	"name": "@infinityfx/fluid",
-	"version": "2.0.2",
+	"version": "2.0.3",
 	"type": "module",
 	"description": "React UI library, using zero-runtime CSS-in-JS.",
 	"main": "dist/index.js",
@@ -56,9 +56,9 @@
 	"scripts": {
 		"build": "rollup -c --environment NODE_ENV:production",
 		"watch": "rollup -c -w --watch.onEnd=\"npx fluid compile\"",
-		"demo": "npx fluid compile -d && vite e2e/demo --port 5173",
+		"demo": "npx fluid compile -d && vite e2e/app --port 5173",
 		"test:e2e": "playwright test --project=\"e2e\"",
-		"test:videos": "playwright test --project=\"videos\" --workers=1"
+		"test:videos": "playwright test --project=\"videos\""
 	},
 	"bin": {
 		"@infinityfx/fluid": "dist/bin/cli.js",

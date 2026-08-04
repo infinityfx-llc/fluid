@@ -1,17 +1,32 @@
 # Theming & Styling
 
-**STRICT ENFORCEMENT:** Adhering to these rules for styling, colors, and component variants is strictly enforced to ensure a consistent and professional UI.
+**STRICT ENFORCEMENT:** Adhering to these rules for styling, colors, component variants, and CSS variable naming conventions is strictly enforced to ensure a consistent and professional UI.
 
 ## Strictly Enforced Rules
 1. **Never hardcode hex colors or use arbitrary CSS colors.** If you must use custom styles to override or apply a color, you **MUST** use Fluid UI CSS variables.
-   - Example: `var(--f-clr-primary-100)`. Here, `primary` refers to the palette name, and `-100` corresponds to index `0` of the color array (`-200` is index 1, `-300` is index 2, up to `-N00`).
    - *Incorrect:* `<div style={{ color: '#ff0000' }}>`
    - *Correct:* `<div style={{ color: 'var(--f-clr-error-200)' }}>`
-2. **Always use built-in variants and props before writing custom CSS.** 
+2. **Strict CSS Variable Naming:** You **MUST** strictly adhere to the Fluid UI CSS variable naming schema.
+   - **Color variables** MUST end with a numeric step suffix (`-100`, `-200`, up to `-900`). **NEVER** omit the numeric step (e.g., `--f-clr-primary` is INVALID; use `--f-clr-primary-100`).
+   - **Spacing & Size variables** MUST use exact Fluid UI size suffixes (`-xxs`, `-xsm`, `-sml`, `-med`, `-lrg`, `-xlg`, `-xxl`). **NEVER** use standard web/Tailwind suffixes like `-lg`, `-md`, `-sm`, or `-xl`.
+3. **Always use built-in variants and props before writing custom CSS.** 
    - Many components support a `round` prop. Always prefer this over writing a custom `border-radius`.
    - Prefer built-in `size`, `variant`, and `color` props for components.
-3. **Color Prop Usage:** When a component accepts a `color` prop, always pass `--f-clr-*` Fluid UI CSS variables (e.g., `color="var(--f-clr-primary-100)"`). For destructive actions or error states, use semantic error variables.
+4. **Color Prop Usage:** When a component accepts a `color` prop, always pass `--f-clr-*` Fluid UI CSS variables (e.g., `color="var(--f-clr-primary-100)"`). For destructive actions or error states, use semantic error variables.
    - *Example:* `<Button color="var(--f-clr-error-200)">Delete</Button>`
+
+## CSS Variable Naming & Token Schema
+
+Fluid UI CSS variables follow precise formatting conventions:
+
+- **Color Variables (`--f-clr-[palette]-[step]`)**: MUST include the numeric step suffix (`-100` to `-900`). Index `0` of a palette array corresponds to `-100` (`-200` is index 1, up to `-N00`).
+- **Spacing & Size Variables (`--f-spacing-[size]`)**: Suffixes span from `-xxs` to `-xxl` (`-xxs`, `-xsm`, `-sml`, `-med`, `-lrg`, `-xlg`, `-xxl`).
+  - *Component Size Availability Note:* Not all components support the full `xxs`–`xxl` range; some accept a subset (e.g., only `xsm` to `lrg`). Always verify supported sizes via component props / TS types.
+
+| Pattern | ❌ Invalid | ✅ Valid Fluid Variable |
+| :--- | :--- | :--- |
+| **Color** (Step required) | `var(--f-clr-primary)` | `var(--f-clr-primary-100)` |
+| **Spacing / Size** (Fluid suffixes) | `var(--f-spacing-lg)` | `var(--f-spacing-lrg)` |
 
 ## Utility Classes and the `classes()` Helper
 - If `includeUtilityClasses: true` is set in `fluid.config.js`, Fluid UI generates color utility classes in the format `bg-primary-100` (for background-color) and `cl-primary-100` (for text color).

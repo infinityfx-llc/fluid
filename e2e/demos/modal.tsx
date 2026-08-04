@@ -6,7 +6,7 @@ export default function () {
 
 	return <>
 		<Button onClick={() => setOpen(true)}>
-			Open Modal
+			Open modal
 		</Button>
 
 		<ModalRoot show={open} onClose={() => setOpen(false)}>

@@ -1,5 +1,5 @@
-import { test } from '../helpers/video-recorder';
-import { injectCursorOverlay } from '../helpers/cursor-overlay';
+import { test } from '../utils/video-recorder';
+import { injectCursorOverlay } from '../utils/cursor-overlay';
 
 test.describe('Buttons', () => {
   test.beforeEach(async ({ page }) => {
@@ -16,7 +16,7 @@ test.describe('Buttons', () => {
 
     for (const name of ['default', 'inverted', 'muted', 'minimal']) {
       btn = frame.getByRole('button', { name });
-      await btn.click();
+      await btn.click({ delay: 80 });
       await page.waitForTimeout(800);
     }
   });

@@ -35,7 +35,7 @@ export default [
         output: {
             dir: 'dist',
             format: 'es',
-            sourcemap: true,
+            sourcemap: false,
             preserveModules: true,
             preserveModulesRoot: 'src'
         },
@@ -49,12 +49,12 @@ export default [
             {
                 file: 'dist/utils.mjs',
                 format: 'es',
-                sourcemap: true
+                sourcemap: false
             },
             {
                 file: 'dist/utils.cjs',
                 format: 'cjs',
-                sourcemap: true
+                sourcemap: false
             }
         ],
         plugins: [

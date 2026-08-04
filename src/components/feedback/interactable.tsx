@@ -105,7 +105,6 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
     const container = useRef<HTMLElement>(null);
     const highlight = useRef<HTMLDivElement>(null);
     const mounted = useRef(false);
-    const focusEl = getFocusElement(container, interactTarget);
 
     const mutableRippleCount = useRef(0);
     const [rippleCount, ripple] = useState(0);
@@ -191,7 +190,7 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
             clearTimeout(timeout.current);
             ctrl.abort();
         };
-    }, [disabled, focusEl]);
+    }, [disabled, interactTarget]);
 
     const Wrapper = as || 'button';
     const defaultProps = Wrapper === 'button' ? {
