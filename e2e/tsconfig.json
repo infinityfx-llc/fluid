@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/fluid": ["../dist/types/src/index.d.ts"]
+    }
+  },
+  "include": ["**/*"],
+  "exclude": []
+}

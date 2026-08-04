@@ -1,88 +1,80 @@
-import { useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { FluidProvider } from '../../dist';
-import { Button, Badge, Chip, Switch } from '../../dist';
+import { Badge, Card, CardContent, FluidProvider } from '@/fluid';
 
-function ShowcaseApp() {
-	const [enabled, setEnabled] = useState(true);
-	const [count, setCount] = useState(0);
+// @ts-expect-error
+const modules = import.meta.glob<{ default: React.ComponentType }>('../demos/*.tsx');
+const routes: Record<string, () => Promise<{ default: React.ComponentType }>> = {};
 
-	return (
-		<FluidProvider>
-			<body style={{
-				minHeight: '100vh',
-				boxSizing: 'border-box',
-				padding: '36px 20px',
-				color: '#f8fafc',
-				display: 'flex',
-				flexDirection: 'column',
-				gap: '24px',
-				maxWidth: '100%',
-				margin: '0 auto',
-			}}>
-				{/* Header */}
-				<div>
-					<Badge>Fluid UI 2.0</Badge>
-					<h1 style={{ fontSize: '28px', fontWeight: 800, margin: '12px 0 4px 0', letterSpacing: '-0.02em' }}>
-						Component Showcase
-					</h1>
-					<p style={{ color: '#94a3b8', fontSize: '15px', margin: 0 }}>
-						Compiled zero-runtime React components
-					</p>
-				</div>
+for (const path in modules) {
+	const match = path.match(/\/([^/]+)\.tsx$/);
 
-				{/* Card Container */}
-				<div style={{
-					background: 'rgba(30, 41, 59, 0.75)',
-					border: '1px solid rgba(255, 255, 255, 0.12)',
-					borderRadius: '20px',
-					padding: '24px 20px',
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '20px',
-					backdropFilter: 'blur(12px)',
-					boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
-				}}>
-					<h2 style={{ fontSize: '18px', margin: 0, fontWeight: 700 }}>Interactive Controls</h2>
-
-					<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-						<span style={{ fontSize: '15px', fontWeight: 500 }}>Feature Status</span>
-						<Chip color={enabled ? 'green' : 'grey'}>
-							{enabled ? 'Active' : 'Disabled'}
-						</Chip>
-					</div>
-
-					<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-						<span style={{ fontSize: '15px', fontWeight: 500 }}>Toggle Switch</span>
-						<Switch checked={enabled} onChange={setEnabled} />
-					</div>
-
-					<div style={{ paddingTop: '8px' }}>
-						<Button
-							id="showcase-counter-btn"
-							onClick={() => setCount((c) => c + 1)}
-							style={{ width: '100%', padding: '14px', fontSize: '15px' }}
-						>
-							Tap Counter: {count}
-						</Button>
-					</div>
-				</div>
-
-				{/* Footer Info */}
-				<div style={{
-					background: 'rgba(15, 23, 42, 0.6)',
-					border: '1px dashed rgba(255, 255, 255, 0.15)',
-					borderRadius: '16px',
-					padding: '18px',
-					textAlign: 'center',
-					fontSize: '14px',
-					color: '#64748b'
-				}}>
-					Built for high-performance React design systems
-				</div>
-			</body>
-		</FluidProvider>
-	);
+	if (match) {
+		routes[match[1]] = modules[path];
+	}
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(<ShowcaseApp />);
+const path = window.location.pathname.replace(/^\/|\/$/g, '');
+const loader = path ? routes[path] : null;
+const Component = loader ? (await loader()).default : null;
+
+function DemoView() {
+	return <FluidProvider>
+		<body
+			style={{
+				display: 'flex',
+				flexDirection: 'column',
+				padding: 'var(--f-spacing-lrg)',
+				backgroundColor: 'var(--f-clr-surface-200)'
+			}}>
+			<Card
+				color="back"
+				radius="lrg"
+				style={{
+					flexGrow: 1,
+					display: 'flex',
+					flexDirection: 'column'
+				}}>
+				<div style={{
+					display: 'flex',
+					alignItems: 'baseline',
+					gap: 'var(--f-spacing-xsm)',
+					color: 'var(--f-clr-grey-600)',
+					fontSize: 'var(--f-font-size-xsm)'
+				}}>
+					<Badge color="var(--f-clr-surface-300)">Fluid UI</Badge> by InfinityFX
+				</div>
+
+				<CardContent
+					align="center"
+					style={{
+						flexGrow: 1,
+						flexDirection: 'column'
+					}}>
+					{Component ? <Component /> : <div style={{ padding: '2rem' }}>Unknown demo: {window.location.pathname}</div>}
+				</CardContent>
+			</Card>
+		</body>
+	</FluidProvider>;
+}
+
+function MainLayout() {
+	const isEmbed = window.self !== window.top || new URLSearchParams(window.location.search).has('embed');
+
+	if (isEmbed) return <DemoView />;
+
+	return <body>
+		<iframe
+			src={`${window.location.pathname}?embed=true`}
+			style={{
+				width: '432px',
+				height: '768px',
+				transform: 'scale(2.5)',
+				transformOrigin: 'top left',
+				border: 'none',
+				overflow: 'hidden',
+			}}
+		/>
+	</body>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(<MainLayout />);
