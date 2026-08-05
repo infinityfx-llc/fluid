@@ -29,7 +29,7 @@ export function getUtilities(page: Page) {
 
             return field;
         },
-        async click(selector: string, name: string) {
+        async click(selector: string, name?: string) {
             const element = frame.locator(selector, { hasText: name });
             await element.click({ delay: 80 });
             await page.waitForTimeout(1000);
