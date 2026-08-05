@@ -1,15 +1,16 @@
 'use client';
 
-import { cloneElement, createContext } from "react";
+import { createContext } from "react";
 import { FluidTheme, parseCSSVariables, parseColorPalettes, parseUtilityClasses } from "../../src/core/theme";
 import global from "../../src/styles/global";
 import useColorScheme from "../../src/hooks/use-color-scheme";
 import { createGlobalStyles } from "../core/style";
 import useMediaQuery from "../hooks/use-media-query";
-import type { FluidColorScheme } from "../types";
+import type { FluidColorScheme, PolymorphComponentProps } from "../types";
 import { GLOBAL_CONTEXT } from "../core/shared";
 import SingletonsProvider from "./singletons";
 import LanguageProvider, { LocaleTokens } from "./lang";
+import { classes } from "../utils";
 
 const fluid = GLOBAL_CONTEXT.theme;
 
@@ -26,12 +27,10 @@ export const FluidContext = createContext<FluidContext | null>(null);
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/get-started}
  */
-export default function FluidProvider({ children, initialColorScheme, localeTokens }: {
-    children: React.ReactElement<any>;
+export default function FluidProvider<E extends React.ElementType = 'body'>({ children, initialColorScheme, localeTokens, as, ...props }: {
     initialColorScheme?: FluidColorScheme;
     localeTokens?: Partial<LocaleTokens>;
-}) {
-
+} & PolymorphComponentProps<E>) {
     const colorSchemes = Object.keys(fluid.palettes).concat('system');
     const { colorScheme, setColorScheme } = useColorScheme(initialColorScheme, colorSchemes);
     const preferred = useMediaQuery('(prefers-color-scheme: dark)') ? 'dark' : 'light';
@@ -48,6 +47,8 @@ export default function FluidProvider({ children, initialColorScheme, localeToke
     });
     createGlobalStyles(global);
 
+    const Wrapper = as || 'body';
+
     return <FluidContext value={{
         ...fluid,
         colorScheme,
@@ -56,10 +57,15 @@ export default function FluidProvider({ children, initialColorScheme, localeToke
     }}>
         <LanguageProvider tokens={localeTokens}>
             <SingletonsProvider>
-                {cloneElement(children, {
-                    id: '__fluid',
-                    className: `scheme-${colorScheme}`
-                })}
+                <Wrapper
+                    {...props}
+                    id="__fluid"
+                    className={classes(
+                        props.className,
+                        `scheme-${colorScheme}`
+                    )}>
+                    {children}
+                </Wrapper>
             </SingletonsProvider>
         </LanguageProvider>
     </FluidContext>
