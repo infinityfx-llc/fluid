@@ -29,16 +29,26 @@ export function getUtilities(page: Page) {
 
             return field;
         },
-        async click(name: string, {
-            delay = 1000,
-            element = 'button'
-        }: {
-            delay?: number;
-            element?: 'button' | 'checkbox' | 'switch';
-        } = {}) {
-            const button = frame.getByRole(element, { name });
-            await button.click({ delay: 80 });
-            await page.waitForTimeout(delay);
+        async click(selector: string, name: string) {
+            const element = frame.locator(selector, { hasText: name });
+            await element.click({ delay: 80 });
+            await page.waitForTimeout(1000);
+        },
+        async drag(selector: string, x: number, y: number) {
+            const element = frame.locator(selector);
+            const box = await element.boundingBox();
+
+            if (!box) return;
+
+            await element.hover();
+            await page.mouse.down();
+            await page.mouse.move(
+                box.x + box.width / 2 + x,
+                box.y + box.height / 2 + y,
+                { steps: Math.round(Math.sqrt(x ** 2 + y ** 2) / 5) }
+            );
+            await page.mouse.up();
+            await page.waitForTimeout(500);
         },
         async delay(amount: number) {
             await page.waitForTimeout(amount);

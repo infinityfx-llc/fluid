@@ -124,12 +124,12 @@ const styles = createStyles('color-picker', fluid => ({
 
         '.wrapper .swatch': {
             aspectRatio: 1,
-            maxHeight: '5.3em'
+            height: '5.3em'
         }
     }
 }));
 
-export type ColorPickerSelectors = Selectors<'wrapper' | 'space'>;
+export type ColorPickerSelectors = Selectors<'wrapper' | 'space' | 'fields' | 'selection' | 'swatch'>;
 
 type RGB = [number, number, number];
 type HSV = [number, number, number];
@@ -225,8 +225,10 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
         return () => ctrl.abort();
     }, [disabled]);
 
-    return <div {...props}
+    return <div
+        {...props}
         style={{
+            ...props.style,
             '--hue': `hsl(${hsv[0]}, 100%, 50%)`,
             '--color': `rgb(${rgb.join(',')})`
         } as any}
@@ -243,7 +245,7 @@ export default function ColorPicker<T extends 'hex' | 'rgb' = 'hex'>({ cc = {}, 
                 }}
                 onTouchStart={e => {
                     e.preventDefault();
-                    
+
                     picking.current = true;
                     pick(e.nativeEvent);
                 }}

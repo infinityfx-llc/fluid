@@ -8,9 +8,9 @@ test.describe('Modals', () => {
     const { delay, click, typeByLabel } = getUtilities(page);
     await delay(1000);
 
-    await click('open');
+    await click('button', 'open');
     await typeByLabel('first name', 'John');
-    await click('confirm');
+    await click('button', 'confirm');
 
     await delay(1000);
   });

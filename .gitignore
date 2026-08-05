@@ -5,4 +5,5 @@ compiled/
 
 fluid.css
 playwright-report/
+test-results/
 videos/

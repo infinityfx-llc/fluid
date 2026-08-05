@@ -22,7 +22,6 @@ export default defineConfig({
 			workers: 1,
 			testDir: './e2e/demos',
 			testMatch: /.*\.test\.ts/,
-			outputDir: './videos',
 			use: {
 				baseURL: 'http://localhost:5173',
 				viewport: { width: 1080, height: 1920 },
