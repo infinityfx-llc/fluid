@@ -4,6 +4,9 @@ These rules apply when setting up Fluid UI, modifying its configuration, or hand
 
 ## `FluidProvider`
 - The entire application MUST be wrapped in a `<FluidProvider>`. This ensures correct styling and theming across all components.
+- **Polymorphic Element Rendering:** `FluidProvider` is a polymorphic component that by default renders as an HTML `<body>` element. Therefore, it MUST be nested directly inside `<html>`, replacing the standard `<body>` tag. Do **not** nest a standard `<body>` tag inside `<FluidProvider>`.
+- **Custom Elements (`as` prop):** You can pass the `as` prop to render `FluidProvider` as a different container element (e.g., `<FluidProvider as="div">`), which is useful when scoping theme context to a sub-tree or micro-frontend.
+- **Body Attributes & Props:** Standard HTML body attributes and props (e.g., `className`, `style`, data attributes) can be passed directly to `<FluidProvider>`.
 - **Optional Quality of Life (SSR):** For Server-Side Rendered (SSR) apps (like NextJS), you can fetch the color scheme from cookies using the `COLOR_SCHEME_COOKIE` constant from `@infinityfx/fluid/utils`. Passing this to `initialColorScheme` prevents a flash of incorrect theme colors before hydration. This is completely optional.
   
   *Example (NextJS App Router):*
@@ -19,9 +22,7 @@ These rules apply when setting up Fluid UI, modifying its configuration, or hand
       return (
           <html>
               <FluidProvider initialColorScheme={initialScheme}>
-                  <body>
-                      {children}
-                  </body>
+                  {children}
               </FluidProvider>
           </html>
       );

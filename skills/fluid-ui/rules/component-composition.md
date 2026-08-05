@@ -4,9 +4,10 @@ Guidelines for effectively combining components, managing layouts, and ensuring 
 
 ## General Composition Guidelines
 - Compose components together as much as possible rather than building complex UI elements from scratch. Use built-in combinations before resorting to custom code.
-- **The `as` Prop:** The `Button` component uses the `as` prop to render as a different element (e.g., an `a` tag or a NextJS `Link`).
+- **The `as` Prop:** Polymorphic components like `Button` and `FluidProvider` use the `as` prop to render as different underlying elements (e.g., `Button` rendering as an `a` tag or NextJS `Link`, or `FluidProvider` defaulting to `body` but rendering as a `div` for scoped sub-trees).
   ```tsx
   <Button as={Link} href="/dashboard">Go to Dashboard</Button>
+  <FluidProvider as="div" initialColorScheme="dark">...</FluidProvider>
   ```
 - **The `Group` Component Usage:** 
   - `Group` is specifically designed to collapse and visually merge the borders and radii of adjacent elements.
