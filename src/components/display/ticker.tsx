@@ -2,7 +2,7 @@
 
 import { classes, combineClasses } from '../../../src/core/utils';
 import { Selectors } from '../../../src/types';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import { createStyles } from '../../core/style';
 import { Animate, LayoutGroup } from '@infinityfx/lively';
 import { Animator } from '@infinityfx/lively';
@@ -108,6 +108,10 @@ export default function Ticker({ cc = {}, value, lineHeight = 1.1, selective, in
     const animator = useRef<Animator<'scroll' | 'animate'>>(null);
     const data = useRef(toChars(value).map(char => [char]));
     const [columns, setColumns] = useState(deepCopy(data.current));
+    const pendingAnimation = useRef<{
+        tag: string;
+        changed: boolean[];
+    } | null>(null);
 
     const cull = useCallback((count: number) => {
         cullTimeout.current = 0;
@@ -125,8 +129,6 @@ export default function Ticker({ cc = {}, value, lineHeight = 1.1, selective, in
     }, []);
 
     const update = useCallback((value: string[]) => {
-        if (!animator.current) return;
-
         const delta = value.length - data.current.length;
 
         if (delta > 0) data.current.push(...new Array(delta).fill(0).map(() => ['']));
@@ -135,24 +137,33 @@ export default function Ticker({ cc = {}, value, lineHeight = 1.1, selective, in
             rows = 0;
         for (let i = 0; i < data.current.length; i++) {
             const column = data.current[i];
-            changed[i] = value[i] !== column[0];
+            changed[i] = !selective || value[i] !== column[0];
 
-            if (!selective || changed[i]) column.unshift(value[i] ?? '');
+            if (changed[i]) column.unshift(value[i] ?? '');
             rows = Math.max(rows, column.length);
         }
 
         const tag = Date.now().toString();
-        animator.current.play('scroll', { tag });
-        animator.current.forEachTrack((track, i) => {
-            if (!changed[i] && selective) track.clear(tag);
-        });
+        pendingAnimation.current = { tag, changed };
 
         setColumns(deepCopy(data.current));
 
         if (!cullTimeout.current) {
             cullTimeout.current = setTimeout(() => cull(rows - 1), (duration + stagger * data.current.length) * 1000);
         }
-    }, [selective, duration, stagger]);
+    }, [selective, duration, stagger, cull]);
+
+    useLayoutEffect(() => {
+        if (!pendingAnimation.current || !animator.current) return;
+
+        const { tag, changed } = pendingAnimation.current;
+        pendingAnimation.current = null;
+
+        animator.current.play('scroll', { tag });
+        animator.current.forEachTrack((track, i) => {
+            if (!changed[i]) track.clear(tag);
+        });
+    }, [columns]);
 
     useEffect(() => {
         if (isEqual(data.current, value.toString())) return;

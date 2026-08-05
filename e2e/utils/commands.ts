@@ -26,10 +26,19 @@ export function getUtilities(page: Page) {
 
             return field;
         },
+        async clickByLabel(label: string) {
+            const element = frame.getByLabel(label);
+            await element.click({ delay: 80 });
+            await page.waitForTimeout(1000);
+
+            return element;
+        },
         async click(selector: string, name?: string) {
             const element = frame.locator(selector, { hasText: name });
             await element.click({ delay: 80 });
             await page.waitForTimeout(1000);
+
+            return element;
         },
         async drag(selector: string, x: number, y: number) {
             const element = frame.locator(selector);
