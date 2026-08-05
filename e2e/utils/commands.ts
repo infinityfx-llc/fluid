@@ -1,12 +1,9 @@
 import { Page } from "@playwright/test";
-import { injectCursorOverlay } from "./cursor-overlay";
 
 export function setupDemoTest(route: string) {
     return async ({ page }: {
         page: Page;
     }) => {
-        // await injectCursorOverlay(page);
-
         const loaded = page.waitForEvent('console', msg => msg.text() === 'demoload');
         await page.goto(route);
         await loaded;

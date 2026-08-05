@@ -7,22 +7,12 @@ import fs from 'fs';
 const TARGET_FPS = 60;
 
 export const test = baseTest.extend({
-	page: async ({ page }, use, { project, title }) => {
-		// Only run video recording if we are in the 'videos' project
-		if (project.name !== 'videos') {
-			await use(page);
-			return;
-		}
-
-		// Ensure output directory exists
+	page: async ({ page }, use, { title }) => {
 		const outputDir = path.resolve('videos');
-		if (!fs.existsSync(outputDir)) {
-			fs.mkdirSync(outputDir, { recursive: true });
-		}
-
 		const targetPath = path.join(outputDir, `${title.toLowerCase().replace(/\s+/g, '-')}.mp4`);
 
-		// Spawn FFmpeg to read raw mjpeg frames from stdin pipe
+		if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+
 		const ffmpegProcess = spawn(ffmpegPath.path, [
 			'-y',
 			'-f', 'image2pipe',
@@ -56,7 +46,6 @@ export const test = baseTest.extend({
 			}
 		};
 
-		// Reset recording clock when React main.tsx logs 'demoload'
 		page.on('console', async (msg) => {
 			if (msg.text() !== 'demoload') return;
 
@@ -66,14 +55,11 @@ export const test = baseTest.extend({
 
 			try {
 				lastBuffer = await page.screenshot({ type: 'jpeg', quality: 90 });
-			} catch (e) {
-				// Fallback if screenshot fails during load
-			}
+			} catch { }
 
 			if (!timer) timer = setInterval(writeFrames, 1000 / TARGET_FPS);
 		});
 
-		// Use Playwright's official page.screencast API to keep lastBuffer updated
 		await page.screencast.start({
 			quality: 90,
 			size: {
@@ -91,23 +77,17 @@ export const test = baseTest.extend({
 			timer = null;
 		}
 
-		// Final flush for remaining wall clock frames at end of test
 		writeFrames();
-
-		// Stop screencast
 		await page.screencast.stop();
 
-		// Flush stdin stream & signal EOF to FFmpeg
 		if (ffmpegProcess.stdin && !ffmpegProcess.stdin.destroyed) {
 			ffmpegProcess.stdin.end();
 		}
 
-		// Wait for raw FFmpeg encoding to complete
 		await new Promise<void>((resolve) => ffmpegProcess.on('close', resolve));
 
 		if (!fs.existsSync(targetPath)) return;
 
-		// Post-process with FFmpeg: apply smooth promo zoom & color fade transitions (page load is excluded by 'demoload')
 		const tempPath = targetPath.replace(/\.mp4$/, '-raw.mp4');
 
 		try {
@@ -130,12 +110,10 @@ export const test = baseTest.extend({
 				const fadeInFilter = `fade=t=in:st=0:d=${TRANSITION_SEC}:color=0xf7f6f5`;
 				const fadeOutFilter = `fade=t=out:st=${fadeOutStartSec}:d=${TRANSITION_SEC}:color=0xf7f6f5`;
 
-				const vfFilter = `${zoomFilter},${fadeInFilter},${fadeOutFilter}`;
-
 				const postProcess = spawn(ffmpegPath.path, [
 					'-y',
 					'-i', tempPath,
-					'-vf', vfFilter,
+					'-vf', `${zoomFilter},${fadeInFilter},${fadeOutFilter}`,
 					'-c:v', 'libx264',
 					'-pix_fmt', 'yuv420p',
 					targetPath
@@ -150,9 +128,7 @@ export const test = baseTest.extend({
 			} else if (fs.existsSync(tempPath)) {
 				fs.unlinkSync(tempPath);
 			}
-		} catch (err) {
-			console.error('Failed to post-process video:', err);
-		}
+		} catch { }
 	}
 });
 
