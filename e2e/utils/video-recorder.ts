@@ -4,10 +4,12 @@ import ffmpegPath from '@ffmpeg-installer/ffmpeg';
 import path from 'path';
 import fs from 'fs';
 
+const TARGET_FPS = 60;
+
 export const test = baseTest.extend({
-	page: async ({ page }, use, testInfo) => {
+	page: async ({ page }, use, { project, title }) => {
 		// Only run video recording if we are in the 'videos' project
-		if (testInfo.project.name !== 'videos') {
+		if (project.name !== 'videos') {
 			await use(page);
 			return;
 		}
@@ -18,26 +20,20 @@ export const test = baseTest.extend({
 			fs.mkdirSync(outputDir, { recursive: true });
 		}
 
-		// Clean the test title to generate a valid filename
-		const cleanName = testInfo.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-		const targetPath = path.join(outputDir, `${cleanName}.mp4`);
-
-		const TARGET_FPS = 60;
+		const targetPath = path.join(outputDir, `${title.toLowerCase().replace(/\s+/g, '-')}.mp4`);
 
 		// Spawn FFmpeg to read raw mjpeg frames from stdin pipe
 		const ffmpegProcess = spawn(ffmpegPath.path, [
-			'-y', // Overwrite output files
-			'-f', 'image2pipe', // Read images from pipe
-			'-vcodec', 'mjpeg', // Input format is JPEG
-			'-framerate', String(TARGET_FPS), // Set input pipe framerate matching TARGET_FPS
-			'-i', '-', // Input from stdin
-			'-r', String(TARGET_FPS), // Output framerate (60fps CFR)
-			'-c:v', 'libx264', // Encode with H.264
-			'-pix_fmt', 'yuv420p', // Pixel format for maximum player compatibility
-			targetPath // Output file
+			'-y',
+			'-f', 'image2pipe',
+			'-vcodec', 'mjpeg',
+			'-framerate', String(TARGET_FPS),
+			'-i', '-',
+			'-r', String(TARGET_FPS),
+			'-c:v', 'libx264',
+			'-pix_fmt', 'yuv420p',
+			targetPath
 		]);
-
-		ffmpegProcess.on('error', (err) => console.error('FFmpeg error:', err));
 
 		let startWallClock = -1;
 		let framesWritten = 0;
@@ -47,33 +43,34 @@ export const test = baseTest.extend({
 
 		const writeFrames = () => {
 			if (!recording || startWallClock === -1 || !lastBuffer) return;
+
 			const elapsedWallClock = (Date.now() / 1000) - startWallClock;
 			const targetFrames = Math.round(elapsedWallClock * TARGET_FPS);
+
 			while (framesWritten < targetFrames) {
 				if (ffmpegProcess.stdin && !ffmpegProcess.stdin.destroyed) {
 					ffmpegProcess.stdin.write(lastBuffer);
 				}
+
 				framesWritten++;
 			}
 		};
 
 		// Reset recording clock when React main.tsx logs 'demoload'
 		page.on('console', async (msg) => {
-			if (msg.text() === 'demoload') {
-				startWallClock = Date.now() / 1000;
-				framesWritten = 0;
-				recording = true;
+			if (msg.text() !== 'demoload') return;
 
-				try {
-					lastBuffer = await page.screenshot({ type: 'jpeg', quality: 90 });
-				} catch (e) {
-					// Fallback if screenshot fails during load
-				}
+			startWallClock = Date.now() / 1000;
+			framesWritten = 0;
+			recording = true;
 
-				if (!timer) {
-					timer = setInterval(writeFrames, 1000 / TARGET_FPS);
-				}
+			try {
+				lastBuffer = await page.screenshot({ type: 'jpeg', quality: 90 });
+			} catch (e) {
+				// Fallback if screenshot fails during load
 			}
+
+			if (!timer) timer = setInterval(writeFrames, 1000 / TARGET_FPS);
 		});
 
 		// Use Playwright's official page.screencast API to keep lastBuffer updated
@@ -83,12 +80,7 @@ export const test = baseTest.extend({
 				width: 1080,
 				height: 1920
 			},
-			onFrame: ({ data }) => {
-				lastBuffer = data;
-				if (recording) {
-					writeFrames();
-				}
-			}
+			onFrame: ({ data }) => lastBuffer = data
 		});
 
 		// Run test
@@ -105,89 +97,61 @@ export const test = baseTest.extend({
 		// Stop screencast
 		await page.screencast.stop();
 
-		// Flush stdin stream & wait for drain before closing pipe
+		// Flush stdin stream & signal EOF to FFmpeg
 		if (ffmpegProcess.stdin && !ffmpegProcess.stdin.destroyed) {
-			await new Promise<void>((resolve) => {
-				if (!ffmpegProcess.stdin.writableNeedDrain) {
-					ffmpegProcess.stdin.end();
-					resolve();
-				} else {
-					ffmpegProcess.stdin.once('drain', () => {
-						ffmpegProcess.stdin.end();
-						resolve();
-					});
-				}
-			});
+			ffmpegProcess.stdin.end();
 		}
 
 		// Wait for raw FFmpeg encoding to complete
-		await new Promise<void>((resolve) => {
-			ffmpegProcess.on('close', () => resolve());
-		});
+		await new Promise<void>((resolve) => ffmpegProcess.on('close', resolve));
+
+		if (!fs.existsSync(targetPath)) return;
 
 		// Post-process with FFmpeg: apply smooth promo zoom & color fade transitions (page load is excluded by 'demoload')
 		const tempPath = targetPath.replace(/\.mp4$/, '-raw.mp4');
-		if (fs.existsSync(targetPath)) {
-			try {
-				fs.renameSync(targetPath, tempPath);
 
-				await new Promise<void>((resolve) => {
-					// Transition duration synchronized for both zoom & color fade (0.25s = 15 frames at 60fps)
-					const TRANSITION_SEC = 0.25;
-					const D = Math.round(TRANSITION_SEC * TARGET_FPS); // 15 frames
+		try {
+			fs.renameSync(targetPath, tempPath);
 
-					// Calculate exact total frames (demoload excluded initial page loading)
-					const actualTotalFrames = Math.max(D * 2, framesWritten);
-					const endStart = Math.max(D + 1, actualTotalFrames - D);
+			await new Promise<void>((resolve) => {
+				// Transition duration synchronized for both zoom & color fade (0.25s = 15 frames at 60fps)
+				const TRANSITION_SEC = 0.25;
+				const D = Math.round(TRANSITION_SEC * TARGET_FPS); // 15 frames
 
-					// Double-precision floating point (.0) zoompan evaluation for smooth subpixel motion at 1080x1920
-					const zoomFilter = `zoompan=z=if(lte(on\\,${D})\\,1.18-0.18*(1-(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0))\\,if(gte(on\\,${endStart})\\,1.0+0.18*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)\\,1.0)):x=(iw/2.0)-(iw/zoom/2.0):y=(ih/2.0)-(ih/zoom/2.0):d=1:s=1080x1920:fps=60`;
+				// Calculate exact total frames (demoload excluded initial page loading)
+				const actualTotalFrames = Math.max(D * 2, framesWritten);
+				const endStart = Math.max(D + 1, actualTotalFrames - D);
 
-					// Synchronized 0.25s color fade in (start) and fade out (end) to #f7f6f5
-					const fadeOutStartSec = Math.max(TRANSITION_SEC, (actualTotalFrames - D) / TARGET_FPS).toFixed(2);
-					const fadeInFilter = `fade=t=in:st=0:d=${TRANSITION_SEC}:color=0xf7f6f5`;
-					const fadeOutFilter = `fade=t=out:st=${fadeOutStartSec}:d=${TRANSITION_SEC}:color=0xf7f6f5`;
+				// Double-precision floating point (.0) zoompan evaluation for smooth subpixel motion at 1080x1920
+				const zoomFilter = `zoompan=z=if(lte(on\\,${D})\\,1.18-0.18*(1-(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0))\\,if(gte(on\\,${endStart})\\,1.0+0.18*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)\\,1.0)):x=(iw/2.0)-(iw/zoom/2.0):y=(ih/2.0)-(ih/zoom/2.0):d=1:s=1080x1920:fps=60`;
 
-					const vfFilter = `${zoomFilter},${fadeInFilter},${fadeOutFilter}`;
+				// Synchronized 0.25s color fade in (start) and fade out (end) to #f7f6f5
+				const fadeOutStartSec = Math.max(TRANSITION_SEC, (actualTotalFrames - D) / TARGET_FPS).toFixed(2);
+				const fadeInFilter = `fade=t=in:st=0:d=${TRANSITION_SEC}:color=0xf7f6f5`;
+				const fadeOutFilter = `fade=t=out:st=${fadeOutStartSec}:d=${TRANSITION_SEC}:color=0xf7f6f5`;
 
-					const postProcess = spawn(ffmpegPath.path, [
-						'-y',
-						'-i', tempPath,
-						'-vf', vfFilter,
-						'-c:v', 'libx264',
-						'-pix_fmt', 'yuv420p',
-						targetPath
-					]);
+				const vfFilter = `${zoomFilter},${fadeInFilter},${fadeOutFilter}`;
 
-					postProcess.stderr.on('data', (data) => {
-						// Log FFmpeg errors if any occur
-						const msg = data.toString();
-						if (msg.includes('Error') || msg.includes('Invalid')) {
-							console.error('FFmpeg post-process msg:', msg);
-						}
-					});
+				const postProcess = spawn(ffmpegPath.path, [
+					'-y',
+					'-i', tempPath,
+					'-vf', vfFilter,
+					'-c:v', 'libx264',
+					'-pix_fmt', 'yuv420p',
+					targetPath
+				]);
 
-					postProcess.on('error', (err) => {
-						console.error('Post-process error:', err);
-						if (fs.existsSync(tempPath) && !fs.existsSync(targetPath)) {
-							fs.renameSync(tempPath, targetPath);
-						}
-						resolve();
-					});
+				postProcess.on('error', resolve);
+				postProcess.on('close', resolve);
+			});
 
-					postProcess.on('close', (code) => {
-						if (code !== 0 && fs.existsSync(tempPath) && !fs.existsSync(targetPath)) {
-							console.error(`FFmpeg post-process exited with code ${code}`);
-							fs.renameSync(tempPath, targetPath);
-						} else if (fs.existsSync(tempPath)) {
-							fs.unlinkSync(tempPath);
-						}
-						resolve();
-					});
-				});
-			} catch (err) {
-				console.error('Failed to post-process video:', err);
+			if (fs.existsSync(tempPath) && !fs.existsSync(targetPath)) {
+				fs.renameSync(tempPath, targetPath);
+			} else if (fs.existsSync(tempPath)) {
+				fs.unlinkSync(tempPath);
 			}
+		} catch (err) {
+			console.error('Failed to post-process video:', err);
 		}
 	}
 });
