@@ -22,8 +22,6 @@ const Component = loader ? (await loader()).default : null;
 function DemoView() {
 	useEffect(() => {
 		console.log('demoload');
-
-		requestAnimationFrame(() => document.documentElement.dataset.rTick = String(performance.now()));
 	}, []);
 
 	return <FluidProvider>

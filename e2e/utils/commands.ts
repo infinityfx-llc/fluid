@@ -5,7 +5,7 @@ export function setupDemoTest(route: string) {
     return async ({ page }: {
         page: Page;
     }) => {
-        await injectCursorOverlay(page);
+        // await injectCursorOverlay(page);
 
         const loaded = page.waitForEvent('console', msg => msg.text() === 'demoload');
         await page.goto(route);
@@ -19,11 +19,11 @@ export function getUtilities(page: Page) {
     return {
         async typeByLabel(label: string, content: string) {
             const field = frame.getByLabel(label);
-            field.click({ delay: 80 });
+            await field.click({ delay: 80 });
 
             await page.waitForTimeout(500);
 
-            page.keyboard.type(content, { delay: 100 });
+            await page.keyboard.type(content, { delay: 100 });
 
             await page.waitForTimeout(1000);
 

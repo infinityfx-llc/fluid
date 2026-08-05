@@ -9,7 +9,7 @@ test.describe('Fields', () => {
     await delay(1000);
 
     const field = await typeByLabel('username', 'john_doe');
-    field.blur();
+    await field.blur();
 
     await delay(1000);
   });

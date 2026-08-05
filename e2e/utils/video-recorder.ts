@@ -39,84 +39,85 @@ export const test = baseTest.extend({
 
 		ffmpegProcess.on('error', (err) => console.error('FFmpeg error:', err));
 
-		let startTime = -1;
 		let startWallClock = -1;
 		let framesWritten = 0;
 		let lastBuffer: Buffer | null = null;
-		let demoloadReceived = false;
+		let recording = false;
+		let timer: NodeJS.Timeout | null = null;
+
+		const writeFrames = () => {
+			if (!recording || startWallClock === -1 || !lastBuffer) return;
+			const elapsedWallClock = (Date.now() / 1000) - startWallClock;
+			const targetFrames = Math.round(elapsedWallClock * TARGET_FPS);
+			while (framesWritten < targetFrames) {
+				if (ffmpegProcess.stdin && !ffmpegProcess.stdin.destroyed) {
+					ffmpegProcess.stdin.write(lastBuffer);
+				}
+				framesWritten++;
+			}
+		};
 
 		// Reset recording clock when React main.tsx logs 'demoload'
-		page.on('console', (msg) => {
+		page.on('console', async (msg) => {
 			if (msg.text() === 'demoload') {
-				startTime = -1;
-				startWallClock = -1;
+				startWallClock = Date.now() / 1000;
 				framesWritten = 0;
-				lastBuffer = null;
-				demoloadReceived = true;
+				recording = true;
+
+				try {
+					lastBuffer = await page.screenshot({ type: 'jpeg', quality: 90 });
+				} catch (e) {
+					// Fallback if screenshot fails during load
+				}
+
+				if (!timer) {
+					timer = setInterval(writeFrames, 1000 / TARGET_FPS);
+				}
 			}
 		});
 
-		// Use Playwright's official page.screencast API
+		// Use Playwright's official page.screencast API to keep lastBuffer updated
 		await page.screencast.start({
 			quality: 90,
 			size: {
 				width: 1080,
 				height: 1920
 			},
-			onFrame: ({ data, timestamp }) => {
-				// Ignore pre-render frames until the current page fires 'demoload'
-				if (!demoloadReceived) return;
-
-				const timeInSeconds = timestamp / 1000;
-
-				if (startTime === -1) {
-					startTime = timeInSeconds;
-					startWallClock = Date.now() / 1000; // Capture matching wall clock baseline
-					lastBuffer = data;
-					return;
-				}
-
-				const elapsedTime = timeInSeconds - startTime;
-				const targetFrames = elapsedTime ? Math.round(elapsedTime * TARGET_FPS) : 1;
-
-				// Output frames only when wall-clock time reaches new 30fps frame bucket(s)
-				if (targetFrames > framesWritten) {
-					while (framesWritten < targetFrames) {
-						if (ffmpegProcess.stdin && !ffmpegProcess.stdin.destroyed && lastBuffer) {
-							ffmpegProcess.stdin.write(lastBuffer);
-						}
-						framesWritten++;
-					}
-				}
-
-				// Store the newest frame for the current or next frame slot
+			onFrame: ({ data }) => {
 				lastBuffer = data;
+				if (recording) {
+					writeFrames();
+				}
 			}
 		});
 
 		// Run test
 		await use(page);
 
-		// Pad any static time remaining at the end of the test using matching Date.now() wall clock
-		const endWallClock = Date.now() / 1000;
-		if (startWallClock !== -1 && lastBuffer) {
-			const elapsedWallClock = endWallClock - startWallClock;
-			const finalTargetFrames = Math.round(elapsedWallClock * TARGET_FPS);
-
-			while (framesWritten < finalTargetFrames) {
-				if (ffmpegProcess.stdin && !ffmpegProcess.stdin.destroyed) {
-					ffmpegProcess.stdin.write(lastBuffer);
-				}
-				framesWritten++;
-			}
+		if (timer) {
+			clearInterval(timer);
+			timer = null;
 		}
+
+		// Final flush for remaining wall clock frames at end of test
+		writeFrames();
 
 		// Stop screencast
 		await page.screencast.stop();
 
-		// Flush final frame & send EOF to FFmpeg
+		// Flush stdin stream & wait for drain before closing pipe
 		if (ffmpegProcess.stdin && !ffmpegProcess.stdin.destroyed) {
-			ffmpegProcess.stdin.end();
+			await new Promise<void>((resolve) => {
+				if (!ffmpegProcess.stdin.writableNeedDrain) {
+					ffmpegProcess.stdin.end();
+					resolve();
+				} else {
+					ffmpegProcess.stdin.once('drain', () => {
+						ffmpegProcess.stdin.end();
+						resolve();
+					});
+				}
+			});
 		}
 
 		// Wait for raw FFmpeg encoding to complete
