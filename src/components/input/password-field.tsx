@@ -39,7 +39,7 @@ const styles = createStyles('password-field', {
  * 
  * @see {@link https://fluid.infinityfx.dev/docs/components/password-field}
  */
-export default function PasswordField({ cc = {}, strengthBar = false, size = 'med', round, error, icon, left, right, defaultValue, onEnter, inputRef, ref, ...props }: {
+export default function PasswordField({ cc = {}, strengthBar = false, size = 'med', variant, round, error, icon, left, right, defaultValue, onEnter, inputRef, ref, ...props }: {
     /**
      * Show a bar indicating how secure an entered password is.
      * 
@@ -78,6 +78,7 @@ export default function PasswordField({ cc = {}, strengthBar = false, size = 'me
             type={visible ? 'text' : 'password'}
             round={round}
             size={size}
+            variant={variant}
             error={error}
             icon={icon}
             left={left}

@@ -318,7 +318,7 @@ export default function Table<T extends { [key: string]: string | number | Date;
                             </div>;
                         })}
 
-                        {rowActions?.length ? <div className={style.collapsed}>
+                        {rowActions ? <div className={style.collapsed}>
                             <ActionMenuRoot>
                                 <ActionMenuTrigger>
                                     <Button compact variant="minimal" size="sml" style={{ marginLeft: 'auto' }}>

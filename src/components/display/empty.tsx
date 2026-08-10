@@ -41,6 +41,7 @@ const styles = createStyles('empty', {
     '.content': {
         display: 'flex',
         flexWrap: 'wrap',
+        justifyContent: 'center',
         gap: 'var(--f-spacing-sml)'
     }
 });

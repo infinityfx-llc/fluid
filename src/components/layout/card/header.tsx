@@ -11,6 +11,10 @@ const styles = createStyles('card-header', {
         gap: 'var(--f-spacing-sml)'
     },
 
+    '.center': {
+        alignItems: 'center'
+    },
+
     '.p__bottom': {
         paddingBottom: 'inherit'
     },
@@ -22,7 +26,7 @@ const styles = createStyles('card-header', {
 
 export type CardHeaderSelectors = Selectors<'header' | 'p__bottom' | 'p__top'>;
 
-export default function Header({ children, cc = {}, pad, ...props }:
+export default function Header({ children, cc = {}, pad, center, ...props }:
     {
         ref?: React.Ref<HTMLDivElement>;
         cc?: CardHeaderSelectors;
@@ -30,6 +34,7 @@ export default function Header({ children, cc = {}, pad, ...props }:
          * When set adds spacing below or above the header.
          */
         pad?: 'bottom' | 'top';
+        center?: boolean;
     } & React.HTMLAttributes<HTMLDivElement>) {
     const style = combineClasses(styles, cc);
 
@@ -37,6 +42,7 @@ export default function Header({ children, cc = {}, pad, ...props }:
         {...props}
         className={classes(
             style.header,
+            center && style.center,
             pad && style[`p__${pad}`],
             props.className
         )}>

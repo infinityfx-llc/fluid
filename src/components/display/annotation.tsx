@@ -10,7 +10,7 @@ const styles = createStyles('annotation', {
         flexDirection: 'column',
         color: 'var(--f-clr-text-100)',
         minWidth: 'min(100vw, 12em)',
-        ['--width' as any]: '100%'
+        ['--width' as any]: 'auto'
     },
 
     '.s__xsm': {
