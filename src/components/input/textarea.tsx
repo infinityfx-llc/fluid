@@ -169,6 +169,7 @@ export default function Textarea({ cc = {}, size = 'med', variant = 'default', e
                     if (!content.current) return;
 
                     content.current.innerHTML = e.target.value;
+                    split.onChange?.(e);
                 }} />
         </div>
     </Scrollarea>;
