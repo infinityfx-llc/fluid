@@ -42,22 +42,22 @@ const styles = createStyles('group', {
         flexDirection: 'column'
     },
 
-    '.d__horizontal > :not(:last-child), .d__horizontal > :not(:last-child) [data-fb]': {
+    '.d__horizontal > :not(:last-child), .d__horizontal > :not(:last-child) > [data-fb]': { // testing direct only data-fb targeting
         borderTopRightRadius: 'var(--radius) !important',
         borderBottomRightRadius: 'var(--radius) !important'
     },
 
-    '.d__horizontal > :not(:first-child), .d__horizontal > :not(:first-child) [data-fb]': {
+    '.d__horizontal > :not(:first-child), .d__horizontal > :not(:first-child) > [data-fb]': {
         borderTopLeftRadius: 'var(--radius) !important',
         borderBottomLeftRadius: 'var(--radius) !important'
     },
 
-    '.d__vertical > :not(:last-child), .d__vertical > :not(:last-child) [data-fb]': {
+    '.d__vertical > :not(:last-child), .d__vertical > :not(:last-child) > [data-fb]': {
         borderBottomLeftRadius: 'var(--radius) !important',
         borderBottomRightRadius: 'var(--radius) !important'
     },
 
-    '.d__vertical > :not(:first-child), .d__vertical > :not(:first-child) [data-fb]': {
+    '.d__vertical > :not(:first-child), .d__vertical > :not(:first-child) > [data-fb]': {
         borderTopLeftRadius: 'var(--radius) !important',
         borderTopRightRadius: 'var(--radius) !important'
     },
