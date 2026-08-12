@@ -27,6 +27,8 @@ export function useModal() {
 
 const styles = createStyles('modal-root', (fluid) => ({
     '.modal': {
+        display: 'flex',
+        flexDirection: 'column',
         borderRadius: 'var(--f-radius-lrg)',
         minWidth: 'min(100vw, 16em)',
         margin: 'var(--f-spacing-lrg)',

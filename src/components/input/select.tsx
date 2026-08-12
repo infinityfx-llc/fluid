@@ -227,6 +227,7 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
 
     const [state, setState] = value !== undefined ? [value, onChange] : useState<T>(defaultValue || (multiple ? [] as any : '' as T));
     const isMult = Array.isArray(state);
+    const badges = isMult ? (state.length < 3 ? state : [state[0], `+${state.length - 1} more`]) : [];
 
     useEffect(() => {
         if (multiple !== isMult) setState?.(multiple ?
@@ -262,13 +263,18 @@ export default function Select<T extends FluidInputvalue | FluidInputvalue[]>(
                         {(isMult ? !state.length : state === null || state === undefined || state === '') && <div className={style.placeholder} id={placeholderId}>{placeholder}</div>}
 
                         {isMult ?
-                            (state.length < 3 ?
-                                state.map((val, i) => <Badge key={i} round={round} cc={{ badge: style.badge }}>{val}</Badge>) :
-                                <>
-                                    <Badge round={round} cc={{ badge: style.badge }}>{state[0]}</Badge>
-                                    <Badge round={round} cc={{ badge: style.badge }}>+{state.length - 1} more</Badge>
-                                </>
-                            ) :
+                            badges.map((val, i) => <Badge
+                                key={i}
+                                round={round}
+                                size={({
+                                    xsm: 'xsm',
+                                    sml: 'xsm',
+                                    med: 'sml',
+                                    lrg: 'med'
+                                } as const)[size]}
+                                cc={{ badge: style.badge }}>
+                                {val}
+                            </Badge>) :
                             options.find(option => option.value === state)?.label // Optimze?
                         }
                     </div>

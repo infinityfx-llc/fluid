@@ -12,7 +12,8 @@ const styles = createStyles('badge', {
         display: 'inline-flex',
         alignItems: 'center',
         gap: 'var(--f-spacing-xxs)',
-        lineHeight: 1.2
+        lineHeight: 1.2,
+        whiteSpace: 'nowrap'
     },
 
     '.v__default': {
@@ -71,6 +72,9 @@ export default function Badge({ children, cc = {}, variant = 'default', round = 
         cc?: BadgeSelectors;
         variant?: 'default' | 'inverted' | 'neutral';
         round?: boolean;
+        /**
+         * @default 'sml'
+         */
         size?: FluidSize;
         color?: string;
         onClose?: () => void;

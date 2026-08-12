@@ -14,7 +14,7 @@ const styles = createStyles('modal-footer', fluid => ({
         borderTop: 'solid 1px var(--f-clr-surface-200)',
         padding: 'var(--f-spacing-med)',
         borderBottomLeftRadius: 'calc(var(--f-radius-lrg) - 1px)',
-        borderBottomRightRadius: 'calc(var(--f-radius-lrg) - 1px)',
+        borderBottomRightRadius: 'calc(var(--f-radius-lrg) - 1px)'
     },
 
     [`@media (max-width: ${fluid.breakpoints.mob}px)`]: {

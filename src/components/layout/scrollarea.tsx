@@ -235,7 +235,10 @@ export default function Scrollarea({ children, cc = {}, direction = 'vertical', 
         if (areaRef.children.length) observer.observe(areaRef.children[0]);
 
         areaRef.addEventListener('wheel', e => {
-            if (behavior !== 'shift' || e.shiftKey) scroll(e, e.deltaY);
+            if (horizontal && e.deltaX) {
+                scroll(e, e.deltaX);
+            } else
+                if (behavior !== 'shift' || e.shiftKey) scroll(e, e.deltaY);
         }, { signal: ctrl.signal });
         window.addEventListener('mousemove', drag, { signal: ctrl.signal });
         window.addEventListener('mouseup', drag, { signal: ctrl.signal });

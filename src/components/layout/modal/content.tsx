@@ -13,7 +13,8 @@ const styles = createStyles('modal-content', {
     '.content': {
         display: 'flex',
         flexDirection: 'column',
-        paddingBlock: 'var(--f-spacing-med)'
+        paddingBlock: 'var(--f-spacing-med)',
+        minHeight: 0
     },
 
     '.scrollarea': {
