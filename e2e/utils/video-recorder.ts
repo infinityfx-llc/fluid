@@ -8,7 +8,7 @@ const TARGET_FPS = 60;
 
 export const test = baseTest.extend({
 	page: async ({ page }, use, { title }) => {
-		const outputDir = path.resolve('videos');
+		const outputDir = path.resolve('videos', 'raw');
 		const targetPath = path.join(outputDir, `${title.toLowerCase().replace(/\s+/g, '-')}.mp4`);
 
 		if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
@@ -85,50 +85,6 @@ export const test = baseTest.extend({
 		}
 
 		await new Promise<void>((resolve) => ffmpegProcess.on('close', resolve));
-
-		if (!fs.existsSync(targetPath)) return;
-
-		const tempPath = targetPath.replace(/\.mp4$/, '-raw.mp4');
-
-		try {
-			fs.renameSync(targetPath, tempPath);
-
-			await new Promise<void>((resolve) => {
-				// Transition duration synchronized for both zoom & color fade (0.25s = 15 frames at 60fps)
-				const TRANSITION_SEC = 0.25;
-				const D = Math.round(TRANSITION_SEC * TARGET_FPS); // 15 frames
-
-				// Calculate exact total frames (demoload excluded initial page loading)
-				const actualTotalFrames = Math.max(D * 2, framesWritten);
-				const endStart = Math.max(D + 1, actualTotalFrames - D);
-
-				// Double-precision floating point (.0) zoompan evaluation for smooth subpixel motion at 1080x1920
-				const zoomFilter = `zoompan=z=if(lte(on\\,${D})\\,1.18-0.18*(1-(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0)*(1-on/${D}.0))\\,if(gte(on\\,${endStart})\\,1.0+0.18*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)*((on-${endStart})/${D}.0)\\,1.0)):x=(iw/2.0)-(iw/zoom/2.0):y=(ih/2.0)-(ih/zoom/2.0):d=1:s=1080x1920:fps=60`;
-
-				// Synchronized 0.25s color fade in (start) and fade out (end) to #f7f6f5
-				const fadeOutStartSec = Math.max(TRANSITION_SEC, (actualTotalFrames - D) / TARGET_FPS).toFixed(2);
-				const fadeInFilter = `fade=t=in:st=0:d=${TRANSITION_SEC}:color=0xf7f6f5`;
-				const fadeOutFilter = `fade=t=out:st=${fadeOutStartSec}:d=${TRANSITION_SEC}:color=0xf7f6f5`;
-
-				const postProcess = spawn(ffmpegPath.path, [
-					'-y',
-					'-i', tempPath,
-					'-vf', `${zoomFilter},${fadeInFilter},${fadeOutFilter}`,
-					'-c:v', 'libx264',
-					'-pix_fmt', 'yuv420p',
-					targetPath
-				]);
-
-				postProcess.on('error', resolve);
-				postProcess.on('close', resolve);
-			});
-
-			if (fs.existsSync(tempPath) && !fs.existsSync(targetPath)) {
-				fs.renameSync(tempPath, targetPath);
-			} else if (fs.existsSync(tempPath)) {
-				fs.unlinkSync(tempPath);
-			}
-		} catch { }
 	}
 });
 

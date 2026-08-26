@@ -7,7 +7,8 @@ export default function () {
     return <Group>
         <Animate animate={{
             opacity: [0, 1],
-            translate: ['0px 8px', '0px 0px']
+            translate: ['0px 8px', '0px 0px'],
+            delay: .25
         }}>
             <Tooltip content="Default tooltip" position="top">
                 <Button variant="neutral" aria-label="bold">

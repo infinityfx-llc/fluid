@@ -6,7 +6,8 @@ export default function () {
     return <CardContent align="vertical" stretch>
         <Animate animate={{
             opacity: [0, 1],
-            translate: ['0px 8px', '0px 0px']
+            translate: ['0px 8px', '0px 0px'],
+            delay: .25
         }}>
             <Button>
                 Default button

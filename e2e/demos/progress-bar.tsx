@@ -8,7 +8,8 @@ export default function () {
     return <CardContent align="vertical" gap="med">
         <Animate animate={{
             opacity: [0, 1],
-            translate: ['0px 8px', '0px 0px']
+            translate: ['0px 8px', '0px 0px'],
+            delay: .25
         }}>
             <Annotation label={`Progress ${Math.round(progress * 100)}%`}>
                 <ProgressBar value={progress} />

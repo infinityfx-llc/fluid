@@ -3,6 +3,7 @@ import '../../fluid.css';
 import ReactDOM from 'react-dom/client';
 import { Badge, Card, CardContent, FluidProvider } from '@/fluid';
 import { useEffect } from 'react';
+import { Animate } from '@infinityfx/lively';
 
 const modules = import.meta.glob<{ default: React.ComponentType }>('../demos/*.tsx');
 const routes: Record<string, () => Promise<{ default: React.ComponentType }>> = {};
@@ -24,22 +25,21 @@ function DemoView() {
 		console.log('demoload');
 	}, []);
 
-	return <FluidProvider>
-		<body
+	return <FluidProvider style={{
+		display: 'flex',
+		flexDirection: 'column',
+		padding: 'var(--f-spacing-lrg)',
+		backgroundColor: 'var(--f-clr-surface-200)'
+	}}>
+		<Card
+			color="back"
+			radius="lrg"
 			style={{
+				flexGrow: 1,
 				display: 'flex',
-				flexDirection: 'column',
-				padding: 'var(--f-spacing-lrg)',
-				backgroundColor: 'var(--f-clr-surface-200)'
+				flexDirection: 'column'
 			}}>
-			<Card
-				color="back"
-				radius="lrg"
-				style={{
-					flexGrow: 1,
-					display: 'flex',
-					flexDirection: 'column'
-				}}>
+			{path !== 'logo' && <Animate animate={{ opacity: [0, 1], delay: .25 }}>
 				<div style={{
 					display: 'flex',
 					alignItems: 'baseline',
@@ -49,17 +49,17 @@ function DemoView() {
 				}}>
 					<Badge color="var(--f-clr-surface-300)">Fluid UI</Badge> by InfinityFX
 				</div>
+			</Animate>}
 
-				<CardContent
-					align="center"
-					style={{
-						flexGrow: 1,
-						flexDirection: 'column'
-					}}>
-					{Component ? <Component /> : <div style={{ padding: '2rem' }}>Unknown demo: {window.location.pathname}</div>}
-				</CardContent>
-			</Card>
-		</body>
+			<CardContent
+				align="center"
+				style={{
+					flexGrow: 1,
+					flexDirection: 'column'
+				}}>
+				{Component ? <Component /> : <div style={{ padding: '2rem' }}>Unknown demo: {window.location.pathname}</div>}
+			</CardContent>
+		</Card>
 	</FluidProvider>;
 }
 
