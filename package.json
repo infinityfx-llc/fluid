@@ -59,8 +59,8 @@
 		"demo": "npx fluid compile -d && vite e2e/app --port 5173",
 		"test:e2e": "playwright test --project=\"e2e\"",
 		"test:videos": "playwright test --project=\"videos\"",
-		"process:videos": "node --experimental-strip-types e2e/utils/process-videos.ts",
-		"videos": "npm run test:videos && npm run process:videos"
+		"videos:process": "node --experimental-strip-types e2e/utils/process-videos.ts",
+		"videos": "npm run test:videos && npm run video:process"
 	},
 	"bin": {
 		"@infinityfx/fluid": "dist/bin/cli.js",

@@ -5,15 +5,15 @@ import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 
 const ffmpegPath = ffmpegInstaller.path;
 
-// Configuration Defaults
-const DEFAULT_CROSSFADE_DURATION = 0.5; // Seconds for crossfade into outro
-const DEFAULT_AUDIO_VOLUME = 1.0;       // Background music volume level
-const DEFAULT_AUDIO_FADE_OUT = 1.0;      // Seconds of audio fade out at the end
-const DEFAULT_AUDIO_START = 'auto';     // 'auto' to detect beat drop/beat onset, or a number (e.g. 4.5 or 0)
+// Hardcoded Configuration Constants
+const CROSSFADE_DURATION = 0.5; // Seconds for crossfade into outro
+const AUDIO_VOLUME = 1.0;       // Background music volume level
+const AUDIO_FADE_OUT = 1.0;      // Seconds of audio fade out at the end
+const DEFAULT_AUDIO_START = 'auto'; // 'auto' to detect beat drop/onset, or a number (e.g. 4.5 or 0)
 const TARGET_FPS = 60;
 const OUTRO_FILENAME = 'logo-demo.mp4';
 
-// Parse optional CLI arguments: --volume=1.0 --fade=0.5 --music=track.mp3 --audio-start=auto (or 4.5)
+// Parse optional CLI arguments: --video=button --music=track.mp3 --audio-start=auto (or 4.5)
 const argsMap = new Map<string, string>();
 for (const arg of process.argv.slice(2)) {
 	if (arg.startsWith('--')) {
@@ -22,10 +22,8 @@ for (const arg of process.argv.slice(2)) {
 	}
 }
 
-const CROSSFADE_DURATION = argsMap.has('fade') ? parseFloat(argsMap.get('fade')!) : DEFAULT_CROSSFADE_DURATION;
-const AUDIO_VOLUME = argsMap.has('volume') ? parseFloat(argsMap.get('volume')!) : DEFAULT_AUDIO_VOLUME;
-const AUDIO_FADE_OUT = argsMap.has('audio-fade') ? parseFloat(argsMap.get('audio-fade')!) : DEFAULT_AUDIO_FADE_OUT;
 const AUDIO_START_ARG = argsMap.get('audio-start') ?? DEFAULT_AUDIO_START;
+const TARGET_VIDEO_ARG = argsMap.get('video');
 
 const RAW_DIR = path.resolve('videos', 'raw');
 const OUTPUT_DIR = path.resolve('videos');
@@ -50,9 +48,26 @@ function probeDuration(filePath: string): Promise<number> {
 	});
 }
 
-function findMusicFile(): string | null {
+function getMusicFiles(): string[] {
+	if (!fs.existsSync(MUSIC_DIR)) return [];
+
+	const audioExtensions = new Set(['.mp3', '.wav', '.m4a', '.ogg', '.aac', '.flac']);
+	const files = fs.readdirSync(MUSIC_DIR);
+	const results: string[] = [];
+
+	for (const file of files) {
+		const ext = path.extname(file).toLowerCase();
+		if (audioExtensions.has(ext)) {
+			results.push(path.join(MUSIC_DIR, file));
+		}
+	}
+
+	return results;
+}
+
+function selectMusicFile(availableFiles: string[]): string | null {
 	const customMusic = argsMap.get('music');
-	if (customMusic) {
+	if (customMusic && customMusic !== 'random') {
 		const customPath = path.resolve(customMusic);
 		if (fs.existsSync(customPath)) return customPath;
 		const inMusicDir = path.join(MUSIC_DIR, customMusic);
@@ -60,19 +75,12 @@ function findMusicFile(): string | null {
 		console.warn(`Warning: Specified music file '${customMusic}' not found.`);
 	}
 
-	if (!fs.existsSync(MUSIC_DIR)) return null;
+	if (availableFiles.length === 0) return null;
+	if (availableFiles.length === 1) return availableFiles[0];
 
-	const audioExtensions = new Set(['.mp3', '.wav', '.m4a', '.ogg', '.aac', '.flac']);
-	const files = fs.readdirSync(MUSIC_DIR);
-
-	for (const file of files) {
-		const ext = path.extname(file).toLowerCase();
-		if (audioExtensions.has(ext)) {
-			return path.join(MUSIC_DIR, file);
-		}
-	}
-
-	return null;
+	// Randomly pick from available audio files
+	const randomIndex = Math.floor(Math.random() * availableFiles.length);
+	return availableFiles[randomIndex];
 }
 
 interface BeatDetectionResult {
@@ -83,7 +91,7 @@ interface BeatDetectionResult {
 
 async function detectAudioStart(audioPath: string): Promise<BeatDetectionResult> {
 	const step = 0.25;
-	const maxScan = 30;
+	const maxScan = 45;
 	const promises: Promise<{ t: number; mean: number; max: number }>[] = [];
 
 	for (let t = 0; t < maxScan; t += step) {
@@ -161,10 +169,6 @@ async function processVideo(
 	const audioFadeOutStart = Math.max(0, totalDuration - AUDIO_FADE_OUT);
 
 	console.log(`\nProcessing: ${filename}`);
-	console.log(`  - Main duration: ${mainDuration.toFixed(2)}s`);
-	console.log(`  - Outro duration: ${outroDuration.toFixed(2)}s`);
-	console.log(`  - Crossfade offset: ${offset.toFixed(2)}s (${fadeDuration.toFixed(2)}s fade)`);
-	console.log(`  - Total duration: ${totalDuration.toFixed(2)}s`);
 
 	const args = [
 		'-y',
@@ -179,7 +183,7 @@ async function processVideo(
 	].join(';');
 
 	if (audioPath) {
-		console.log(`  - Audio track: ${path.basename(audioPath)} (start offset: ${audioStartOffset.toFixed(2)}s, fade-out at ${audioFadeOutStart.toFixed(2)}s)`);
+		console.log(`  - Audio: ${path.basename(audioPath)}`);
 		if (audioStartOffset > 0) {
 			args.push('-ss', String(audioStartOffset));
 		}
@@ -252,24 +256,60 @@ async function main() {
 	}
 
 	const outroDuration = await probeDuration(outroVideoPath);
-	const musicFile = findMusicFile();
+	const availableMusic = getMusicFiles();
+	const customMusicArg = argsMap.get('music');
+	const audioOffsetsCache = new Map<string, number>();
 
-	let audioStartOffset = 0;
-	if (musicFile) {
+	async function getOffsetForTrack(trackPath: string): Promise<number> {
+		if (audioOffsetsCache.has(trackPath)) {
+			return audioOffsetsCache.get(trackPath)!;
+		}
+
+		let offset = 0;
 		if (AUDIO_START_ARG === 'auto') {
-			console.log(`Analyzing audio track for beat drop / beat onset...`);
-			const detection = await detectAudioStart(musicFile);
+			console.log(`Analyzing '${path.basename(trackPath)}' for beat drop / onset...`);
+			const detection = await detectAudioStart(trackPath);
 			console.log(`  ✓ ${detection.details}`);
-			audioStartOffset = detection.time;
+			offset = detection.time;
 		} else {
-			audioStartOffset = parseFloat(AUDIO_START_ARG) || 0;
-			console.log(`Using manual audio start offset: ${audioStartOffset.toFixed(2)}s`);
+			offset = parseFloat(AUDIO_START_ARG) || 0;
+			console.log(`Using manual audio start offset for '${path.basename(trackPath)}': ${offset.toFixed(2)}s`);
+		}
+
+		audioOffsetsCache.set(trackPath, offset);
+		return offset;
+	}
+
+	// If explicit --music was provided, resolve it
+	let explicitMusicFile: string | null = null;
+	let explicitAudioOffset = 0;
+
+	if (customMusicArg) {
+		explicitMusicFile = selectMusicFile(availableMusic);
+		if (explicitMusicFile) {
+			explicitAudioOffset = await getOffsetForTrack(explicitMusicFile);
 		}
 	}
 
-	const rawFiles = fs.readdirSync(RAW_DIR).filter((file) => {
+	let rawFiles = fs.readdirSync(RAW_DIR).filter((file) => {
 		return file.endsWith('.mp4') && file !== OUTRO_FILENAME;
 	});
+
+	// Handle --video=<name> to process a single video
+	if (TARGET_VIDEO_ARG) {
+		const cleanTarget = path.basename(TARGET_VIDEO_ARG).replace(/\.mp4$/i, '').toLowerCase();
+		rawFiles = rawFiles.filter((file) => {
+			const cleanFile = file.replace(/\.mp4$/i, '').toLowerCase();
+			return cleanFile === cleanTarget || cleanFile === `${cleanTarget}-demo` || cleanFile.startsWith(cleanTarget);
+		});
+
+		if (rawFiles.length === 0) {
+			console.error(`Error: No raw video matching '${TARGET_VIDEO_ARG}' found in ${RAW_DIR}.`);
+			const available = fs.readdirSync(RAW_DIR).filter((f) => f.endsWith('.mp4') && f !== OUTRO_FILENAME);
+			console.error(`Available raw videos: ${available.join(', ')}`);
+			process.exit(1);
+		}
+	}
 
 	if (rawFiles.length === 0) {
 		console.log(`No demo videos to process in ${RAW_DIR} (excluding ${OUTRO_FILENAME}).`);
@@ -278,16 +318,29 @@ async function main() {
 
 	console.log(`\n========================================`);
 	console.log(`Video Post-Processing`);
-	console.log(`- Outro: ${OUTRO_FILENAME} (${outroDuration.toFixed(2)}s)`);
-	console.log(`- Music: ${musicFile ? path.basename(musicFile) : 'None'}`);
-	console.log(`- Audio Start Offset: ${audioStartOffset.toFixed(2)}s`);
-	console.log(`- Found ${rawFiles.length} demo video(s) to process`);
+	console.log(`- Outro: ${OUTRO_FILENAME}`);
+	if (explicitMusicFile) {
+		console.log(`- Music: ${path.basename(explicitMusicFile)}`);
+	} else if (availableMusic.length > 0) {
+		console.log(`- Music: Random per video (${availableMusic.length} track${availableMusic.length > 1 ? 's' : ''})`);
+	}
+	console.log(`- Videos to process: ${rawFiles.length}`);
 	console.log(`========================================`);
 
 	for (const file of rawFiles) {
 		const rawPath = path.join(RAW_DIR, file);
 		try {
-			await processVideo(rawPath, outroVideoPath, musicFile, audioStartOffset, outroDuration);
+			let currentMusic = explicitMusicFile;
+			let currentOffset = explicitAudioOffset;
+
+			if (!explicitMusicFile && availableMusic.length > 0) {
+				currentMusic = selectMusicFile(availableMusic);
+				if (currentMusic) {
+					currentOffset = await getOffsetForTrack(currentMusic);
+				}
+			}
+
+			await processVideo(rawPath, outroVideoPath, currentMusic, currentOffset, outroDuration);
 		} catch (err) {
 			console.error(`Failed to process ${file}:`, err);
 		}
