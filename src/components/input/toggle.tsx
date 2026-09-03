@@ -92,7 +92,7 @@ const styles = createStyles('toggle', {
         height: '100%',
     },
 
-    '.toggle:active .container': {
+    '.toggle[data-disabled="false"]:active .container': {
         translate: '0px 1px'
     },
 

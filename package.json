@@ -1,6 +1,6 @@
 {
 	"name": "@infinityfx/fluid",
-	"version": "2.1.3",
+	"version": "2.1.4",
 	"type": "module",
 	"description": "React UI library, using zero-runtime CSS-in-JS.",
 	"main": "dist/index.js",
@@ -60,7 +60,7 @@
 		"test:e2e": "playwright test --project=\"e2e\"",
 		"test:videos": "playwright test --project=\"videos\"",
 		"videos:process": "node --experimental-strip-types e2e/utils/process-videos.ts",
-		"videos": "npm run test:videos && npm run video:process"
+		"videos": "npm run test:videos && npm run videos:process"
 	},
 	"bin": {
 		"@infinityfx/fluid": "dist/bin/cli.js",

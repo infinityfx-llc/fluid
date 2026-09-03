@@ -81,8 +81,8 @@ export default function Empty({ children, cc = {}, title, message, icon = <Icon 
             </p>}
         </div>
 
-        <div className={style.content}>
+        {children ? <div className={style.content}>
             {children}
-        </div>
+        </div> : null}
     </div>;
 }

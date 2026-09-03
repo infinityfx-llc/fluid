@@ -16,6 +16,8 @@ export default function Trigger(props: PopoverTriggerProps) {
             props.children.props.onKeyDown?.(e);
             props.onKeyDown?.(e);
 
+            if (props.disabled) return;
+
             if (e.key === ' ' || e.key === 'Enter') e.preventDefault();
 
             if ((e.key === 'Tab' && !e.shiftKey) || e.key === 'ArrowDown') {
