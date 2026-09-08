@@ -139,7 +139,7 @@ export default function Textarea({ cc = {}, size = 'med', variant = 'default', e
             props.className
         )}
         data-error={!!error}
-        data-disabled={props.disabled}
+        data-disabled={props.disabled || false}
         data-fb={variant === 'default' ? 'true' : undefined}
         style={{
             resize: fitToContent ? undefined : resize,

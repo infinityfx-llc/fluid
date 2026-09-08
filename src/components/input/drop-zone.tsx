@@ -51,7 +51,8 @@ const styles = createStyles('drop-zone', {
     '.container': {
         display: 'flex',
         flexDirection: 'column',
-        gridArea: '1 / 1'
+        gridArea: '1 / 1',
+        minWidth: 0
     },
 
     '.preview': {
@@ -76,6 +77,10 @@ const styles = createStyles('drop-zone', {
         display: 'flex',
         alignItems: 'baseline',
         gap: 'var(--f-spacing-xsm)'
+    },
+
+    '.footer .text': {
+        overflowWrap: 'anywhere'
     },
 
     '.annotation': {

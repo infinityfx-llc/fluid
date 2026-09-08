@@ -129,7 +129,7 @@ const styles = createStyles('select', {
     },
 
     '.field .badge': {
-        backgroundColor: 'var(--f-clr-surface-200)'
+        backgroundColor: 'var(--f-clr-surface-300)'
     },
 
     '.field[data-error="true"] .badge': {

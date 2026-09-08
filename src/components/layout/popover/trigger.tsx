@@ -21,7 +21,7 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
     const touch = useRef({ clientX: 0, clientY: 0 });
     const pressed = useRef(false);
     const touchOnly = useRef(false);
-    const isDisabled = disabled || children.props.disabled;
+    const isDisabled = disabled || children.props?.disabled;
 
     useEffect(() => {
         const el = trigger.current,
@@ -85,7 +85,7 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
         'aria-controls': id,
         'aria-disabled': isDisabled,
         ...props,
-        ref: combineRefs(trigger, children.props.ref)
+        ref: combineRefs(trigger, children.props?.ref)
     });
 }
 

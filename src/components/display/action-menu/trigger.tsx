@@ -12,7 +12,7 @@ export default function Trigger(props: PopoverTriggerProps) {
         {...props}
         aria-haspopup="menu"
         onKeyDown={e => {
-            props.children.props.onKeyDown?.(e);
+            props.children.props?.onKeyDown?.(e);
             props.onKeyDown?.(e);
 
             if ((e.key === 'Tab' && !e.shiftKey) || e.key === 'ArrowDown') { // maybe also on arrow up?

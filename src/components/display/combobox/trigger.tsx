@@ -13,7 +13,7 @@ export default function Trigger(props: PopoverTriggerProps) {
         {...props}
         role="combobox"
         onKeyDown={e => {
-            props.children.props.onKeyDown?.(e);
+            props.children.props?.onKeyDown?.(e);
             props.onKeyDown?.(e);
 
             if (props.disabled) return;

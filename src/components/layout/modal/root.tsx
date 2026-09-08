@@ -90,6 +90,7 @@ export default function Root({ children, cc = {}, show, onClose, mobileClosing =
 
                 if (py > 0.35) { // close the modal when dragged below 35% the size of the modal
                     onClose();
+                    offset.set(0, { duration: .3 });
                 } else {
                     offset.set(0, { duration: .3 });
                 }
@@ -117,13 +118,17 @@ export default function Root({ children, cc = {}, show, onClose, mobileClosing =
             <Animate
                 correction="none"
                 key="modal"
-                onAnimationEnd={() => offset.set(0, { duration: 0 })}
                 animate={{
                     translate
                 }}
                 clips={{
-                    mob: {
+                    mobOpen: {
                         translate: ['0% 100%', '0% 0%'],
+                        duration: .3,
+                        composite: 'combine'
+                    },
+                    mobClose: {
+                        translate: [null, '0% 100%'],
                         duration: .3,
                         composite: 'combine'
                     },
@@ -134,7 +139,8 @@ export default function Root({ children, cc = {}, show, onClose, mobileClosing =
                     }
                 }}
                 triggers={{
-                    mob: isMobile ? ['mount', { on: 'unmount', reverse: true }] : [],
+                    mobOpen: isMobile ? ['mount'] : [],
+                    mobClose: isMobile ? ['unmount'] : [],
                     dsk: isMobile ? [] : ['mount', { on: 'unmount', reverse: true }]
                 }}>
                 <div
@@ -151,6 +157,8 @@ export default function Root({ children, cc = {}, show, onClose, mobileClosing =
                     aria-labelledby={id}
                     onTouchStart={e => {
                         props.onTouchStart?.(e);
+
+                        // todo: better scrollarea touch prevention
 
                         if (closeType === 'handle' &&
                             !e.defaultPrevented &&

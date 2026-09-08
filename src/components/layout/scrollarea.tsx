@@ -29,7 +29,7 @@ function getSizeWithoutPadding(element: HTMLElement) {
 }
 
 const styles = createStyles('scrollarea', {
-    '.area': {
+    ':where(.area)': {
         position: 'relative',
         overflow: 'hidden',
         outline: 'none'
