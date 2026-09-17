@@ -10,10 +10,32 @@ import useFluid from '../../../hooks/use-fluid';
 import useMediaQuery from '../../../hooks/use-media-query';
 import { useLink } from '@infinityfx/lively/hooks';
 
+function isScrollable(target: HTMLElement, boundary: HTMLElement) {
+    let el: HTMLElement | null = target;
+    let canScrollUp = false;
+    let canScrollDown = false;
+
+    while (el && el !== boundary) {
+        if (el.scrollTop > 0) {
+            canScrollUp = true;
+        }
+
+        const maxScroll = el.scrollHeight - el.clientHeight;
+        if (maxScroll > 0 && el.scrollTop < maxScroll - 1) {
+            const { overflowY } = getComputedStyle(el);
+
+            if (['auto', 'scroll'].includes(overflowY)) canScrollDown = true;
+        }
+
+        el = el.parentElement;
+    }
+
+    return { canScrollUp, canScrollDown };
+}
+
 export const ModalContext = createContext<{
     id: string;
     closeType: 'button' | 'handle';
-    content: React.RefObject<HTMLDivElement | null>;
     onClose(): void;
 } | null>(null);
 
@@ -74,9 +96,12 @@ export default function Root({ children, cc = {}, show, onClose, mobileClosing =
     const isMobile = useMediaQuery(`(max-width: ${fluid.breakpoints.mob}px)`);
     const closeType = isMobile ? mobileClosing : 'button';
 
-    const content = useRef<HTMLDivElement>(null);
     const modal = useRef<HTMLDivElement>(null);
-    const touch = useRef<{ clientY: number; }>(null);
+    const touch = useRef<{
+        clientY: number;
+        canScrollUp: boolean;
+        canScrollDown: boolean;
+    } | null>(null);
     const offset = useLink(0);
     const translate = useLink(offset, val => `0px ${val}px`);
 
@@ -100,6 +125,8 @@ export default function Root({ children, cc = {}, show, onClose, mobileClosing =
 
             const { clientY } = e.touches[0];
             const dy = Math.max(clientY - touch.current.clientY, -32);
+            if (dy < 0 && touch.current.canScrollDown) return touch.current = null;
+            if (dy > 0 && touch.current.canScrollUp) return touch.current = null;
 
             offset.set(dy, { duration: 0 });
         }
@@ -114,7 +141,7 @@ export default function Root({ children, cc = {}, show, onClose, mobileClosing =
     }, [onClose]);
 
     return <Overlay show={show} onClose={onClose}>
-        <ModalContext value={{ id, closeType, content, onClose }}>
+        <ModalContext value={{ id, closeType, onClose }}>
             <Animate
                 correction="none"
                 key="modal"
@@ -158,12 +185,18 @@ export default function Root({ children, cc = {}, show, onClose, mobileClosing =
                     onTouchStart={e => {
                         props.onTouchStart?.(e);
 
-                        // todo: better scrollarea touch prevention
+                        const target = e.target as HTMLElement;
 
-                        if (closeType === 'handle' &&
-                            !e.defaultPrevented &&
-                            !content.current?.scrollTop &&
-                            modal.current?.contains(e.target as HTMLElement)) touch.current = e.touches[0];
+                        if (closeType !== 'handle' || e.defaultPrevented || !modal.current?.contains(target)) return;
+
+                        // check if an element inside the modal can be scrolled, otherwise start drag animation
+                        const { canScrollUp, canScrollDown } = isScrollable(target, modal.current);
+
+                        touch.current = {
+                            clientY: e.touches[0].clientY,
+                            canScrollUp,
+                            canScrollDown
+                        };
                     }}>
                     {children}
                 </div>

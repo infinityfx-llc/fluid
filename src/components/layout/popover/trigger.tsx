@@ -1,7 +1,7 @@
 'use client';
 
 import { combineRefs } from "../../../../src/core/utils";
-import { cloneElement, useRef, useEffect } from "react";
+import { cloneElement, useRef, useEffect, isValidElement } from "react";
 import { usePopover } from "./root";
 
 export type PopoverTrigger = {
@@ -21,7 +21,7 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
     const touch = useRef({ clientX: 0, clientY: 0 });
     const pressed = useRef(false);
     const touchOnly = useRef(false);
-    const isDisabled = disabled || children.props?.disabled;
+    const isDisabled = disabled || children?.props?.disabled;
 
     useEffect(() => {
         const el = trigger.current,
@@ -79,14 +79,15 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
         return () => ctrl.abort();
     }, [toggle, isDisabled, opened]);
 
-    return cloneElement(children, {
+    return isValidElement(children) ? cloneElement(children as React.ReactElement<any>, {
         'aria-haspopup': 'dialog',
         'aria-expanded': opened,
         'aria-controls': id,
         'aria-disabled': isDisabled,
         ...props,
-        ref: combineRefs(trigger, children.props?.ref)
-    });
+        ref: combineRefs(trigger, (children as React.ReactElement<any>).props?.ref),
+        suppressHydrationWarning: true // todo: not ideal solution
+    }) : children;
 }
 
 Trigger.displayName = 'PopoverTrigger';

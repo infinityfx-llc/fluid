@@ -43,6 +43,7 @@ const styles = createStyles('toggle', {
         display: 'block',
         backgroundColor: 'var(--f-clr-surface-200)',
         color: 'var(--f-clr-text-100)',
+        fontWeight: 600,
         borderRadius: 'var(--f-radius-sml)',
         transition: 'background-color .25s, color .25s'
     },

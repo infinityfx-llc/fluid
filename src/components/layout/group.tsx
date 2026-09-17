@@ -42,22 +42,22 @@ const styles = createStyles('group', {
         flexDirection: 'column'
     },
 
-    '.d__horizontal > :not(:last-child), .d__horizontal > :not(:last-child) *:not([data-fb] [data-fb])': {
+    '.d__horizontal > :not(:last-child), .d__horizontal > :not(:last-child) [data-fb]:not([data-fb] [data-fb]), .d__horizontal > .group:not(:last-child) > *': {
         borderTopRightRadius: 'var(--radius) !important',
         borderBottomRightRadius: 'var(--radius) !important'
     },
 
-    '.d__horizontal > :not(:first-child), .d__horizontal > :not(:first-child) *:not([data-fb] [data-fb])': {
+    '.d__horizontal > :not(:first-child), .d__horizontal > :not(:first-child) [data-fb]:not([data-fb] [data-fb]), .d__horizontal > .group:not(:first-child) > *': {
         borderTopLeftRadius: 'var(--radius) !important',
         borderBottomLeftRadius: 'var(--radius) !important'
     },
 
-    '.d__vertical > :not(:last-child), .d__vertical > :not(:last-child) *:not([data-fb] [data-fb])': {
+    '.d__vertical > :not(:last-child), .d__vertical > :not(:last-child) [data-fb]:not([data-fb] [data-fb]), .d__vertical > .group:not(:last-child) > *': {
         borderBottomLeftRadius: 'var(--radius) !important',
         borderBottomRightRadius: 'var(--radius) !important'
     },
 
-    '.d__vertical > :not(:first-child), .d__vertical > :not(:first-child) *:not([data-fb] [data-fb])': {
+    '.d__vertical > :not(:first-child), .d__vertical > :not(:first-child) [data-fb]:not([data-fb] [data-fb]), .d__vertical > .group:not(:first-child) > *': {
         borderTopLeftRadius: 'var(--radius) !important',
         borderTopRightRadius: 'var(--radius) !important'
     },

@@ -57,7 +57,7 @@ export default function Content({ children, cc = {}, title, ...props }:
     const style = combineClasses(styles, cc);
 
     const lang = useLang();
-    const { id, closeType, content, onClose } = useModal();
+    const { id, closeType, onClose } = useModal();
 
     return <div {...props} className={classes(style.content, props.className)}>
         {closeType === 'handle' && <div className={style.handle} />}
@@ -74,7 +74,7 @@ export default function Content({ children, cc = {}, title, ...props }:
             </Button>}
         </div>
 
-        <Scrollarea className={style.scrollarea} ref={content}>
+        <Scrollarea className={style.scrollarea}>
             {children}
         </Scrollarea>
     </div>;

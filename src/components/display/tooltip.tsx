@@ -209,7 +209,8 @@ export default function Tooltip<T extends React.ReactElement<any>>({ children, c
         {isValidElement(children) ? cloneElement(children, {
             ...props,
             'aria-describedby': id,
-            ref: combineRefs(element, props.ref, children.props?.ref)
+            ref: combineRefs(element, props.ref, children.props?.ref),
+            suppressHydrationWarning: true // todo: not ideal solution
         }) : children}
 
         {mounted && createPortal(<div
