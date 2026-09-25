@@ -89,7 +89,7 @@ export const DEFAULT_THEME = {
     palettes: {
         light: {
             primary: ['#22e39f', '#45e6ad', '#60f0bd', '#8cf5d0', '#baf7e2', '#dcfcf1'],
-            accent: ['#1dddf2'],
+            accent: ["#1dddf2", "#43e3f4", "#68e8f6", "#8eeef9", "#b4f4fb", "#d9f9fd"],
             grey: ['#e6e6e6', '#cccccc', '#b3b3b3', '#999999', '#808080', '#666666', '#4d4d4d', '#333333', '#191919'],
             heading: ['#000000'],
             text: ['#000000', '#ffffff'],
@@ -100,7 +100,7 @@ export const DEFAULT_THEME = {
         },
         dark: {
             primary: ['#1dddf2', '#1ac4d6', '#15a1b0', '#0e838f', '#064f57', '#043136'],
-            accent: ['#22e39f'],
+            accent: ["#22e39f", "#1cbd85", "#17976a", "#117250", "#0b4c35", "#06261a"],
             grey: ['#191919', '#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#b3b3b3', '#cccccc', '#e6e6e6'],
             heading: ['#ffffff'],
             text: ['#ffffff', '#000000'],

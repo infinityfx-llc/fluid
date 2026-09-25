@@ -123,7 +123,9 @@ export default function Interactable<P extends HTMLElement, E extends React.Elem
         function focus(selector = ':focus-visible') {
             if (!focusEl || !highlightEl) return;
 
-            highlightEl.classList[focusEl.matches(selector) ? 'add' : 'remove'](style.focused as any);
+            const isFocused = focusEl.matches(selector) || focusEl.querySelector(selector) !== null;
+
+            highlightEl.classList[isFocused ? 'add' : 'remove'](style.focused as any);
         }
 
         function setActive() {

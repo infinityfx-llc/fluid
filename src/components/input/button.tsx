@@ -9,8 +9,9 @@ const styles = createStyles('button', {
     '.button': {
         ['--block-padding' as any]: '.8em',
         ['--inline-padding' as any]: '1em',
+        ['--radius' as any]: 'var(--f-radius-sml)',
         position: 'relative',
-        borderRadius: 'var(--f-radius-sml)',
+        borderRadius: 'var(--radius)',
         padding: 'var(--block-padding) var(--inline-padding)',
         backgroundColor: 'var(--color, var(--f-clr-primary-100))',
         color: 'var(--f-clr-text-100)',
@@ -34,7 +35,7 @@ const styles = createStyles('button', {
     },
 
     '.button.round': {
-        borderRadius: 'calc(1.4em + 1px)'
+        ['--radius' as any]: 'calc(1.4em + 1px)'
     },
 
     '.s__xsm': {
@@ -72,7 +73,7 @@ const styles = createStyles('button', {
     },
 
     '.v__neutral .highlight': {
-        borderRadius: 'calc(var(--f-radius-sml) - 1px)'
+        borderRadius: 'calc(var(--radius) - 1px)'
     },
 
     '.button[data-loading="false"]:disabled': {
