@@ -179,13 +179,13 @@ export function parseColorPalettes<T extends FluidTheme>(theme: T) {
             insertVariables(`clr-${key}`, theme.palettes[name][key as never], vars);
         }
 
-        let key = `#__fluid.scheme-${name}`;
-        if (theme.defaultColorScheme === name) key += ', #__fluid.scheme-system';
+        let key = `html.scheme-${name}, #__fluid.scheme-${name}`;
+        if (theme.defaultColorScheme === name) key += ', html:not(.__temp__theme) #__fluid.scheme-system';
         ruleset[key] = vars;
 
         if (name === 'light' || name === 'dark') {
             mediaset[`@media(prefers-color-scheme: ${name})`] = {
-                '#__fluid.scheme-system': vars
+                'html:not(.__temp__theme) #__fluid.scheme-system': vars
             };
         }
     }
