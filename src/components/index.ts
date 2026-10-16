@@ -1,8 +1,8 @@
-import SyncThemeBlocking from './sync-theme-blocking';
+import FluidThemeScript from './fluid-theme-script';
 
 export * from './input';
 export * from './display';
 export * from './feedback';
 export * from './navigation';
 export * from './layout';
-export { SyncThemeBlocking };
+export { FluidThemeScript };

@@ -37,7 +37,7 @@ const styles = createStyles('file-field', {
 
     '.v__default': {
         backgroundColor: 'var(--f-clr-surface-100)',
-        border: 'solid 1px var(--f-clr-surface-200)',
+        border: 'solid 1px var(--f-clr-surface-300)',
         color: 'var(--f-clr-grey-200)'
     },
 

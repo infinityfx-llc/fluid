@@ -16,7 +16,7 @@ const styles = createStyles('drop-zone', {
         position: 'relative',
         display: 'grid',
         backgroundColor: 'var(--f-clr-surface-100)',
-        border: 'dashed 1px var(--f-clr-surface-200)',
+        border: 'dashed 1px var(--f-clr-surface-300)',
         borderRadius: 'var(--f-radius-med)',
         transition: 'background-color .25s, border-color .25s, color .25s',
         userSelect: 'none'

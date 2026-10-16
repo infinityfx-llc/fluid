@@ -35,7 +35,7 @@ const styles = createStyles('textarea', {
 
     '.v__default': {
         backgroundColor: 'var(--f-clr-surface-100)',
-        border: 'solid 1px var(--f-clr-surface-200)'
+        border: 'solid 1px var(--f-clr-surface-300)'
     },
 
     '.v__minimal': {

@@ -174,18 +174,23 @@ export function parseColorPalettes<T extends FluidTheme>(theme: T) {
     const mediaset: FluidStyles = {};
 
     for (const name in theme.palettes) {
-        const vars = {};
+        const vars: {
+            [key: string]: string;
+        } = {};
+
         for (const key in theme.palettes[name]) {
             insertVariables(`clr-${key}`, theme.palettes[name][key as never], vars);
         }
 
         let key = `html.scheme-${name}, #__fluid.scheme-${name}`;
-        if (theme.defaultColorScheme === name) key += ', html:not(.__temp__theme) #__fluid.scheme-system';
+        if (theme.defaultColorScheme === name) key += ', html.scheme-system, html:not(#__fluid__global) #__fluid.scheme-system';
         ruleset[key] = vars;
 
         if (name === 'light' || name === 'dark') {
+            vars['color-scheme'] = name === 'light' ? 'only ' + name : name;
+
             mediaset[`@media(prefers-color-scheme: ${name})`] = {
-                'html:not(.__temp__theme) #__fluid.scheme-system': vars
+                'html.scheme-system, html:not(#__fluid__global) #__fluid.scheme-system': vars
             };
         }
     }

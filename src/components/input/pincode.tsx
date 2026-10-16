@@ -28,7 +28,7 @@ const styles = createStyles('pincode', {
 
     '.v__default .field': {
         backgroundColor: 'var(--f-clr-surface-100)',
-        ['--border-color' as any]: 'var(--f-clr-surface-200)'
+        ['--border-color' as any]: 'var(--f-clr-surface-300)'
     },
 
     '.v__minimal .field': {
