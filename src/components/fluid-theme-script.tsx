@@ -1,7 +1,7 @@
 import { FluidColorScheme, PolymorphComponentProps } from "../types";
 import { COLOR_SCHEME_COOKIE } from "../utils";
 
-function applyColorScheme(cookieName: string, initialScheme: string) {
+function applyColorScheme(cookieName: string) {
     const cookies = document.cookie.split(';').reduce<{ [key: string]: string }>((cookies, cookie) => {
         const [key, value] = cookie.split('=');
 
@@ -21,8 +21,8 @@ function applyColorScheme(cookieName: string, initialScheme: string) {
     const meta = document.getElementById('fluid-color-scheme-meta') as HTMLMetaElement | null;
     if (!meta) return;
 
-    if (scheme === 'dark' ||
-        (scheme === 'system' && initialScheme === 'dark')) meta.content = 'dark';
+    const isDark = scheme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches;
+    if (scheme === 'dark' || isDark) meta.content = 'dark';
 }
 
 /**
@@ -43,7 +43,7 @@ export default function FluidThemeScript<E extends React.ElementType = 'script'>
     return <>
         <Wrapper
             {...props}
-            dangerouslySetInnerHTML={{ __html: `(${applyColorScheme.toString()})('${COLOR_SCHEME_COOKIE}', '${initialColorScheme}')` }} />
+            dangerouslySetInnerHTML={{ __html: `(${applyColorScheme.toString()})('${COLOR_SCHEME_COOKIE}')` }} />
         <meta
             suppressHydrationWarning
             id="fluid-color-scheme-meta"
