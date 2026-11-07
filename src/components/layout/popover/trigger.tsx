@@ -21,7 +21,6 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
     const touch = useRef({ clientX: 0, clientY: 0 });
     const pressed = useRef(false);
     const touchOnly = useRef(false);
-    const isDisabled = disabled || children?.props?.disabled;
 
     useEffect(() => {
         const el = trigger.current,
@@ -31,8 +30,6 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
         if (!el) return;
 
         function action(delay?: number) {
-            if (isDisabled) return;
-
             clearTimeout(timeout.current);
             delay ? timeout.current = setTimeout(action, delay) : toggle(!opened);
         }
@@ -42,6 +39,8 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
             const isValidKey = 'key' in e && (e.key === 'Enter' || e.key === ' ');
             const isValidClick = 'button' in e && e.button === 0 && !touchOnly.current;
             const isValidAction = isValidClick || isTouch || isValidKey;
+
+            if ((e.currentTarget as any).disabled || disabled) return;
 
             if (isTouch) {
                 touchOnly.current = true;
@@ -77,13 +76,13 @@ export default function Trigger({ children, longpress, disabled, ...props }: Pop
         el.addEventListener('blur', () => pressed.current = false, { signal });
 
         return () => ctrl.abort();
-    }, [toggle, isDisabled, opened]);
+    }, [toggle, disabled, opened]);
 
     return isValidElement(children) ? cloneElement(children as React.ReactElement<any>, {
         'aria-haspopup': 'dialog',
         'aria-expanded': opened,
         'aria-controls': id,
-        'aria-disabled': isDisabled,
+        'aria-disabled': disabled || (children?.props as any)?.disabled,
         ...props,
         ref: combineRefs(trigger, (children as React.ReactElement<any>).props?.ref),
         suppressHydrationWarning: true // todo: not ideal solution

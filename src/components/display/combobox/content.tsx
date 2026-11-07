@@ -225,6 +225,9 @@ export default function Content({
                     if (child) child.focus();
 
                     if (child || e.key !== 'Tab') e.preventDefault();
+                }}
+                onBlur={e => {
+                    if (!e.currentTarget.contains(e.relatedTarget)) focus.current.index = autoFocus ? 0 : -1;
                 }}>
                 {searchable && <Field
                     round={round}
